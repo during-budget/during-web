@@ -41,8 +41,8 @@ const degreeToPolygon = (deg: number) => {
     }
 };
 
-function AmountDoughnut() {
-    const amount = new Amount(40000, 180000, 300000);
+function AmountDoughnut(props: { amount: Amount }) {
+    const amount = props.amount;
 
     return (
         <Fragment>

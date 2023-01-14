@@ -1,13 +1,17 @@
 import classes from './AmountDetail.module.css';
+import { useDispatch } from 'react-redux';
 import { useState } from 'react';
+import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 
-function AmountDetail() {
+function AmountDetail(props: { amount: Amount }) {
+    const amount = props.amount;
+
+    const dispatch = useDispatch();
+
     const [isTotal, setIsTotal] = useState(true);
     const [isEditBudget, setEditBudget] = useState(false);
-    const [amountState, setAmountState] = useState(
-        new Amount(40000, 180000, 300000)
-    );
+    const [amountState, setAmountState] = useState(amount);
 
     const clickTotalHandler = () => {
         setIsTotal(true);
@@ -19,6 +23,9 @@ function AmountDetail() {
 
     const editBudgetHandler = () => {
         setEditBudget((prevState) => !prevState);
+        if (isEditBudget) {
+            dispatch(budgetActions.updateTotalAmount(amountState));
+        }
     };
 
     const changeBudgetHandler = (
@@ -26,16 +33,24 @@ function AmountDetail() {
     ) => {
         if (isTotal) {
             const budget = +event.target.value;
-            setAmountState(
-                new Amount(amountState.current, amountState.scheduled, budget)
-            );
+            setAmountState((prevAmount) => {
+                return new Amount(
+                    prevAmount.current,
+                    prevAmount.scheduled,
+                    budget
+                );
+            });
         } else {
             const budget =
                 +event.target.value +
                 (amountState.budget - amountState.getLeftBudget());
-            setAmountState(
-                new Amount(amountState.current, amountState.scheduled, budget)
-            );
+            setAmountState((prevAmount) => {
+                return new Amount(
+                    prevAmount.current,
+                    prevAmount.scheduled,
+                    budget
+                );
+            });
         }
     };
 
