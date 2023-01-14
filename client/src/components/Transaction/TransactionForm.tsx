@@ -1,16 +1,23 @@
 import classes from './TransactionForm.module.css';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
+import Transaction from '../../models/Transaction';
+import Category from '../../models/Category';
+import { budgetActions } from '../../store/budget';
 
 function TransactionForm(props: {
     isCurrent: boolean;
     onClickScheduled: () => void;
     onClickCurrent: () => void;
-    onSubmit: (event: React.FormEvent, isExpense: boolean) => void;
 }) {
+    const dispatch = useDispatch();
     const [isExpand, setIsExpand] = useState(false);
     const [amount, setAmount] = useState('');
+    const titleRef = useRef<HTMLInputElement>(null);
+    const dateRef = useRef<HTMLInputElement>(null);
+    const memoRef = useRef<HTMLTextAreaElement>(null);
 
     const expandHandler = () => {
         setIsExpand(true);
@@ -28,9 +35,24 @@ function TransactionForm(props: {
     };
 
     const submitHandler = (event: React.FormEvent) => {
+        event.preventDefault();
         setAmount('');
         setIsExpand(false);
-        props.onSubmit(event, isExpense);
+        const transaction = new Transaction({
+            id: new Date().toString(),
+            isCurrent: props.isCurrent,
+            isExpense,
+            title: [titleRef.current!.value],
+            date: new Date(dateRef.current!.value),
+            amount: +amount,
+            category: new Category({
+                id: 'new',
+                title: 'new',
+                budget: 6000,
+            }),
+            memo: memoRef.current!.value,
+        });
+        dispatch(budgetActions.addTransaction(transaction));
     };
 
     let isExpense = true;
@@ -77,11 +99,11 @@ function TransactionForm(props: {
                 </div>
                 <div className="input-field">
                     <label>제목</label>
-                    <input type="text" />
+                    <input type="text" ref={titleRef} />
                 </div>
                 <div className="input-field">
                     <label>날짜</label>
-                    <input type="date" />
+                    <input type="date" ref={dateRef} />
                 </div>
                 <div className={classes.selects}>
                     <div className="input-field">
@@ -95,7 +117,7 @@ function TransactionForm(props: {
                 </div>
                 <div className="input-field">
                     <label>메모</label>
-                    <textarea rows={2} />
+                    <textarea rows={2} ref={memoRef} />
                 </div>
             </div>
             <div className={classes.buttons}>
