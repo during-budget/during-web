@@ -6,6 +6,10 @@ class Category {
     private _icon: string;
     private _amount: Amount;
 
+    get id() {
+        return this._id;
+    }
+
     get title() {
         return this._title;
     }
@@ -30,10 +34,16 @@ class Category {
         this._amount.scheduled += amount;
     };
 
-    constructor(id: string, title: string, icon: string, budget: number) {
+    constructor(category: {
+        id: string;
+        title: string;
+        budget: number;
+        icon?: string;
+    }) {
+        const { id, title, icon, budget } = category;
         this._id = id;
         this._title = title;
-        this._icon = icon;
+        this._icon = icon || '';
         this._amount = new Amount(0, 0, budget);
     }
 }

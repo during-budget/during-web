@@ -3,6 +3,7 @@ import Amount from '../../models/Amount';
 import Category from '../../models/Category';
 import classes from './TransactionDetail.module.css';
 import TransactionList from '../../components/Transaction/TransactionList';
+import Transaction from '../../models/Transaction';
 
 function TransactionDetail() {
     const navigation = useNavigate();
@@ -12,23 +13,34 @@ function TransactionDetail() {
         icon: '',
         isCurrent: true,
         isExpense: true,
-        category: new Category('', '', '💰', 100000),
+        category: new Category({
+            id: 'c1',
+            title: '기본',
+            budget: 100000,
+            icon: '💰',
+        }),
         date: new Date(),
         memo: '',
         tags: [''],
         transactions: [
             {
                 date: new Date(2022, 11, 7),
-                logs: [
-                    {
+                items: [
+                    new Transaction({
                         id: 'dd',
                         isCurrent: true,
                         isExpense: true,
                         title: ['제목 1', '부제목 1'],
+                        date: new Date(2022, 11, 7),
                         amount: 100000,
-                        category: new Category('d', '분류명', '💰', 100000),
+                        category: new Category({
+                            id: 'c1',
+                            title: '기본',
+                            budget: 100000,
+                            icon: '💰',
+                        }),
                         tags: ['태그명'],
-                    },
+                    }),
                 ],
             },
         ],
