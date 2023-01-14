@@ -5,7 +5,9 @@ import {
     Navigate,
     RouterProvider,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import './index.css';
+import store from './store/index';
 import BudgetList from './screens/budget/BudgetList';
 import BudgetForm from './screens/budget/BudgetForm';
 import BudgetDetail from './screens/budget/BudgetDetail';
@@ -37,4 +39,8 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
-root.render(<RouterProvider router={router} />);
+root.render(
+    <Provider store={store}>
+        <RouterProvider router={router} />
+    </Provider>
+);

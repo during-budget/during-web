@@ -1,7 +1,5 @@
 import classes from './BudgetHeader.module.css';
 
-const title = '12월 가계부';
-
 const getDateString = (date: Date) => {
     return date
         .toLocaleString('ko-KR', {
@@ -13,7 +11,11 @@ const getDateString = (date: Date) => {
         .join('');
 };
 
-function BudgetHeader(props: { startDate: Date; endDate: Date }) {
+function BudgetHeader(props: {
+    startDate: Date;
+    endDate: Date;
+    title: string;
+}) {
     return (
         <header className={classes.header}>
             <div className={classes.date}>
@@ -21,7 +23,7 @@ function BudgetHeader(props: { startDate: Date; endDate: Date }) {
                 <span> ~ </span>
                 <span>{getDateString(props.endDate)}</span>
             </div>
-            <h1 className={classes.title}>{title}</h1>
+            <h1 className={classes.title}>{props.title}</h1>
         </header>
     );
 }

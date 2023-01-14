@@ -55,11 +55,19 @@ class Amount {
     };
 
     getCurrentDeg = () => {
-        return (this._current / this._budget) * 360;
+        if (this._budget === 0) {
+            return 0;
+        } else {
+            return (this._current / this._budget) * 360;
+        }
     };
 
     getScheduledDeg = () => {
-        return (this._scheduled / this._budget) * 360;
+        if (this._budget === 0) {
+            return 0;
+        } else {
+            return (this._scheduled / this._budget) * 360;
+        }
     };
 
     getLeftScheduled = () => {
