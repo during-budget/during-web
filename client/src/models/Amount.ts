@@ -54,19 +54,19 @@ class Amount {
         return formatBudget(this.budget);
     };
 
-    getCurrentDeg = () => {
+    getCurrentRatio = () => {
         if (this._budget === 0) {
             return 0;
         } else {
-            return (this._current / this._budget) * 360;
+            return (this._current / this._budget);
         }
     };
 
-    getScheduledDeg = () => {
+    getScheduledRatio = () => {
         if (this._budget === 0) {
             return 0;
         } else {
-            return (this._scheduled / this._budget) * 360;
+            return (this._scheduled / this._budget);
         }
     };
 
@@ -100,6 +100,7 @@ class Amount {
         this._current = current;
         this._scheduled = scheduled;
         this._budget = budget;
+        // NOTE: amount doughnut chart를 위한 기본값 - 차트 크기 변경 시 업데이트 필요
     }
 }
 
