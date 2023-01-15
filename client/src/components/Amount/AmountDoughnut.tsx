@@ -2,43 +2,11 @@ import { Fragment } from 'react';
 import Amount from '../../models/Amount';
 import classes from './AmountDoughnut.module.css';
 
-const degreeToPolygon = (deg: number) => {
-    const point = (10 / 9) * deg;
+const DOUGHNUT_SIZE = '16rem';
+const DOUGHNUT_DASH = 402;
 
-    if (0 <= deg && deg <= 45) {
-        const style = { clipPath: 'polygon(50% 50%, 50% 0' };
-        const x = point + 50;
-        style.clipPath += `, ${x}% 0, 50% 50%, 50% 50%, 50% 50%, 50% 50%)`;
-        return style;
-    } else if (deg <= 135) {
-        const style = { clipPath: 'polygon(50% 50%, 50% 0, 100% 0' };
-        const y = point - 50;
-        style.clipPath += `, 100% ${y}%, 50% 50%, 50% 50%, 50% 50%)`;
-        return style;
-    } else if (deg <= 225) {
-        const style = {
-            clipPath: 'polygon(50% 50%, 50% 0, 100% 0, 100% 100%',
-        };
-        const x = -1 * point + 250;
-        style.clipPath += `, ${x}% 100%, 50% 50%, 50% 50%)`;
-        return style;
-    } else if (deg <= 315) {
-        const style = {
-            clipPath: 'polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%',
-        };
-        const y = -1 * point + 350;
-        style.clipPath += `, 0 ${y}%, 50% 50%)`;
-        return style;
-    } else if (deg <= 360) {
-        const style = {
-            clipPath: 'polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0',
-        };
-        const x = point - 350;
-        style.clipPath += `, ${x}% 0)`;
-        return style;
-    } else {
-        return {};
-    }
+const getDash = (ratio: number) => {
+    return { strokeDasharray: `${ratio * DOUGHNUT_DASH} ${DOUGHNUT_DASH}` };
 };
 
 function AmountDoughnut(props: { amount: Amount }) {
@@ -48,27 +16,45 @@ function AmountDoughnut(props: { amount: Amount }) {
         <Fragment>
             <div
                 className={classes.container}
-                style={{ width: '14rem', height: '14rem' }}
+                style={{ width: DOUGHNUT_SIZE, height: DOUGHNUT_SIZE }}
             >
                 <div>
                     <div className={classes.palette}>
-                        <div className={classes.budget}></div>
+                        <svg width="100%" height="100%">
+                            <circle
+                                className={classes.budget}
+                                r="25%"
+                                cx="50%"
+                                cy="50%"
+                                style={getDash(1)}
+                            />
+                        </svg>
                     </div>
                 </div>
                 <div>
                     <div className={classes.palette}>
-                        <div
-                            className={classes.scheduled}
-                            style={degreeToPolygon(amount.getScheduledDeg())}
-                        ></div>
+                        <svg width="100%" height="100%">
+                            <circle
+                                className={classes.scheduled}
+                                r="25%"
+                                cx="50%"
+                                cy="50%"
+                                style={getDash(amount.getScheduledRatio())}
+                            />
+                        </svg>
                     </div>
                 </div>
                 <div>
                     <div className={classes.palette}>
-                        <div
-                            className={`${classes.current}`}
-                            style={degreeToPolygon(amount.getCurrentDeg())}
-                        ></div>
+                        <svg width="100%" height="100%">
+                            <circle
+                                className={classes.current}
+                                r="25%"
+                                cx="50%"
+                                cy="50%"
+                                style={getDash(amount.getCurrentRatio())}
+                            />
+                        </svg>
                     </div>
                 </div>
             </div>
