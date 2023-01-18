@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import BudgetItem from '../../components/Budget/BudgetItem';
 import { BUDGET_TYPE } from '../../constants/types';
-import Amount from '../../models/Amount';
 import classes from './BudgetList.module.css';
 
 function BudgetList() {
@@ -12,24 +11,11 @@ function BudgetList() {
         setIsRepeating((prev) => !prev);
     };
 
-    // const budgets: any = useLoaderData();
-    const budgets = [
-        {
-            id: '01',
-            type: BUDGET_TYPE.REPEATING,
-            startDate: new Date(2022, 11, 1),
-            endDate: new Date(2022, 11, 31),
-            amount: new Amount(0, 0, 0),
-        },
-    ];
+    const budgets = useSelector((state: any) => state.budgets);
 
-    const filteredBudget = budgets.filter((budget: any) => {
-        if (isRepeating) {
-            return budget.type === BUDGET_TYPE.REPEATING;
-        } else {
-            return budget.type === BUDGET_TYPE.EVENT;
-        }
-    });
+    const filteredBudget = budgets.filter((budget: any) =>
+        isRepeating ? budget.isRepeating : !budget.isRepeating
+    );
 
     return (
         <div className="page">
@@ -56,14 +42,14 @@ function BudgetList() {
             </div>
             <ol>
                 {filteredBudget.map((budget: any, i: number) => {
-                    const { id, startDate, endDate, amount } = budget;
+                    const { id, startDate, endDate, total } = budget;
                     return (
                         <BudgetItem
                             key={i}
                             id={id}
                             startDate={startDate}
                             endDate={endDate}
-                            amount={amount}
+                            amount={total}
                         />
                     );
                 })}
@@ -78,10 +64,6 @@ function BudgetList() {
             </a>
         </div>
     );
-}
-
-export function loader() {
-    // return getBudgets();
 }
 
 export default BudgetList;

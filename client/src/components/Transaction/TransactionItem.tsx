@@ -8,7 +8,7 @@ function TransactionItem(props: { transaction: Transaction }) {
     const navigation = useNavigate();
     const [isShowOverlay, setIsShowOverlay] = useState(false);
 
-    const { id, icon, title, amount, category, tags } = props.transaction;
+    const { id, icon, title, amount, categoryId, tags } = props.transaction;
 
     const clickHandler = () => {
         navigation(`/budget/01/${id}`);
@@ -22,7 +22,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                 <div className={classes.detail}>
                     <div className={classes.header}>
                         <p className={classes.category}>
-                            {category ? category.title : ''}
+                            {categoryId}
                         </p>
                         <p className={classes.title}>{title.join(' | ')}</p>
                     </div>
