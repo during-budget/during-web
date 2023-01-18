@@ -8,10 +8,11 @@ function TransactionItem(props: { transaction: Transaction }) {
     const navigation = useNavigate();
     const [isShowOverlay, setIsShowOverlay] = useState(false);
 
-    const { id, icon, title, amount, categoryId, tags } = props.transaction;
+    const { id, icon, title, amount, categoryId, budgetId, tags } =
+        props.transaction;
 
     const clickHandler = () => {
-        navigation(`/budget/01/${id}`);
+        navigation(`/budget/${budgetId}/${id}`);
         setIsShowOverlay(true);
     };
 
