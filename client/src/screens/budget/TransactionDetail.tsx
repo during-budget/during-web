@@ -4,7 +4,7 @@ import classes from './TransactionDetail.module.css';
 
 function TransactionDetail() {
     const navigation = useNavigate();
-    const { transactionId } = useParams();
+    const { budgetId, transactionId } = useParams();
     const transactions = useSelector((state: any) => state.transactions);
     const transaction = transactions.find(
         (item: any) => item.id === transactionId
@@ -18,7 +18,7 @@ function TransactionDetail() {
                     <button
                         className={classes.back}
                         onClick={() => {
-                            navigation(-1);
+                            navigation(`/budget/${budgetId}`);
                         }}
                     >
                         <i className="fa-solid fa-chevron-left"></i>
