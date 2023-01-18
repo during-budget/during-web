@@ -6,10 +6,16 @@ import StatusCarousel from '../../components/Status/StatusCarousel';
 import TransactionLayout from '../../components/Transaction/TransactionLayout';
 
 function BudgetDetail() {
-    const { startDate, endDate, title } = useSelector(
-        (state: any) => state.budget
-    );
     const { budgetId } = useParams();
+    const budgets = useSelector((state: any) => state.budgets);
+    const budget = budgets.find((item: any) => item.id === budgetId);
+
+    if (!budget) {
+        throw new Error("Budget doesn`'t exists");
+    }
+
+    const { startDate, endDate, title, total } = budget;
+
     return (
         <>
             <BudgetHeader
@@ -18,9 +24,16 @@ function BudgetDetail() {
                 title={title}
             />
             <main className={classes.container}>
-                <StatusCarousel initialIndex={1} />
+                <StatusCarousel
+                    initialIndex={1}
+                    budgetId={budget.id}
+                    amount={total}
+                />
                 <hr />
-                <TransactionLayout />
+                <TransactionLayout
+                    budgetId={budget.id}
+                    isRepeating={budget.isRepeating}
+                />
             </main>
         </>
     );

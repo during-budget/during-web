@@ -1,50 +1,14 @@
-import { ScrollRestoration, useNavigate } from 'react-router-dom';
-import Amount from '../../models/Amount';
-import Category from '../../models/Category';
+import { ScrollRestoration, useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import classes from './TransactionDetail.module.css';
-import TransactionList from '../../components/Transaction/TransactionList';
-import Transaction from '../../models/Transaction';
 
 function TransactionDetail() {
     const navigation = useNavigate();
-    const data = {
-        title: ['제목 1', '부제목 1'],
-        amount: new Amount(100000, 0, 0),
-        icon: '',
-        isCurrent: true,
-        isExpense: true,
-        category: new Category({
-            id: 'c1',
-            title: '기본',
-            budget: 100000,
-            icon: '💰',
-        }),
-        date: new Date(),
-        memo: '',
-        tags: [''],
-        transactions: [
-            {
-                date: new Date(2022, 11, 7),
-                items: [
-                    new Transaction({
-                        id: 'dd',
-                        isCurrent: true,
-                        isExpense: true,
-                        title: ['제목 1', '부제목 1'],
-                        date: new Date(2022, 11, 7),
-                        amount: 100000,
-                        category: new Category({
-                            id: 'c1',
-                            title: '기본',
-                            budget: 100000,
-                            icon: '💰',
-                        }),
-                        tags: ['태그명'],
-                    }),
-                ],
-            },
-        ],
-    };
+    const { transactionId } = useParams();
+    const transactions = useSelector((state: any) => state.transactions);
+    const transaction = transactions.find(
+        (item: any) => item.id === transactionId
+    );
 
     return (
         <>
@@ -60,17 +24,11 @@ function TransactionDetail() {
                         <i className="fa-solid fa-chevron-left"></i>
                     </button>
                     <div className={classes.header}>
-                        <span className={classes.icon}>
-                            {data.icon
-                                ? data.icon
-                                : data.category
-                                ? data.category.icon
-                                : ''}
-                        </span>
-                        <h2>{data.title.join(' | ')}</h2>
+                        <span className={classes.icon}>{transaction.icon}</span>
+                        <h2>{transaction.title.join(' | ')}</h2>
                     </div>
                     <p className={classes.amount}>
-                        {data.amount.getCurrentStr()}
+                        {transaction.amount.toLocaleString()}원
                     </p>
                     <div className={classes.tabs}>
                         <ul className="nav-tab">
@@ -155,7 +113,6 @@ function TransactionDetail() {
                             </label>
                         </li>
                     </ul>
-                    <TransactionList transactions={data.transactions} />
                 </div>
             </div>
         </>

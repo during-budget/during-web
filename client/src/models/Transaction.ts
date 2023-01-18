@@ -1,19 +1,22 @@
-import Category from './Category';
-
 class Transaction {
     private _id: string;
+    private _budgetId: string;
     private _isCurrent: boolean;
     private _isExpense: boolean;
     private _icon: string;
     private _title: string[];
     private _date: Date;
     private _amount: number;
-    private _category: Category;
+    private _categoryId: string;
     private _tags: string[];
     private _memo: string;
 
     get id() {
         return this._id;
+    }
+
+    get budgetId() {
+        return this._budgetId;
     }
 
     get isCurrent() {
@@ -40,8 +43,8 @@ class Transaction {
         return this._amount;
     }
 
-    get category() {
-        return this._category;
+    get categoryId() {
+        return this._categoryId;
     }
 
     get tags() {
@@ -54,6 +57,10 @@ class Transaction {
 
     set id(id: string) {
         this._id = id;
+    }
+
+    set budgetId(budgetId: string) {
+        this._budgetId = budgetId;
     }
 
     set isCurrent(isCurrent: boolean) {
@@ -80,8 +87,8 @@ class Transaction {
         this._amount = amount;
     }
 
-    set category(category: Category) {
-        this._category = category;
+    set categoryId(categoryId: string) {
+        this._categoryId = categoryId;
     }
 
     set tags(tags: string[]) {
@@ -94,36 +101,39 @@ class Transaction {
 
     constructor(transaction: {
         id: string;
+        budgetId: string;
         isCurrent: boolean;
         isExpense: boolean;
         title: string[];
         date: Date;
         amount: number;
-        category: Category;
+        categoryId: string;
         tags?: string[];
         icon?: string;
         memo?: string;
     }) {
         const {
             id,
+            budgetId,
             isCurrent,
             isExpense,
             icon,
             title,
             date,
             amount,
-            category,
+            categoryId,
             tags,
             memo,
         } = transaction;
         this._id = id;
+        this._budgetId = budgetId;
         this._isCurrent = isCurrent;
         this._isExpense = isExpense;
-        this._icon = icon || category.icon;
+        this._icon = icon || '';
         this._title = title;
         this._date = date;
         this._amount = amount;
-        this._category = category;
+        this._categoryId = categoryId;
         this._tags = tags || [];
         this._memo = memo || '';
     }

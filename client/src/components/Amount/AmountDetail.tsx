@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 
-function AmountDetail(props: { amount: Amount }) {
-    const amount = props.amount;
+function AmountDetail(props: { budgetId: string; amount: Amount }) {
+    const { budgetId, amount } = props;
 
     const dispatch = useDispatch();
 
@@ -24,7 +24,12 @@ function AmountDetail(props: { amount: Amount }) {
     const editBudgetHandler = () => {
         setEditBudget((prevState) => !prevState);
         if (isEditBudget) {
-            dispatch(budgetActions.updateTotalAmount(amountState));
+            dispatch(
+                budgetActions.replaceTotalAmount({
+                    budgetId: budgetId,
+                    amount: amountState,
+                })
+            );
         }
     };
 
