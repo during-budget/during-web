@@ -1,14 +1,13 @@
 import { Fragment } from 'react';
-import { useSelector } from 'react-redux';
+import Amount from '../../models/Amount';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountDoughnut from '../Amount/AmountDoughnut';
 
-function TotalStatus() {
-    const amount = useSelector((state: any) => state.budget.total);
+function TotalStatus(props: { budgetId: string; amount: Amount }) {
     return (
         <Fragment>
-            <AmountDoughnut amount={amount} />
-            <AmountDetail amount={amount} />
+            <AmountDoughnut amount={props.amount} />
+            <AmountDetail budgetId={props.budgetId} amount={props.amount} />
         </Fragment>
     );
 }

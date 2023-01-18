@@ -1,18 +1,21 @@
 import classes from './TransactionForm.module.css';
 import { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
 import Transaction from '../../models/Transaction';
-import Category from '../../models/Category';
 import { budgetActions } from '../../store/budget';
+import { transactionActions } from '../../store/transaction';
 
 function TransactionForm(props: {
+    budgetId: string;
+    isRepeating: boolean;
     isCurrent: boolean;
     onClickScheduled: () => void;
     onClickCurrent: () => void;
 }) {
     const dispatch = useDispatch();
+    const key = props.isRepeating ? 'repeating' : 'free';
     const [isExpand, setIsExpand] = useState(false);
     const [amount, setAmount] = useState('');
     const titleRef = useRef<HTMLInputElement>(null);
@@ -38,21 +41,31 @@ function TransactionForm(props: {
         event.preventDefault();
         setAmount('');
         setIsExpand(false);
-        const transaction = new Transaction({
-            id: new Date().toString(),
-            isCurrent: props.isCurrent,
-            isExpense,
-            title: [titleRef.current!.value],
-            date: new Date(dateRef.current!.value),
-            amount: +amount,
-            category: new Category({
-                id: 'new',
-                title: 'new',
-                budget: 6000,
-            }),
-            memo: memoRef.current!.value,
-        });
-        dispatch(budgetActions.addTransaction(transaction));
+        const categoryId = 'c1';
+        const icon = '';
+        dispatch(
+            budgetActions.updateTotalAmount({
+                budgetId: props.budgetId,
+                isCurrent: props.isCurrent,
+                amount: +amount,
+            })
+        );
+        dispatch(
+            transactionActions.addTransaction(
+                new Transaction({
+                    id: new Date().toString(),
+                    budgetId: props.budgetId,
+                    isCurrent: props.isCurrent,
+                    isExpense,
+                    title: [titleRef.current!.value],
+                    date: new Date(dateRef.current!.value),
+                    amount: +amount,
+                    categoryId,
+                    icon,
+                    memo: memoRef.current!.value,
+                })
+            )
+        );
     };
 
     let isExpense = true;
