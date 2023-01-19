@@ -4,7 +4,7 @@ import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
 import TransactionNav from './TransactionNav';
 
-function TransactionLayout(props: { budgetId: string; isRepeating: boolean }) {
+function TransactionLayout(props: { budgetId: string }) {
     const [isCurrent, setIsCurrent] = useState(false);
 
     const totalTransacitons = useSelector((state: any) => state.transactions);
@@ -30,7 +30,6 @@ function TransactionLayout(props: { budgetId: string; isRepeating: boolean }) {
             <TransactionList transactions={transactions} />
             <TransactionForm
                 budgetId={props.budgetId}
-                isRepeating={props.isRepeating}
                 isCurrent={isCurrent}
                 onClickScheduled={clickScheduledHandler}
                 onClickCurrent={clickCurrentHandler}

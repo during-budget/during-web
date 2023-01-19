@@ -58,7 +58,7 @@ class Amount {
         if (this._budget === 0) {
             return 0;
         } else {
-            return (this._current / this._budget);
+            return this._current / this._budget;
         }
     };
 
@@ -66,7 +66,7 @@ class Amount {
         if (this._budget === 0) {
             return 0;
         } else {
-            return (this._scheduled / this._budget);
+            return this._scheduled / this._budget;
         }
     };
 
@@ -96,11 +96,38 @@ class Amount {
         this._scheduled += amount;
     };
 
+    getAmountArr = () => {
+        return [this._current, this._scheduled, this._budget];
+    };
+
+    static getAmountString = (amount: number) => {
+        return amount.toLocaleString() + amountUnit;
+    }
+
+    static getUpdatedAmount = (
+        prevAmount: Amount | any,
+        isCurrent: boolean,
+        amount: number
+    ) => {
+        const nextAmount = new Amount(
+            prevAmount.current,
+            prevAmount.scheduled,
+            prevAmount.budget
+        );
+
+        if (isCurrent) {
+            nextAmount.addCurrent(amount);
+        } else {
+            nextAmount.addScheduled(amount);
+        }
+
+        return nextAmount;
+    };
+
     constructor(current: number, scheduled: number, budget: number) {
         this._current = current;
         this._scheduled = scheduled;
         this._budget = budget;
-        // NOTE: amount doughnut chart를 위한 기본값 - 차트 크기 변경 시 업데이트 필요
     }
 }
 
