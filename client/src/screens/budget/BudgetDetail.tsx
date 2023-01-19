@@ -2,8 +2,12 @@ import classes from './BudgetDetail.module.css';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import BudgetHeader from '../../components/Budget/BudgetHeader';
-import StatusCarousel from '../../components/Status/StatusCarousel';
 import TransactionLayout from '../../components/Transaction/TransactionLayout';
+import React from 'react';
+import Carousel from '../../components/UI/Carousel';
+import DateStatus from '../../components/Status/DateStatus';
+import TotalStatus from '../../components/Status/TotalStatus';
+import CategoryStatus from '../../components/Status/CategoryStatus';
 
 function BudgetDetail() {
     const { budgetId } = useParams();
@@ -16,6 +20,8 @@ function BudgetDetail() {
 
     const { startDate, endDate, title, total } = budget;
 
+    const dateClickHandler = (date: Date) => {};
+
     return (
         <>
             <BudgetHeader
@@ -24,11 +30,15 @@ function BudgetDetail() {
                 title={title}
             />
             <main className={classes.container}>
-                <StatusCarousel
-                    initialIndex={1}
-                    budgetId={budget.id}
-                    amount={total}
-                />
+                <Carousel id="status" initialIndex={1}>
+                    <DateStatus
+                        startDate={startDate}
+                        endDate={endDate}
+                        onClick={dateClickHandler}
+                    />
+                    <TotalStatus budgetId={budgetId!} amount={total} />
+                    <CategoryStatus budgetId={budgetId!} />
+                </Carousel>
                 <hr />
                 <TransactionLayout budgetId={budget.id} />
             </main>
