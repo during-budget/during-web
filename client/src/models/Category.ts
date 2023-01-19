@@ -4,7 +4,7 @@ class Category {
     private _id: string;
     private _title: string;
     private _icon: string;
-    private _amount: Amount;
+    private _amounts: { [key: string]: Amount };
 
     get id() {
         return this._id;
@@ -18,33 +18,47 @@ class Category {
         return this._icon;
     }
 
-    get amount() {
-        return this._amount;
+    get amounts() {
+        return this._amounts;
     }
 
-    set budget(amount: number) {
-        this._amount.budget = amount;
+    set title(title: string) {
+        this._title = title;
     }
 
-    addCurrent = (amount: number) => {
-        this._amount.current += amount;
-    };
+    set icon(icon: string) {
+        this._icon = icon;
+    }
 
-    addScheduled = (amount: number) => {
-        this._amount.scheduled += amount;
-    };
+    setBudget(budgetId: string, budgetAmount: number) {
+        const amount = this._amounts[budgetId];
+        if (amount) {
+            this._amounts[budgetId].budget = budgetAmount;
+        } else {
+            this._amounts[budgetId] = new Amount(0, 0, budgetAmount);
+        }
+    }
 
     constructor(category: {
         id: string;
         title: string;
-        budget: number;
-        icon?: string;
+        icon: string;
+        initialData?: { budgetId: string; budgetAmount: number };
+        amounts?: { [key: string]: Amount };
     }) {
-        const { id, title, icon, budget } = category;
+        const { id, title, icon, amounts, initialData } = category;
         this._id = id;
         this._title = title;
-        this._icon = icon || '';
-        this._amount = new Amount(0, 0, budget);
+        this._icon = icon;
+
+        if (initialData) {
+            this._amounts = {};
+            this.setBudget(initialData.budgetId, initialData.budgetAmount);
+        } else if (amounts) {
+            this._amounts = amounts;
+        } else {
+            this._amounts = {};
+        }
     }
 }
 

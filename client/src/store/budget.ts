@@ -33,14 +33,11 @@ const budgetSlice = createSlice({
         updateTotalAmount(state, action) {
             const { budgetId, isCurrent, amount } = action.payload;
             const budget = state.find((item) => item.id === budgetId);
-            const key = isCurrent ? 'current' : 'scheduled';
             if (budget) {
-                const total = budget.total;
-                total[key] += amount;
-                budget.total = new Amount(
-                    total.current,
-                    total.scheduled,
-                    total.budget
+                budget.total = Amount.getUpdatedAmount(
+                    budget.total,
+                    isCurrent,
+                    amount
                 );
             }
         },

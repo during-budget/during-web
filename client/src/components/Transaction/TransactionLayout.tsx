@@ -30,7 +30,6 @@ function TransactionLayout(props: { budgetId: string; isRepeating: boolean }) {
             <TransactionList transactions={transactions} />
             <TransactionForm
                 budgetId={props.budgetId}
-                isRepeating={props.isRepeating}
                 isCurrent={isCurrent}
                 onClickScheduled={clickScheduledHandler}
                 onClickCurrent={clickCurrentHandler}

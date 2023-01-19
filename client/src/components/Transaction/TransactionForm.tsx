@@ -5,17 +5,17 @@ import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
 import Transaction from '../../models/Transaction';
 import { budgetActions } from '../../store/budget';
+import { categoryActions } from '../../store/category';
 import { transactionActions } from '../../store/transaction';
 
 function TransactionForm(props: {
     budgetId: string;
-    isRepeating: boolean;
     isCurrent: boolean;
     onClickScheduled: () => void;
     onClickCurrent: () => void;
 }) {
     const dispatch = useDispatch();
-    const key = props.isRepeating ? 'repeating' : 'free';
+    const categories = useSelector((state: any) => state.categories);
     const [isExpand, setIsExpand] = useState(false);
     const [amount, setAmount] = useState('');
     const titleRef = useRef<HTMLInputElement>(null);
@@ -42,9 +42,18 @@ function TransactionForm(props: {
         setAmount('');
         setIsExpand(false);
         const categoryId = 'c1';
-        const icon = '';
+        const icon =
+            '' || categories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
+                budgetId: props.budgetId,
+                isCurrent: props.isCurrent,
+                amount: +amount,
+            })
+        );
+        dispatch(
+            categoryActions.updateAmount({
+                categoryId,
                 budgetId: props.budgetId,
                 isCurrent: props.isCurrent,
                 amount: +amount,
