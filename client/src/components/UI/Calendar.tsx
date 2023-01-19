@@ -1,14 +1,12 @@
 import classes from './Calendar.module.css';
 import { WEEK_DAYS } from '../../constants/date';
 
-const startDate = new Date(2022, 11, 1);
-const endDate = new Date(2022, 11, 31);
-
 function Calendar(props: {
     startDate: Date;
     endDate: Date;
     onClick?: (event: React.MouseEvent) => void;
 }) {
+    const { startDate, endDate } = props;
     const getMonthTr = (date: Date) => {
         const month = [];
         for (let i = 0; i < date.getDay(); i++) {
