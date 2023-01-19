@@ -30,10 +30,7 @@ function BudgetDetail() {
                     amount={total}
                 />
                 <hr />
-                <TransactionLayout
-                    budgetId={budget.id}
-                    isRepeating={budget.isRepeating}
-                />
+                <TransactionLayout budgetId={budget.id} />
             </main>
         </>
     );

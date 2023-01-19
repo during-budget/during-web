@@ -1,6 +1,7 @@
 import { ScrollRestoration, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classes from './TransactionDetail.module.css';
+import Amount from '../../models/Amount';
 
 function TransactionDetail() {
     const navigation = useNavigate();
@@ -28,7 +29,7 @@ function TransactionDetail() {
                         <h2>{transaction.title.join(' | ')}</h2>
                     </div>
                     <p className={classes.amount}>
-                        {transaction.amount.toLocaleString()}원
+                        {Amount.getAmountString(transaction.amount)}
                     </p>
                     <div className={classes.tabs}>
                         <ul className="nav-tab">
