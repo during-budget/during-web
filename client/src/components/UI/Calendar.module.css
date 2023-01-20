@@ -34,16 +34,3 @@
     background-color: #f6f6f6;
     border-radius: 2rem;
 }
-
-.date:hover::after {
-    content: '+';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0.3rem;
-    display: block;
-    margin: auto;
-    font-size: 1.2rem;
-    color: #e0e0e0;
-    cursor: pointer;
-}

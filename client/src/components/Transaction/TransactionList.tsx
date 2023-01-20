@@ -26,7 +26,14 @@ function TransactionList(props: { isCurrent: boolean }) {
                 return (
                     <li key={transaction.date}>
                         <ol>
-                            <h5 className={classes.date}>{transaction.date}</h5>
+                            <h5
+                                className={classes.date}
+                                id={new Date(
+                                    transaction.date
+                                ).toLocaleDateString('sv-SE')}
+                            >
+                                {transaction.date}
+                            </h5>
                             {transaction.transactions.map((item) => {
                                 return (
                                     <TransactionItem
