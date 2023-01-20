@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Category from '../../../models/Category';
 import classes from './CategoryInput.module.css';
 
@@ -10,14 +10,24 @@ const CategoryInput = React.forwardRef(
         },
         ref: any
     ) => {
-        const clickSelectHandler = (
-            event: React.MouseEvent<HTMLDivElement>
+        const [isExpand, setIsExpand] = useState(false);
+
+        const clickSelectHandler = () => {
+            setIsExpand((prev) => !prev);
+        };
+
+        const clickOptionHandler = (
+            event: React.MouseEvent<HTMLUListElement>
         ) => {
-            ref.current.value = 'c3';
+            const target = event.target as HTMLElement;
+            if (target.nodeName === 'LI') {
+                const id = target.getAttribute('data-id');
+                ref.current.value = id;
+            }
         };
 
         return (
-            <div className="input-field">
+            <div className={`input-field ${classes.category}`}>
                 <label>분류</label>
                 <span
                     className={classes.selectWrapper}
@@ -33,6 +43,22 @@ const CategoryInput = React.forwardRef(
                         })}
                     </select>
                 </span>
+                {isExpand && (
+                    <div className={classes.listWrapper}>
+                        <ul
+                            className={classes.list}
+                            onClick={clickOptionHandler}
+                        >
+                            {props.categories.map((item: any) => {
+                                return (
+                                    <li key={item.id} data-id={item.id}>
+                                        {item.icon} {item.title}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                )}
             </div>
         );
     }
