@@ -8,6 +8,7 @@ import { budgetActions } from '../../store/budget';
 import { categoryActions } from '../../store/category';
 import { transactionActions } from '../../store/transaction';
 import { uiActions } from '../../store/ui';
+import CategoryInput from '../UI/input/CategoryInput';
 
 function TransactionForm(props: {
     budgetId: string;
@@ -17,10 +18,17 @@ function TransactionForm(props: {
 }) {
     const dispatch = useDispatch();
     const categories = useSelector((state: any) => state.categories);
+    const filteredCategories = categories.filter(
+        (item: any) => props.budgetId in item.amounts
+    );
+
     const formState = useSelector((state: any) => state.ui.transactionForm);
-    const [amount, setAmount] = useState('');
+
+    const [amountState, setAmountState] = useState('');
+
     const titleRef = useRef<HTMLInputElement>(null);
     const dateRef = useRef<HTMLInputElement>(null);
+    const categoryRef = useRef<HTMLSelectElement>(null);
     const memoRef = useRef<HTMLTextAreaElement>(null);
 
     const expandHandler = () => {
@@ -28,28 +36,29 @@ function TransactionForm(props: {
     };
 
     const cancelHandler = () => {
-        setAmount('');
+        setAmountState('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
     };
 
     const changeAmountHandler = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        setAmount(event.target.value);
+        setAmountState(event.target.value);
     };
 
     const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        setAmount('');
+        setAmountState('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
-        const categoryId = 'c1';
+        const categoryId = categoryRef.current!.value;
         const icon =
-            '' || categories.find((item: any) => item.id === categoryId).icon;
+            '' ||
+            filteredCategories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
                 isCurrent: props.isCurrent,
-                amount: +amount,
+                amount: +amountState,
             })
         );
         dispatch(
@@ -57,7 +66,7 @@ function TransactionForm(props: {
                 categoryId,
                 budgetId: props.budgetId,
                 isCurrent: props.isCurrent,
-                amount: +amount,
+                amount: +amountState,
             })
         );
         dispatch(
@@ -69,7 +78,7 @@ function TransactionForm(props: {
                     isExpense,
                     title: [titleRef.current!.value],
                     date: new Date(dateRef.current!.value),
-                    amount: +amount,
+                    amount: +amountState,
                     categoryId,
                     icon,
                     memo: memoRef.current!.value,
@@ -91,7 +100,7 @@ function TransactionForm(props: {
             <input
                 type="number"
                 placeholder="금액을 입력하세요"
-                value={amount}
+                value={amountState}
                 onChange={changeAmountHandler}
             />
             <button
@@ -117,7 +126,7 @@ function TransactionForm(props: {
                     <input
                         type="number"
                         onChange={changeAmountHandler}
-                        value={amount}
+                        value={amountState}
                     />
                 </div>
                 <div className="input-field">
@@ -133,10 +142,11 @@ function TransactionForm(props: {
                     />
                 </div>
                 <div className={classes.selects}>
-                    <div className="input-field">
-                        <label>분류</label>
-                        <input type="text" />
-                    </div>
+                    <CategoryInput
+                        ref={categoryRef}
+                        categories={filteredCategories}
+                        budgetId={props.budgetId}
+                    />
                     <div className="input-field">
                         <label>태그</label>
                         <input type="text" />
