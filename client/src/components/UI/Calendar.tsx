@@ -47,7 +47,7 @@ function Calendar(props: {
                         <td
                             className={classes.date}
                             key={`date-${i}`}
-                            data-date={dateData}
+                            data-date={dateData.toLocaleDateString('sv-SE')} // yyyy-mm-dd
                         >
                             {currDate}
                         </td>
