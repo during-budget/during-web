@@ -7,6 +7,7 @@
 
 .carouselList {
     display: flex;
+    width: 100%;
     overflow-x: scroll;
     -ms-overflow-style: none;
     scrollbar-width: 0;
