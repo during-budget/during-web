@@ -13,22 +13,34 @@ function DateStatus(props: {
     const [isScroll, setIsScroll] = useState(false);
 
     const scrollHandler = (event: React.MouseEvent) => {
-        const date = (event.target as HTMLTableDataCellElement).getAttribute(
-            'data-date'
-        );
+        const date = getDate(event);
         window.location.replace('#' + date);
     };
 
     const formHandler = (event: React.MouseEvent) => {
-        const date = (event.target as HTMLTableDataCellElement).getAttribute(
-            'data-date'
-        );
+        const date = getDate(event);
         dispatch(
             uiActions.setTransactionForm({
                 isExpand: true,
-                input: { date: date },
+                input: { date: date! },
             })
         );
+    };
+
+    const getDate = (event: React.MouseEvent) => {
+        let date: string | null;
+
+        const eventTarget = event.target as HTMLElement;
+        if (eventTarget.nodeName === 'P') {
+            date = (
+                eventTarget.parentNode as HTMLTableDataCellElement
+            ).getAttribute('data-date');
+        } else if (eventTarget.nodeName === 'TD') {
+            date = (eventTarget as HTMLTableDataCellElement).getAttribute(
+                'data-date'
+            );
+        }
+        return date!;
     };
 
     return (
