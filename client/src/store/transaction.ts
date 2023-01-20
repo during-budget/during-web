@@ -13,6 +13,16 @@ const initialState: Transaction[] = [
         categoryId: 'c1',
     }),
     new Transaction({
+        id: 't1',
+        budgetId: 'b2',
+        isCurrent: false,
+        isExpense: true,
+        title: ['Budget2', 'Title2'],
+        date: new Date(),
+        amount: 60000,
+        categoryId: 'c1',
+    }),
+    new Transaction({
         id: 't2',
         budgetId: 'b1',
         isCurrent: true,
