@@ -1,10 +1,16 @@
 import classes from './TransactionList.module.css';
 import TransactionItem from './TransactionItem';
 import Transaction from '../../models/Transaction';
+import { useSelector } from 'react-redux';
 
-function TransactionList(props: { transactions: Transaction[] }) {
+function TransactionList(props: { isCurrent: boolean }) {
+    const totalTransacitons = useSelector((state: any) => state.transactions);
+    const filteredTransactions = totalTransacitons.filter((item: any) =>
+        props.isCurrent ? item.isCurrent : !item.isCurrent
+    );
+
     const transactions: { date: string; transactions: Transaction[] }[] = [];
-    props.transactions.forEach((transaction) => {
+    filteredTransactions.forEach((transaction: any) => {
         const date = transaction.date.toLocaleDateString('ko-KR');
         const target = transactions.find((item) => item.date === date);
         if (target) {
