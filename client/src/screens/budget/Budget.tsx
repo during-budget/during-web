@@ -29,7 +29,11 @@ function Budget() {
             />
             <main className={classes.container}>
                 <Carousel id="status" initialIndex={1}>
-                    <DateStatus startDate={startDate} endDate={endDate} />
+                    <DateStatus
+                        budgetId={budgetId!}
+                        startDate={startDate}
+                        endDate={endDate}
+                    />
                     <TotalStatus budgetId={budgetId!} amount={total} />
                     <CategoryStatus budgetId={budgetId!} />
                 </Carousel>

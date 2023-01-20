@@ -21,7 +21,7 @@ function TransactionLayout(props: { budgetId: string }) {
                 onClickScheduled={clickScheduledHandler}
                 onClickCurrent={clickCurrentHandler}
             />
-            <TransactionList isCurrent={isCurrent} />
+            <TransactionList budgetId={props.budgetId} isCurrent={isCurrent} />
             <TransactionForm
                 budgetId={props.budgetId}
                 isCurrent={isCurrent}
