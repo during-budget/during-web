@@ -10,18 +10,29 @@ const CategoryInput = React.forwardRef(
         },
         ref: any
     ) => {
+        const clickSelectHandler = (
+            event: React.MouseEvent<HTMLDivElement>
+        ) => {
+            ref.current.value = 'c3';
+        };
+
         return (
             <div className="input-field">
                 <label>분류</label>
-                <select ref={ref}>
-                    {props.categories.map((item: any) => {
-                        return (
-                            <option key={item.id} value={item.id}>
-                                {item.icon} {item.title}
-                            </option>
-                        );
-                    })}
-                </select>
+                <span
+                    className={classes.selectWrapper}
+                    onClick={clickSelectHandler}
+                >
+                    <select ref={ref} disabled>
+                        {props.categories.map((item: any) => {
+                            return (
+                                <option key={item.id} value={item.id}>
+                                    {item.icon} {item.title}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </span>
             </div>
         );
     }

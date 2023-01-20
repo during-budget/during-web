@@ -23,10 +23,15 @@
 .expand .selects {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
 }
 
-.expand .selects input {
-    width: 80%;
+.expand .selects div:first-child {
+    flex: 1 0 auto;
+}
+
+.expand .selects div:last-child {
+    flex: 2 1 auto;
 }
 
 .expand .buttons {

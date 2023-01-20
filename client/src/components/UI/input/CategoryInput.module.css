@@ -1,0 +1,16 @@
+.selectWrapper {
+    width: 100%;
+    height: calc(100% + 2rem);
+    display: flex;
+    align-items: center;
+    background-color: var(--background);
+    border-radius: 0.5rem;
+}
+
+.selectWrapper select:disabled {
+    color: var(--primary);
+    opacity: 1;
+    width: 100%;
+    padding: 0;
+    padding-left: 0.5rem;
+}
