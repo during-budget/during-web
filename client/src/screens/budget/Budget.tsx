@@ -1,4 +1,4 @@
-import classes from './BudgetDetail.module.css';
+import classes from './Budget.module.css';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import BudgetHeader from '../../components/Budget/BudgetHeader';
@@ -9,7 +9,7 @@ import DateStatus from '../../components/Status/DateStatus';
 import TotalStatus from '../../components/Status/TotalStatus';
 import CategoryStatus from '../../components/Status/CategoryStatus';
 
-function BudgetDetail() {
+function Budget() {
     const { budgetId } = useParams();
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: any) => item.id === budgetId);
@@ -46,4 +46,4 @@ function BudgetDetail() {
     );
 }
 
-export default BudgetDetail;
+export default Budget;
