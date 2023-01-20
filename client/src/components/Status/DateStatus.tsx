@@ -4,7 +4,11 @@ import { uiActions } from '../../store/ui';
 import Calendar from '../UI/Calendar';
 import { Fragment, useState } from 'react';
 
-function DateStatus(props: { startDate: Date; endDate: Date }) {
+function DateStatus(props: {
+    startDate: Date;
+    endDate: Date;
+    budgetId: string;
+}) {
     const dispatch = useDispatch();
     const [isScroll, setIsScroll] = useState(true);
 
@@ -32,6 +36,7 @@ function DateStatus(props: { startDate: Date; endDate: Date }) {
             <Calendar
                 startDate={props.startDate}
                 endDate={props.endDate}
+                budgetId={props.budgetId}
                 onClick={isScroll ? scrollHandler : formHandler}
             ></Calendar>
             <div className={`nav-tab ${classes.tab}`}>
