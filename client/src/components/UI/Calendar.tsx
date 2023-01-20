@@ -1,12 +1,56 @@
 import classes from './Calendar.module.css';
 import { WEEK_DAYS } from '../../constants/date';
+import { useSelector } from 'react-redux';
+import Transaction from '../../models/Transaction';
 
 function Calendar(props: {
     startDate: Date;
     endDate: Date;
+    budgetId?: string;
     onClick?: (event: React.MouseEvent) => void;
 }) {
     const { startDate, endDate } = props;
+    const totalTransacitons = useSelector((state: any) => state.transactions);
+
+    let transactions: Transaction[];
+    if (props.budgetId) {
+        transactions = totalTransacitons.filter(
+            (item: any) => item.budgetId === props.budgetId
+        );
+    }
+
+    const getDateStatus = (date: Date) => {
+        let expenseTotal = 0;
+        let incomeTotal = 0;
+        transactions.forEach((item) => {
+            if (
+                item.isCurrent &&
+                item.date.toLocaleDateString() === date.toLocaleDateString()
+            ) {
+                if (item.isExpense) {
+                    expenseTotal += item.amount;
+                } else {
+                    incomeTotal += item.amount;
+                }
+            }
+        });
+
+        return (
+            <>
+                {expenseTotal ? (
+                    <p className={classes.expense}>{'-' + expenseTotal}</p>
+                ) : (
+                    ''
+                )}
+                {incomeTotal ? (
+                    <p className={classes.income}>{'+' + incomeTotal}</p>
+                ) : (
+                    ''
+                )}
+            </>
+        );
+    };
+
     const getMonthTr = (date: Date) => {
         const month = [];
         for (let i = 0; i < date.getDay(); i++) {
@@ -49,7 +93,8 @@ function Calendar(props: {
                             key={`date-${i}`}
                             data-date={dateData.toLocaleDateString('sv-SE')} // yyyy-mm-dd
                         >
-                            {currDate}
+                            <p>{currDate}</p>
+                            {transactions ? getDateStatus(dateData) : ''}
                         </td>
                     );
                 } else {

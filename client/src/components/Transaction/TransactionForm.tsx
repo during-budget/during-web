@@ -39,7 +39,6 @@ function TransactionForm(props: {
     };
 
     const submitHandler = (event: React.FormEvent) => {
-        console.log(dateRef.current!.value);
         event.preventDefault();
         setAmount('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));

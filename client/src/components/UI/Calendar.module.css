@@ -28,6 +28,21 @@
     font-weight: 300;
 }
 
+.expense,
+.income,
+.expense:hover,
+.income:hover {
+    font-weight: 100;
+}
+
+.expense {
+    color: var(--primary);
+}
+
+.income {
+    color: var(--tertiary-text);
+}
+
 .date:hover {
     font-weight: 600;
     cursor: pointer;
