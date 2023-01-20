@@ -7,6 +7,7 @@ import Transaction from '../../models/Transaction';
 import { budgetActions } from '../../store/budget';
 import { categoryActions } from '../../store/category';
 import { transactionActions } from '../../store/transaction';
+import { uiActions } from '../../store/ui';
 
 function TransactionForm(props: {
     budgetId: string;
@@ -16,19 +17,19 @@ function TransactionForm(props: {
 }) {
     const dispatch = useDispatch();
     const categories = useSelector((state: any) => state.categories);
-    const [isExpand, setIsExpand] = useState(false);
+    const formState = useSelector((state: any) => state.ui.transactionForm);
     const [amount, setAmount] = useState('');
     const titleRef = useRef<HTMLInputElement>(null);
     const dateRef = useRef<HTMLInputElement>(null);
     const memoRef = useRef<HTMLTextAreaElement>(null);
 
     const expandHandler = () => {
-        setIsExpand(true);
+        dispatch(uiActions.setTransactionForm({ isExpand: true }));
     };
 
     const cancelHandler = () => {
         setAmount('');
-        setIsExpand(false);
+        dispatch(uiActions.setTransactionForm({ isExpand: false }));
     };
 
     const changeAmountHandler = (
@@ -38,9 +39,10 @@ function TransactionForm(props: {
     };
 
     const submitHandler = (event: React.FormEvent) => {
+        console.log(dateRef.current!.value);
         event.preventDefault();
         setAmount('');
-        setIsExpand(false);
+        dispatch(uiActions.setTransactionForm({ isExpand: false }));
         const categoryId = 'c1';
         const icon =
             '' || categories.find((item: any) => item.id === categoryId).icon;
@@ -125,7 +127,11 @@ function TransactionForm(props: {
                 </div>
                 <div className="input-field">
                     <label>날짜</label>
-                    <input type="date" ref={dateRef} />
+                    <input
+                        type="date"
+                        ref={dateRef}
+                        defaultValue={formState.input.date}
+                    />
                 </div>
                 <div className={classes.selects}>
                     <div className="input-field">
@@ -169,8 +175,11 @@ function TransactionForm(props: {
     );
 
     return (
-        <OverlayForm onSubmit={submitHandler} isShowBackdrop={isExpand}>
-            {isExpand ? expandInput : shortInput}
+        <OverlayForm
+            onSubmit={submitHandler}
+            isShowBackdrop={formState.isExpand}
+        >
+            {formState.isExpand ? expandInput : shortInput}
         </OverlayForm>
     );
 }

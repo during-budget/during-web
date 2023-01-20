@@ -20,8 +20,6 @@ function Budget() {
 
     const { startDate, endDate, title, total } = budget;
 
-    const dateClickHandler = (date: Date) => {};
-
     return (
         <>
             <BudgetHeader
@@ -31,11 +29,7 @@ function Budget() {
             />
             <main className={classes.container}>
                 <Carousel id="status" initialIndex={1}>
-                    <DateStatus
-                        startDate={startDate}
-                        endDate={endDate}
-                        onClick={dateClickHandler}
-                    />
+                    <DateStatus startDate={startDate} endDate={endDate} />
                     <TotalStatus budgetId={budgetId!} amount={total} />
                     <CategoryStatus budgetId={budgetId!} />
                 </Carousel>
