@@ -17,6 +17,14 @@ const budgets: {
         endDate: new Date(2023, 0, 31),
         total: new Amount(20000, 60000, 300000),
     },
+    {
+        id: 'b12',
+        title: '12월 예산',
+        isRepeating: true,
+        startDate: new Date(2022, 11, 1),
+        endDate: new Date(2022, 11, 31),
+        total: new Amount(20000, 60000, 300000),
+    },
 ];
 
 const budgetSlice = createSlice({
