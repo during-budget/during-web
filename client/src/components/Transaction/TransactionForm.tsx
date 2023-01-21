@@ -125,6 +125,7 @@ function TransactionForm(props: {
                         type="number"
                         onChange={changeAmountHandler}
                         value={amountState}
+                        autoFocus
                     />
                 </div>
                 <TitleInput ref={titleRef} />
