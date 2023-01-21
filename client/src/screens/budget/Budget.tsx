@@ -1,6 +1,6 @@
 import classes from './Budget.module.css';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BudgetHeader from '../../components/Budget/BudgetHeader';
 import TransactionLayout from '../../components/Transaction/TransactionLayout';
 import React from 'react';
@@ -10,6 +10,7 @@ import TotalStatus from '../../components/Status/TotalStatus';
 import CategoryStatus from '../../components/Status/CategoryStatus';
 
 function Budget() {
+    const navigation = useNavigate();
     const { budgetId } = useParams();
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: any) => item.id === budgetId);
@@ -22,6 +23,14 @@ function Budget() {
 
     return (
         <>
+            <button
+                className={classes.back}
+                onClick={() => {
+                    navigation('/budget');
+                }}
+            >
+                <i className="fa-solid fa-chevron-left"></i>
+            </button>
             <BudgetHeader
                 startDate={startDate}
                 endDate={endDate}
