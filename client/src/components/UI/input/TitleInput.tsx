@@ -39,6 +39,7 @@ const TitleInput = React.forwardRef((props: {}, ref: any) => {
                     ref={iconRef}
                     className={classes.icon}
                     type="text"
+                    placeholder="💰"
                     maxLength={2}
                 />
                 <div ref={titlesRef} className={classes.titles}>
