@@ -9,6 +9,7 @@ import { categoryActions } from '../../store/category';
 import { transactionActions } from '../../store/transaction';
 import { uiActions } from '../../store/ui';
 import CategoryInput from '../UI/input/CategoryInput';
+import TitleInput from '../UI/input/TitleInput';
 
 function TransactionForm(props: {
     budgetId: string;
@@ -23,7 +24,7 @@ function TransactionForm(props: {
 
     const [amountState, setAmountState] = useState('');
 
-    const titleRef = useRef<HTMLInputElement>(null);
+    const titleRef = useRef<any>(null);
     const dateRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
     const memoRef = useRef<HTMLTextAreaElement>(null);
@@ -72,7 +73,7 @@ function TransactionForm(props: {
                     budgetId: props.budgetId,
                     isCurrent: props.isCurrent,
                     isExpense,
-                    title: [titleRef.current!.value],
+                    title: titleRef.current!.value(),
                     date: new Date(dateRef.current!.value),
                     amount: +amountState,
                     categoryId,
@@ -125,10 +126,7 @@ function TransactionForm(props: {
                         value={amountState}
                     />
                 </div>
-                <div className="input-field">
-                    <label>제목</label>
-                    <input type="text" ref={titleRef} />
-                </div>
+                <TitleInput ref={titleRef} />
                 <div className="input-field">
                     <label>날짜</label>
                     <input
