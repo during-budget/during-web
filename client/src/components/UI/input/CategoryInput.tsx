@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Category from '../../../models/Category';
+import { categoryActions } from '../../../store/category';
 import classes from './CategoryInput.module.css';
 
 const CategoryInput = React.forwardRef(
@@ -10,8 +12,14 @@ const CategoryInput = React.forwardRef(
         },
         ref: any
     ) => {
+        const dispatch = useDispatch();
+
         const [isExpand, setIsExpand] = useState(false);
         const [isAdd, setIsAdd] = useState(false);
+
+        const categoryIconRef = useRef<HTMLInputElement>(null);
+        const categoryTitleRef = useRef<HTMLInputElement>(null);
+        const categoryBudgetAmountRef = useRef<HTMLInputElement>(null);
 
         const clickSelectHandler = () => {
             setIsExpand((prev) => !prev);
@@ -25,6 +33,21 @@ const CategoryInput = React.forwardRef(
                 const id = target.getAttribute('data-id');
                 ref.current.value = id;
             }
+        };
+
+        const categoryAddHandler = () => {
+            const budgetId = props.budgetId;
+            const icon = categoryIconRef.current!.value;
+            const title = categoryTitleRef.current!.value;
+            const budgetAmount = +categoryBudgetAmountRef.current!.value;
+            dispatch(
+                categoryActions.craeteCategory({
+                    budgetId,
+                    icon,
+                    title,
+                    budgetAmount,
+                })
+            );
         };
 
         return (
@@ -84,18 +107,21 @@ const CategoryInput = React.forwardRef(
                         <div className="input-field">
                             <div className={classes.text}>
                                 <input
+                                    ref={categoryIconRef}
                                     className={classes.icon}
                                     type="text"
                                     maxLength={1}
                                     defaultValue="💰"
                                 />
                                 <input
+                                    ref={categoryTitleRef}
                                     className={classes.title}
                                     type="text"
                                     placeholder="카테고리명"
                                 />
                             </div>
                             <input
+                                ref={categoryBudgetAmountRef}
                                 type="number"
                                 placeholder="예산액"
                             />
@@ -109,7 +135,11 @@ const CategoryInput = React.forwardRef(
                             >
                                 닫기
                             </button>
-                            <button type="button" className="button__primary">
+                            <button
+                                type="button"
+                                className="button__primary"
+                                onClick={categoryAddHandler}
+                            >
                                 카테고리 추가
                             </button>
                         </div>
