@@ -26,6 +26,11 @@ const TitleInput = React.forwardRef((props: {}, ref: any) => {
         return titles;
     };
 
+    const keyUpHandler = (event: React.KeyboardEvent) => {
+        const target = event.target as HTMLInputElement;
+        target.style.width = target.value.length + 'rem';
+    };
+
     return (
         <div className="input-field">
             <label>제목</label>
@@ -37,7 +42,9 @@ const TitleInput = React.forwardRef((props: {}, ref: any) => {
                     maxLength={2}
                 />
                 <div ref={titlesRef} className={classes.titles}>
-                    <input type="text" />
+                    <input type="text" onKeyUp={keyUpHandler} />
+                    <span> | </span>
+                    <button type="button">+</button>
                 </div>
             </div>
         </div>
