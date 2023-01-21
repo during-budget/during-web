@@ -45,6 +45,18 @@ const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
+        craeteCategory(state, action) {
+            const { budgetId, icon, title, budgetAmount } = action.payload;
+            const id = +new Date() + '';
+            state.push(
+                new Category({
+                    id,
+                    icon,
+                    title,
+                    initialData: { budgetId, budgetAmount },
+                })
+            );
+        },
         updateAmount(state, action) {
             const { categoryId, budgetId, isCurrent, amount } = action.payload;
             const category = state.find((item: any) => item.id === categoryId);
