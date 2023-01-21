@@ -18,9 +18,6 @@ function TransactionForm(props: {
 }) {
     const dispatch = useDispatch();
     const categories = useSelector((state: any) => state.categories);
-    const filteredCategories = categories.filter(
-        (item: any) => props.budgetId in item.amounts
-    );
 
     const formState = useSelector((state: any) => state.ui.transactionForm);
 
@@ -52,8 +49,7 @@ function TransactionForm(props: {
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
         const categoryId = categoryRef.current!.value;
         const icon =
-            '' ||
-            filteredCategories.find((item: any) => item.id === categoryId).icon;
+            '' || categories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
@@ -144,7 +140,7 @@ function TransactionForm(props: {
                 <div className={classes.selects}>
                     <CategoryInput
                         ref={categoryRef}
-                        categories={filteredCategories}
+                        categories={categories}
                         budgetId={props.budgetId}
                     />
                     <div className="input-field">
