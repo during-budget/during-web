@@ -1,4 +1,18 @@
+.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5rem;
+    height: 5rem;
+    font-size: 1rem;
+}
+
 @media screen and (min-width: 960px) {
+    .back {
+        width: 10rem;
+        height: 10rem;
+        font-size: 2rem;
+    }
     .container {
         position: relative;
         margin: 0 6rem;
@@ -9,7 +23,7 @@
     .container > section {
         width: 50%;
     }
-    
+
     hr {
         display: none;
     }
