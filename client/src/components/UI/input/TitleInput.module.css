@@ -19,8 +19,14 @@ input.icon::-webkit-input-placeholder {
     width: 20rem;
     display: flex;
     align-items: center;
-    overflow-x: scroll;
     color: var(--secondary-text);
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.titles::-webkit-scrollbar {
+    display: none;
 }
 
 .titles input {
@@ -30,17 +36,33 @@ input.icon::-webkit-input-placeholder {
     margin-left: 0.5rem;
 }
 
+.inputWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.titles input + button {
+    flex-shrink: 0;
+    display: none;
+}
+
+.inputWrapper:hover button,
+.titles input:focus + button {
+    display: block;
+}
+
 .titles span {
     margin-left: 0.5rem;
 }
 
 .titles button {
+    flex-shrink: 0;
     width: 2rem;
     height: 2rem;
+    border-radius: 50%;
     margin-left: 0.5rem;
-    font-size:1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--secondary-text);
     background-color: var(--background);
-    border-radius: 50%;
 }
