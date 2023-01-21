@@ -10,6 +10,10 @@ input.icon {
     border-radius: 50%;
 }
 
+input.icon::-webkit-input-placeholder {
+    opacity: 0.3;
+}
+
 .titles {
     flex: 1 1 auto;
     width: 20rem;
