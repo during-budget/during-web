@@ -25,6 +25,10 @@ a {
     text-decoration: none;
 }
 
+input:focus {
+    outline: none;
+}
+
 button {
     cursor: pointer;
     border: 0;
