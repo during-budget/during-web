@@ -40,6 +40,8 @@ const transactionSlice = createSlice({
     reducers: {
         addTransaction(state, action) {
             const transaction = action.payload;
+            const titles = transaction.title.filter((item: any) => item);
+            transaction.title = titles;
             state.push(transaction);
         },
     },

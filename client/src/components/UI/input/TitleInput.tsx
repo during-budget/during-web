@@ -1,7 +1,25 @@
-import React, { useImperativeHandle, useRef } from 'react';
+import React, { useImperativeHandle, useRef, useState } from 'react';
 import classes from './TitleInput.module.css';
 
+const keyUpHandler = (event: React.KeyboardEvent) => {
+    const target = event.target as HTMLInputElement;
+    target.style.width = target.value.length + 'rem';
+};
+
+const initialTitleInput = (
+    <div
+        key="title-input-initial"
+        id="title-input-initial"
+        className={classes.inputWrapper}
+    >
+        <input type="text" onKeyUp={keyUpHandler} />
+        <span> | </span>
+    </div>
+);
+
 const TitleInput = React.forwardRef((props: {}, ref: any) => {
+    const [inputsState, setInputsState] = useState([initialTitleInput]);
+
     const iconRef = useRef<HTMLInputElement>(null);
     const titlesRef = useRef<HTMLDivElement>(null);
 
@@ -18,17 +36,39 @@ const TitleInput = React.forwardRef((props: {}, ref: any) => {
 
     const getTitles = () => {
         const titles: string[] = [];
-        titlesRef.current!.childNodes.forEach((item: any) => {
-            if (item.nodeName === 'INPUT') {
-                titles.push(item.value);
+        titlesRef.current!.childNodes.forEach((wrapper: any) => {
+            if (wrapper.className === classes.inputWrapper) {
+                const input = wrapper.childNodes[0];
+                titles.push(input.value);
             }
         });
         return titles;
     };
 
-    const keyUpHandler = (event: React.KeyboardEvent) => {
-        const target = event.target as HTMLInputElement;
-        target.style.width = target.value.length + 'rem';
+    const addInputHandler = () => {
+        const id = +new Date() + '';
+        setInputsState((prevState) => {
+            return [
+                ...prevState,
+                <div key={id} id={id} className={classes.inputWrapper}>
+                    <input type="text" onKeyUp={keyUpHandler} autoFocus/>
+                    <button type="button" onClick={removeInputHandler}>
+                        <i className="fa-solid fa-trash"></i>
+                    </button>
+                    <span> | </span>
+                </div>,
+            ];
+        });
+    };
+
+    const removeInputHandler = (event: React.MouseEvent) => {
+        const eventTarget = event.target as HTMLButtonElement;
+        const targetNode = eventTarget.parentNode!.parentElement!;
+        setInputsState((prevState) => {
+            return prevState.filter((item: any) => {
+                return item.props.id !== targetNode!.id;
+            });
+        });
     };
 
     return (
@@ -43,9 +83,10 @@ const TitleInput = React.forwardRef((props: {}, ref: any) => {
                     maxLength={2}
                 />
                 <div ref={titlesRef} className={classes.titles}>
-                    <input type="text" onKeyUp={keyUpHandler} />
-                    <span> | </span>
-                    <button type="button">+</button>
+                    {inputsState}
+                    <button type="button" onClick={addInputHandler}>
+                        +
+                    </button>
                 </div>
             </div>
         </div>
