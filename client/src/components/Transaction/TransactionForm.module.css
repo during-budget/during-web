@@ -21,16 +21,17 @@
 }
 
 .expand .selects {
+    position: relative;
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
 }
 
-.expand .selects div:first-child {
+.expand .selects > div:first-child {
     flex: 1 0 auto;
+    margin-right: 0.5rem;
 }
 
-.expand .selects div:last-child {
+.expand .selects > div:last-child {
     flex: 2 1 auto;
 }
 
