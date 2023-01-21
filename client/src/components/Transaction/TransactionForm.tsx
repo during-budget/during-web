@@ -49,8 +49,7 @@ function TransactionForm(props: {
         setAmountState('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
         const categoryId = categoryRef.current!.value;
-        const icon =
-            '' || categories.find((item: any) => item.id === categoryId).icon;
+        const icon = titleRef.current!.icon() || categories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
