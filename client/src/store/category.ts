@@ -12,32 +12,32 @@ const initialState: Category[] = [
     new Category({
         id: 'c2',
         title: '교통비',
-        amounts: { b1: new Amount(180000, 250000, 300000) },
+        amounts: { b1: new Amount(18000, 60000, 160000) },
         icon: '🚉',
     }),
     new Category({
         id: 'c3',
-        title: '경조사비',
-        amounts: { b1: new Amount(50000, 80000, 250000) },
-        icon: '🎉',
-    }),
-    new Category({
-        id: 'c4',
         title: '식비',
-        amounts: { b1: new Amount(280000, 360000, 400000) },
+        amounts: { b1: new Amount(180000, 260000, 300000) },
         icon: '🍚',
     }),
     new Category({
+        id: 'c4',
+        title: '간식',
+        amounts: { b1: new Amount(12000, 40000, 60000) },
+        icon: '🍪',
+    }),
+    new Category({
         id: 'c5',
-        title: '건강',
-        amounts: { b1: new Amount(40000, 120000, 250000) },
-        icon: '🏃‍♀️',
+        title: '병원',
+        amounts: { b1: new Amount(40000, 60000, 80000) },
+        icon: '🩺',
     }),
     new Category({
         id: 'c6',
-        title: '교육',
-        amounts: { b1: new Amount(80000, 160000, 180000) },
-        icon: '🎓',
+        title: '경조사비',
+        amounts: { b1: new Amount(20000, 80000, 100000) },
+        icon: '🎉',
     }),
 ];
 
