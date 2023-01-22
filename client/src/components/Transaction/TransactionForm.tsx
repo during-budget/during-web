@@ -10,6 +10,7 @@ import { transactionActions } from '../../store/transaction';
 import { uiActions } from '../../store/ui';
 import CategoryInput from '../UI/input/CategoryInput';
 import TitleInput from '../UI/input/TitleInput';
+import TagInput from '../UI/input/TagInput';
 
 function TransactionForm(props: {
     budgetId: string;
@@ -27,6 +28,7 @@ function TransactionForm(props: {
     const titleRef = useRef<any>(null);
     const dateRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
+    const tagRef = useRef<any>(null);
     const memoRef = useRef<HTMLTextAreaElement>(null);
 
     const expandHandler = () => {
@@ -49,9 +51,7 @@ function TransactionForm(props: {
         setAmountState('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
         const categoryId = categoryRef.current!.value;
-        const icon =
-            titleRef.current!.icon() ||
-            categories.find((item: any) => item.id === categoryId).icon;
+        const icon = titleRef.current!.icon() || categories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
@@ -79,6 +79,7 @@ function TransactionForm(props: {
                     amount: +amountState,
                     categoryId,
                     icon,
+                    tags: tagRef.current!.value,
                     memo: memoRef.current!.value,
                 })
             )
@@ -143,10 +144,7 @@ function TransactionForm(props: {
                         categories={categories}
                         budgetId={props.budgetId}
                     />
-                    <div className="input-field">
-                        <label>태그</label>
-                        <input type="text" />
-                    </div>
+                    <TagInput ref={tagRef} />
                 </div>
                 <div className="input-field">
                     <label>메모</label>
