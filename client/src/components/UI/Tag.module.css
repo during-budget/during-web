@@ -8,3 +8,7 @@
     background-color: var(--background);
     color: var(--secondary-text);
 }
+
+.tag::before {
+    content: '#';
+}
