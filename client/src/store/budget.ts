@@ -31,11 +31,16 @@ const budgetSlice = createSlice({
     name: 'budget',
     initialState: budgets,
     reducers: {
-        replaceTotalAmount(state, action) {
+        changeBudgetAmount(state, action) {
             const { budgetId, amount } = action.payload;
             const budget = state.find((item) => item.id === budgetId);
             if (budget) {
-                budget.total = amount;
+                const total = budget.total;
+                budget.total = new Amount(
+                    total.current,
+                    total.scheduled,
+                    amount
+                );
             }
         },
         updateTotalAmount(state, action) {
