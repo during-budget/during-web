@@ -15,7 +15,7 @@ const budgets: {
         isRepeating: true,
         startDate: new Date(2023, 0, 1),
         endDate: new Date(2023, 0, 31),
-        total: new Amount(20000, 60000, 300000),
+        total: new Amount(310000, 540000, 820000),
     },
     {
         id: 'b12',
