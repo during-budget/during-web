@@ -44,6 +44,7 @@ const CategoryInput = React.forwardRef(
 
             if (id) {
                 ref.current.value = id;
+                setIsExpand(false);
             }
         };
 
