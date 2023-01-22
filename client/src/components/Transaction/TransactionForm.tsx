@@ -1,5 +1,5 @@
 import classes from './TransactionForm.module.css';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
@@ -101,6 +101,11 @@ function TransactionForm(props: {
                 placeholder="금액을 입력하세요"
                 value={amountState}
                 onChange={changeAmountHandler}
+                onKeyUp={(event: React.KeyboardEvent) => {
+                    if (event.key === 'Enter') {
+                        expandHandler();
+                    }
+                }}
             />
             <button
                 className="button__primary"
