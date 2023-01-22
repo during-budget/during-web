@@ -4,7 +4,7 @@
 
 .selectWrapper {
     width: 100%;
-    height: calc(100% + 2rem);
+    height: 3.469rem;
     display: flex;
     align-items: center;
     background-color: var(--background);
