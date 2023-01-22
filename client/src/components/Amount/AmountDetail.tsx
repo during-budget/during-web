@@ -1,6 +1,6 @@
 import classes from './AmountDetail.module.css';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 
@@ -11,7 +11,8 @@ function AmountDetail(props: { budgetId: string; amount: Amount }) {
 
     const [isTotal, setIsTotal] = useState(true);
     const [isEditBudget, setEditBudget] = useState(false);
-    const [amountState, setAmountState] = useState(amount);
+
+    const budgetAmountRef = useRef<HTMLInputElement>(null);
 
     const clickTotalHandler = () => {
         setIsTotal(true);
@@ -24,56 +25,30 @@ function AmountDetail(props: { budgetId: string; amount: Amount }) {
     const editBudgetHandler = () => {
         setEditBudget((prevState) => !prevState);
         if (isEditBudget) {
+            let budgetAmount = +budgetAmountRef.current!.value;
+            if (!isTotal) {
+                budgetAmount = amount.budget + (budgetAmount - amount.getLeftBudget());
+            }
             dispatch(
-                budgetActions.replaceTotalAmount({
+                budgetActions.changeBudgetAmount({
                     budgetId: budgetId,
-                    amount: amountState,
+                    amount: budgetAmount,
                 })
             );
-        }
-    };
-
-    const changeBudgetHandler = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        if (isTotal) {
-            const budget = +event.target.value;
-            setAmountState((prevAmount) => {
-                return new Amount(
-                    prevAmount.current,
-                    prevAmount.scheduled,
-                    budget
-                );
-            });
-        } else {
-            const budget =
-                +event.target.value +
-                (amountState.budget - amountState.getLeftBudget());
-            setAmountState((prevAmount) => {
-                return new Amount(
-                    prevAmount.current,
-                    prevAmount.scheduled,
-                    budget
-                );
-            });
         }
     };
 
     const budgetAmount = isEditBudget ? (
         <div className="input-field">
             <input
+                ref={budgetAmountRef}
                 type="number"
-                value={
-                    isTotal ? amountState.budget : amountState.getLeftBudget()
-                }
-                onChange={changeBudgetHandler}
+                defaultValue={isTotal ? amount.budget : amount.getLeftBudget()}
             ></input>
         </div>
     ) : (
         <span className={classes.amount}>
-            {isTotal
-                ? amountState.getBudgetStr()
-                : amountState.getLeftBudgetStr()}
+            {isTotal ? amount.getBudgetStr() : amount.getLeftBudgetStr()}
         </span>
     );
 
@@ -115,14 +90,14 @@ function AmountDetail(props: { budgetId: string; amount: Amount }) {
                     </span>
                     <span className={classes.amount}>
                         {isTotal
-                            ? amountState.getScheduledStr()
-                            : amountState.getLeftScheduledStr()}
+                            ? amount.getScheduledStr()
+                            : amount.getLeftScheduledStr()}
                     </span>
                 </li>
                 <li className={classes.current}>
                     <span className={classes.label}>현재 지출</span>
                     <span className={classes.amount}>
-                        {amountState.getCurrentStr()}
+                        {amount.getCurrentStr()}
                     </span>
                 </li>
                 <li className={classes.budget}>
