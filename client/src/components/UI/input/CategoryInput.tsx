@@ -29,8 +29,20 @@ const CategoryInput = React.forwardRef(
             event: React.MouseEvent<HTMLUListElement>
         ) => {
             const target = event.target as HTMLElement;
-            if (!isAdd && target.nodeName === 'LI') {
-                const id = target.getAttribute('data-id');
+
+            if (isAdd) {
+                return;
+            }
+
+            let id;
+            if (target.nodeName === 'LI') {
+                id = target.getAttribute('data-id');
+                ref.current.value = id;
+            } else if (target.nodeName === 'SPAN') {
+                id = target.parentElement?.getAttribute('data-id');
+            }
+
+            if (id) {
                 ref.current.value = id;
             }
         };
