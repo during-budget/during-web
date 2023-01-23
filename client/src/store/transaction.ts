@@ -13,7 +13,7 @@ const initialState: Transaction[] = [
         categoryId: 'c1',
     }),
     new Transaction({
-        id: 't1',
+        id: 't2',
         budgetId: 'b2',
         isCurrent: false,
         isExpense: true,
@@ -23,7 +23,7 @@ const initialState: Transaction[] = [
         categoryId: 'c1',
     }),
     new Transaction({
-        id: 't2',
+        id: 't3',
         budgetId: 'b1',
         isCurrent: true,
         isExpense: true,
@@ -43,6 +43,11 @@ const transactionSlice = createSlice({
             const titles = transaction.title.filter((item: any) => item);
             transaction.title = titles;
             state.push(transaction);
+        },
+        removeTransaction(state, action) {
+            const id = action.payload;
+            const idx = state.findIndex((item: any) => item.id === id);
+            state.splice(idx, 1);
         },
     },
 });

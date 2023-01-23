@@ -2,14 +2,18 @@ import classes from './TransactionItem.module.css';
 import Tag from '../UI/Tag';
 import { useNavigate } from 'react-router-dom';
 import Transaction from '../../models/Transaction';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Amount from '../../models/Amount';
 import OptionButton from '../UI/OptionButton';
+import { transactionActions } from '../../store/transaction';
+import { uiActions } from '../../store/ui';
+import { budgetActions } from '../../store/budget';
 
 function TransactionItem(props: { transaction: Transaction }) {
+    const dispatch = useDispatch();
     const navigation = useNavigate();
 
-    const { id, icon, title, amount, categoryId, budgetId, tags } =
+    const { id, icon, title, isCurrent, amount, categoryId, budgetId, tags } =
         props.transaction;
 
     const categories = useSelector((state: any) => state.categories);
@@ -30,7 +34,16 @@ function TransactionItem(props: { transaction: Transaction }) {
         },
         {
             name: '내역 삭제',
-            action: () => {},
+            action: () => {
+                dispatch(transactionActions.removeTransaction(id));
+                dispatch(
+                    budgetActions.updateTotalAmount({
+                        budgetId,
+                        isCurrent,
+                        amount: -amount,
+                    })
+                );
+            },
         },
     ];
 
