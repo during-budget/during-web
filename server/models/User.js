@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const categorySettingSchema = mongoose.Schema({
+  isExpense: { type: Boolean, default: true },
+  title: String,
+  icon: String,
+});
+
 const userSchema = mongoose.Schema(
   {
     // user fields
@@ -11,6 +17,17 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       select: false, //alwasy exclude password in user document
+    },
+    // categories
+    categories: {
+      type: [categorySettingSchema],
+      default: [
+        { isExpense: true, title: "교통비", icon: "🚉" },
+        { isExpense: true, title: "경조사비", icon: "🎉" },
+        { isExpense: true, title: "식비", icon: "🍚" },
+        { isExpense: true, title: "건강", icon: "🏃‍♀️" },
+        { isExpense: true, title: "교육", icon: "🎓" },
+      ],
     },
   },
   { timestamps: true }
