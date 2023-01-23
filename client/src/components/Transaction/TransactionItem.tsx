@@ -73,30 +73,31 @@ function TransactionItem(props: { transaction: Transaction }) {
         },
     ];
 
-    const getDone = !isCurrent && !linkId && {
-        name: '거래 내역으로 이동',
-        action: () => {
-            dispatch(
-                uiActions.setTransactionForm({
-                    id,
-                    isExpand: true,
-                    isEdit: true,
-                    isCurrent: true,
-                    isCompleted: true,
-                    isExpense: isExpense,
-                    input: {
-                        amount,
-                        icon,
-                        title,
-                        date: date.toLocaleDateString('sv-SE'),
-                        categoryId,
-                        tags,
-                        memo,
-                    },
-                })
-            );
-        },
-    };
+    const getDone = !isCurrent &&
+        !linkId && {
+            name: '거래 내역으로 이동',
+            action: () => {
+                dispatch(
+                    uiActions.setTransactionForm({
+                        id,
+                        isExpand: true,
+                        isEdit: true,
+                        isCurrent: true,
+                        isCompleted: true,
+                        isExpense: isExpense,
+                        input: {
+                            amount,
+                            icon,
+                            title,
+                            date: date.toLocaleDateString('sv-SE'),
+                            categoryId,
+                            tags,
+                            memo,
+                        },
+                    })
+                );
+            },
+        };
 
     const goToLink = linkId && {
         name: isCurrent ? '이전 예정 내역 보기' : '완료된 거래 내역 보기',
@@ -112,8 +113,13 @@ function TransactionItem(props: { transaction: Transaction }) {
         navigation(`/budget/${budgetId}/${id}`);
     };
 
+    const itemClassName =
+        !isCurrent && linkId
+            ? `${classes.item} ${classes.completed}`
+            : classes.item;
+
     return (
-        <li className={classes.item}>
+        <li className={itemClassName}>
             <div className={classes.data} onClick={navigateHandler}>
                 <div className={classes.info}>
                     <span className={classes.icon}>
