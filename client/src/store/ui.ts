@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     transactionForm: {
         id: undefined,
-        isCurrent: false,
+        isEdit: undefined,
+        isCurrent: undefined,
         isExpand: false,
         input: {},
     },
@@ -16,9 +17,12 @@ const uiSlice = createSlice({
             state.transactionForm = initialState.transactionForm;
         },
         setTransactionForm(state, action) {
-            const { id, isExpand, isCurrent, input } = action.payload;
+            const { id, isEdit, isExpand, isCurrent, input } = action.payload;
             if (id) {
                 state.transactionForm.id = id;
+            }
+            if (isEdit !== undefined && isEdit !== null) {
+                state.transactionForm.isEdit = isEdit;
             }
             if (isCurrent !== undefined && isCurrent !== null) {
                 state.transactionForm.isCurrent = isCurrent;

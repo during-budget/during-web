@@ -29,6 +29,7 @@ function TransactionForm(props: { budgetId: string }) {
     const expandHandler = () => {
         dispatch(
             uiActions.setTransactionForm({
+                isEdit: false,
                 isExpand: true,
                 input: { amount: shortAmountRef.current!.value },
             })
@@ -111,6 +112,35 @@ function TransactionForm(props: { budgetId: string }) {
         </div>
     );
 
+    const submitButton = formState.isEdit ? (
+        <button
+            className={`button__primary ${classes.submit}`}
+            type="submit"
+            onClick={() => {
+                submit({ isExpense: formState.isExpense });
+            }}
+        >
+            완료
+        </button>
+    ) : (
+        <>
+            <button
+                className={`button__primary ${classes.submit}`}
+                type="submit"
+                onClick={submitIncomeHandler}
+            >
+                수입 내역 추가
+            </button>
+            <button
+                className={`button__primary ${classes.submit}`}
+                type="submit"
+                onClick={submitExpenseHandler}
+            >
+                지출 내역 추가
+            </button>
+        </>
+    );
+
     const expandInput = (
         <div className={classes.expand}>
             <TransactionNav id="form" isExpand={true} />
@@ -169,20 +199,7 @@ function TransactionForm(props: { budgetId: string }) {
                 >
                     취소
                 </button>
-                <button
-                    className={`button__primary ${classes.submit}`}
-                    onClick={submitIncomeHandler}
-                    type="submit"
-                >
-                    수입 내역 추가
-                </button>
-                <button
-                    className={`button__primary ${classes.submit}`}
-                    onClick={submitExpenseHandler}
-                    type="submit"
-                >
-                    지출 내역 추가
-                </button>
+                {submitButton}
             </div>
         </div>
     );
