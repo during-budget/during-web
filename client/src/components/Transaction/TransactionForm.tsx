@@ -1,5 +1,5 @@
 import classes from './TransactionForm.module.css';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
@@ -77,6 +77,7 @@ function TransactionForm(props: { budgetId: string }) {
                 })
             )
         );
+        dispatch(uiActions.resetTransactionForm());
     };
 
     const submitExpenseHandler = (event: React.FormEvent) => {

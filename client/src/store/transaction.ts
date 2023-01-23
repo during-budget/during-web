@@ -40,9 +40,18 @@ const transactionSlice = createSlice({
     reducers: {
         addTransaction(state, action) {
             const transaction = action.payload;
+
+            // NOTE: filtering empty title string
             const titles = transaction.title.filter((item: any) => item);
             transaction.title = titles;
-            state.push(transaction);
+
+            const idx = state.findIndex((item) => item.id === transaction.id);
+
+            if (idx === -1) {
+                state.push(transaction);
+            } else {
+                state[idx] = transaction;
+            }
         },
         removeTransaction(state, action) {
             const id = action.payload;
