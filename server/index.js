@@ -22,11 +22,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
-  //   cors({
-  //     origin: process.env["CLIENT"].trim(),
-  //     credentials: true,
-  //   })
-  cors() //테스트를 위해 모든 도메인에서 오는 요청 허용(임시)
+  cors({
+    origin: process.env["CLIENT"],
+    credentials: true,
+  })
 );
 
 app.use(
