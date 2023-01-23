@@ -1,13 +1,14 @@
-import classes from './Budget.module.css';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import classes from './Budget.module.css';
 import BudgetHeader from '../../components/Budget/BudgetHeader';
-import TransactionLayout from '../../components/Transaction/TransactionLayout';
-import React from 'react';
 import Carousel from '../../components/UI/Carousel';
 import DateStatus from '../../components/Status/DateStatus';
 import TotalStatus from '../../components/Status/TotalStatus';
 import CategoryStatus from '../../components/Status/CategoryStatus';
+import TransactionNav from '../../components/Transaction/TransactionNav';
+import TransactionList from '../../components/Transaction/TransactionList';
+import TransactionForm from '../../components/Transaction/TransactionForm';
 
 function Budget() {
     const navigation = useNavigate();
@@ -47,7 +48,11 @@ function Budget() {
                     <CategoryStatus budgetId={budgetId!} />
                 </Carousel>
                 <hr />
-                <TransactionLayout budgetId={budget.id} />
+                <section>
+                    <TransactionNav id="layout" isExpand={false} />
+                    <TransactionList budgetId={budgetId!} />
+                    <TransactionForm budgetId={budgetId!} />
+                </section>
             </main>
         </>
     );

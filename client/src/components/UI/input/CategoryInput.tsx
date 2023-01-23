@@ -9,6 +9,7 @@ const CategoryInput = React.forwardRef(
         props: {
             categories: Category[];
             budgetId: string;
+            defaultValue: string;
         },
         ref: any
     ) => {
@@ -71,7 +72,11 @@ const CategoryInput = React.forwardRef(
                         className={classes.selectWrapper}
                         onClick={clickSelectHandler}
                     >
-                        <select ref={ref} disabled>
+                        <select
+                            ref={ref}
+                            defaultValue={props.defaultValue}
+                            disabled
+                        >
                             {props.categories.map((item: any) => {
                                 return (
                                     <option key={item.id} value={item.id}>

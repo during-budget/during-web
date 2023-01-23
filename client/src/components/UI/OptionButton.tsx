@@ -4,6 +4,13 @@ import classes from './OptionButton.module.css';
 function OptionButton(props: { menu: { name: string; action: () => void }[] }) {
     const [isShowMenu, setIsShowMenu] = useState(false);
 
+    const clickHandler = (action: () => void) => {
+        return () => {
+            setIsShowMenu(false);
+            action();
+        };
+    };
+
     const outside = (
         <div
             className={classes.outside}
@@ -18,7 +25,7 @@ function OptionButton(props: { menu: { name: string; action: () => void }[] }) {
             {props.menu.map((item) => {
                 const { name, action } = item;
                 return (
-                    <li key={name} onClick={action}>
+                    <li key={name} onClick={clickHandler(action)}>
                         {name}
                     </li>
                 );

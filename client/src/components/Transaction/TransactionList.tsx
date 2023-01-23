@@ -3,12 +3,16 @@ import TransactionItem from './TransactionItem';
 import Transaction from '../../models/Transaction';
 import { useSelector } from 'react-redux';
 
-function TransactionList(props: { budgetId: string; isCurrent: boolean }) {
+function TransactionList(props: { budgetId: string }) {
     const totalTransacitons = useSelector((state: any) => state.transactions);
+    const isCurrentState = useSelector(
+        (state: any) => state.ui.transactionForm.isCurrent
+    );
+
     const filteredTransactions = totalTransacitons.filter((item: any) => {
         const isBudget = item.budgetId === props.budgetId;
-        const isCurrent = props.isCurrent ? item.isCurrent : !item.isCurrent;
-        return isBudget && isCurrent;
+        const isCorrectType = isCurrentState ? item.isCurrent : !item.isCurrent;
+        return isBudget && isCorrectType;
     });
 
     const transactions: { date: string; transactions: Transaction[] }[] = [];
