@@ -13,8 +13,19 @@ function TransactionItem(props: { transaction: Transaction }) {
     const dispatch = useDispatch();
     const navigation = useNavigate();
 
-    const { id, icon, title, isCurrent, amount, categoryId, budgetId, tags } =
-        props.transaction;
+    const {
+        id,
+        icon,
+        isCurrent,
+        isExpense,
+        title,
+        date,
+        amount,
+        categoryId,
+        budgetId,
+        tags,
+        memo,
+    } = props.transaction;
 
     const categories = useSelector((state: any) => state.categories);
     const category = categories.find((item: any) => item.id === categoryId);
@@ -26,11 +37,44 @@ function TransactionItem(props: { transaction: Transaction }) {
     const contextMenu = [
         {
             name: '거래 내역으로 이동',
-            action: () => {},
+            action: () => {
+                dispatch(
+                    uiActions.setTransactionForm({
+                        id,
+                        isCurrent: true,
+                        isExpand: true,
+                        input: {
+                            amount,
+                            icon,
+                            title,
+                            date: date.toLocaleDateString('sv-SE'),
+                            categoryId,
+                            tags,
+                            memo,
+                        },
+                    })
+                );
+            },
         },
         {
             name: '내역 수정',
-            action: () => {},
+            action: () => {
+                dispatch(
+                    uiActions.setTransactionForm({
+                        id,
+                        isExpand: true,
+                        input: {
+                            amount,
+                            icon,
+                            title,
+                            date: date.toLocaleDateString('sv-SE'),
+                            categoryId,
+                            tags,
+                            memo,
+                        },
+                    })
+                );
+            },
         },
         {
             name: '내역 삭제',
@@ -64,6 +108,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                             <p className={classes.title}>{title.join(' | ')}</p>
                         </div>
                         <div className={classes.amount}>
+                            {isExpense ? '-' : '+'}
                             {Amount.getAmountString(amount)}
                         </div>
                     </div>

@@ -34,6 +34,7 @@ input.icon::-webkit-input-placeholder {
     width: 2rem;
     max-width: 12rem;
     margin-left: 0.5rem;
+    transition: width 0.25s;
 }
 
 .inputWrapper {
@@ -46,8 +47,7 @@ input.icon::-webkit-input-placeholder {
     display: none;
 }
 
-.inputWrapper:hover button,
-.titles input:focus + button {
+.inputWrapper:hover button {
     display: block;
 }
 

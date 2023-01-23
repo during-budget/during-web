@@ -12,19 +12,14 @@ import CategoryInput from '../UI/input/CategoryInput';
 import TitleInput from '../UI/input/TitleInput';
 import TagInput from '../UI/input/TagInput';
 
-function TransactionForm(props: {
-    budgetId: string;
-    isCurrent: boolean;
-    onClickScheduled: () => void;
-    onClickCurrent: () => void;
-}) {
+function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
-    const categories = useSelector((state: any) => state.categories);
 
+    const categories = useSelector((state: any) => state.categories);
     const formState = useSelector((state: any) => state.ui.transactionForm);
 
-    const [amountState, setAmountState] = useState('');
-
+    const shortAmountRef = useRef<HTMLInputElement>(null);
+    const expandAmountRef = useRef<HTMLInputElement>(null);
     const titleRef = useRef<any>(null);
     const dateRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
@@ -32,51 +27,49 @@ function TransactionForm(props: {
     const memoRef = useRef<HTMLTextAreaElement>(null);
 
     const expandHandler = () => {
-        dispatch(uiActions.setTransactionForm({ isExpand: true }));
+        dispatch(
+            uiActions.setTransactionForm({
+                isExpand: true,
+                input: { amount: shortAmountRef.current!.value },
+            })
+        );
     };
 
     const cancelHandler = () => {
-        setAmountState('');
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
     };
 
-    const changeAmountHandler = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        setAmountState(event.target.value);
-    };
-
-    const submitHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-        setAmountState('');
+    const submit = (option: { isExpense: boolean }) => {
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
         const categoryId = categoryRef.current!.value;
-        const icon = titleRef.current!.icon() || categories.find((item: any) => item.id === categoryId).icon;
+        const icon =
+            titleRef.current!.icon() ||
+            categories.find((item: any) => item.id === categoryId).icon;
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
-                isCurrent: props.isCurrent,
-                amount: +amountState,
+                isCurrent: formState.isCurrent,
+                amount: +expandAmountRef.current!.value,
             })
         );
         dispatch(
             categoryActions.updateAmount({
                 categoryId,
                 budgetId: props.budgetId,
-                isCurrent: props.isCurrent,
-                amount: +amountState,
+                isCurrent: formState.isCurrent,
+                amount: +expandAmountRef.current!.value,
             })
         );
         dispatch(
             transactionActions.addTransaction(
                 new Transaction({
-                    id: new Date().toString(),
+                    id: formState.id || new Date().toString(),
                     budgetId: props.budgetId,
-                    isCurrent: props.isCurrent,
-                    isExpense,
+                    isCurrent: formState.isCurrent,
+                    isExpense: option.isExpense,
                     title: titleRef.current!.value(),
                     date: new Date(dateRef.current!.value),
-                    amount: +amountState,
+                    amount: +expandAmountRef.current!.value,
                     categoryId,
                     icon,
                     tags: tagRef.current!.value,
@@ -86,21 +79,21 @@ function TransactionForm(props: {
         );
     };
 
-    let isExpense = true;
-    const setExpense = () => {
-        isExpense = true;
+    const submitExpenseHandler = (event: React.FormEvent) => {
+        event.preventDefault();
+        submit({ isExpense: true });
     };
-    const setIncome = () => {
-        isExpense = false;
+    const submitIncomeHandler = (event: React.FormEvent) => {
+        event.preventDefault();
+        submit({ isExpense: false });
     };
 
     const shortInput = (
         <div className={`input-field ${classes.short}`}>
             <input
+                ref={shortAmountRef}
                 type="number"
                 placeholder="금액을 입력하세요"
-                value={amountState}
-                onChange={changeAmountHandler}
                 onKeyUp={(event: React.KeyboardEvent) => {
                     if (event.key === 'Enter') {
                         expandHandler();
@@ -119,28 +112,31 @@ function TransactionForm(props: {
 
     const expandInput = (
         <div className={classes.expand}>
-            <TransactionNav
-                isCurrent={props.isCurrent}
-                onClickScheduled={props.onClickScheduled}
-                onClickCurrent={props.onClickCurrent}
-            />
+            <TransactionNav id="form" isExpand={true} />
             <div className={classes.inputs}>
                 <div className="input-field">
                     <label>금액</label>
                     <input
+                        ref={expandAmountRef}
                         type="number"
-                        onChange={changeAmountHandler}
-                        value={amountState}
+                        defaultValue={formState.input.amount}
                         autoFocus
                     />
                 </div>
-                <TitleInput ref={titleRef} />
+                <TitleInput
+                    ref={titleRef}
+                    defaultIcon={formState.input.icon}
+                    defaultTitle={formState.input.title}
+                />
                 <div className="input-field">
                     <label>날짜</label>
                     <input
                         type="date"
                         ref={dateRef}
-                        defaultValue={formState.input.date}
+                        defaultValue={
+                            formState.input.date ||
+                            new Date().toLocaleDateString('sv-Se')
+                        }
                     />
                 </div>
                 <div className={classes.selects}>
@@ -148,12 +144,20 @@ function TransactionForm(props: {
                         ref={categoryRef}
                         categories={categories}
                         budgetId={props.budgetId}
+                        defaultValue={formState.input.categoryId}
                     />
-                    <TagInput ref={tagRef} />
+                    <TagInput
+                        ref={tagRef}
+                        defaultValue={formState.input.tags}
+                    />
                 </div>
                 <div className="input-field">
                     <label>메모</label>
-                    <textarea rows={2} ref={memoRef} />
+                    <textarea
+                        rows={2}
+                        ref={memoRef}
+                        defaultValue={formState.input.memo}
+                    />
                 </div>
             </div>
             <div className={classes.buttons}>
@@ -166,14 +170,14 @@ function TransactionForm(props: {
                 </button>
                 <button
                     className={`button__primary ${classes.submit}`}
-                    onClick={setIncome}
+                    onClick={submitIncomeHandler}
                     type="submit"
                 >
                     수입 내역 추가
                 </button>
                 <button
                     className={`button__primary ${classes.submit}`}
-                    onClick={setExpense}
+                    onClick={submitExpenseHandler}
                     type="submit"
                 >
                     지출 내역 추가
@@ -183,12 +187,14 @@ function TransactionForm(props: {
     );
 
     return (
-        <OverlayForm
-            onSubmit={submitHandler}
-            isShowBackdrop={formState.isExpand}
-        >
-            {formState.isExpand ? expandInput : shortInput}
-        </OverlayForm>
+        <>
+            {formState.isExpand && (
+                <div className={classes.outside} onClick={cancelHandler}></div>
+            )}
+            <OverlayForm isShowBackdrop={formState.isExpand}>
+                {formState.isExpand ? expandInput : shortInput}
+            </OverlayForm>
+        </>
     );
 }
 
