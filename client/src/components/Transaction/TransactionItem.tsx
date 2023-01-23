@@ -15,6 +15,7 @@ function TransactionItem(props: { transaction: Transaction }) {
 
     const {
         id,
+        linkId,
         icon,
         isCurrent,
         isExpense,
@@ -36,31 +37,6 @@ function TransactionItem(props: { transaction: Transaction }) {
 
     const contextMenu = [
         {
-            name: '거래 내역으로 이동',
-            action: () => {
-                dispatch(
-                    uiActions.setTransactionForm({
-                        id,
-                        isExpand: true,
-                        isExpense,
-                        isEdit: true,
-                        isCurrent: true,
-                        isCompleted: true,
-                        isExpense: isExpense,
-                        input: {
-                            amount,
-                            icon,
-                            title,
-                            date: date.toLocaleDateString('sv-SE'),
-                            categoryId,
-                            tags,
-                            memo,
-                        },
-                    })
-                );
-            },
-        },
-        {
             name: '내역 수정',
             action: () => {
                 dispatch(
@@ -68,6 +44,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                         id,
                         isExpand: true,
                         isEdit: true,
+                        isExpense,
                         input: {
                             amount,
                             icon,
@@ -95,6 +72,41 @@ function TransactionItem(props: { transaction: Transaction }) {
             },
         },
     ];
+
+    const getDone = !isCurrent && !linkId && {
+        name: '거래 내역으로 이동',
+        action: () => {
+            dispatch(
+                uiActions.setTransactionForm({
+                    id,
+                    isExpand: true,
+                    isEdit: true,
+                    isCurrent: true,
+                    isCompleted: true,
+                    isExpense: isExpense,
+                    input: {
+                        amount,
+                        icon,
+                        title,
+                        date: date.toLocaleDateString('sv-SE'),
+                        categoryId,
+                        tags,
+                        memo,
+                    },
+                })
+            );
+        },
+    };
+
+    const goToLink = linkId && {
+        name: isCurrent ? '이전 예정 내역 보기' : '완료된 거래 내역 보기',
+        action: () => {
+            navigation(`/budget/${budgetId}/${linkId}`);
+        },
+    };
+
+    getDone && contextMenu.unshift(getDone);
+    goToLink && contextMenu.unshift(goToLink);
 
     const navigateHandler = () => {
         navigation(`/budget/${budgetId}/${id}`);
