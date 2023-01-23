@@ -46,6 +46,8 @@ function TransactionForm(props: { budgetId: string }) {
         const icon =
             titleRef.current!.icon() ||
             categories.find((item: any) => item.id === categoryId).icon;
+
+        // update amount
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
@@ -61,11 +63,15 @@ function TransactionForm(props: { budgetId: string }) {
                 amount: +expandAmountRef.current!.value,
             })
         );
+
+        // add or update transaction
+        const newId = (+new Date()).toString();
         dispatch(
             transactionActions.addTransaction(
                 new Transaction({
-                    id: formState.id || new Date().toString(),
+                    id: formState.isCompleted ? newId : formState.id || newId,
                     budgetId: props.budgetId,
+                    linkId: formState.isCompleted && formState.id,
                     isCurrent: formState.isCurrent,
                     isExpense: option.isExpense,
                     title: titleRef.current!.value(),
@@ -78,6 +84,14 @@ function TransactionForm(props: { budgetId: string }) {
                 })
             )
         );
+        if (formState.isCompleted) {
+            dispatch(transactionActions.addLink({
+                targetId: formState.id,
+                linkId: newId,
+            }));
+        }
+
+        // reset form UI
         dispatch(uiActions.resetTransactionForm());
     };
 

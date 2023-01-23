@@ -1,6 +1,7 @@
 class Transaction {
     private _id: string;
     private _budgetId: string;
+    private _linkId: string | undefined;
     private _isCurrent: boolean;
     private _isExpense: boolean;
     private _icon: string;
@@ -17,6 +18,10 @@ class Transaction {
 
     get budgetId() {
         return this._budgetId;
+    }
+
+    get linkId() {
+        return this._linkId;
     }
 
     get isCurrent() {
@@ -63,6 +68,10 @@ class Transaction {
         this._budgetId = budgetId;
     }
 
+    set linkId(linkId: string | undefined) {
+        this._linkId = linkId;
+    }
+
     set isCurrent(isCurrent: boolean) {
         this._isCurrent = isCurrent;
     }
@@ -102,6 +111,7 @@ class Transaction {
     constructor(transaction: {
         id: string;
         budgetId: string;
+        linkId?: string;
         isCurrent: boolean;
         isExpense: boolean;
         title: string[];
@@ -115,6 +125,7 @@ class Transaction {
         const {
             id,
             budgetId,
+            linkId,
             isCurrent,
             isExpense,
             icon,
@@ -127,6 +138,7 @@ class Transaction {
         } = transaction;
         this._id = id;
         this._budgetId = budgetId;
+        this._linkId = linkId;
         this._isCurrent = isCurrent;
         this._isExpense = isExpense;
         this._icon = icon || '';
