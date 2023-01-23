@@ -2,13 +2,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { uiActions } from '../../store/ui';
 import classes from './TransactionNav.module.css';
 
-function TransactionNav(props: { id: string; isExpand: boolean }) {
+function TransactionNav(props: {
+    id: string;
+    isExpand: boolean;
+    isCompleted?: boolean;
+}) {
     const dispatch = useDispatch();
     const isCurrent = useSelector(
         (state: any) => state.ui.transactionForm.isCurrent
     );
 
-    const clickScheduledHandler = () => {
+    const changeScheduledHandler = () => {
         dispatch(
             uiActions.setTransactionForm({
                 isExpand: props.isExpand,
@@ -17,7 +21,7 @@ function TransactionNav(props: { id: string; isExpand: boolean }) {
         );
     };
 
-    const clickCurrentHandler = () => {
+    const changeCurrentHandler = () => {
         dispatch(
             uiActions.setTransactionForm({
                 isExpand: props.isExpand,
@@ -34,12 +38,10 @@ function TransactionNav(props: { id: string; isExpand: boolean }) {
                     type="radio"
                     name="transaction-list"
                     checked={!isCurrent}
-                    readOnly
+                    disabled={props.isCompleted}
+                    onChange={changeScheduledHandler}
                 ></input>
-                <label
-                    htmlFor={`transaction-list-scheduled-${props.id}`}
-                    onClick={clickScheduledHandler}
-                >
+                <label htmlFor={`transaction-list-scheduled-${props.id}`}>
                     예정 내역
                 </label>
             </li>
@@ -49,12 +51,10 @@ function TransactionNav(props: { id: string; isExpand: boolean }) {
                     type="radio"
                     name="transaction-list"
                     checked={isCurrent}
-                    readOnly
+                    disabled={props.isCompleted}
+                    onChange={changeCurrentHandler}
                 ></input>
-                <label
-                    htmlFor={`transaction-list-current-${props.id}`}
-                    onClick={clickCurrentHandler}
-                >
+                <label htmlFor={`transaction-list-current-${props.id}`}>
                     거래 내역
                 </label>
             </li>
