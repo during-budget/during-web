@@ -1,0 +1,44 @@
+.option {
+    position: relative;
+}
+
+.button {
+    width: 2rem;
+    height: 2rem;
+    text-align: right;
+}
+
+.button::before {
+    content: '•••';
+}
+
+.context {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    width: 10rem;
+    text-align: left;
+    border-radius: 0.5rem;
+    box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
+    background-color: #fff;
+    padding: 0.5rem;
+    z-index: 10;
+}
+
+.context li {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.context li:hover {
+    background-color: var(--background);
+}
+
+.outside {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
