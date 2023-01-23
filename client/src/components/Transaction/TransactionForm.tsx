@@ -143,7 +143,11 @@ function TransactionForm(props: { budgetId: string }) {
 
     const expandInput = (
         <div className={classes.expand}>
-            <TransactionNav id="form" isExpand={true} />
+            <TransactionNav
+                id="form"
+                isExpand={true}
+                isCompleted={formState.isCompleted}
+            />
             <div className={classes.inputs}>
                 <div className="input-field">
                     <label>금액</label>

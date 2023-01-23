@@ -43,6 +43,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                         id,
                         isEdit: true,
                         isCurrent: true,
+                        isCompleted: true,
                         isExpand: true,
                         input: {
                             amount,
