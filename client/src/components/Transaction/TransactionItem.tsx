@@ -41,10 +41,12 @@ function TransactionItem(props: { transaction: Transaction }) {
                 dispatch(
                     uiActions.setTransactionForm({
                         id,
+                        isExpand: true,
+                        isExpense,
                         isEdit: true,
                         isCurrent: true,
                         isCompleted: true,
-                        isExpand: true,
+                        isExpense: isExpense,
                         input: {
                             amount,
                             icon,
@@ -64,8 +66,8 @@ function TransactionItem(props: { transaction: Transaction }) {
                 dispatch(
                     uiActions.setTransactionForm({
                         id,
-                        isEdit: true,
                         isExpand: true,
+                        isEdit: true,
                         input: {
                             amount,
                             icon,

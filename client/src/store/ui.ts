@@ -3,9 +3,10 @@ const initialState = {
     transactionForm: {
         id: undefined,
         isEdit: undefined,
+        isExpand: false,
         isCompleted: undefined,
         isCurrent: false,
-        isExpand: false,
+        isExpense: undefined,
         input: {},
     },
 };
@@ -18,11 +19,21 @@ const uiSlice = createSlice({
             state.transactionForm = initialState.transactionForm;
         },
         setTransactionForm(state, action) {
-            const { id, isEdit, isCompleted, isExpand, isCurrent, input } =
-                action.payload;
+            const {
+                id,
+                isExpand,
+                isEdit,
+                isCompleted,
+                isCurrent,
+                isExpense,
+                input,
+            } = action.payload;
 
             if (id) {
                 state.transactionForm.id = id;
+            }
+            if (isExpand !== undefined && isExpand !== null) {
+                state.transactionForm.isExpand = isExpand;
             }
             if (isEdit !== undefined && isEdit !== null) {
                 state.transactionForm.isEdit = isEdit;
@@ -33,8 +44,8 @@ const uiSlice = createSlice({
             if (isCurrent !== undefined && isCurrent !== null) {
                 state.transactionForm.isCurrent = isCurrent;
             }
-            if (isExpand !== undefined && isExpand !== null) {
-                state.transactionForm.isExpand = isExpand;
+            if (isExpense !== undefined && isExpense !== null) {
+                state.transactionForm.isExpense = isExpense;
             }
             if (input) {
                 state.transactionForm.input = input;
