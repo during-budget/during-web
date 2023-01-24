@@ -28,6 +28,7 @@ module.exports.create = async (req, res) => {
       date: req.body.date,
       isCurrent: req.body.isCurrent,
       isExpense: category.isExpense,
+      linkId: req.body.linkId,
       title: req.body.title,
       ammount: req.body.ammount,
       category: {
@@ -39,7 +40,16 @@ module.exports.create = async (req, res) => {
       memo: req.body.memo ?? "",
     });
     await transaction.save();
-    return res.status(200).send(transaction);
+
+    // current transaction
+    if (transaction.isCurrent && transaction.linkId) {
+      await Transaction.findByIdAndUpdate(
+        { _id: transaction.linkId },
+        { linkId: transaction._id }
+      );
+    }
+
+    return res.status(200).send({ transaction });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -112,7 +122,10 @@ module.exports.find = async (req, res) => {
       const transactions = await Transaction.findById(req.query._id);
       return res.status(200).send({ transactions });
     }
-    const transactions = await Transaction.find({ userId: user._id });
+    const transactions = await Transaction.find({
+      userId: user._id,
+      budgetId: req.query.budgetId,
+    });
     return res.status(200).send({ transactions });
   } catch (err) {
     return res.status(500).send({ message: err.message });
