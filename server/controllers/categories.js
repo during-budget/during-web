@@ -1,5 +1,8 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
+const Budget = require("../models/Budget");
+const Transaction = require("../models/Transaction");
+const { updateCategory } = require("./transactions");
 
 // category settings controller
 
@@ -66,7 +69,42 @@ module.exports.update = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).send({ categories: user.categories });
+    // update budgets and transactions categories
+    const category = {
+      ...user.categories[idx].toObject(),
+      categoryId: user.categories[idx]._id,
+    };
+    const budgets = await Budget.find({
+      userId: user._id,
+      "categories.categoryId": category._id,
+    });
+    const transactions = await Transaction.find({
+      userId: user._id,
+      "category.categoryId": category._id,
+    });
+
+    await Promise.all([
+      budgets.forEach((budget) => {
+        const idx = _.findIndex(budget.categories, {
+          categoryId: category._id,
+        });
+        budget.categories[idx] = {
+          ...category,
+          ammount: budget.categories[idx].ammount,
+        };
+        budget.save();
+      }),
+      transactions.forEach((transaction) => {
+        transaction.category = {
+          ...category,
+        };
+        transaction.save();
+      }),
+    ]);
+
+    return res
+      .status(200)
+      .send({ categories: user.categories, budgets, transactions });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
