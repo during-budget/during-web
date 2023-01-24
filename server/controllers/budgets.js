@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
 const Budget = require("../models/Budget");
+const Transaction = require("../models/Transaction");
 
 // budget controller
 
@@ -130,7 +131,9 @@ module.exports.find = async (req, res) => {
       const budget = await Budget.findById(req.params._id);
       if (!budget) return res.status(404).send();
       if (!budget.userId.equals(user._id)) return res.status(401).send();
-      return res.status(200).send({ budget });
+
+      const transactions = await Transaction.find({ budgetId: budget._id });
+      return res.status(200).send({ budget, transactions });
     }
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ budgets });
