@@ -42,6 +42,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                 dispatch(
                     uiActions.setTransactionForm({
                         id,
+                        linkId,
                         isExpand: true,
                         isEdit: true,
                         isExpense,
