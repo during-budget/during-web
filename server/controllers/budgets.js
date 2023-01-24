@@ -26,12 +26,12 @@ module.exports.create = async (req, res) => {
 
     for (let i = 0; i < budget.categories.length; i++) {
       const category = _.find(user.categories, {
-        _id: mongoose.Types.ObjectId(budget.categories[i]._id),
+        _id: mongoose.Types.ObjectId(budget.categories[i].categoryId),
       });
 
       if (!category)
         return res.status(404).send({
-          message: `category with _id ${budget.categories[i]._id} not found`,
+          message: `category with _id ${budget.categories[i].categoryId} not found`,
         });
       budget.categories[i].isExpense = category.isExpense;
       budget.categories[i].title = category.title;
@@ -60,24 +60,24 @@ module.exports.updateCategory = async (req, res) => {
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
     const idx = _.findIndex(budget.categories, {
-      _id: mongoose.Types.ObjectId(req.params.categoryId),
+      categoryId: mongoose.Types.ObjectId(req.params.categoryId),
     });
     if (idx === -1)
       return res.status(404).send({
         message: `category with _id ${req.params.categoryId} not found`,
       });
 
-    if (req.body._id && req.params.categoryId !== req.body._id) {
+    if (req.body.categoryId && req.params.categoryId !== req.body.categoryId) {
       const category = _.find(user.categories, {
-        _id: mongoose.Types.ObjectId(req.body._id),
+        _id: mongoose.Types.ObjectId(req.body.categoryId),
       });
 
       if (!category)
         return res.status(404).send({
-          message: `category with _id ${req.body._id} not found`,
+          message: `category with categoryId ${req.body.categoryId} not found`,
         });
 
-      budget.categories[idx]._id = category._id;
+      budget.categories[idx].categoryId = category._id;
       budget.categories[idx].isExpense = category.isExpense;
       budget.categories[idx].title = category.title;
       budget.categories[idx].icon = category.icon;
