@@ -12,6 +12,7 @@ import BudgetList from './screens/budget/BudgetList';
 import BudgetForm from './screens/budget/BudgetForm';
 import Budget from './screens/budget/Budget';
 import TransactionDetail from './screens/budget/TransactionDetail';
+import Test, { loader as testLoader } from './screens/Test';
 
 const router = createBrowserRouter([
     {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
     {
         path: '/budget/:budgetId/:transactionId',
         element: <TransactionDetail />,
+    },
+    {
+        path: '/test',
+        element: <Test />,
+        loader: testLoader,
     },
 ]);
 
