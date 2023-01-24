@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 
-const categorySchema = mongoose.Schema({
-  isExpense: { type: Boolean, default: true },
-  title: String,
-  icon: String,
-  ammount: {
-    type: Number,
-    default: 0,
+const categorySchema = mongoose.Schema(
+  {
+    categoryId: mongoose.Types.ObjectId,
+    isExpense: { type: Boolean, default: true },
+    title: String,
+    icon: String,
+    ammount: {
+      type: Number,
+      default: 0,
+    },
   },
-});
+  { _id: false }
+);
 
 const budgetSchema = mongoose.Schema(
   {
