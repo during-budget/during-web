@@ -166,11 +166,11 @@ module.exports.remove = async (req, res) => {
 
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
 
-    const budget = await Budget.findById(req.body.budgetId);
+    const budget = await Budget.findById(transaction.budgetId);
     if (!budget)
       return res
         .status(404)
-        .send({ message: `budget(${req.body.budgetId}) not found` });
+        .send({ message: `budget(${transaction.budgetId}) not found` });
 
     if (transaction.linkId) {
       const _transaction = await Transaction.findById(transaction.linkId);
