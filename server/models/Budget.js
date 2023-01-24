@@ -24,13 +24,15 @@ const budgetSchema = mongoose.Schema(
     ammountScheduled: {
       //예정 지출
       type: Number,
-      select: false,
+      default: 0,
     },
+
     ammountCurrent: {
       //현재 지출
       type: Number,
-      select: false,
+      default: 0,
     },
+
     ammountBudget: {
       //예산 총액
       type: Number,
