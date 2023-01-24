@@ -71,7 +71,7 @@ function TransactionForm(props: { budgetId: string }) {
                 new Transaction({
                     id: formState.isCompleted ? newId : formState.id || newId,
                     budgetId: props.budgetId,
-                    linkId: formState.isCompleted && formState.id,
+                    linkId: formState.linkId || (formState.isCompleted && formState.id),
                     isCurrent: formState.isCurrent,
                     isExpense: option.isExpense,
                     title: titleRef.current!.value(),

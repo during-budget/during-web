@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     transactionForm: {
         id: undefined,
+        linkId: undefined,
         isEdit: undefined,
         isExpand: false,
         isCompleted: undefined,
@@ -21,6 +22,7 @@ const uiSlice = createSlice({
         setTransactionForm(state, action) {
             const {
                 id,
+                linkId,
                 isExpand,
                 isEdit,
                 isCompleted,
@@ -31,6 +33,9 @@ const uiSlice = createSlice({
 
             if (id) {
                 state.transactionForm.id = id;
+            }
+            if (linkId) {
+                state.transactionForm.linkId = linkId;
             }
             if (isExpand !== undefined && isExpand !== null) {
                 state.transactionForm.isExpand = isExpand;
