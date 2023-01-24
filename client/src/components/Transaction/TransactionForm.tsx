@@ -41,39 +41,101 @@ function TransactionForm(props: { budgetId: string }) {
     };
 
     const submit = (option: { isExpense: boolean }) => {
-        dispatch(uiActions.setTransactionForm({ isExpand: false }));
+        const { isExpense } = option;
         const categoryId = categoryRef.current!.value;
+
+        // update amount
+        if (formState.isEdit) {
+            dispatchEditAmount({ categoryId });
+        } else {
+            dispatchAddAmount({ categoryId });
+        }
+
+        // add or update transaction
+        const id = (+new Date()).toString();
+        dispatchTransaction({ id, isExpense, categoryId });
+        if (formState.isCompleted) {
+            dispatchLink(id);
+        }
+
+        // reset form UI
+        dispatch(uiActions.resetTransactionForm());
+    };
+
+    const dispatchEditAmount = (data: { categoryId: string }) => {
+        const { categoryId } = data;
+        const currentAmount = +expandAmountRef.current!.value;
+        const prevAmount = formState.input.amount;
+        const updatedAmount = currentAmount - prevAmount;
+
+        if (formState.isExpense) {
+            dispatch(
+                budgetActions.updateTotalAmount({
+                    budgetId: props.budgetId,
+                    isCurrent: formState.isCurrent,
+                    amount: updatedAmount,
+                })
+            );
+
+            dispatch(
+                categoryActions.updateAmount({
+                    categoryId,
+                    budgetId: props.budgetId,
+                    isCurrent: formState.isCurrent,
+                    amount: updatedAmount,
+                })
+            );
+        } else {
+            // TODO: Needs income amount chart
+        }
+    };
+
+    const dispatchAddAmount = (data: { categoryId: string }) => {
+        const { categoryId } = data;
+        const amount = +expandAmountRef.current!.value;
+
+        if (formState.isExpense) {
+            dispatch(
+                budgetActions.updateTotalAmount({
+                    budgetId: props.budgetId,
+                    isCurrent: formState.isCurrent,
+                    amount,
+                })
+            );
+
+            dispatch(
+                categoryActions.updateAmount({
+                    categoryId,
+                    budgetId: props.budgetId,
+                    isCurrent: formState.isCurrent,
+                    amount,
+                })
+            );
+        } else {
+            // TODO: Needs income amount chart
+        }
+    };
+
+    const dispatchTransaction = (data: {
+        id: string;
+        categoryId: string;
+        isExpense: boolean;
+    }) => {
+        const { id, isExpense, categoryId } = data;
         const icon =
             titleRef.current!.icon() ||
             categories.find((item: any) => item.id === categoryId).icon;
 
-        // update amount
-        dispatch(
-            budgetActions.updateTotalAmount({
-                budgetId: props.budgetId,
-                isCurrent: formState.isCurrent,
-                amount: +expandAmountRef.current!.value,
-            })
-        );
-        dispatch(
-            categoryActions.updateAmount({
-                categoryId,
-                budgetId: props.budgetId,
-                isCurrent: formState.isCurrent,
-                amount: +expandAmountRef.current!.value,
-            })
-        );
-
-        // add or update transaction
-        const newId = (+new Date()).toString();
         dispatch(
             transactionActions.addTransaction(
                 new Transaction({
-                    id: formState.isCompleted ? newId : formState.id || newId,
+                    id: formState.isCompleted ? id : formState.id || id,
                     budgetId: props.budgetId,
-                    linkId: formState.linkId || (formState.isCompleted && formState.id),
+                    linkId:
+                        formState.linkId ||
+                        (formState.isCompleted && formState.id),
                     isCurrent: formState.isCurrent,
-                    isExpense: option.isExpense,
+                    isExpense: isExpense,
                     title: titleRef.current!.value(),
                     date: new Date(dateRef.current!.value),
                     amount: +expandAmountRef.current!.value,
@@ -84,15 +146,15 @@ function TransactionForm(props: { budgetId: string }) {
                 })
             )
         );
-        if (formState.isCompleted) {
-            dispatch(transactionActions.addLink({
-                targetId: formState.id,
-                linkId: newId,
-            }));
-        }
+    };
 
-        // reset form UI
-        dispatch(uiActions.resetTransactionForm());
+    const dispatchLink = (linkId: string) => {
+        dispatch(
+            transactionActions.addLink({
+                targetId: formState.id,
+                linkId,
+            })
+        );
     };
 
     const submitExpenseHandler = (event: React.FormEvent) => {
