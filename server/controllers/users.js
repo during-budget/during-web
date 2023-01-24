@@ -49,7 +49,7 @@ module.exports.loginLocal = async (req, res) => {
           req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
         }
         console.log("DEBUG: sending response");
-        return res.status(200).send();
+        return res.status(200).send({ user });
       });
     } catch (err) {
       return res.status(err.status || 500).send({ message: err.message });
@@ -78,4 +78,16 @@ module.exports.logout = async (req, res) => {
  */
 module.exports.current = (req, res) => {
   return res.status(200).send({ user: req.user });
+};
+
+/**
+ * Read all users (master)
+ */
+module.exports.list = async (req, res) => {
+  try {
+    const users = await User.find({});
+    return res.status(200).send({ users });
+  } catch (err) {
+    return res.status(err.status || 500).send({ message: err.message });
+  }
 };
