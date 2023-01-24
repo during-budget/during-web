@@ -59,7 +59,7 @@ module.exports.update = async (req, res) => {
 
     user.categories[idx] = {
       _id: user.categories[idx]._id,
-      isExpense: req.body.isExpense || true,
+      isExpense: req.body.isExpense,
       title: req.body.title,
       icon: req.body.icon,
     };
