@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
+const Budget = require("../models/Budget");
 const Transaction = require("../models/Transaction");
 
 // transaction controller
@@ -14,6 +15,12 @@ module.exports.create = async (req, res) => {
   try {
     const user = req.user;
 
+    const budget = await Budget.findById(req.body.budgetId);
+    if (!budget)
+      return res
+        .status(404)
+        .send({ message: `budget(${req.body.budgetId}) not found` });
+
     const category = _.find(user.categories, {
       _id: mongoose.Types.ObjectId(req.body.categoryId),
     });
@@ -24,7 +31,7 @@ module.exports.create = async (req, res) => {
 
     const transaction = new Transaction({
       userId: req.user._id,
-      budgetId: req.body.budgetId,
+      budgetId: budget._id,
       date: req.body.date,
       isCurrent: req.body.isCurrent,
       isExpense: category.isExpense,
@@ -48,6 +55,10 @@ module.exports.create = async (req, res) => {
         { linkId: transaction._id }
       );
     }
+
+    if (transaction.isCurrent) budget.ammountCurrent += transaction.ammount;
+    else budget.ammountScheduled += transaction.ammount;
+    await budget.save();
 
     return res.status(200).send({ transaction });
   } catch (err) {
@@ -103,10 +114,20 @@ module.exports.updateField = async (req, res) => {
 
     transaction.date = req.body.date ?? transaction.date;
     transaction.title = req.body.title ?? transaction.title;
-    transaction.ammount = req.body.ammount ?? transaction.ammount;
     transaction.tags = req.body.tags ?? transaction.tags;
     transaction.memo = req.body.memo ?? transaction.memo;
-    await transaction.save();
+    if (req.body.ammount) {
+      const diff = req.body.ammount - transaction.ammount;
+      transaction.ammount = req.body.ammount;
+      await transaction.save();
+
+      const budget = await Budget.findById(transaction.budgetId);
+      if (transaction.isCurrent) budget.ammountCurrent += diff;
+      else budget.ammountScheduled += diff;
+      await budget.save();
+    } else {
+      await transaction.save();
+    }
 
     return res.status(200).send({ transaction });
   } catch (err) {
@@ -142,7 +163,14 @@ module.exports.remove = async (req, res) => {
     const user = req.user;
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction) return res.status(404).send();
+
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
+
+    const budget = await Budget.findById(req.body.budgetId);
+    if (!budget)
+      return res
+        .status(404)
+        .send({ message: `budget(${req.body.budgetId}) not found` });
 
     if (transaction.linkId) {
       const _transaction = await Transaction.findById(transaction.linkId);
@@ -151,6 +179,8 @@ module.exports.remove = async (req, res) => {
         await _transaction.save();
       }
     }
+    if (transaction.isCurrent) budget.ammountCurrent -= transaction.ammount;
+    else budget.ammountScheduled -= transaction.ammount;
 
     await transaction.remove();
     return res.status(200).send();
