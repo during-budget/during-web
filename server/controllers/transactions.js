@@ -143,6 +143,15 @@ module.exports.remove = async (req, res) => {
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction) return res.status(404).send();
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
+
+    if (transaction.linkId) {
+      const _transaction = await Transaction.findById(transaction.linkId);
+      if (_transaction) {
+        _transaction.linkId = undefined;
+        await _transaction.save();
+      }
+    }
+
     await transaction.remove();
     return res.status(200).send();
   } catch (err) {
