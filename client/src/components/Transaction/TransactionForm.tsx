@@ -48,7 +48,7 @@ function TransactionForm(props: { budgetId: string }) {
         if (formState.isEdit) {
             dispatchEditAmount({ categoryId });
         } else {
-            dispatchAddAmount({ categoryId });
+            dispatchAddAmount({ categoryId, isExpense });
         }
 
         // add or update transaction
@@ -90,11 +90,14 @@ function TransactionForm(props: { budgetId: string }) {
         }
     };
 
-    const dispatchAddAmount = (data: { categoryId: string }) => {
-        const { categoryId } = data;
+    const dispatchAddAmount = (data: {
+        categoryId: string;
+        isExpense: boolean;
+    }) => {
+        const { categoryId, isExpense } = data;
         const amount = +expandAmountRef.current!.value;
 
-        if (formState.isExpense) {
+        if (isExpense) {
             dispatch(
                 budgetActions.updateTotalAmount({
                     budgetId: props.budgetId,
