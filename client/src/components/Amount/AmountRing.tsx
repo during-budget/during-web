@@ -1,14 +1,14 @@
 import { Fragment } from 'react';
 import Amount from '../../models/Amount';
-import classes from './AmountDoughnut.module.css';
+import classes from './AmountRing.module.css';
 
-const DOUGHNUT_SIZE = '16rem';
-const DOUGHNUT_DASH = 402;
+const RING_SIZE = '16rem';
+const RING_DASH = 402;
 
 const EARS = require('../../assets/svg/cat_ears.svg').default;
 
 const getDash = (ratio: number) => {
-    return { strokeDasharray: `${ratio * DOUGHNUT_DASH} ${DOUGHNUT_DASH}` };
+    return { strokeDasharray: `${ratio * RING_DASH} ${RING_DASH}` };
 };
 
 const getRotate = (ratio: number) => {
@@ -16,14 +16,14 @@ const getRotate = (ratio: number) => {
     return { transform: `rotate(${deg}deg) scale(0.95)` };
 };
 
-function AmountDoughnut(props: { amount: Amount }) {
+function AmountRing(props: { amount: Amount }) {
     const amount = props.amount;
 
     return (
         <Fragment>
             <div
                 className={classes.container}
-                style={{ width: DOUGHNUT_SIZE, height: DOUGHNUT_SIZE }}
+                style={{ width: RING_SIZE, height: RING_SIZE }}
             >
                 <div>
                     <div className={classes.palette}>
@@ -127,4 +127,4 @@ function AmountDoughnut(props: { amount: Amount }) {
     );
 }
 
-export default AmountDoughnut;
+export default AmountRing;
