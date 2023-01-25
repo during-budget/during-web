@@ -14,8 +14,12 @@
     position: relative;
     display: inline-block;
     overflow: hidden;
+}
+
+.rounded {
     filter: url('#rounded');
 }
+
 .palette > * {
     position: absolute;
     top: 0;
@@ -39,4 +43,45 @@
 .current {
     stroke: var(--primary);
     transition: 0.5s ease-in-out;
+}
+
+.holder {
+    fill: none;
+}
+
+.cat {
+    position: absolute;
+}
+
+.cat > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.cat .eyes {
+    position: absolute;
+    background-color: #fff;
+    -webkit-mask: url('../../assets/svg/cat_eyes.svg') no-repeat center;
+    mask: url(../../assets/svg/cat_eyes.svg) no-repeat center;
+}
+
+.scheduledCat .ears {
+    background-color: var(--secondary);
+    -webkit-mask: url('../../assets/svg/cat_ears.svg') no-repeat center;
+    mask: url(../../assets/svg/cat_ears.svg) no-repeat center;
+}
+
+.currentCat .ears {
+    background-color: var(--primary);
+    -webkit-mask: url('../../assets/svg/cat_ears.svg') no-repeat center;
+    mask: url(../../assets/svg/cat_ears.svg) no-repeat center;
+}
+
+.scheduledCat > div {
+    transform: rotate(52deg) scale(0.95);
+}
+
+.currentCat > div {
+    transform: rotate(-25deg) scale(0.95);
 }

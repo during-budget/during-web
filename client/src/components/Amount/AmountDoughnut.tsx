@@ -32,7 +32,7 @@ function AmountDoughnut(props: { amount: Amount }) {
                     </div>
                 </div>
                 <div>
-                    <div className={classes.palette}>
+                    <div className={`${classes.palette} ${classes.rounded}`}>
                         <svg width="100%" height="100%">
                             <circle
                                 className={classes.scheduled}
@@ -45,7 +45,7 @@ function AmountDoughnut(props: { amount: Amount }) {
                     </div>
                 </div>
                 <div>
-                    <div className={classes.palette}>
+                    <div className={`${classes.palette} ${classes.rounded}`}>
                         <svg width="100%" height="100%">
                             <circle
                                 className={classes.current}
@@ -56,6 +56,16 @@ function AmountDoughnut(props: { amount: Amount }) {
                             />
                         </svg>
                     </div>
+                </div>
+
+                <div className={`${classes.cat} ${classes.scheduledCat}`}>
+                    <div className={classes.ears} />
+                    <div className={classes.eyes} />
+                </div>
+
+                <div className={`${classes.cat} ${classes.currentCat}`}>
+                    <div className={classes.ears} />
+                    <div className={classes.eyes} />
                 </div>
             </div>
 
