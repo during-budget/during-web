@@ -5,8 +5,15 @@ import classes from './AmountDoughnut.module.css';
 const DOUGHNUT_SIZE = '16rem';
 const DOUGHNUT_DASH = 402;
 
+const EARS = require('../../assets/svg/cat_ears.svg').default;
+
 const getDash = (ratio: number) => {
     return { strokeDasharray: `${ratio * DOUGHNUT_DASH} ${DOUGHNUT_DASH}` };
+};
+
+const getRotate = (ratio: number) => {
+    const deg = -160 + ratio * 360;
+    return { transform: `rotate(${deg}deg) scale(0.95)` };
 };
 
 function AmountDoughnut(props: { amount: Amount }) {
@@ -44,6 +51,21 @@ function AmountDoughnut(props: { amount: Amount }) {
                         </svg>
                     </div>
                 </div>
+
+                <div
+                    className={`${classes.during} ${classes.duringScheduled}`}
+                    style={getRotate(amount.getScheduledRatio())}
+                >
+                    <div
+                        className={classes.ears}
+                        style={{
+                            mask: `url(${EARS})`,
+                            WebkitMask: `url(${EARS})`,
+                        }}
+                    />
+                    <div className={classes.eyes} />
+                </div>
+
                 <div>
                     <div className={`${classes.palette} ${classes.rounded}`}>
                         <svg width="100%" height="100%">
@@ -58,13 +80,17 @@ function AmountDoughnut(props: { amount: Amount }) {
                     </div>
                 </div>
 
-                <div className={`${classes.cat} ${classes.scheduledCat}`}>
-                    <div className={classes.ears} />
-                    <div className={classes.eyes} />
-                </div>
-
-                <div className={`${classes.cat} ${classes.currentCat}`}>
-                    <div className={classes.ears} />
+                <div
+                    className={`${classes.during} ${classes.duringCurrent}`}
+                    style={getRotate(amount.getCurrentRatio())}
+                >
+                    <div
+                        className={classes.ears}
+                        style={{
+                            mask: `url(${EARS})`,
+                            WebkitMask: `url(${EARS})`,
+                        }}
+                    />
                     <div className={classes.eyes} />
                 </div>
             </div>
