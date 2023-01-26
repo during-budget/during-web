@@ -6,6 +6,7 @@
     --secondary-text: #bdbdbd;
     --tertiary-text: #7b7575;
     --background: #f6f6f6;
+    --error-text: #ff6161;
 }
 
 * {
