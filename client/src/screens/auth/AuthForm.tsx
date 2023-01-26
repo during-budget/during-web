@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
 import { userActions } from '../../store/user';
 import { login, register } from '../../util/api';
@@ -8,11 +8,17 @@ import { login, register } from '../../util/api';
 function AuthForm() {
     const dispatch = useDispatch();
     const naviation = useNavigate();
+    const location = useLocation();
 
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [userNameState, setUserNameState] = useState('');
     const [passwordState, setPasswordState] = useState('');
     const [errorState, setErrorState] = useState<String[]>([]);
+
+    const from = location.state?.from?.pathname;
+    if (from) {
+        setErrorState([`You must log in to view the page at ${from}`]);
+    }
 
     const changeModeHandler = () => {
         setIsLoginMode((prevState) => !prevState);
@@ -58,7 +64,7 @@ function AuthForm() {
         setUserNameState('');
         setPasswordState('');
         dispatch(userActions.login());
-        naviation('/budget');
+        naviation(from || '/budget', { replace: true });
     };
 
     return (
