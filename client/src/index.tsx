@@ -8,6 +8,7 @@ import {
 import { Provider } from 'react-redux';
 import './index.css';
 import store from './store/index';
+import Auth from './screens/user/Auth';
 import BudgetList from './screens/budget/BudgetList';
 import BudgetForm from './screens/budget/BudgetForm';
 import Budget from './screens/budget/Budget';
@@ -17,7 +18,11 @@ import Test, { loader as testLoader } from './screens/Test';
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Navigate to="/budget" replace />,
+        element: <Navigate to="/auth" replace />,
+    },
+    {
+        path: '/auth',
+        element: <Auth />
     },
     {
         path: '/budget',
