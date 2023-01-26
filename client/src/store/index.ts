@@ -3,9 +3,11 @@ import budgetReducer from './budget';
 import categoryReducer from './category';
 import transactionReducer from './transaction';
 import uiReducer from './ui';
+import userReducer from './user';
 
 const store = configureStore({
     reducer: {
+        user: userReducer,
         budgets: budgetReducer,
         categories: categoryReducer,
         transactions: transactionReducer,
