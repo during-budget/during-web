@@ -1,7 +1,21 @@
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
 import classes from './Auth.module.css';
 import AuthForm from './AuthForm';
 
 function Auth() {
+    const auth = useSelector((state: any) => state.user.isAuthenticated);
+    const location = useLocation();
+    const from = location.state?.from?.pathname;
+
+    if (auth) {
+        if (from === '/') {
+            return <Navigate to="budget" replace />;
+        } else {
+            return <Navigate to={from} replace />;
+        }
+    }
+
     return (
         <>
             <div className={`page ${classes.page}`}>
@@ -12,7 +26,7 @@ function Auth() {
                     ></img>
                     <h1>During Budget</h1>
                 </div>
-                <AuthForm />
+                <AuthForm from={from} />
             </div>
         </>
     );
