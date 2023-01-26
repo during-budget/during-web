@@ -32,6 +32,10 @@ input:focus {
     outline: none;
 }
 
+input::placeholder {
+    color: var(--secondary-text);
+}
+
 button {
     cursor: pointer;
     border: 0;
