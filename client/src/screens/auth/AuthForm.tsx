@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
 import { userActions } from '../../store/user';
 import { login, register } from '../../util/api';
 
-function AuthForm() {
+function AuthForm(props: { from?: string }) {
     const dispatch = useDispatch();
     const navigation = useNavigate();
-    const location = useLocation();
+
+    const userNameRef = useRef<HTMLInputElement>(null);
 
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [userNameState, setUserNameState] = useState('');
     const [passwordState, setPasswordState] = useState('');
     const [errorState, setErrorState] = useState<String[]>([]);
 
-    const from = location.state?.from?.pathname;
+    const from = props.from;
+
     useEffect(() => {
         if (from) {
             setErrorState([`You must log in to view the page at ${from}`]);
         }
     }, [from]);
+
+    useEffect(() => {
+        userNameRef.current!.focus();
+    }, [isLoginMode, errorState]);
 
     const changeModeHandler = () => {
         setIsLoginMode((prevState) => !prevState);
@@ -82,12 +88,12 @@ function AuthForm() {
                 {!isLoginMode && <h3>Create Account</h3>}
                 <div className={`input-field ${classes.field}`}>
                     <input
+                        ref={userNameRef}
                         id="user-name"
                         name="user-name"
                         value={userNameState}
                         onChange={changeUserNameHandler}
                         required
-                        autoFocus
                     />
                     <label htmlFor="user-name">Username</label>
                 </div>
