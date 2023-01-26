@@ -1,15 +1,61 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
+import { userActions } from '../../store/user';
+import { login, register } from '../../util/api';
 
 function Auth() {
+    const dispatch = useDispatch();
+    const naviation = useNavigate();
+
     const [isLoginMode, setIsLoginMode] = useState(true);
+    const [userNameState, setUserNameState] = useState('');
+    const [passwordState, setPasswordState] = useState('');
 
     const changeModeHandler = () => {
         setIsLoginMode((prevState) => !prevState);
     };
 
+    const changeUserNameHandler = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setUserNameState(event.target.value);
+    };
+
+    const changePasswordHandler = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setPasswordState(event.target.value);
+    };
+
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
+
+        try {
+            if (isLoginMode) {
+                await login(userNameState, passwordState);
+            } else {
+                await register(userNameState, passwordState);
+            }
+        } catch (error) {
+            let message;
+            if (error instanceof Error) {
+                message = error.message;
+            } else {
+                message = String(error);
+            }
+
+            setUserNameState('');
+            setPasswordState('');
+
+            throw new Error(message);
+        }
+
+        setUserNameState('');
+        setPasswordState('');
+        dispatch(userActions.login());
+        naviation('/budget');
     };
 
     return (
@@ -29,6 +75,8 @@ function Auth() {
                         <input
                             id="user-name"
                             name="user-name"
+                            value={userNameState}
+                            onChange={changeUserNameHandler}
                             required
                             autoFocus
                         />
@@ -38,6 +86,8 @@ function Auth() {
                         <input
                             id="password"
                             type="password"
+                            value={passwordState}
+                            onChange={changePasswordHandler}
                             required
                         />
                         <label htmlFor="password">Password</label>
