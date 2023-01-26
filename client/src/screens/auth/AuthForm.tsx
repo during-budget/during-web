@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
@@ -7,7 +7,7 @@ import { login, register } from '../../util/api';
 
 function AuthForm() {
     const dispatch = useDispatch();
-    const naviation = useNavigate();
+    const navigation = useNavigate();
     const location = useLocation();
 
     const [isLoginMode, setIsLoginMode] = useState(true);
@@ -16,9 +16,11 @@ function AuthForm() {
     const [errorState, setErrorState] = useState<String[]>([]);
 
     const from = location.state?.from?.pathname;
-    if (from) {
-        setErrorState([`You must log in to view the page at ${from}`]);
-    }
+    useEffect(() => {
+        if (from) {
+            setErrorState([`You must log in to view the page at ${from}`]);
+        }
+    }, [from]);
 
     const changeModeHandler = () => {
         setIsLoginMode((prevState) => !prevState);
@@ -64,14 +66,16 @@ function AuthForm() {
         setUserNameState('');
         setPasswordState('');
         dispatch(userActions.login());
-        naviation(from || '/budget', { replace: true });
+        navigation(from || '/budget', { replace: true });
     };
 
     return (
-        <>
+        <div>
             <div className={classes.errors}>
-                {errorState.map((error) => (
-                    <p className={classes.error}>{error}</p>
+                {errorState.map((error, i) => (
+                    <p key={i} className={classes.error}>
+                        {error}
+                    </p>
                 ))}
             </div>
             <form className={classes.form} onSubmit={submitHandler}>
@@ -123,7 +127,7 @@ function AuthForm() {
                     </button>
                 </div>
             </form>
-        </>
+        </div>
     );
 }
 
