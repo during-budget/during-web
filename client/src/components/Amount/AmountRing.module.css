@@ -27,7 +27,7 @@
     right: 0;
     bottom: 0;
     fill: none;
-    stroke-width: 30%;
+    stroke-width: 3rem;
     transform: rotate(-90deg) scale(1.2);
 }
 
@@ -49,28 +49,28 @@
     fill: none;
 }
 
-.during {
+.ring {
     position: absolute;
     transition: 0.53s ease-in-out;
 }
 
-.during > div {
+.ring > div {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.during .eyes {
+.ring .eyes {
     position: absolute;
     background-color: #fff;
     -webkit-mask: url('../../assets/svg/cat_eyes.svg') no-repeat center;
     mask: url(../../assets/svg/cat_eyes.svg) no-repeat center;
 }
 
-.duringScheduled .ears {
+.ringScheduled .ears {
     background-color: var(--secondary);
 }
 
-.duringCurrent .ears {
+.ringCurrent .ears {
     background-color: var(--primary);
 }
