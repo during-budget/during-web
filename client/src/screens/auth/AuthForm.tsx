@@ -77,13 +77,13 @@ function AuthForm(props: { from?: string }) {
 
     return (
         <div>
-            <div className={classes.errors}>
-                {errorState.map((error, i) => (
-                    <p key={i} className={classes.error}>
-                        {error}
-                    </p>
-                ))}
-            </div>
+            {errorState.length !== 0 && (
+                <div className={`error ${classes.error}`}>
+                    {errorState.map((error, i) => (
+                        <p key={i}>{error}</p>
+                    ))}
+                </div>
+            )}
             <form className={classes.form} onSubmit={submitHandler}>
                 {!isLoginMode && <h3>Create Account</h3>}
                 <div className={`input-field ${classes.field}`}>

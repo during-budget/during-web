@@ -7,6 +7,7 @@
     --tertiary-text: #7b7575;
     --background: #f6f6f6;
     --error-text: #ff6161;
+    --error-background: #ffefef;
 }
 
 * {
@@ -177,4 +178,14 @@ hr {
 
 .status-header h2 {
     font-size: 1.1rem;
+}
+
+/* error */
+.error {
+    padding: 0.8rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--error-text);
+    background-color: var(--error-background);
+    border-radius: 0.5rem;
 }

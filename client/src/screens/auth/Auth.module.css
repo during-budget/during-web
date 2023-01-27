@@ -23,10 +23,8 @@
     margin-bottom: 0.5rem;
 }
 
-.page .errors {
+.page .error {
     margin-top: 1.2rem;
-    font-size: 0.9rem;
-    color: var(--error-text);
 }
 
 .page > div {
