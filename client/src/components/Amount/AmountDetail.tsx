@@ -4,8 +4,12 @@ import { useRef, useState } from 'react';
 import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 
-function AmountDetail(props: { budgetId: string; amount: Amount }) {
-    const { budgetId, amount } = props;
+function AmountDetail(props: {
+    budgetId: string;
+    isExpense: boolean;
+    amount: Amount;
+}) {
+    const { budgetId, isExpense, amount } = props;
 
     const dispatch = useDispatch();
 
@@ -27,11 +31,13 @@ function AmountDetail(props: { budgetId: string; amount: Amount }) {
         if (isEditBudget) {
             let budgetAmount = +budgetAmountRef.current!.value;
             if (!isTotal) {
-                budgetAmount = amount.budget + (budgetAmount - amount.getLeftBudget());
+                budgetAmount =
+                    amount.budget + (budgetAmount - amount.getLeftBudget());
             }
             dispatch(
-                budgetActions.changeBudgetAmount({
-                    budgetId: budgetId,
+                budgetActions.updateBudgetAmount({
+                    budgetId,
+                    isExpense,
                     amount: budgetAmount,
                 })
             );

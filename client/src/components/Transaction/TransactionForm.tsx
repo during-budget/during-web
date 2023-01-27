@@ -68,15 +68,16 @@ function TransactionForm(props: { budgetId: string }) {
         const prevAmount = formState.input.amount;
         const updatedAmount = currentAmount - prevAmount;
 
-        if (formState.isExpense) {
-            dispatch(
-                budgetActions.updateTotalAmount({
-                    budgetId: props.budgetId,
-                    isCurrent: formState.isCurrent,
-                    amount: updatedAmount,
-                })
-            );
+        dispatch(
+            budgetActions.updateTotalAmount({
+                budgetId: props.budgetId,
+                isExpense: formState.isExpense,
+                isCurrent: formState.isCurrent,
+                amount: updatedAmount,
+            })
+        );
 
+        if (formState.isExpense) {
             dispatch(
                 categoryActions.updateAmount({
                     categoryId,
@@ -97,15 +98,16 @@ function TransactionForm(props: { budgetId: string }) {
         const { categoryId, isExpense } = data;
         const amount = +expandAmountRef.current!.value;
 
-        if (isExpense) {
-            dispatch(
-                budgetActions.updateTotalAmount({
-                    budgetId: props.budgetId,
-                    isCurrent: formState.isCurrent,
-                    amount,
-                })
-            );
+        dispatch(
+            budgetActions.updateTotalAmount({
+                budgetId: props.budgetId,
+                isExpense,
+                isCurrent: formState.isCurrent,
+                amount,
+            })
+        );
 
+        if (isExpense) {
             dispatch(
                 categoryActions.updateAmount({
                     categoryId,
@@ -138,7 +140,7 @@ function TransactionForm(props: { budgetId: string }) {
                         formState.linkId ||
                         (formState.isCompleted && formState.id),
                     isCurrent: formState.isCurrent,
-                    isExpense: isExpense,
+                    isExpense,
                     title: titleRef.current!.value(),
                     date: new Date(dateRef.current!.value),
                     amount: +expandAmountRef.current!.value,
