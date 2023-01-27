@@ -20,7 +20,10 @@ function AuthForm(props: { from?: string }) {
 
     useEffect(() => {
         if (from) {
-            setErrorState([`You must log in to view the page at ${from}`]);
+            setErrorState([
+                'Invalid access',
+                `You must log in to view the page at ${from}`,
+            ]);
         }
     }, [from]);
 
@@ -77,13 +80,21 @@ function AuthForm(props: { from?: string }) {
 
     return (
         <div>
-            <div className={classes.errors}>
-                {errorState.map((error, i) => (
-                    <p key={i} className={classes.error}>
-                        {error}
-                    </p>
-                ))}
-            </div>
+            {errorState.length !== 0 && (
+                <div className={`error ${classes.error}`}>
+                    {errorState.map((error, i) => {
+                        return (
+                            <p key={i}>
+                                {errorState.length > 1 && i === 0 ? (
+                                    <strong>{error}</strong>
+                                ) : (
+                                    error
+                                )}
+                            </p>
+                        );
+                    })}
+                </div>
+            )}
             <form className={classes.form} onSubmit={submitHandler}>
                 {!isLoginMode && <h3>Create Account</h3>}
                 <div className={`input-field ${classes.field}`}>

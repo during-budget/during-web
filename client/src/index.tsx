@@ -15,46 +15,55 @@ import TransactionDetail from './screens/budget/TransactionDetail';
 import Test, { loader as testLoader } from './screens/Test';
 import RequireAuth from './screens/auth/RequireAuth';
 import Root from './screens/Root';
+import ErrorBoundary from './screens/ErrorBoundary';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Navigate to="/auth" replace />,
-    },
-    {
-        path: '/auth',
-        element: <Auth />,
-    },
-    {
-        path: '/budget',
-        element: (
-            <RequireAuth>
-                <Root />
-            </RequireAuth>
-        ),
+        element: <Root />,
+        errorElement: <ErrorBoundary />,
         children: [
             {
+                path: '/',
+                index: true,
+                element: <Navigate to="/auth" />,
+            },
+            {
+                path: '/auth',
+                element: <Auth />,
+            },
+            {
                 path: '/budget',
-                element: <BudgetList />,
+                element: (
+                    <RequireAuth>
+                        <Root />
+                    </RequireAuth>
+                ),
+                children: [
+                    {
+                        path: '/budget',
+                        element: <BudgetList />,
+                    },
+                    {
+                        path: '/budget/form',
+                        element: <BudgetForm />,
+                    },
+                    {
+                        path: '/budget/:budgetId',
+                        element: <Budget />,
+                    },
+                    {
+                        path: '/budget/:budgetId/:transactionId',
+                        element: <TransactionDetail />,
+                    },
+                ],
             },
             {
-                path: '/budget/form',
-                element: <BudgetForm />,
-            },
-            {
-                path: '/budget/:budgetId',
-                element: <Budget />,
-            },
-            {
-                path: '/budget/:budgetId/:transactionId',
-                element: <TransactionDetail />,
+                path: '/test',
+                element: <Test />,
+                loader: testLoader,
             },
         ],
-    },
-    {
-        path: '/test',
-        element: <Test />,
-        loader: testLoader,
     },
 ]);
 
