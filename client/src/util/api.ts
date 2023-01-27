@@ -35,6 +35,7 @@ export const login = async (userName: string, password: string) => {
     const url = `${BASE_URL}/api/users/login/local`;
     const response = await fetch(url, {
         method: 'POST',
+        credentials: 'include',
         body: JSON.stringify({
             userName,
             password,
