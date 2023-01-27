@@ -3,16 +3,17 @@ import Amount from '../../models/Amount';
 import classes from './AmountRing.module.css';
 
 const RING_SIZE = '16rem';
-const RING_DASH = 402;
+const RING_DASH = 482.5;
 
 const EARS = require('../../assets/svg/cat_ears.svg').default;
 
 const getDash = (ratio: number) => {
-    return { strokeDasharray: `${ratio * RING_DASH} ${RING_DASH}` };
+    const dash = ratio * RING_DASH;
+    return { strokeDasharray: `${dash} ${RING_DASH}` };
 };
 
 const getRotate = (ratio: number) => {
-    const deg = -160 + ratio * 360;
+    const deg = ratio * 360;
     return { transform: `rotate(${deg}deg) scale(0.95)` };
 };
 
@@ -30,7 +31,7 @@ function AmountRing(props: { amount: Amount }) {
                         <svg width="100%" height="100%">
                             <circle
                                 className={classes.budget}
-                                r="25%"
+                                r="30%"
                                 cx="50%"
                                 cy="50%"
                                 style={getDash(1)}
@@ -43,7 +44,7 @@ function AmountRing(props: { amount: Amount }) {
                         <svg width="100%" height="100%">
                             <circle
                                 className={classes.scheduled}
-                                r="25%"
+                                r="30%"
                                 cx="50%"
                                 cy="50%"
                                 style={getDash(amount.getScheduledRatio())}
@@ -53,7 +54,7 @@ function AmountRing(props: { amount: Amount }) {
                 </div>
 
                 <div
-                    className={`${classes.during} ${classes.duringScheduled}`}
+                    className={`${classes.ring} ${classes.ringScheduled}`}
                     style={getRotate(amount.getScheduledRatio())}
                 >
                     <div
@@ -71,7 +72,7 @@ function AmountRing(props: { amount: Amount }) {
                         <svg width="100%" height="100%">
                             <circle
                                 className={classes.current}
-                                r="25%"
+                                r="30%"
                                 cx="50%"
                                 cy="50%"
                                 style={getDash(amount.getCurrentRatio())}
@@ -81,7 +82,7 @@ function AmountRing(props: { amount: Amount }) {
                 </div>
 
                 <div
-                    className={`${classes.during} ${classes.duringCurrent}`}
+                    className={`${classes.ring} ${classes.ringCurrent}`}
                     style={getRotate(amount.getCurrentRatio())}
                 >
                     <div
