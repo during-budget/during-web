@@ -1,0 +1,28 @@
+ol.barHolder {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1rem;
+    width: 100%;
+    height: calc(100% - 2rem);
+    margin-top: 1.4rem;
+    overflow-y: hidden;
+}
+
+.barHolder > * {
+    bottom: 0;
+    width: 100%;
+    background-color: var(--primary);
+    border-radius: 1rem;
+    animation-name: slideUp;
+    animation-timing-function: cubic-bezier(0.46, 0.41, 0.34, 0.98);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
