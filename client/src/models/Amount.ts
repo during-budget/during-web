@@ -17,6 +17,11 @@ class Amount {
     private _current: number;
     private _scheduled: number;
     private _budget: number;
+    private _state: {
+        currentOverSchedule: { isTrue: boolean; amount: number };
+        currentOverBudget: { isTrue: boolean; amount: number };
+        scheduledOverBudget: { isTrue: boolean; amount: number };
+    };
 
     get current() {
         return this._current;
@@ -28,6 +33,10 @@ class Amount {
 
     get budget() {
         return this._budget;
+    }
+
+    get state() {
+        return this._state;
     }
 
     set current(amount: number) {
@@ -100,9 +109,31 @@ class Amount {
         return [this._current, this._scheduled, this._budget];
     };
 
+    private getEachState = (overAmount: number) => {
+        const isTrue = overAmount < 0;
+        return {
+            isTrue,
+            amount: isTrue ? -overAmount : 0,
+        };
+    };
+
+    private getState = () => {
+        const currentOverSchedule = this.getEachState(
+            this._scheduled - this._current
+        );
+        const currentOverBudget = this.getEachState(
+            this._budget - this._current
+        );
+        const scheduledOverBudget = this.getEachState(
+            this._budget - this.scheduled
+        );
+
+        return { currentOverSchedule, currentOverBudget, scheduledOverBudget };
+    };
+
     static getAmountString = (amount: number) => {
         return amount.toLocaleString() + amountUnit;
-    }
+    };
 
     static getUpdatedAmount = (
         prevAmount: Amount | any,
@@ -128,6 +159,7 @@ class Amount {
         this._current = current;
         this._scheduled = scheduled;
         this._budget = budget;
+        this._state = this.getState();
     }
 }
 
