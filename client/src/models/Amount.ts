@@ -100,10 +100,12 @@ class Amount {
 
     addCurrent = (amount: number) => {
         this._current += amount;
+        this._state = this.getState();
     };
 
     addScheduled = (amount: number) => {
         this._scheduled += amount;
+        this._state = this.getState();
     };
 
     getAmountArr = () => {
