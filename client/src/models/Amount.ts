@@ -18,10 +18,11 @@ class Amount {
     private _scheduled: number;
     private _budget: number;
     private _state: {
-        currentOverSchedule: { isTrue: boolean; amount: number };
-        currentOverBudget: { isTrue: boolean; amount: number };
-        scheduledOverBudget: { isTrue: boolean; amount: number };
-    };
+        target: string;
+        over: string;
+        isTrue: boolean;
+        amount: number;
+    }[];
 
     get current() {
         return this._current;
@@ -109,9 +110,15 @@ class Amount {
         return [this._current, this._scheduled, this._budget];
     };
 
-    private getEachState = (overAmount: number) => {
+    private getEachState = (
+        target: string,
+        over: string,
+        overAmount: number
+    ) => {
         const isTrue = overAmount < 0;
         return {
+            target,
+            over,
             isTrue,
             amount: isTrue ? -overAmount : 0,
         };
@@ -119,16 +126,22 @@ class Amount {
 
     private getState = () => {
         const currentOverSchedule = this.getEachState(
+            '현재 내역',
+            '예정 내역',
             this._scheduled - this._current
         );
         const currentOverBudget = this.getEachState(
+            '현재 내역',
+            '목표',
             this._budget - this._current
         );
         const scheduledOverBudget = this.getEachState(
+            '예정 내역',
+            '목표',
             this._budget - this.scheduled
         );
 
-        return { currentOverSchedule, currentOverBudget, scheduledOverBudget };
+        return [currentOverSchedule, currentOverBudget, scheduledOverBudget];
     };
 
     static getAmountString = (amount: number) => {

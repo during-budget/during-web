@@ -74,3 +74,11 @@
 .ringCurrent .ears {
     background-color: var(--primary);
 }
+
+.errors > p {
+    line-height: 1.3rem;
+}
+
+.errors > p > i {
+    margin-right: 0.2rem;
+}
