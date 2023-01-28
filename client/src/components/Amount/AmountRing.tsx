@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Amount from '../../models/Amount';
 import classes from './AmountRing.module.css';
 
@@ -7,18 +7,26 @@ const RING_DASH = 482.5;
 
 const EARS = require('../../assets/svg/cat_ears.svg').default;
 
-const getDash = (ratio: number) => {
-    const dash = ratio * RING_DASH;
-    return { strokeDasharray: `${dash} ${RING_DASH}` };
-};
-
-const getRotate = (ratio: number) => {
-    const deg = ratio * 360;
-    return { transform: `rotate(${deg}deg) scale(0.95)` };
-};
-
 function AmountRing(props: { amount: Amount }) {
+    const [isOverAmount, setIsOverAmount] = useState(false);
     const amount = props.amount;
+
+    const getDash = (ratio: number) => {
+        if (isOverAmount) {
+            return { strokeDasharray: `0 ${RING_DASH}` };
+        }
+        const dash = ratio * RING_DASH;
+        return { strokeDasharray: `${dash} ${RING_DASH}` };
+    };
+
+    const getRotate = (ratio: number) => {
+        if (isOverAmount) {
+            return { transform: `rotate(0deg) scale(0.95)`, opacity: 0 }
+        }
+
+        const deg = ratio * 360;
+        return { transform: `rotate(${deg}deg) scale(0.95)` };
+    };
 
     const overAlerts = amount.state
         .map((item: any) => {
@@ -35,9 +43,17 @@ function AmountRing(props: { amount: Amount }) {
         })
         .filter((item) => item);
 
+    useEffect(() => {
+        if (overAlerts.length) {
+            setIsOverAmount(true);
+        } else {
+            setIsOverAmount(false);
+        }
+    }, [overAlerts]);
+
     return (
         <Fragment>
-            {overAlerts.length && (
+            {isOverAmount && (
                 <div className={`error ${classes.errors}`}>{overAlerts}</div>
             )}
             <div
