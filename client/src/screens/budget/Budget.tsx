@@ -1,3 +1,4 @@
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import classes from './Budget.module.css';
@@ -17,7 +18,6 @@ function Budget() {
     const dispatch = useDispatch();
     const navigation = useNavigate();
     const { budgetId } = useParams();
-
     const loaderData: any = useLoaderData();
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: any) => item.id === budgetId);
@@ -58,12 +58,12 @@ function Budget() {
                         endDate={endDate}
                     />
                     <TotalStatus budgetId={budgetId!} total={total} />
-                    <CategoryStatus budgetId={budgetId!} />
+                    {<CategoryStatus />}
                 </Carousel>
                 <hr />
                 <section>
                     <TransactionNav id="layout" isExpand={false} />
-                    <TransactionList budgetId={budgetId!} />
+                    {<TransactionList budgetId={budgetId!} />}
                     <TransactionForm budgetId={budgetId!} />
                 </section>
             </main>

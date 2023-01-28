@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AmountBars from '../Amount/AmountBars';
+import Amount from '../../models/Amount';
 
-function CategoryStatus(props: { budgetId: string }) {
+function CategoryStatus() {
     const categories = useSelector((state: any) => state.categories);
-    const filteredCategories = categories.filter(
-        (item: any) => props.budgetId in item.amounts
-    );
 
     return (
         <div className="status-container">
@@ -15,9 +13,10 @@ function CategoryStatus(props: { budgetId: string }) {
                 <Link to="">{'더보기 >'}</Link>
             </div>
             <AmountBars
-                amountData={filteredCategories.map((item: any) => {
+                amountData={categories.map((item: any) => {
                     return {
-                        amount: item.amounts[props.budgetId],
+                        // TODO: get amount from budget data
+                        amount: new Amount(10000, 50000, 100000),
                         label: item.icon,
                     };
                 })}
