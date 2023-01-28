@@ -10,7 +10,7 @@ const initialState: Transaction[] = [
         title: ['Title1', 'Title2'],
         date: new Date(),
         amount: 60000,
-        categoryId: 'c1',
+        categoryId: '63d23dab0efb4d90194987a3',
     }),
     new Transaction({
         id: 't2',
@@ -20,7 +20,7 @@ const initialState: Transaction[] = [
         title: ['Budget2', 'Title2'],
         date: new Date(),
         amount: 60000,
-        categoryId: 'c1',
+        categoryId: '63d23dab0efb4d90194987a3',
     }),
     new Transaction({
         id: 't3',
@@ -30,7 +30,7 @@ const initialState: Transaction[] = [
         title: ['Title', 'SubTitle'],
         date: new Date(),
         amount: 20000,
-        categoryId: 'c1',
+        categoryId: '63d23dab0efb4d90194987a3',
     }),
 ];
 

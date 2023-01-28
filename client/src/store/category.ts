@@ -2,49 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import Category from '../models/Category';
 
-const initialState: Category[] = [
-    new Category({
-        id: 'c1',
-        title: '비상금',
-        amounts: { b1: new Amount(40000, 40000, 120000) },
-        icon: '💰',
-    }),
-    new Category({
-        id: 'c2',
-        title: '교통비',
-        amounts: { b1: new Amount(18000, 60000, 160000) },
-        icon: '🚉',
-    }),
-    new Category({
-        id: 'c3',
-        title: '식비',
-        amounts: { b1: new Amount(180000, 260000, 300000) },
-        icon: '🍚',
-    }),
-    new Category({
-        id: 'c4',
-        title: '간식',
-        amounts: { b1: new Amount(12000, 40000, 60000) },
-        icon: '🍪',
-    }),
-    new Category({
-        id: 'c5',
-        title: '병원',
-        amounts: { b1: new Amount(40000, 60000, 80000) },
-        icon: '🩺',
-    }),
-    new Category({
-        id: 'c6',
-        title: '경조사비',
-        amounts: { b1: new Amount(20000, 80000, 100000) },
-        icon: '🎉',
-    }),
-];
+const initialState: Category[] = [];
 
 const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
+        setCategory(state, action) {
+            const { categories } = action.payload;
+            console.log(action.payload);
+            categories.forEach(
+                (category: { _id: string; title: string; icon: string }) => {
+                    const { _id: id, title, icon } = category;
+                    state.push(new Category({ id, title, icon }));
+                }
+            );
+        },
         craeteCategory(state, action) {
             const { budgetId, icon, title, budgetAmount } = action.payload;
             const id = +new Date() + '';
@@ -53,10 +26,11 @@ const categorySlice = createSlice({
                     id,
                     icon,
                     title,
-                    initialData: { budgetId, budgetAmount },
+                    // initialData: { budgetId, budgetAmount },
                 })
             );
         },
+        // TODO: budget에서 소속 category amount 업데이트 하기,,
         updateAmount(state, action) {
             const { categoryId, budgetId, isCurrent, amount } = action.payload;
             const category = state.find((item: any) => item.id === categoryId);
@@ -65,13 +39,13 @@ const categorySlice = createSlice({
                 throw new Error('Category not exists.');
             }
 
-            const currentAmount = category.amounts[budgetId];
-            const nextAmount = Amount.getUpdatedAmount(
-                currentAmount,
-                isCurrent,
-                amount
-            );
-            category.amounts[budgetId] = nextAmount;
+            // const currentAmount = category.amounts[budgetId];
+            // const nextAmount = Amount.getUpdatedAmount(
+            //     currentAmount,
+            //     isCurrent,
+            //     amount
+            // );
+            // category.amounts[budgetId] = nextAmount;
         },
     },
 });
