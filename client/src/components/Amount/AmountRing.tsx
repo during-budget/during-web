@@ -20,8 +20,26 @@ const getRotate = (ratio: number) => {
 function AmountRing(props: { amount: Amount }) {
     const amount = props.amount;
 
+    const overAlerts = amount.state
+        .map((item: any) => {
+            if (item.isTrue) {
+                return (
+                    <p key={item.target}>
+                        <i className="fa-solid fa-circle-exclamation" />
+                        <strong>{item.target}</strong>
+                        {`이 ${item.over}보다 `}
+                        <strong>{item.amount}원</strong> 더 큽니다.
+                    </p>
+                );
+            }
+        })
+        .filter((item) => item);
+
     return (
         <Fragment>
+            {overAlerts.length && (
+                <div className={`error ${classes.errors}`}>{overAlerts}</div>
+            )}
             <div
                 className={classes.container}
                 style={{ width: RING_SIZE, height: RING_SIZE }}
