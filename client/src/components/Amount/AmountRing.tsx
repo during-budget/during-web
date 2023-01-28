@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import Amount from '../../models/Amount';
+import BarChart from '../UI/BarChart';
 import classes from './AmountRing.module.css';
 
 const RING_SIZE = '16rem';
@@ -9,7 +10,34 @@ const EARS = require('../../assets/svg/cat_ears.svg').default;
 
 function AmountRing(props: { amount: Amount }) {
     const [isOverAmount, setIsOverAmount] = useState(false);
+    const [overState, setOverState] = useState<(JSX.Element | undefined)[]>([]);
+
     const amount = props.amount;
+
+    useEffect(() => {
+        const overMsg = amount.state
+            .map((item: any) => {
+                if (item.isTrue) {
+                    return (
+                        <p key={item.target}>
+                            <i className="fa-solid fa-circle-exclamation" />
+                            <strong>{item.target}</strong>
+                            {`이 ${item.over}보다 `}
+                            <strong>{item.amount}원</strong> 더 큽니다.
+                        </p>
+                    );
+                }
+            })
+            .filter((item) => item);
+
+        setOverState(overMsg);
+
+        if (overMsg.length) {
+            setIsOverAmount(true);
+        } else {
+            setIsOverAmount(false);
+        }
+    }, [amount.state]);
 
     const getDash = (ratio: number) => {
         if (isOverAmount) {
@@ -21,45 +49,25 @@ function AmountRing(props: { amount: Amount }) {
 
     const getRotate = (ratio: number) => {
         if (isOverAmount) {
-            return { transform: `rotate(0deg) scale(0.95)`, opacity: 0 }
+            return { transform: `rotate(0deg) scale(0.95)`, opacity: 0 };
         }
 
         const deg = ratio * 360;
         return { transform: `rotate(${deg}deg) scale(0.95)` };
     };
 
-    const overAlerts = amount.state
-        .map((item: any) => {
-            if (item.isTrue) {
-                return (
-                    <p key={item.target}>
-                        <i className="fa-solid fa-circle-exclamation" />
-                        <strong>{item.target}</strong>
-                        {`이 ${item.over}보다 `}
-                        <strong>{item.amount}원</strong> 더 큽니다.
-                    </p>
-                );
-            }
-        })
-        .filter((item) => item);
-
-    useEffect(() => {
-        if (overAlerts.length) {
-            setIsOverAmount(true);
-        } else {
-            setIsOverAmount(false);
-        }
-    }, [overAlerts]);
-
     return (
         <Fragment>
             {isOverAmount && (
-                <div className={`error ${classes.errors}`}>{overAlerts}</div>
+                <>
+                    <div className={`error ${classes.errors}`}>{overState}</div>
+                </>
             )}
             <div
                 className={classes.container}
                 style={{ width: RING_SIZE, height: RING_SIZE }}
             >
+                {/* Budget */}
                 <div>
                     <div className={classes.palette}>
                         <svg width="100%" height="100%">
@@ -73,6 +81,7 @@ function AmountRing(props: { amount: Amount }) {
                         </svg>
                     </div>
                 </div>
+                {/* Scheduled */}
                 <div>
                     <div className={`${classes.palette} ${classes.rounded}`}>
                         <svg width="100%" height="100%">
@@ -86,7 +95,7 @@ function AmountRing(props: { amount: Amount }) {
                         </svg>
                     </div>
                 </div>
-
+                {/* RingScheduled */}
                 <div
                     className={`${classes.ring} ${classes.ringScheduled}`}
                     style={getRotate(amount.getScheduledRatio())}
@@ -100,7 +109,7 @@ function AmountRing(props: { amount: Amount }) {
                     />
                     <div className={classes.eyes} />
                 </div>
-
+                {/* Current */}
                 <div>
                     <div className={`${classes.palette} ${classes.rounded}`}>
                         <svg width="100%" height="100%">
@@ -114,7 +123,7 @@ function AmountRing(props: { amount: Amount }) {
                         </svg>
                     </div>
                 </div>
-
+                {/* RingCurrnet */}
                 <div
                     className={`${classes.ring} ${classes.ringCurrent}`}
                     style={getRotate(amount.getCurrentRatio())}
@@ -128,6 +137,23 @@ function AmountRing(props: { amount: Amount }) {
                     />
                     <div className={classes.eyes} />
                 </div>
+                {/* Bar Chart */}
+                <BarChart
+                    data={[
+                        {
+                            color: 'var(--primary)',
+                            amount: isOverAmount ? amount.current : 0,
+                        },
+                        {
+                            color: 'var(--secondary)',
+                            amount: isOverAmount ? amount.scheduled : 0,
+                        },
+                        {
+                            color: 'var(--background)',
+                            amount: isOverAmount ? amount.budget : 0,
+                        },
+                    ]}
+                />
             </div>
 
             <svg
