@@ -94,7 +94,7 @@ function AmountDetail(props: {
             <ul className={classes.info}>
                 <li className={classes.scheduled}>
                     <span className={classes.label}>
-                        {isTotal ? '예정 지출' : '남은 예정'}
+                        {isTotal ? '예정 금액' : '남은 예정'}
                     </span>
                     <span className={classes.amount}>
                         {isTotal
@@ -103,14 +103,14 @@ function AmountDetail(props: {
                     </span>
                 </li>
                 <li className={classes.current}>
-                    <span className={classes.label}>현재 지출</span>
+                    <span className={classes.label}>현재 금액</span>
                     <span className={classes.amount}>
                         {amount.getCurrentStr()}
                     </span>
                 </li>
                 <li className={classes.budget}>
                     <span className={classes.label}>
-                        {isTotal ? '예산 총액' : '남은 예산'}
+                        {isTotal ? '목표 금액' : '남은 목표'}
                     </span>
                     {plannedAmount}
                     <button
