@@ -14,9 +14,9 @@ function AmountDetail(props: {
     const dispatch = useDispatch();
 
     const [isTotal, setIsTotal] = useState(true);
-    const [isEditBudget, setEditBudget] = useState(false);
+    const [isEditPlan, setEditPlan] = useState(false);
 
-    const budgetAmountRef = useRef<HTMLInputElement>(null);
+    const plannedAmountRef = useRef<HTMLInputElement>(null);
 
     const clickTotalHandler = () => {
         setIsTotal(true);
@@ -26,35 +26,37 @@ function AmountDetail(props: {
         setIsTotal(false);
     };
 
-    const editBudgetHandler = () => {
-        setEditBudget((prevState) => !prevState);
-        if (isEditBudget) {
-            let budgetAmount = +budgetAmountRef.current!.value;
+    const editPlanHandler = () => {
+        setEditPlan((prevState) => !prevState);
+        if (isEditPlan) {
+            let plannedAmount = +plannedAmountRef.current!.value;
             if (!isTotal) {
-                budgetAmount =
-                    amount.budget + (budgetAmount - amount.getLeftBudget());
+                plannedAmount =
+                    amount.planned + (plannedAmount - amount.getLeftPlanned());
             }
             dispatch(
-                budgetActions.updateBudgetAmount({
+                budgetActions.updatePlannedAmount({
                     budgetId,
                     isExpense,
-                    amount: budgetAmount,
+                    amount: plannedAmount,
                 })
             );
         }
     };
 
-    const budgetAmount = isEditBudget ? (
+    const plannedAmount = isEditPlan ? (
         <div className="input-field">
             <input
-                ref={budgetAmountRef}
+                ref={plannedAmountRef}
                 type="number"
-                defaultValue={isTotal ? amount.budget : amount.getLeftBudget()}
+                defaultValue={
+                    isTotal ? amount.planned : amount.getLeftPlanned()
+                }
             ></input>
         </div>
     ) : (
         <span className={classes.amount}>
-            {isTotal ? amount.getBudgetStr() : amount.getLeftBudgetStr()}
+            {isTotal ? amount.getPlannedStr() : amount.getLeftPlannedStr()}
         </span>
     );
 
@@ -110,15 +112,15 @@ function AmountDetail(props: {
                     <span className={classes.label}>
                         {isTotal ? '예산 총액' : '남은 예산'}
                     </span>
-                    {budgetAmount}
+                    {plannedAmount}
                     <button
                         type="button"
                         className={classes.edit}
-                        onClick={editBudgetHandler}
+                        onClick={editPlanHandler}
                     >
                         <i
                             className={`fa-solid ${
-                                isEditBudget ? 'fa-check' : 'fa-pencil'
+                                isEditPlan ? 'fa-check' : 'fa-pencil'
                             }`}
                         ></i>
                     </button>

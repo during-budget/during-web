@@ -40,7 +40,7 @@ const budgetSlice = createSlice({
     name: 'budget',
     initialState: budgets,
     reducers: {
-        updateBudgetAmount(state, action) {
+        updatePlannedAmount(state, action) {
             const { budgetId, isExpense, amount } = action.payload;
             const budget = state.find((item) => item.id === budgetId);
             if (budget) {

@@ -150,7 +150,7 @@ function AmountRing(props: { amount: Amount }) {
                         },
                         {
                             color: 'var(--background)',
-                            amount: isOverAmount ? amount.budget : 0,
+                            amount: isOverAmount ? amount.planned : 0,
                         },
                     ]}
                 />

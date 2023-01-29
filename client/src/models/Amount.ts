@@ -9,14 +9,14 @@ const formatScheduled = (amount: number) => {
     return `(${amount.toLocaleString()}${amountUnit})`;
 };
 
-const formatBudget = (amount: number) => {
+const formatPlanned = (amount: number) => {
     return `/${amount.toLocaleString()}${amountUnit}`;
 };
 
 class Amount {
     private _current: number;
     private _scheduled: number;
-    private _budget: number;
+    private _planned: number;
     private _state: {
         target: string;
         over: string;
@@ -32,8 +32,8 @@ class Amount {
         return this._scheduled;
     }
 
-    get budget() {
-        return this._budget;
+    get planned() {
+        return this._planned;
     }
 
     get state() {
@@ -48,8 +48,8 @@ class Amount {
         this._scheduled = amount;
     }
 
-    set budget(amount: number) {
-        this._budget = amount;
+    set planned(amount: number) {
+        this._planned = amount;
     }
 
     getCurrentStr = () => {
@@ -60,23 +60,23 @@ class Amount {
         return formatScheduled(this.scheduled);
     };
 
-    getBudgetStr = () => {
-        return formatBudget(this.budget);
+    getPlannedStr = () => {
+        return formatPlanned(this.planned);
     };
 
     getCurrentRatio = () => {
-        if (this._budget === 0) {
+        if (this._planned === 0) {
             return 0;
         } else {
-            return this._current / this._budget;
+            return this._current / this._planned;
         }
     };
 
     getScheduledRatio = () => {
-        if (this._budget === 0) {
+        if (this._planned === 0) {
             return 0;
         } else {
-            return this._scheduled / this._budget;
+            return this._scheduled / this._planned;
         }
     };
 
@@ -84,18 +84,18 @@ class Amount {
         return this._scheduled - this._current;
     };
 
-    getLeftBudget = () => {
+    getLeftPlanned = () => {
         const bigger =
             this._scheduled > this._current ? this._scheduled : this._current;
-        return this.budget - bigger;
+        return this.planned - bigger;
     };
 
     getLeftScheduledStr = () => {
         return formatScheduled(this.getLeftScheduled());
     };
 
-    getLeftBudgetStr = () => {
-        return formatBudget(this.getLeftBudget());
+    getLeftPlannedStr = () => {
+        return formatPlanned(this.getLeftPlanned());
     };
 
     addCurrent = (amount: number) => {
@@ -109,7 +109,7 @@ class Amount {
     };
 
     getAmountArr = () => {
-        return [this._current, this._scheduled, this._budget];
+        return [this._current, this._scheduled, this._planned];
     };
 
     private getEachState = (
@@ -129,21 +129,21 @@ class Amount {
     private getState = () => {
         const currentOverSchedule = this.getEachState(
             '현재 내역',
-            '예정 내역',
+            '예정',
             this._scheduled - this._current
         );
-        const currentOverBudget = this.getEachState(
+        const currentOverPlanned = this.getEachState(
             '현재 내역',
             '목표',
-            this._budget - this._current
+            this._planned - this._current
         );
-        const scheduledOverBudget = this.getEachState(
+        const scheduledOverplanned = this.getEachState(
             '예정 내역',
             '목표',
-            this._budget - this.scheduled
+            this._planned - this.scheduled
         );
 
-        return [currentOverSchedule, currentOverBudget, scheduledOverBudget];
+        return [currentOverSchedule, currentOverPlanned, scheduledOverplanned];
     };
 
     static getAmountString = (amount: number) => {
@@ -158,7 +158,7 @@ class Amount {
         const nextAmount = new Amount(
             prevAmount.current,
             prevAmount.scheduled,
-            prevAmount.budget
+            prevAmount.planned
         );
 
         if (isCurrent) {
@@ -170,10 +170,10 @@ class Amount {
         return nextAmount;
     };
 
-    constructor(current: number, scheduled: number, budget: number) {
+    constructor(current: number, scheduled: number, planned: number) {
         this._current = current;
         this._scheduled = scheduled;
-        this._budget = budget;
+        this._planned = planned;
         this._state = this.getState();
     }
 }
