@@ -141,9 +141,7 @@ hr {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.3rem 0;
     margin: 0 1rem;
-    margin-bottom: 1rem;
     color: var(--secondary-text);
     cursor: pointer;
 }
