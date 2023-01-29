@@ -16,7 +16,7 @@
     animation-timing-function: cubic-bezier(0.46, 0.41, 0.34, 0.98);
 }
 
-.budget {
+.planned {
     background-color: var(--background);
     height: 100%;
 }

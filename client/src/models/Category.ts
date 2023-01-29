@@ -30,12 +30,12 @@ class Category {
         this._icon = icon;
     }
 
-    setBudget(budgetId: string, budgetAmount: number) {
+    setPlan(budgetId: string, plannedAmount: number) {
         const amount = this._amounts[budgetId];
         if (amount) {
-            this._amounts[budgetId].budget = budgetAmount;
+            this._amounts[budgetId].planned = plannedAmount;
         } else {
-            this._amounts[budgetId] = new Amount(0, 0, budgetAmount);
+            this._amounts[budgetId] = new Amount(0, 0, plannedAmount);
         }
     }
 
@@ -53,7 +53,7 @@ class Category {
 
         if (initialData) {
             this._amounts = {};
-            this.setBudget(initialData.budgetId, initialData.budgetAmount);
+            this.setPlan(initialData.budgetId, initialData.budgetAmount);
         } else if (amounts) {
             this._amounts = amounts;
         } else {

@@ -45,8 +45,8 @@ function BudgetItem(props: {
                     <p className={classes.current}>
                         {props.amount.getCurrentStr()}
                     </p>
-                    <p className={classes.budget}>
-                        {props.amount.getBudgetStr()}
+                    <p className={classes.planned}>
+                        {props.amount.getPlannedStr()}
                     </p>
                 </div>
             </Link>

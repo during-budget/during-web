@@ -2,13 +2,15 @@ import classes from './AmountBars.module.css';
 import AmountBar from './AmountBar';
 import Amount from '../../models/Amount';
 
-function AmountBars(props: {amountData: {amount: Amount, label: string}[]}) {
+function AmountBars(props: {
+    amountData: { amount: Amount; label: string }[];
+}) {
     const amountData = props.amountData;
-    const budgets = amountData.map((data) => {
-        return data.amount.budget;
+    const plans = amountData.map((data) => {
+        return data.amount.planned;
     });
-    const totalBudget = budgets.reduce((curr, next) => curr + next, 0);
-    const widths = budgets.map((budget) => (budget / totalBudget) * 90 + '%');
+    const totalPlanned = plans.reduce((curr, next) => curr + next, 0);
+    const widths = plans.map((planned) => (planned / totalPlanned) * 90 + '%');
 
     return (
         <ul className={classes.container}>
