@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { uiActions } from '../../store/ui';
+import RadioTab from '../UI/RadioTab';
 import classes from './TransactionNav.module.css';
 
 function TransactionNav(props: {
@@ -31,34 +32,26 @@ function TransactionNav(props: {
     };
 
     return (
-        <ul className={`nav-tab ${classes.nav}`}>
-            <li>
-                <input
-                    id={`transaction-list-scheduled-${props.id}`}
-                    type="radio"
-                    name="transaction-list"
-                    checked={!isCurrent}
-                    disabled={props.isCompleted}
-                    onChange={changeScheduledHandler}
-                ></input>
-                <label htmlFor={`transaction-list-scheduled-${props.id}`}>
-                    예정 내역
-                </label>
-            </li>
-            <li>
-                <input
-                    id={`transaction-list-current-${props.id}`}
-                    type="radio"
-                    name="transaction-list"
-                    checked={isCurrent}
-                    disabled={props.isCompleted}
-                    onChange={changeCurrentHandler}
-                ></input>
-                <label htmlFor={`transaction-list-current-${props.id}`}>
-                    거래 내역
-                </label>
-            </li>
-        </ul>
+        <RadioTab
+            className={classes.nav}
+            name="tansaction-list"
+            values={[
+                {
+                    label: '예정 내역',
+                    value: `scheduled-${props.id}`,
+                    checked: !isCurrent,
+                    disabled: props.isCompleted,
+                    onChange: changeScheduledHandler,
+                },
+                {
+                    label: '거래 내역',
+                    value: `current-${props.id}`,
+                    checked: isCurrent,
+                    disabled: props.isCompleted,
+                    onChange: changeCurrentHandler,
+                },
+            ]}
+        />
     );
 }
 

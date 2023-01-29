@@ -3,6 +3,7 @@ import classes from './DateStatus.module.css';
 import { uiActions } from '../../store/ui';
 import Calendar from '../UI/Calendar';
 import { Fragment, useState } from 'react';
+import RadioTab from '../UI/RadioTab';
 
 function DateStatus(props: {
     startDate: Date;
@@ -51,26 +52,26 @@ function DateStatus(props: {
                 budgetId={props.budgetId}
                 onClick={isScroll ? scrollHandler : formHandler}
             ></Calendar>
-            <div className={`nav-tab ${classes.tab}`}>
-                <input
-                    id="calendar-action-scroll"
-                    type="radio"
-                    name="calendar-action"
-                    checked={isScroll}
-                    onChange={() => setIsScroll(true)}
-                ></input>
-                <label htmlFor="calendar-action-scroll">내역 조회</label>
-                <input
-                    id="calendar-action-form"
-                    type="radio"
-                    name="calendar-action"
-                    checked={!isScroll}
-                    onChange={() => {
-                        setIsScroll(false);
-                    }}
-                ></input>
-                <label htmlFor="calendar-action-form">내역 추가</label>
-            </div>
+
+            <RadioTab
+                className={classes.tab}
+                name="calendar-action"
+                values={[
+                    {
+                        label: '내역 조회',
+                        value: 'scroll',
+                        checked: isScroll,
+                        onChange: () => setIsScroll(true),
+                    },
+
+                    {
+                        label: '내역 추가',
+                        value: 'add',
+                        checked: !isScroll,
+                        onChange: () => setIsScroll(false),
+                    },
+                ]}
+            />
         </Fragment>
     );
 }

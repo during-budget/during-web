@@ -2,6 +2,7 @@ import { ScrollRestoration, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classes from './TransactionDetail.module.css';
 import Amount from '../../models/Amount';
+import RadioTab from '../../components/UI/RadioTab';
 
 function TransactionDetail() {
     const navigation = useNavigate();
@@ -32,53 +33,41 @@ function TransactionDetail() {
                         {Amount.getAmountString(transaction.amount)}
                     </p>
                     <div className={classes.tabs}>
-                        <ul className="nav-tab">
-                            <li>
-                                <input
-                                    id="transaction-detail-scheduled"
-                                    type="radio"
-                                    name="transaction-detail-isCurrent"
-                                    defaultChecked={true}
-                                ></input>
-                                <label htmlFor="transaction-detail-scheduled">
-                                    예정 내역
-                                </label>
-                            </li>
-                            <li>
-                                <input
-                                    id="transaction-detail-current"
-                                    type="radio"
-                                    name="transaction-detail-isCurrent"
-                                ></input>
-                                <label htmlFor="transaction-detail-current">
-                                    거래 내역
-                                </label>
-                            </li>
-                        </ul>
+                        <RadioTab
+                            name="transaction-detail-isCurrent"
+                            values={[
+                                {
+                                    label: '예정 내역',
+                                    value: 'false',
+                                    defaultChecked: true,
+                                    onClick: () => {},
+                                },
+
+                                {
+                                    label: '거래 내역',
+                                    value: 'true',
+                                    onClick: () => {},
+                                },
+                            ]}
+                        />
                         <span className={classes.divider}>|</span>
-                        <ul className="nav-tab">
-                            <li>
-                                <input
-                                    id="transaction-detail-expense"
-                                    type="radio"
-                                    name="transaction-detail-isExpense"
-                                    defaultChecked={true}
-                                ></input>
-                                <label htmlFor="transaction-detail-expense">
-                                    지출
-                                </label>
-                            </li>
-                            <li>
-                                <input
-                                    id="transaction-detail-income"
-                                    type="radio"
-                                    name="transaction-detail-isExpense"
-                                ></input>
-                                <label htmlFor="transaction-detail-income">
-                                    수입
-                                </label>
-                            </li>
-                        </ul>
+                        <RadioTab
+                            name="transaction-detail-isExpense"
+                            values={[
+                                {
+                                    label: '지출',
+                                    value: 'true',
+                                    defaultChecked: true,
+                                    onClick: () => {},
+                                },
+
+                                {
+                                    label: '수입',
+                                    value: 'false',
+                                    onClick: () => {},
+                                },
+                            ]}
+                        />
                     </div>
                     <form className={classes.form}>
                         <div className="input-field">

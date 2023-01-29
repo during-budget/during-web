@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useRef, useState } from 'react';
 import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
+import RadioTab from '../UI/RadioTab';
 
 function AmountDetail(props: {
     budgetId: string;
@@ -62,35 +63,22 @@ function AmountDetail(props: {
 
     return (
         <div className={classes.container}>
-            <ul className="nav-tab">
-                <li>
-                    <input
-                        id="amount-detail-total"
-                        type="radio"
-                        name="amount-detail"
-                        defaultChecked={true}
-                    ></input>
-                    <label
-                        htmlFor="amount-detail-total"
-                        onClick={clickTotalHandler}
-                    >
-                        전체 금액
-                    </label>
-                </li>
-                <li>
-                    <input
-                        id="amount-detail-left"
-                        type="radio"
-                        name="amount-detail"
-                    ></input>
-                    <label
-                        htmlFor="amount-detail-left"
-                        onClick={clickLeftHandler}
-                    >
-                        남은 금액
-                    </label>
-                </li>
-            </ul>
+            <RadioTab
+                name="amount-detail"
+                values={[
+                    {
+                        label: '전체 금액',
+                        value: 'total',
+                        defaultChecked: true,
+                        onClick: clickTotalHandler,
+                    },
+                    {
+                        label: '남은 금액',
+                        value: 'left',
+                        onClick: clickLeftHandler,
+                    },
+                ]}
+            />
             <ul className={classes.info}>
                 <li className={classes.scheduled}>
                     <span className={classes.label}>
