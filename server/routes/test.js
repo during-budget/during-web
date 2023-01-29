@@ -3,7 +3,7 @@ const router = express.Router();
 const test = require("../controllers/test");
 
 router.get("/", test.hello);
-
+router.get("/dataList", test.dataList);
 /**
  * CRUD testData
  */
