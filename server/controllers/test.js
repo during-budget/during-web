@@ -1,5 +1,7 @@
 const Test = require("../models/Test");
-
+const User = require("../models/User");
+const Budget = require("../models/Budget");
+const Transaction = require("../models/Transaction");
 // test controller
 
 /**
@@ -10,6 +12,22 @@ const Test = require("../models/Test");
 module.exports.hello = (req, res) => {
   try {
     return res.status(200).send({ message: "hello world!" });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+/**
+ * get all data in database
+ *
+ * @return {users,budgets,transactions}
+ */
+module.exports.dataList = async (req, res) => {
+  try {
+    const users = await User.find();
+    const budgets = await Budget.find();
+    const transactions = await Transaction.find();
+    return res.status(200).send({ users, budgets, transactions });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
