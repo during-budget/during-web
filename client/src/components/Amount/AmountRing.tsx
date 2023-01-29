@@ -8,7 +8,7 @@ const RING_DASH = 482.5;
 
 const EARS = require('../../assets/svg/cat_ears.svg').default;
 
-function AmountRing(props: { amount: Amount }) {
+function AmountRing(props: { isExpense: boolean; amount: Amount }) {
     const [isOverAmount, setIsOverAmount] = useState(false);
     const [overState, setOverState] = useState<(JSX.Element | undefined)[]>([]);
 
@@ -60,7 +60,13 @@ function AmountRing(props: { amount: Amount }) {
         <Fragment>
             {isOverAmount && (
                 <>
-                    <div className={`error ${classes.errors}`}>{overState}</div>
+                    <div
+                        className={`${props.isExpense ? 'error' : 'inform'} ${
+                            classes.inform
+                        }`}
+                    >
+                        {overState}
+                    </div>
                 </>
             )}
             <div

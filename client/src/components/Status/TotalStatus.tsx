@@ -36,7 +36,10 @@ function TotalStatus(props: {
                     <label htmlFor="total-nav-income">수입</label>
                 </li>
             </ul>
-            <AmountRing amount={isExpense ? props.total.expense : props.total.income} />
+            <AmountRing
+                isExpense={isExpense}
+                amount={isExpense ? props.total.expense : props.total.income}
+            />
             <AmountDetail
                 budgetId={props.budgetId}
                 isExpense={isExpense}

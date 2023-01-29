@@ -76,10 +76,14 @@
     background-color: var(--primary);
 }
 
-.errors > p {
+.inform {
+    margin-top: 0.2rem;
+}
+
+.inform > p {
     line-height: 1.3rem;
 }
 
-.errors > p > i {
+.inform > p > i {
     margin-right: 0.2rem;
 }
