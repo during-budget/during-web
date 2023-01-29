@@ -11,8 +11,8 @@ const {
 router.post("/register", isNotLoggedIn, users.register);
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
 router.get("/logout", isLoggedIn, users.logout);
-router.get("/", isLoggedIn, users.current);
 
+router.get("/current", isLoggedIn, users.current);
 router.get("/list", isLoggedIn, users.list);
 
 module.exports = router;
