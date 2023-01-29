@@ -52,6 +52,9 @@ const transactionSlice = createSlice({
             } else {
                 state[idx] = transaction;
             }
+
+            // sort by date (desc)
+            state.sort((prev, next) => (+next.date - +prev.date));
         },
         removeTransaction(state, action) {
             const id = action.payload;
