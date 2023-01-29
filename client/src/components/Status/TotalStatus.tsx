@@ -3,39 +3,39 @@ import classes from './TotalStatus.module.css';
 import Amount from '../../models/Amount';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
+import RadioTab from '../UI/RadioTab';
 
 function TotalStatus(props: {
     budgetId: string;
     total: { expense: Amount; income: Amount };
 }) {
     const [isExpense, setIsExpense] = useState(true);
+
+    const expenseHandler = () => {
+        setIsExpense(true);
+    };
+    const incomeHandler = () => {
+        setIsExpense(false);
+    };
     return (
         <Fragment>
-            <ul className={`nav-tab ${classes.nav}`}>
-                <li>
-                    <input
-                        id="total-nav-expense"
-                        type="radio"
-                        name="total-nav"
-                        defaultChecked={true}
-                        onClick={() => {
-                            setIsExpense(true);
-                        }}
-                    ></input>
-                    <label htmlFor="total-nav-expense">지출</label>
-                </li>
-                <li>
-                    <input
-                        id="total-nav-income"
-                        type="radio"
-                        name="total-nav"
-                        onClick={() => {
-                            setIsExpense(false);
-                        }}
-                    ></input>
-                    <label htmlFor="total-nav-income">수입</label>
-                </li>
-            </ul>
+            <RadioTab
+                className={classes.nav}
+                name="total-nav"
+                values={[
+                    {
+                        label: '지출',
+                        value: 'expense',
+                        defaultChecked: true,
+                        onClick: expenseHandler,
+                    },
+                    {
+                        label: '수입',
+                        value: 'income',
+                        onClick: incomeHandler,
+                    },
+                ]}
+            />
             <AmountRing
                 isExpense={isExpense}
                 amount={isExpense ? props.total.expense : props.total.income}
