@@ -82,7 +82,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                     uiActions.setTransactionForm({
                         id,
                         isExpand: true,
-                        isEdit: true,
+                        isEdit: false,
                         isCurrent: true,
                         isCompleted: true,
                         isExpense: isExpense,
