@@ -53,7 +53,8 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
         }
 
         const deg = ratio * 360;
-        return { transform: `rotate(${deg}deg) scale(0.95)` };
+        const opacity = deg > 20 ? 1 : 0;
+        return { transform: `rotate(${deg}deg) scale(0.95)`, opacity };
     };
 
     return (
