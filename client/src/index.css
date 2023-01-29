@@ -38,6 +38,12 @@ input::placeholder {
     color: var(--secondary-text);
 }
 
+select {
+    border: none;
+    outline: none;
+    font-weight: 800;
+}
+
 button {
     cursor: pointer;
     border: 0;
