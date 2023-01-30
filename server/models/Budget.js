@@ -71,4 +71,19 @@ budgetSchema.index({
   startDate: -1,
 });
 
+budgetSchema.methods.findCategory = function ({ isExpense, categoryId }) {
+  return _.find(isExpense ? this.expenseCategories : this.incomeCategories, {
+    categoryId: mongoose.Types.ObjectId(categoryId),
+  })?.toObject();
+};
+
+budgetSchema.methods.findCategoryIdx = function ({ isExpense, categoryId }) {
+  return _.findIndex(
+    isExpense ? this.expenseCategories : this.incomeCategories,
+    {
+      categoryId: mongoose.Types.ObjectId(categoryId),
+    }
+  );
+};
+
 module.exports = mongoose.model("Budget", budgetSchema);
