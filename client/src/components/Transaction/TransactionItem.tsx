@@ -66,6 +66,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                 dispatch(
                     budgetActions.updateTotalAmount({
                         budgetId,
+                        isExpense,
                         isCurrent,
                         amount: -amount,
                     })

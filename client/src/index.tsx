@@ -8,9 +8,11 @@ import { Provider } from 'react-redux';
 import './index.css';
 import store from './store/index';
 import Auth, { loader as authLoader } from './screens/auth/Auth';
-import BudgetList, { loader as budgetLoader } from './screens/budget/BudgetList';
+import BudgetList, {
+    loader as budgetListLoader,
+} from './screens/budget/BudgetList';
 import BudgetForm from './screens/budget/BudgetForm';
-import Budget from './screens/budget/Budget';
+import Budget, { loader as budgetLoader } from './screens/budget/Budget';
 import TransactionDetail from './screens/budget/TransactionDetail';
 import Test, { loader as testLoader } from './screens/Test';
 import RequireAuth from './screens/auth/RequireAuth';
@@ -44,7 +46,7 @@ const router = createBrowserRouter([
                     {
                         path: '/budget',
                         element: <BudgetList />,
-                        loader: budgetLoader
+                        loader: budgetListLoader,
                     },
                     {
                         path: '/budget/form',
@@ -53,6 +55,7 @@ const router = createBrowserRouter([
                     {
                         path: '/budget/:budgetId',
                         element: <Budget />,
+                        loader: budgetLoader,
                     },
                     {
                         path: '/budget/:budgetId/:transactionId',
