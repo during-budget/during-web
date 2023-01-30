@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const categorySchema = mongoose.Schema(
   {
     categoryId: mongoose.Types.ObjectId,
-    isExpense: { type: Boolean, default: true },
+    isExpense: Boolean, // true -> expense, false -> income, undefined -> etc
     title: String,
     icon: String,
     ammount: {
@@ -21,24 +22,46 @@ const budgetSchema = mongoose.Schema(
     endDate: Date,
     title: String,
 
-    ammountScheduled: {
-      //예정 지출
+    //예정 지출
+    expenseScheduled: {
       type: Number,
       default: 0,
     },
 
-    ammountCurrent: {
-      //현재 지출
+    //현재 지출
+    expenseCurrent: {
       type: Number,
       default: 0,
     },
 
-    ammountBudget: {
-      //예산 총액
+    //지출 예산 총액
+    expensePlanned: {
       type: Number,
       default: 0,
     },
-    categories: [categorySchema],
+
+    expenseCategories: [categorySchema],
+
+    //예정 수입
+    incomeScheduled: {
+      type: Number,
+      default: 0,
+    },
+
+    //현재 수입
+    incomeCurrent: {
+      type: Number,
+      default: 0,
+    },
+
+    //수입 예산 총액
+
+    incomePlanned: {
+      type: Number,
+      default: 0,
+    },
+
+    incomeCategories: [categorySchema],
   },
   { timestamps: true }
 );
