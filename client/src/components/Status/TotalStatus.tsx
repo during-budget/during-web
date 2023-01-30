@@ -39,6 +39,11 @@ function TotalStatus(props: {
             <AmountRing
                 isExpense={isExpense}
                 amount={isExpense ? props.total.expense : props.total.income}
+                size="16rem"
+                width="3rem"
+                dash={482.5}
+                blur={6}
+                showMsg={true}
             />
             <AmountDetail
                 budgetId={props.budgetId}
