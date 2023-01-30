@@ -40,6 +40,38 @@ class Budget {
         this._title = title;
     }
 
+    static getBudgetUpdatedTotal = (
+        prevBudget: Budget | any,
+        isExpense: boolean,
+        isCurrent: boolean,
+        amount: number
+    ) => {
+        const key = isExpense ? 'expense' : 'income';
+        const total = prevBudget.total;
+
+        if (isCurrent) {
+            total[key].addCurrent(amount);
+        } else {
+            total[key].addScheduled(amount);
+        }
+
+        const { id, title, startDate, endDate, categories } = prevBudget;
+        return new Budget({ id, title, startDate, endDate, total, categories });
+    };
+
+    static getBudgetUpdatedPlan = (
+        prevBudget: Budget | any,
+        isExpense: boolean,
+        amount: number
+    ) => {
+        const key = isExpense ? 'expense' : 'income';
+        const total = prevBudget.total[key];
+        total[key] = new Amount(total.current, total.scheduled, amount);
+
+        const { id, title, startDate, endDate, categories } = prevBudget;
+        return new Budget({ id, title, startDate, endDate, total, categories });
+    };
+
     constructor(budget: {
         id: string;
         title: string;

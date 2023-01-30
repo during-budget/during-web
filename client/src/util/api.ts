@@ -71,8 +71,25 @@ export const getCurrentUserState = async () => {
     return response.json();
 };
 
-export const getBudgetData = async () => {
+export const getBudgetList = async () => {
     const url = `${BASE_URL}/api/budgets`;
+    const response = await fetch(url, {
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Response(
+            `Failed to get budgets.\n${data.message ? data.message : ''}`,
+            { status: response.status }
+        );
+    }
+
+    return response.json();
+};
+
+export const getBudgetById = async (id: string) => {
+    const url = `${BASE_URL}/api/budgets/${id}`;
     const response = await fetch(url, {
         credentials: 'include',
     });
