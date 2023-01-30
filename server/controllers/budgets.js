@@ -25,40 +25,20 @@ module.exports.create = async (req, res) => {
       incomePlanned: req.body.incomePlanned,
     });
 
-    for (let _category of req.body.expenseCategories) {
-      const category = user.findCategory({
-        isExpense: true,
-        categoryId: _category.categoryId,
-      });
+    for (let _category of req.body.categories) {
+      const category = user.findCategory(_category.categoryId);
 
       if (!category)
         return res.status(404).send({
           message: `category with _id ${_category.categoryId} not found`,
         });
-      console.log("category: ", category);
-      budget.expenseCategories.push({
+
+      budget.categories.push({
         ...category,
         categoryId: _category.categoryId,
         ammount: _category.ammount,
       });
     }
-
-    for (let _category of req.body.incomeCategories) {
-      const category = user.findCategory({
-        isExpense: false,
-        categoryId: _category.categoryId,
-      });
-      if (!category)
-        return res.status(404).send({
-          message: `category with _id ${budget.categories[i].categoryId} not found`,
-        });
-      budget.incomeCategories.push({
-        ...category,
-        categoryId: _category.categoryId,
-        ammount: _category.ammount,
-      });
-    }
-
     await budget.save();
 
     return res.status(200).send({ budget });
@@ -71,7 +51,7 @@ module.exports.create = async (req, res) => {
  * create budget category
  *
  * @param {_id}
- * @body {  isExpense, categoryId, ammount }
+ * @body {  categoryId, ammount }
  * @return budget
  */
 module.exports.createCategory = async (req, res) => {
@@ -80,27 +60,21 @@ module.exports.createCategory = async (req, res) => {
     const budget = await Budget.findById(req.params._id);
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
-    const exCategory = budget.findCategory({
-      isExpense: req.body.isExpense,
-      categoryId: req.body.categoryId,
-    });
+    const exCategory = budget.findCategory(req.body.categoryId);
     if (exCategory) {
       return res.status(409).send({
         message: `budget category with _id ${req.body.categoryId} already exists`,
       });
     }
 
-    const category = user.findCategory({
-      isExpense: req.body.isExpense,
-      categoryId: req.body.categoryId,
-    });
+    const category = user.findCategory(req.body.categoryId);
     if (!category) {
       return res.status(404).send({
         message: `user category with _id ${req.body.categoryId} not found`,
       });
     }
 
-    budget[req.body.isExpense ? "expenseCategories" : "incomeCategories"].push({
+    budget.categories.push({
       ...category,
       categoryId: category._id,
       ammount: req.body.ammount,
@@ -123,25 +97,19 @@ module.exports.createCategory = async (req, res) => {
  */
 module.exports.updateCategoryAmmount = async (req, res) => {
   try {
-    if (!req.query.isExpense || !req.query.categoryId)
-      return res.status(400).send();
+    if (!req.query.categoryId) return res.status(400).send();
 
     const user = req.user;
     const budget = await Budget.findById(req.params._id);
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
-    const idx = budget.findCategoryIdx({
-      isExpense: req.query.isExpense === "true" ? true : false,
-      categoryId: req.query.categoryId,
-    });
+    const idx = budget.findCategoryIdx(req.query.categoryId);
     if (idx === -1)
       return res.status(404).send({
         message: `budget category with _id ${req.query.categoryId} not found`,
       });
 
-    budget[
-      req.query.isExpense === "true" ? "expenseCategories" : "incomeCategories"
-    ][idx].ammount = req.body.ammount;
+    budget.categories[idx].ammount = req.body.ammount;
     await budget.save();
 
     return res.status(200).send({ budget });
@@ -162,19 +130,14 @@ module.exports.removeCategory = async (req, res) => {
     const budget = await Budget.findById(req.params._id);
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
-    const idx = budget.findCategoryIdx({
-      isExpense: req.query.isExpense === "true",
-      categoryId: req.query.categoryId,
-    });
+    const idx = budget.findCategoryIdx(req.query.categoryId);
     if (idx === -1) {
       return res.status(404).send({
         message: `budget category with _id ${req.query.categoryId} not found`,
       });
     }
 
-    budget[
-      req.query.isExpense === "true" ? "expenseCategories" : "incomeCategories"
-    ].splice(idx, 1);
+    budget.categories.splice(idx, 1);
     await budget.save();
 
     return res.status(200).send({ budget });
@@ -186,7 +149,7 @@ module.exports.removeCategory = async (req, res) => {
 /**
  * Update budget fields
  *
- * @body { startDate?, endDate? title?, expensePlanned?}
+ * @body { startDate?, endDate? title?, expensePlanned?, incomePlanned?}
  * @return budget
  */
 module.exports.updateField = async (req, res) => {
@@ -199,6 +162,7 @@ module.exports.updateField = async (req, res) => {
     budget.endDate = req.body.endDate ?? budget.endDate;
     budget.title = req.body.title ?? budget.title;
     budget.expensePlanned = req.body.expensePlanned ?? budget.expensePlanned;
+    budget.incomePlanned = req.body.incomePlanned ?? budget.incomePlanned;
     await budget.save();
 
     return res.status(200).send({ budget });
