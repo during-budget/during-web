@@ -53,3 +53,20 @@ export const login = async (userName: string, password: string) => {
         );
     }
 };
+
+export const getCurrentUserState = async () => {
+    const url = `${BASE_URL}/api/users/current`;
+    const response = await fetch(url, {
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        console.error(
+            `Yout should login.\n${data.message ? data.message : ''}`
+        );
+        return null;
+    }
+
+    return response.json();
+};

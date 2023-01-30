@@ -7,7 +7,7 @@ import {
 import { Provider } from 'react-redux';
 import './index.css';
 import store from './store/index';
-import Auth from './screens/auth/Auth';
+import Auth, { loader as authLoader } from './screens/auth/Auth';
 import BudgetList from './screens/budget/BudgetList';
 import BudgetForm from './screens/budget/BudgetForm';
 import Budget from './screens/budget/Budget';
@@ -31,6 +31,7 @@ const router = createBrowserRouter([
             {
                 path: '/auth',
                 element: <Auth />,
+                loader: authLoader,
             },
             {
                 path: '/budget',
