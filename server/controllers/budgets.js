@@ -8,7 +8,7 @@ const Transaction = require("../models/Transaction");
 /**
  * Create budget
  *
- * @body { startDate,endDate, title, ammountBudget, categories}
+ * @body { startDate,endDate, title, expensePlanned,incomePlanned,categories}
  * @return budget
  */
 
@@ -21,22 +21,42 @@ module.exports.create = async (req, res) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       title: req.body.title,
-      ammountBudget: req.body.ammountBudget,
-      categories: req.body.categories,
+      expensePlanned: req.body.expensePlanned,
+      incomePlanned: req.body.incomePlanned,
     });
 
-    for (let i = 0; i < budget.categories.length; i++) {
-      const category = _.find(user.categories, {
-        _id: mongoose.Types.ObjectId(budget.categories[i].categoryId),
+    for (let _category of req.body.expenseCategories) {
+      const category = user.findCategory({
+        isExpense: true,
+        categoryId: _category.categoryId,
       });
 
       if (!category)
         return res.status(404).send({
+          message: `category with _id ${_category.categoryId} not found`,
+        });
+      console.log("category: ", category);
+      budget.expenseCategories.push({
+        ...category,
+        categoryId: _category.categoryId,
+        ammount: _category.ammount,
+      });
+    }
+
+    for (let _category of req.body.incomeCategories) {
+      const category = user.findCategory({
+        isExpense: false,
+        categoryId: _category.categoryId,
+      });
+      if (!category)
+        return res.status(404).send({
           message: `category with _id ${budget.categories[i].categoryId} not found`,
         });
-      budget.categories[i].isExpense = category.isExpense;
-      budget.categories[i].title = category.title;
-      budget.categories[i].icon = category.icon;
+      budget.incomeCategories.push({
+        ...category,
+        categoryId: _category.categoryId,
+        ammount: _category.ammount,
+      });
     }
 
     await budget.save();
@@ -96,7 +116,7 @@ module.exports.updateCategory = async (req, res) => {
 /**
  * Update budget fields
  *
- * @body { startDate?, endDate? title?, ammountBudget?}
+ * @body { startDate?, endDate? title?, expensePlanned?}
  * @return budget
  */
 module.exports.updateField = async (req, res) => {
@@ -108,7 +128,7 @@ module.exports.updateField = async (req, res) => {
     budget.startDate = req.body.startDate ?? budget.startDate;
     budget.endDate = req.body.endDate ?? budget.endDate;
     budget.title = req.body.title ?? budget.title;
-    budget.ammountBudget = req.body.ammountBudget ?? budget.ammountBudget;
+    budget.expensePlanned = req.body.expensePlanned ?? budget.expensePlanned;
     await budget.save();
 
     return res.status(200).send({ budget });

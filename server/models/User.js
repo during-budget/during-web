@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const _ = require("lodash");
 
 const categorySettingSchema = mongoose.Schema({
   isExpense: Boolean, // true -> expense, false -> income, undefined -> etc
@@ -82,17 +83,17 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   }
 };
 
-userSchema.methods.findCategory = function (category) {
+userSchema.methods.findCategory = function ({ isExpense, categoryId }) {
   return _.find(
-    category.isExpense
+    isExpense
       ? this.expenseCategories
-      : category.isExpense !== undefined
+      : isExpense !== undefined
       ? this.incomeCategories
       : this.ectCategories,
     {
-      _id: mongoose.Types.ObjectId(category.categoryId),
+      _id: mongoose.Types.ObjectId(categoryId),
     }
-  );
+  )?.toObject();
 };
 
 module.exports = mongoose.model("User", userSchema);
