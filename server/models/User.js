@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 const categorySettingSchema = mongoose.Schema({
-  isExpense: Boolean, // true -> expense, false -> income, undefined -> etc
+  isExpense: { type: Boolean, default: false },
+  isIncome: { type: Boolean, default: false },
   title: String,
   icon: String,
 });
@@ -21,35 +22,22 @@ const userSchema = mongoose.Schema(
     },
 
     /* ____________ categories ____________ */
-
-    // 지출 카테고리
-    expenseCategories: {
+    categories: {
       type: [categorySettingSchema],
       default: [
+        // 지출 카테고리
         { isExpense: true, title: "교통비", icon: "🚉" },
         { isExpense: true, title: "경조사비", icon: "🎉" },
         { isExpense: true, title: "식비", icon: "🍚" },
         { isExpense: true, title: "건강", icon: "🏃‍♀️" },
         { isExpense: true, title: "교육", icon: "🎓" },
-      ],
-    },
-
-    // 수입 카테고리
-    incomeCategories: {
-      type: [categorySettingSchema],
-      default: [
-        { isExpense: false, title: "월급", icon: "💙" },
-        { isExpense: false, title: "보너스", icon: "💜" },
-        { isExpense: false, title: "용돈", icon: "💚" },
-      ],
-    },
-
-    // 기타 카테고리
-    etcCategories: {
-      type: [categorySettingSchema],
-      default: [
-        { title: "이체", icon: "🍫" },
-        { title: "채무", icon: "🍟" },
+        // 수입 카테고리
+        { isIncome: true, title: "월급", icon: "💙" },
+        { isIncome: true, title: "보너스", icon: "💜" },
+        { isIncome: true, title: "용돈", icon: "💚" },
+        // 기타 카테고리
+        { isExpense: true, isIncome: true, title: "이체", icon: "🍫" },
+        { isExpense: true, isIncome: true, title: "채무", icon: "🍟" },
       ],
     },
   },
@@ -83,17 +71,10 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   }
 };
 
-userSchema.methods.findCategory = function ({ isExpense, categoryId }) {
-  return _.find(
-    isExpense
-      ? this.expenseCategories
-      : isExpense !== undefined
-      ? this.incomeCategories
-      : this.ectCategories,
-    {
-      _id: mongoose.Types.ObjectId(categoryId),
-    }
-  )?.toObject();
+userSchema.methods.findCategory = function (categoryId) {
+  return _.find(this.categories, {
+    _id: mongoose.Types.ObjectId(categoryId),
+  })?.toObject();
 };
 
 module.exports = mongoose.model("User", userSchema);
