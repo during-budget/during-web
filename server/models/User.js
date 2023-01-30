@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const categorySettingSchema = mongoose.Schema({
-  isExpense: { type: Boolean, default: true },
+  isExpense: Boolean, // true -> expense, false -> income, undefined -> etc
   title: String,
   icon: String,
 });
@@ -18,8 +18,11 @@ const userSchema = mongoose.Schema(
       type: String,
       select: false, //alwasy exclude password in user document
     },
-    // categories
-    categories: {
+
+    /* ____________ categories ____________ */
+
+    // 지출 카테고리
+    expenseCategories: {
       type: [categorySettingSchema],
       default: [
         { isExpense: true, title: "교통비", icon: "🚉" },
@@ -27,6 +30,25 @@ const userSchema = mongoose.Schema(
         { isExpense: true, title: "식비", icon: "🍚" },
         { isExpense: true, title: "건강", icon: "🏃‍♀️" },
         { isExpense: true, title: "교육", icon: "🎓" },
+      ],
+    },
+
+    // 수입 카테고리
+    incomeCategories: {
+      type: [categorySettingSchema],
+      default: [
+        { isExpense: false, title: "월급", icon: "💙" },
+        { isExpense: false, title: "보너스", icon: "💜" },
+        { isExpense: false, title: "용돈", icon: "💚" },
+      ],
+    },
+
+    // 기타 카테고리
+    etcCategories: {
+      type: [categorySettingSchema],
+      default: [
+        { title: "이체", icon: "🍫" },
+        { title: "채무", icon: "🍟" },
       ],
     },
   },
@@ -58,6 +80,19 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   } catch (err) {
     return err;
   }
+};
+
+userSchema.methods.findCategory = function (category) {
+  return _.find(
+    category.isExpense
+      ? this.expenseCategories
+      : category.isExpense !== undefined
+      ? this.incomeCategories
+      : this.ectCategories,
+    {
+      _id: mongoose.Types.ObjectId(category.categoryId),
+    }
+  );
 };
 
 module.exports = mongoose.model("User", userSchema);
