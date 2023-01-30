@@ -3,12 +3,17 @@ import Amount from '../../models/Amount';
 import BarChart from '../UI/BarChart';
 import classes from './AmountRing.module.css';
 
-const RING_SIZE = '16rem';
-const RING_DASH = 482.5;
-
 const EARS = require('../../assets/svg/cat_ears.svg').default;
 
-function AmountRing(props: { isExpense: boolean; amount: Amount }) {
+function AmountRing(props: {
+    isExpense: boolean;
+    amount: Amount;
+    size: string;
+    dash: number;
+    width: string;
+    blur: number;
+    showMsg?: boolean;
+}) {
     const [isOverAmount, setIsOverAmount] = useState(false);
     const [overState, setOverState] = useState<(JSX.Element | undefined)[]>([]);
 
@@ -16,10 +21,10 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
 
     useEffect(() => {
         const overMsg = amount.state
-            .map((item: any) => {
+            .map((item: any, i) => {
                 if (item.isTrue) {
                     return (
-                        <p key={item.target}>
+                        <p key={i}>
                             <i className="fa-solid fa-circle-exclamation" />
                             <strong>{item.target}</strong>
                             {`이 ${item.over}보다 `}
@@ -41,10 +46,16 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
 
     const getDash = (ratio: number) => {
         if (isOverAmount) {
-            return { strokeDasharray: `0 ${RING_DASH}` };
+            return {
+                strokeWidth: props.width,
+                strokeDasharray: `0 ${props.dash}`,
+            };
         }
-        const dash = ratio * RING_DASH;
-        return { strokeDasharray: `${dash} ${RING_DASH}` };
+        const dash = ratio * props.dash;
+        return {
+            strokeWidth: props.width,
+            strokeDasharray: `${dash} ${props.dash}`,
+        };
     };
 
     const getRotate = (ratio: number) => {
@@ -59,7 +70,7 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
 
     return (
         <Fragment>
-            {isOverAmount && (
+            {isOverAmount && props.showMsg && (
                 <>
                     <div
                         className={`${props.isExpense ? 'error' : 'inform'} ${
@@ -72,7 +83,7 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
             )}
             <div
                 className={classes.container}
-                style={{ width: RING_SIZE, height: RING_SIZE }}
+                style={{ width: props.size, height: props.size }}
             >
                 {/* Budget */}
                 <div>
@@ -174,7 +185,7 @@ function AmountRing(props: { isExpense: boolean; amount: Amount }) {
                     <filter id="rounded">
                         <feGaussianBlur
                             in="SourceGraphic"
-                            stdDeviation="6"
+                            stdDeviation={props.blur}
                             result="blur"
                         />
                         <feColorMatrix
