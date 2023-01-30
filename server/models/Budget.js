@@ -4,7 +4,8 @@ const _ = require("lodash");
 const categorySchema = mongoose.Schema(
   {
     categoryId: mongoose.Types.ObjectId,
-    isExpense: Boolean, // true -> expense, false -> income, undefined -> etc
+    isExpense: { type: Boolean, default: false },
+    isIncome: { type: Boolean, default: false },
     title: String,
     icon: String,
     ammount: {
@@ -40,8 +41,6 @@ const budgetSchema = mongoose.Schema(
       default: 0,
     },
 
-    expenseCategories: [categorySchema],
-
     //예정 수입
     incomeScheduled: {
       type: Number,
@@ -61,7 +60,7 @@ const budgetSchema = mongoose.Schema(
       default: 0,
     },
 
-    incomeCategories: [categorySchema],
+    categories: [categorySchema],
   },
   { timestamps: true }
 );
@@ -71,19 +70,16 @@ budgetSchema.index({
   startDate: -1,
 });
 
-budgetSchema.methods.findCategory = function ({ isExpense, categoryId }) {
-  return _.find(isExpense ? this.expenseCategories : this.incomeCategories, {
+budgetSchema.methods.findCategory = function (categoryId) {
+  return _.find(this.categories, {
     categoryId: mongoose.Types.ObjectId(categoryId),
   })?.toObject();
 };
 
-budgetSchema.methods.findCategoryIdx = function ({ isExpense, categoryId }) {
-  return _.findIndex(
-    isExpense ? this.expenseCategories : this.incomeCategories,
-    {
-      categoryId: mongoose.Types.ObjectId(categoryId),
-    }
-  );
+budgetSchema.methods.findCategoryIdx = function (categoryId) {
+  return _.findIndex(this.categories, {
+    categoryId: mongoose.Types.ObjectId(categoryId),
+  });
 };
 
 module.exports = mongoose.model("Budget", budgetSchema);
