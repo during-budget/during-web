@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import Amount from '../models/Amount';
 import Category from '../models/Category';
 
 const initialState: Category[] = [];
@@ -9,8 +8,7 @@ const categorySlice = createSlice({
     initialState,
     reducers: {
         setCategory(state, action) {
-            const { categories } = action.payload;
-            console.log(action.payload);
+            const categories = action.payload;
             categories.forEach(
                 (category: { _id: string; title: string; icon: string }) => {
                     const { _id: id, title, icon } = category;
