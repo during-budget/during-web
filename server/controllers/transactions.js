@@ -8,11 +8,25 @@ const Transaction = require("../models/Transaction");
 /**
  * Create transaction
  *
- * @body { budgetId, date, isCurrent, isExpense: Boolean, title: [String], ammount: Number, categoryId, tags?, memo?}
+ * @body { budgetId, date, isCurrent, title: [String], ammount: Number, categoryId, tags?, memo?, linkId?}
  * @return transaction
  */
+
 module.exports.create = async (req, res) => {
   try {
+    for (let field of [
+      "budgetId",
+      "date",
+      "isCurrent",
+      "title",
+      "ammount",
+      "categoryId",
+    ])
+      if (!(field in req.body))
+        return res.status(409).send({
+          message: `fields(budgetId, date, isCurrent, title, ammount, categoryId) are required`,
+        });
+
     const user = req.user;
 
     const budget = await Budget.findById(req.body.budgetId);
@@ -34,12 +48,13 @@ module.exports.create = async (req, res) => {
       budgetId: budget._id,
       date: req.body.date,
       isCurrent: req.body.isCurrent,
-      isExpense: category.isExpense,
       linkId: req.body.linkId,
       title: req.body.title,
       ammount: req.body.ammount,
       category: {
         categoryId: category._id,
+        isExpense: category.isExpense,
+        isIncome: category.isIncome,
         title: category.title,
         icon: category.icon,
       },
@@ -85,12 +100,24 @@ module.exports.updateCategory = async (req, res) => {
     });
     if (!category) return res.status(404).send();
 
-    transaction.isExpense = category.isExpense;
     transaction.category = {
       ...category,
       categoryId: category._id,
     };
     await transaction.save();
+
+    if (transaction.linkId) {
+      const transactionLinked = await Transaction.findById(transaction.linkId);
+      if (!transactionLinked) return res.status(404).send();
+      if (!transactionLinked.userId.equals(user._id))
+        return res.status(401).send();
+
+      transactionLinked.category = {
+        ...category,
+        categoryId: category._id,
+      };
+      await transactionLinked.save();
+    }
 
     return res.status(200).send({ transaction });
   } catch (err) {
@@ -99,7 +126,7 @@ module.exports.updateCategory = async (req, res) => {
 };
 
 /**
- * Update transaction category
+ * Update transaction field
  *
  * @param {_id: transactionId}
  * @body { date?, title?, ammount?, tags?, memo? }
@@ -139,10 +166,14 @@ module.exports.find = async (req, res) => {
   try {
     const user = req.user;
 
-    if (req.query._id) {
-      const transactions = await Transaction.findById(req.query._id);
+    if (req.params._id) {
+      const transactions = await Transaction.findById(req.params._id);
       return res.status(200).send({ transactions });
     }
+    if (!("budgetId" in req.query))
+      return res.status(409).send({
+        message: `query budgetId is required`,
+      });
     const transactions = await Transaction.find({
       userId: user._id,
       budgetId: req.query.budgetId,
@@ -160,6 +191,11 @@ module.exports.find = async (req, res) => {
  */
 module.exports.remove = async (req, res) => {
   try {
+    if (!("_id" in req.params))
+      return res.status(409).send({
+        message: `parameter _id is required`,
+      });
+
     const user = req.user;
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction) return res.status(404).send();

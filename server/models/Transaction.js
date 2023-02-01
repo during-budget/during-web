@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const categorySchema = mongoose.Schema(
   {
     categoryId: mongoose.Types.ObjectId,
-    isExpense: { type: Boolean, default: true },
+    isExpense: { type: Boolean, default: false },
+    isIncome: { type: Boolean, default: false },
     title: String,
     icon: String,
   },
@@ -16,7 +17,6 @@ const transactionSchema = mongoose.Schema(
     budgetId: mongoose.Types.ObjectId,
     date: Date,
     isCurrent: Boolean, // true - current, false - scheduled
-    isExpense: Boolean, // true - expense, false - income
     linkId: mongoose.Types.ObjectId, // isCurrent - scheduledId, !isCurrent - currentId
     title: [String],
     ammount: Number,
