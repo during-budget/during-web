@@ -14,9 +14,9 @@ const { updateCategory } = require("./transactions");
  */
 module.exports.create = async (req, res) => {
   try {
-    if (!req.body.title || !req.body.icon)
+    if (!("title" in req.body) || !("icon" in req.body))
       return res.status(409).send({ message: "title and icon is required" });
-    if (!"isExpense" in req.body || !"isIncome" in req.body)
+    if (!("isExpense" in req.body) || !("isIncome" in req.body))
       return res
         .status(409)
         .send({ message: "isExpense and isIncome is required" });
@@ -61,9 +61,9 @@ module.exports.find = async (req, res) => {
  */
 module.exports.update = async (req, res) => {
   try {
-    if (!req.body.title || !req.body.icon)
+    if (!("title" in req.body) || !("icon" in req.body))
       return res.status(409).send({ message: "title and icon is required" });
-    if (!"isExpense" in req.body || !"isIncome" in req.body)
+    if (!("isExpense" in req.body) || !("isIncome" in req.body))
       return res
         .status(409)
         .send({ message: "isExpense and isIncome is required" });
