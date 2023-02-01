@@ -10,6 +10,15 @@ const initialState = {
         isExpense: undefined,
         input: {},
     },
+    budgetForm: {
+        isShow: false,
+        startDate: undefined,
+        endDate: undefined,
+        title: undefined,
+        categories: [],
+        expensePlanned: 0,
+        incomePlanned: 0,
+    },
 };
 
 const uiSlice = createSlice({
@@ -55,6 +64,12 @@ const uiSlice = createSlice({
             if (input) {
                 state.transactionForm.input = input;
             }
+        },
+        setBudgetForm(state, action) {
+            state.budgetForm = action.payload;
+        },
+        resetBudgetForm(state) {
+            state.budgetForm = initialState.budgetForm;
         },
     },
 });

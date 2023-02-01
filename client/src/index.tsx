@@ -11,7 +11,6 @@ import Auth, { loader as authLoader } from './screens/auth/Auth';
 import BudgetList, {
     loader as budgetListLoader,
 } from './screens/budget/BudgetList';
-import BudgetForm from './screens/budget/BudgetForm';
 import Budget, { loader as budgetLoader } from './screens/budget/Budget';
 import TransactionDetail from './screens/budget/TransactionDetail';
 import Test, { loader as testLoader } from './screens/Test';
@@ -47,10 +46,6 @@ const router = createBrowserRouter([
                         path: '/budget',
                         element: <BudgetList />,
                         loader: budgetListLoader,
-                    },
-                    {
-                        path: '/budget/form',
-                        element: <BudgetForm />,
                     },
                     {
                         path: '/budget/:budgetId',

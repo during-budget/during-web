@@ -7,6 +7,8 @@ import { getBudgetList } from '../../util/api';
 import { useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../../store/budget';
 import Budget from '../../models/Budget';
+import { uiActions } from '../../store/ui';
+import BudgetForm from '../../components/Budget/BudgetForm';
 
 const startDay = 1;
 const endDay = startDay - 1;
@@ -24,6 +26,7 @@ function BudgetList() {
             return startYear >= +yearState && endYear <= +yearState;
         }
     );
+    const categories = useSelector((state: any) => state.categories);
 
     useEffect(() => {
         dispatch(budgetActions.setBudgets(loaderData.budgets));
@@ -60,10 +63,27 @@ function BudgetList() {
                                 startDate={startDate}
                                 endDate={endDate}
                                 budget={budget}
+                                onClick={() => {
+                                    dispatch(
+                                        uiActions.setBudgetForm({
+                                            isShow: true,
+                                            startDate,
+                                            endDate,
+                                            title: startDate.toLocaleDateString(
+                                                'ko-KR',
+                                                { month: 'long' }
+                                            ),
+                                            categories,
+                                            expansePlanned: 0,
+                                            incomePlanned: 0,
+                                        })
+                                    );
+                                }}
                             />
                         );
                     })}
             </ol>
+            <BudgetForm />
         </div>
     );
 }
