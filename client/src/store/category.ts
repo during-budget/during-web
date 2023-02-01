@@ -9,24 +9,24 @@ const categorySlice = createSlice({
     reducers: {
         setCategory(state, action) {
             const categories = action.payload;
-            categories.forEach(
-                (category: { _id: string; title: string; icon: string }) => {
-                    const { _id: id, title, icon } = category;
-                    state.push(new Category({ id, title, icon }));
-                }
-            );
+            categories.forEach((category: any) => {
+                const { _id: id, title, icon, isExpense, isIncome } = category;
+                state.push(
+                    new Category({ id, title, icon, isExpense, isIncome })
+                );
+            });
         },
         craeteCategory(state, action) {
-            const { budgetId, icon, title, budgetAmount } = action.payload;
-            const id = +new Date() + '';
-            state.push(
-                new Category({
-                    id,
-                    icon,
-                    title,
-                    // initialData: { budgetId, budgetAmount },
-                })
-            );
+            // const { budgetId, icon, title, budgetAmount } = action.payload;
+            // const id = +new Date() + '';
+            // state.push(
+            //     new Category({
+            //         id,
+            //         icon,
+            //         title,
+            //         // initialData: { budgetId, budgetAmount },
+            //     })
+            // );
         },
         // TODO: budget에서 소속 category amount 업데이트 하기,,
         updateAmount(state, action) {
