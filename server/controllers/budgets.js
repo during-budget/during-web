@@ -128,6 +128,7 @@ module.exports.removeCategory = async (req, res) => {
   try {
     const user = req.user;
     const budget = await Budget.findById(req.params._id);
+    if (!budget) return res.status(404).send({ message: "budget not found" });
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
     const idx = budget.findCategoryIdx(req.query.categoryId);
@@ -136,6 +137,17 @@ module.exports.removeCategory = async (req, res) => {
         message: `budget category with _id ${req.query.categoryId} not found`,
       });
     }
+
+    // 해당 카테고리를 사용하는 transaction이 존재하는가?
+    const transactions = await Budget.find({
+      userId: user._id,
+      "categories.categoryId": req.query.categoryId,
+    });
+    if (transactions.length > 0)
+      return res.status(409).send({
+        message: "해당 카테고리를 사용하는 거래내역이 있습니다.",
+        transactions,
+      });
 
     budget.categories.splice(idx, 1);
     await budget.save();
