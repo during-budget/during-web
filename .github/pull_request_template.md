@@ -1,4 +1,1 @@
-# Issues
 - Closes #
-
-# Working Log
