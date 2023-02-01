@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useLoaderData, useLocation } from 'react-router-dom';
+import { categoryActions } from '../../store/category';
 import { userActions } from '../../store/user';
 import { getCurrentUserState } from '../../util/api';
 import classes from './Auth.module.css';
@@ -17,10 +18,11 @@ function Auth() {
     useEffect(() => {
         if (loaderData) {
             dispatch(userActions.login());
+            dispatch(categoryActions.setCategory(loaderData.user.categories));
         } else {
             dispatch(userActions.logout());
         }
-    }, [loaderData]);
+    }, [loaderData, dispatch]);
 
     if (auth) {
         if (from === '/' || from === '/auth' || from === undefined) {
