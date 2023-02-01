@@ -71,7 +71,6 @@ const budgetSlice = createSlice({
             const { budgetId, isExpense, isCurrent, amount } = action.payload;
             const idx = state.findIndex((item) => item.id === budgetId);
 
-            console.log(state[idx]);
             if (state[idx]) {
                 state[idx] = Budget.getBudgetUpdatedTotal(
                     state[idx],
