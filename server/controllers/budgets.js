@@ -211,7 +211,31 @@ module.exports.find = async (req, res) => {
       if (!budget.userId.equals(user._id)) return res.status(401).send();
 
       const transactions = await Transaction.find({ budgetId: budget._id });
-      return res.status(200).send({ budget, transactions });
+      // return res.status(200).send({ budget, transactions });
+
+      return res.status(200).send({
+        message: "check",
+        budget: {
+          title: budget.title,
+          expenseScheduled: budget.expenseScheduled,
+          expenseCurrent: budget.expenseCurrent,
+          expensePlanned: budget.expensePlanned,
+          incomeScheduled: budget.incomeScheduled,
+          incomeCurrent: budget.incomeCurrent,
+          incomePlanned: budget.incomePlanned,
+          categories: budget.categories.map((cat) => {
+            return {
+              categoryId: cat.categoryId,
+              title: cat.title,
+              amountPlanned: cat.amountPlanned,
+              amountScheduled: cat.amountScheduled,
+              amountCurrent: cat.amountCurrent,
+            };
+          }),
+        },
+
+        transactions,
+      });
     }
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ budgets });

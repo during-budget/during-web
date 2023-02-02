@@ -46,11 +46,9 @@ module.exports.create = async (req, res) => {
       categoryId: mongoose.Types.ObjectId(req.body.categoryId),
     });
     if (!category)
-      return res
-        .status(404)
-        .send({
-          message: `category(${req.body.categoryId}) not found in budget`,
-        });
+      return res.status(404).send({
+        message: `category(${req.body.categoryId}) not found in budget`,
+      });
 
     if (req.body.isExpense !== category.isExpense)
       return res.status(409).send({
@@ -76,7 +74,7 @@ module.exports.create = async (req, res) => {
       title: req.body.title,
       amount: req.body.amount,
       category: {
-        categoryId: category._id,
+        categoryId: category.categoryId,
         isExpense: category.isExpense,
         isIncome: category.isIncome,
         title: category.title,
@@ -176,7 +174,7 @@ module.exports.updateCategory = async (req, res) => {
  * Update transaction field
  *
  * @param {_id: transactionId}
- * @body { date?, title?, amount?, tags?, memo? }
+ * @body { date?, title?,  tags?, memo? }
  * @return transaction
  */
 module.exports.updateField = async (req, res) => {
@@ -190,39 +188,81 @@ module.exports.updateField = async (req, res) => {
     transaction.title = req.body.title ?? transaction.title;
     transaction.tags = req.body.tags ?? transaction.tags;
     transaction.memo = req.body.memo ?? transaction.memo;
-    if (req.body.amount) {
-      const diff = req.body.amount - transaction.amount;
-      transaction.amount = req.body.amount;
-      await transaction.save();
+    await transaction.save();
 
-      const budget = await Budget.findById(transaction.budgetId);
+    return res.status(200).send({ transaction });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};
 
-      // 1. scheduled transaction
-      if (!transaction.isCurrent) {
-        // 1-1. expense transaction
-        if (transaction.isExpense) {
-          budget.expenseScheduled += diff;
-        }
-        // 1-2. income transaction
-        else if (transaction.isIncome) {
-          budget.incomeScheduled += diff;
-        }
+/**
+ * Update transaction amount
+ *
+ * @param {_id: transactionId}
+ * @body { amount }
+ * @return transaction
+ */
+module.exports.updateAmount = async (req, res) => {
+  try {
+    if (!("amount" in req.body))
+      return res.status(400).send({ message: "field 'amount' is missing" });
+
+    const user = req.user;
+    const transaction = await Transaction.findById(req.params._id);
+    if (!transaction)
+      return res.status(404).send({ message: "transaction not found" });
+    if (!transaction.userId.equals(user._id)) return res.status(401).send();
+
+    const diff = req.body.amount - transaction.amount;
+    transaction.amount = req.body.amount;
+
+    const budget = await Budget.findById(transaction.budgetId);
+    if (!budget)
+      return res
+        .status(404)
+        .send({ message: `budget(${transaction.budgetId}) not found` });
+
+    const categoryIdx = budget.findCategoryIdx(transaction.category.categoryId);
+    if (categoryIdx === -1)
+      return res.status(404).send({
+        message: `category(${transaction.category.categoryId}) not found in budget`,
+        transaction,
+      });
+
+    const category = budget.categories[categoryIdx];
+
+    await transaction.save();
+
+    // 1. scheduled transaction
+    if (!transaction.isCurrent) {
+      category.amountScheduled += diff;
+
+      // 1-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseScheduled += diff;
       }
-      // 2. current transaction
-      else {
-        // 2-1. expense transaction
-        if (transaction.isExpense) {
-          budget.expenseCurrent += diff;
-        }
-        // 2-2. income transaction
-        else if (transaction.isIncome) {
-          budget.incomeCurrent += diff;
-        }
+      // 1-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeScheduled += diff;
       }
-      await budget.save();
-    } else {
-      await transaction.save();
     }
+    // 2. current transaction
+    else {
+      category.amountCurrent += diff;
+
+      // 2-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseCurrent += diff;
+      }
+      // 2-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeCurrent += diff;
+      }
+    }
+    budget.categories[categoryIdx] = category;
+    budget.isModified("categories");
+    await budget.save();
 
     return res.status(200).send({ transaction });
   } catch (err) {
