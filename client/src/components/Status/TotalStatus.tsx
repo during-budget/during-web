@@ -63,6 +63,7 @@ function TotalStatus(props: {
                 showMsg={true}
             />
             <AmountDetail
+                id="total"
                 amount={isExpense ? total.expense : total.income}
                 onEdit={editDetailHandler}
             />

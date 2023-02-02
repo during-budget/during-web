@@ -4,10 +4,11 @@ import Amount from '../../models/Amount';
 import RadioTab from '../UI/RadioTab';
 
 function AmountDetail(props: {
+    id: string;
     amount: Amount;
     onEdit: (amount: number) => void;
 }) {
-    const { amount, onEdit } = props;
+    const { id, amount, onEdit } = props;
 
     const [isTotal, setIsTotal] = useState(true);
     const [isEditPlan, setEditPlan] = useState(false);
@@ -53,17 +54,17 @@ function AmountDetail(props: {
     return (
         <div className={classes.container}>
             <RadioTab
-                name="amount-detail"
+                name={`${id}-amount-detail`}
                 values={[
                     {
                         label: '전체 금액',
-                        value: 'total',
+                        value: `${id}-total`,
                         defaultChecked: true,
                         onClick: clickTotalHandler,
                     },
                     {
                         label: '남은 금액',
-                        value: 'left',
+                        value: `${id}-left`,
                         onClick: clickLeftHandler,
                     },
                 ]}
