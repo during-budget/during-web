@@ -135,34 +135,87 @@ module.exports.create = async (req, res) => {
  */
 module.exports.updateCategory = async (req, res) => {
   try {
+    if (!("categoryId" in req.body))
+      return res.status(400).send({ message: "field 'categoryId' is missing" });
+
     const user = req.user;
     const transaction = await Transaction.findById(req.params._id);
-    if (!transaction) return res.status(404).send();
+    if (!transaction)
+      return res.status(404).send({ message: "transaction not found" });
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
 
-    const category = _.find(user.categories, {
-      _id: mongoose.Types.ObjectId(req.body.categoryId),
-    });
-    if (!category) return res.status(404).send();
+    const budget = await Budget.findById(transaction.budgetId);
+    if (!budget)
+      return res
+        .status(404)
+        .send({ message: `budget(${transaction.budgetId}) not found` });
+
+    const oldCategoryIdx = budget.findCategoryIdx(
+      transaction.category.categoryId
+    );
+    if (oldCategoryIdx === -1)
+      return res.status(404).send({
+        message: `old category(${transaction.category.categoryId}) not found in budget`,
+        transaction,
+      });
+    const oldCategory = budget.categories[oldCategoryIdx];
+
+    const newCategoryIdx = budget.findCategoryIdx(req.body.categoryId);
+    if (newCategoryIdx === -1)
+      return res.status(404).send({
+        message: `category(${req.body.categoryId}) not found in budget`,
+        transaction,
+      });
+    const newCategory = budget.categories[newCategoryIdx];
 
     transaction.category = {
-      ...category,
-      categoryId: category._id,
+      ...newCategory,
+      categoryId: newCategory._id,
     };
     await transaction.save();
 
+    // 1. scheduled transaction
+    if (!transaction.isCurrent) {
+      oldCategory.amountScheduled -= transaction.amount;
+      newCategory.amountScheduled += transaction.amount;
+    }
+    // 2. current transaction
+    else {
+      oldCategory.amountCurrent -= transaction.amount;
+      newCategory.amountCurrent += transaction.amount;
+    }
+
     if (transaction.linkId) {
       const transactionLinked = await Transaction.findById(transaction.linkId);
-      if (!transactionLinked) return res.status(404).send();
+      if (!transactionLinked)
+        return res
+          .status(404)
+          .send({ message: "linked transaction not found" });
       if (!transactionLinked.userId.equals(user._id))
         return res.status(401).send();
 
       transactionLinked.category = {
-        ...category,
-        categoryId: category._id,
+        ...newCategory,
+        categoryId: newCategory._id,
       };
       await transactionLinked.save();
+
+      // 1. scheduled transaction
+      if (!transactionLinked.isCurrent) {
+        oldCategory.amountScheduled -= transactionLinked.amount;
+        newCategory.amountScheduled += transactionLinked.amount;
+      }
+      // 2. current transaction
+      else {
+        oldCategory.amountCurrent -= transactionLinked.amount;
+        newCategory.amountCurrent += transactionLinked.amount;
+      }
     }
+
+    budget.categories[oldCategoryIdx] = oldCategory;
+    budget.categories[newCategoryIdx] = newCategory;
+    budget.isModified("categories");
+    await budget.save();
 
     return res.status(200).send({ transaction });
   } catch (err) {
