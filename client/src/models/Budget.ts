@@ -65,8 +65,12 @@ class Budget {
         amount: number
     ) => {
         const key = isExpense ? 'expense' : 'income';
-        const total = prevBudget.total[key];
-        total[key] = new Amount(total.current, total.scheduled, amount);
+        const total = prevBudget.total;
+        total[key] = new Amount(
+            total[key].current,
+            total[key].scheduled,
+            amount
+        );
 
         const { id, title, startDate, endDate, categories } = prevBudget;
         return new Budget({ id, title, startDate, endDate, total, categories });
