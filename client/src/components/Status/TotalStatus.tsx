@@ -4,19 +4,36 @@ import Amount from '../../models/Amount';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import RadioTab from '../UI/RadioTab';
+import { budgetActions } from '../../store/budget';
+import { useDispatch } from 'react-redux';
 
 function TotalStatus(props: {
     budgetId: string;
     total: { expense: Amount; income: Amount };
 }) {
+    const dispatch = useDispatch();
     const [isExpense, setIsExpense] = useState(true);
+
+    const { budgetId, total } = props;
 
     const expenseHandler = () => {
         setIsExpense(true);
     };
+
     const incomeHandler = () => {
         setIsExpense(false);
     };
+
+    const editDetailHandler = (amount: number) => {
+        dispatch(
+            budgetActions.updatePlannedAmount({
+                budgetId,
+                isExpense,
+                amount,
+            })
+        );
+    };
+
     return (
         <Fragment>
             <RadioTab
@@ -38,7 +55,7 @@ function TotalStatus(props: {
             />
             <AmountRing
                 isExpense={isExpense}
-                amount={isExpense ? props.total.expense : props.total.income}
+                amount={isExpense ? total.expense : total.income}
                 size="16rem"
                 width="3rem"
                 dash={482.5}
@@ -46,9 +63,8 @@ function TotalStatus(props: {
                 showMsg={true}
             />
             <AmountDetail
-                budgetId={props.budgetId}
-                isExpense={isExpense}
-                amount={isExpense ? props.total.expense : props.total.income}
+                amount={isExpense ? total.expense : total.income}
+                onEdit={editDetailHandler}
             />
         </Fragment>
     );
