@@ -6,6 +6,7 @@ const transactions = require("../controllers/transactions");
 router.post("/", isLoggedIn, transactions.create);
 
 router.put("/:_id/category", isLoggedIn, transactions.updateCategory);
+router.put("/:_id/amount", isLoggedIn, transactions.updateAmount);
 router.patch("/:_id", isLoggedIn, transactions.updateField);
 
 router.get("/:_id?", isLoggedIn, transactions.find);
