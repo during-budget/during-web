@@ -1,18 +1,13 @@
 import classes from './AmountDetail.module.css';
-import { useDispatch } from 'react-redux';
 import { useRef, useState } from 'react';
-import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 import RadioTab from '../UI/RadioTab';
 
 function AmountDetail(props: {
-    budgetId: string;
-    isExpense: boolean;
     amount: Amount;
+    onEdit: (amount: number) => void;
 }) {
-    const { budgetId, isExpense, amount } = props;
-
-    const dispatch = useDispatch();
+    const { amount, onEdit } = props;
 
     const [isTotal, setIsTotal] = useState(true);
     const [isEditPlan, setEditPlan] = useState(false);
@@ -35,13 +30,7 @@ function AmountDetail(props: {
                 plannedAmount =
                     amount.planned + (plannedAmount - amount.getLeftPlanned());
             }
-            dispatch(
-                budgetActions.updatePlannedAmount({
-                    budgetId,
-                    isExpense,
-                    amount: plannedAmount,
-                })
-            );
+            onEdit(plannedAmount);
         }
     };
 
