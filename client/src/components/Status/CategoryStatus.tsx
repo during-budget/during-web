@@ -9,22 +9,11 @@ import AmountDetail from '../Amount/AmountDetail';
 import AmountBars from '../Amount/AmountBars';
 import { categoryActions } from '../../store/category';
 
-const DUMMY_AMOUNT = [
-    new Amount(20000, 80000, 100000),
-    new Amount(180000, 260000, 300000),
-    new Amount(22000, 30000, 50000),
-    new Amount(60000, 100000, 150000),
-    new Amount(120000, 140000, 200000),
-    new Amount(12000, 74000, 80000),
-    new Amount(430000, 500000, 500000),
-    new Amount(40000, 80000, 100000),
-];
-
 function CategoryStatus(props: { budgetId: string }) {
     const dispatch = useDispatch();
 
     const [isExpense, setIsExpense] = useState(true);
-    const [currentCategoryIdx, setCurrentCategoryIdx] = useState(1);
+    const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
 
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: Budget) => item.id === props.budgetId);
@@ -85,8 +74,11 @@ function CategoryStatus(props: { budgetId: string }) {
                 <AmountBars
                     amountData={categories.map((item: any, i: number) => {
                         return {
-                            // TODO: get amount from budget data
-                            amount: DUMMY_AMOUNT[i],
+                            amount: new Amount(
+                                item.amountCurrent,
+                                item.amountScheduled,
+                                item.amountPlanned
+                            ),
                             label: item.icon,
                         };
                     })}
@@ -95,7 +87,13 @@ function CategoryStatus(props: { budgetId: string }) {
             <div className={classes.detail}>
                 <AmountDetail
                     id="category"
-                    amount={DUMMY_AMOUNT[currentCategoryIdx]}
+                    amount={
+                        new Amount(
+                            categories[currentCategoryIdx].amountCurrent,
+                            categories[currentCategoryIdx].amountScheduled,
+                            categories[currentCategoryIdx].amountPlanned
+                        )
+                    }
                     onEdit={editPlanHandler}
                 />
             </div>
