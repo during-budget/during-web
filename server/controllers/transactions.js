@@ -8,7 +8,7 @@ const Transaction = require("../models/Transaction");
 /**
  * Create transaction
  *
- * @body { budgetId, date, isCurrent, title: [String], amount: Number, categoryId, tags?, memo?, linkId?}
+ * @body { budgetId, date, isCurrent, isExpense, isIncome, title: [String], amount: Number, categoryId, tags?, memo?, linkId?}
  * @return transaction
  */
 
@@ -21,11 +21,18 @@ module.exports.create = async (req, res) => {
       "title",
       "amount",
       "categoryId",
+      "isExpense",
+      "isIncome",
     ])
       if (!(field in req.body))
-        return res.status(409).send({
-          message: `fields(budgetId, date, isCurrent, title, amount, categoryId) are required`,
+        return res.status(400).send({
+          message: `fields(budgetId, date, isCurrent, title, amount, categoryId, isExpense, isIncome) are required`,
         });
+    if (req.body.isExpense === req.body.isIncome)
+      return res.status(400).send({
+        message:
+          "set {isExpense:true, isIncome:false} or {isExpense:false, isIncome:true}",
+      });
 
     const user = req.user;
 
@@ -43,11 +50,26 @@ module.exports.create = async (req, res) => {
         .status(404)
         .send({ message: `category(${req.body.categoryId}) not found` });
 
+    if (req.body.isExpense !== category.isExpense)
+      return res.status(409).send({
+        message: `field isExpense and category(${JSON.stringify(
+          category
+        )}) does not match`,
+      });
+    else if (req.body.isIncome !== category.isIncome)
+      return res.status(409).send({
+        message: `field isIncome and category(${JSON.stringify(
+          category
+        )}) does not match`,
+      });
+
     const transaction = new Transaction({
       userId: req.user._id,
       budgetId: budget._id,
       date: req.body.date,
       isCurrent: req.body.isCurrent,
+      isExpense: req.body.isExpense,
+      isIncome: req.body.isIncome,
       linkId: req.body.linkId,
       title: req.body.title,
       amount: req.body.amount,
@@ -63,16 +85,35 @@ module.exports.create = async (req, res) => {
     });
     await transaction.save();
 
-    // current transaction
-    if (transaction.isCurrent && transaction.linkId) {
-      await Transaction.findByIdAndUpdate(
-        { _id: transaction.linkId },
-        { linkId: transaction._id }
-      );
+    // 1. scheduled transaction
+    if (!transaction.isCurrent) {
+      // 1-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseScheduled += transaction.amount;
+      }
+      // 1-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeScheduled += transaction.amount;
+      }
     }
-
-    if (transaction.isCurrent) budget.amountCurrent += transaction.amount;
-    else budget.amountScheduled += transaction.amount;
+    // 2. current transaction
+    else {
+      // if transaction is linked - create link to another transaction
+      if (transaction.linkId) {
+        await Transaction.findByIdAndUpdate(
+          { _id: transaction.linkId },
+          { linkId: transaction._id }
+        );
+      }
+      // 2-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseCurrent += transaction.amount;
+      }
+      // 2-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeCurrent += transaction.amount;
+      }
+    }
     await budget.save();
 
     return res.status(200).send({ transaction });
