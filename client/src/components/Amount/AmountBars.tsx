@@ -4,6 +4,7 @@ import Amount from '../../models/Amount';
 
 function AmountBars(props: {
     amountData: { amount: Amount; label: string }[];
+    isTop?: boolean;
 }) {
     const amountData = props.amountData;
     const plans = amountData.map((data) => {
@@ -21,8 +22,9 @@ function AmountBars(props: {
                         className={classes.category}
                         style={{ width: widths[i] }}
                     >
+                        { props.isTop && <span className={classes.label}>{data.label}</span> }
                         <AmountBar amount={data.amount} />
-                        <span className={classes.label}>{data.label}</span>
+                        { !props.isTop && <span className={classes.label}>{data.label}</span> }
                     </li>
                 );
             })}
