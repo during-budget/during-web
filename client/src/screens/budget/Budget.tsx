@@ -1,5 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import {
+    Await,
+    defer,
+    useLoaderData,
+    useNavigate,
+    useParams,
+} from 'react-router-dom';
 import classes from './Budget.module.css';
 import BudgetHeader from '../../components/Budget/BudgetHeader';
 import Carousel from '../../components/UI/Carousel';
@@ -9,8 +15,8 @@ import CategoryStatus from '../../components/Status/CategoryStatus';
 import TransactionNav from '../../components/Transaction/TransactionNav';
 import TransactionList from '../../components/Transaction/TransactionList';
 import TransactionForm from '../../components/Transaction/TransactionForm';
-import { getBudgetById } from '../../util/api';
-import { useEffect } from 'react';
+import { getBudgetById, getTransaction } from '../../util/api';
+import { Suspense, useEffect } from 'react';
 import { budgetActions } from '../../store/budget';
 
 function Budget() {
@@ -23,12 +29,12 @@ function Budget() {
 
     useEffect(() => {
         if (!budget) {
-            dispatch(budgetActions.addBudget(loaderData.budget));
+            dispatch(budgetActions.addBudget(loaderData.budget.budget));
         }
-    }, [budget, loaderData.budget, dispatch]);
+    }, [budget, loaderData.budget.budget, dispatch]);
 
     if (!budget) {
-        // TODO: return error page?
+        // TODO: return error page? loader page?
         return <></>;
     }
 
@@ -61,18 +67,37 @@ function Budget() {
                 </Carousel>
                 <hr />
                 <section>
-                    <TransactionNav id="layout" isExpand={false} />
-                    {<TransactionList budgetId={budgetId!} />}
-                    <TransactionForm budgetId={budgetId!} />
+                    <Suspense fallback={<p>loading..</p>}>
+                        <Await
+                            resolve={loaderData.transactions}
+                            children={(data) => (
+                                <>
+                                    <TransactionNav
+                                        id="layout"
+                                        isExpand={false}
+                                    />
+                                    {
+                                        <TransactionList
+                                            transactions={data.transactions}
+                                        />
+                                    }
+                                    <TransactionForm budgetId={budgetId!} />
+                                </>
+                            )}
+                        ></Await>
+                    </Suspense>
                 </section>
             </main>
         </>
     );
 }
 
-export const loader = (data: any) => {
+export const loader = async (data: any) => {
     const { params } = data;
-    return getBudgetById(params.budgetId);
+    return defer({
+        budget: await getBudgetById(params.budgetId),
+        transactions: getTransaction(params.budgetId),
+    });
 };
 
 export default Budget;
