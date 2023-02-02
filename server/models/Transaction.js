@@ -17,6 +17,8 @@ const transactionSchema = mongoose.Schema(
     budgetId: mongoose.Types.ObjectId,
     date: Date,
     isCurrent: Boolean, // true - current, false - scheduled
+    isExpense: { type: Boolean, default: false },
+    isIncome: { type: Boolean, default: false },
     linkId: mongoose.Types.ObjectId, // isCurrent - scheduledId, !isCurrent - currentId
     title: [String],
     amount: Number,
