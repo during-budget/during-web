@@ -3,24 +3,78 @@ import classes from './BudgetForm.module.css';
 import OverlayForm from '../UI/form/OverlayForm';
 import { uiActions } from '../../store/ui';
 import RadioTab from '../UI/RadioTab';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Category from '../../models/Category';
+import { budgetActions } from '../../store/budget';
+import Amount from '../../models/Amount';
+import { createBudget } from '../../util/api';
+import { useNavigate } from 'react-router-dom';
 
 function BudgetForm() {
     const dispatch = useDispatch();
+    const navigation = useNavigate();
 
     const formState = useSelector((state: any) => state.ui.budgetForm);
+    const categories = useSelector((state: any) => state.categories);
 
     const [isExpense, setIsExpense] = useState(true);
     const titleRef = useRef<HTMLInputElement>(null);
+    const expensePlannedRef = useRef<HTMLInputElement>(null);
+    const incomePlannedRef = useRef<HTMLInputElement>(null);
+    const [categoryState, setCategoryState] = useState(
+        {} as Record<string, any>
+    );
 
-    const cancelHandler = () => {
-        dispatch(uiActions.resetBudgetForm());
-    };
+    useEffect(() => {
+        categories.forEach((category: any) => {
+            setCategoryState((prevAmount) => {
+                return { ...prevAmount, [category.id]: '0' };
+            });
+        });
+    }, []);
 
     useEffect(() => {
         titleRef.current?.focus();
     }, [formState.isShow]);
 
+    const cancelHandler = () => {
+        dispatch(uiActions.resetBudgetForm());
+    };
+
+    const submitHandler = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const title = titleRef.current?.value;
+        const expensePlanned = +expensePlannedRef.current!.value;
+        const incomePlanned = +incomePlannedRef.current!.value;
+        const budgetCategories = categories.map((category: Category) => {
+            const { id, title, icon, isExpense, isIncome } = category;
+            const planned = categoryState[id] || '';
+            return new Category({
+                id,
+                title,
+                icon,
+                isExpense,
+                isIncome,
+                amount: new Amount(0, 0, +planned),
+            });
+        });
+        const newBudget = {
+            title,
+            startDate: formState.startDate,
+            endDate: formState.endDate,
+            expensePlanned,
+            expenseCurrent: 0,
+            expenseScheduled: 0,
+            incomePlanned,
+            incomeCurrent: 0,
+            incomeScheduled: 0,
+            categories: budgetCategories,
+        };
+        dispatch(budgetActions.addBudget(newBudget));
+        dispatch(uiActions.resetBudgetForm());
+        const budgetId = await createBudget(newBudget);
+        navigation(`/budget/${budgetId}`);
+    };
     const inputs = (
         <div className={classes.inputs}>
             <h5>
@@ -37,11 +91,17 @@ function BudgetForm() {
             <div className={classes.total}>
                 <div className="input-field">
                     <label>목표 지출</label>
-                    <input defaultValue={formState.expansePlanned} />
+                    <input
+                        ref={expensePlannedRef}
+                        defaultValue={formState.expansePlanned}
+                    />
                 </div>
                 <div className="input-field">
                     <label>목표 수입</label>
-                    <input defaultValue={formState.incomePlanned} />
+                    <input
+                        ref={incomePlannedRef}
+                        defaultValue={formState.incomePlanned}
+                    />
                 </div>
             </div>
 
@@ -92,11 +152,18 @@ function BudgetForm() {
                                         <p>{category.title}</p>
                                     </div>
                                     <input
-                                        defaultValue={
-                                            category.amount
-                                                ? category.amount.planned
-                                                : 0
-                                        }
+                                        onChange={(
+                                            event: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            setCategoryState((prevState) => {
+                                                return {
+                                                    ...prevState,
+                                                    [category.id]:
+                                                        event.target.value,
+                                                };
+                                            });
+                                        }}
+                                        value={categoryState[category.id]}
                                     />
                                 </div>
                             );
@@ -114,7 +181,6 @@ function BudgetForm() {
                 <button
                     className={`button__primary ${classes.submit}`}
                     type="submit"
-                    onClick={() => {}}
                 >
                     완료
                 </button>
@@ -128,9 +194,7 @@ function BudgetForm() {
                 <div className={classes.outside} onClick={cancelHandler}></div>
             )}
             {formState.isShow && (
-                <OverlayForm isShowBackdrop={formState.isExpand}>
-                    {inputs}
-                </OverlayForm>
+                <OverlayForm onSubmit={submitHandler}>{inputs}</OverlayForm>
             )}
         </>
     );
