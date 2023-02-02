@@ -36,7 +36,7 @@ module.exports.create = async (req, res) => {
       budget.categories.push({
         ...category,
         categoryId: _category.categoryId,
-        ammount: _category.ammount,
+        amount: _category.amount,
       });
     }
     await budget.save();
@@ -51,7 +51,7 @@ module.exports.create = async (req, res) => {
  * create budget category
  *
  * @param {_id}
- * @body {  categoryId, ammount }
+ * @body {  categoryId, amount }
  * @return budget
  */
 module.exports.createCategory = async (req, res) => {
@@ -77,7 +77,7 @@ module.exports.createCategory = async (req, res) => {
     budget.categories.push({
       ...category,
       categoryId: category._id,
-      ammount: req.body.ammount,
+      amount: req.body.amount,
     });
 
     await budget.save();
@@ -89,13 +89,13 @@ module.exports.createCategory = async (req, res) => {
 };
 
 /**
- * Update budget category ammount
+ * Update budget category amount
  *
  * @param {_id, categoryId}
- * @body {  ammount }
+ * @body {  amount }
  * @return budget
  */
-module.exports.updateCategoryAmmount = async (req, res) => {
+module.exports.updateCategoryamount = async (req, res) => {
   try {
     if (!req.query.categoryId) return res.status(400).send();
 
@@ -109,7 +109,7 @@ module.exports.updateCategoryAmmount = async (req, res) => {
         message: `budget category with _id ${req.query.categoryId} not found`,
       });
 
-    budget.categories[idx].ammount = req.body.ammount;
+    budget.categories[idx].amount = req.body.amount;
     await budget.save();
 
     return res.status(200).send({ budget });
