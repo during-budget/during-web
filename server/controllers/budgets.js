@@ -151,8 +151,9 @@ module.exports.removeCategory = async (req, res) => {
     }
 
     // 해당 카테고리를 사용하는 transaction이 존재하는가?
-    const transactions = await Budget.find({
+    const transactions = await Transaction.find({
       userId: user._id,
+      budgetId: budget._id,
       "categories.categoryId": req.query.categoryId,
     });
     if (transactions.length > 0)
@@ -164,7 +165,7 @@ module.exports.removeCategory = async (req, res) => {
     budget.categories.splice(idx, 1);
     await budget.save();
 
-    return res.status(200).send({ budget });
+    return res.status(200).send({});
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
