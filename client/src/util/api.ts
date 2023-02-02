@@ -1,6 +1,5 @@
 import Category from '../models/Category';
 import Transaction from '../models/Transaction';
-import category from '../store/category';
 
 const BASE_URL = 'http://localhost:5555';
 
@@ -93,7 +92,7 @@ export const getBudgetList = async () => {
 };
 
 export const getBudgetById = async (id: string) => {
-    const url = `${BASE_URL}/api/budgets/${id}`;
+    const url = `${BASE_URL}/api/budgets/${encodeURIComponent(id)}`;
     const response = await fetch(url, {
         credentials: 'include',
     });
@@ -151,7 +150,7 @@ export const createTransaction = async (transaction: Transaction) => {
             date,
             isCurrent,
             title,
-            ammount: amount,
+            amount,
             categoryId,
             tags,
             memo,
@@ -169,4 +168,23 @@ export const createTransaction = async (transaction: Transaction) => {
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
     }
+};
+
+export const getTransaction = async (budgetId: string) => {
+    const url = `${BASE_URL}/api/transactions?budgetId=${encodeURIComponent(
+        budgetId
+    )}`;
+    const response = await fetch(url, {
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Response(
+            `Failed to get transactions.\n${data.message ? data.message : ''}`,
+            { status: response.status }
+        );
+    }
+
+    return response.json();
 };

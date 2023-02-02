@@ -3,20 +3,24 @@ import TransactionItem from './TransactionItem';
 import Transaction from '../../models/Transaction';
 import { useSelector } from 'react-redux';
 
-function TransactionList(props: { budgetId: string }) {
-    const totalTransacitons = useSelector((state: any) => state.transactions);
+function TransactionList(props: { transactions: Transaction[] }) {
     const isCurrentState = useSelector(
         (state: any) => state.ui.transactionForm.isCurrent
     );
 
-    const filteredTransactions = totalTransacitons.filter((item: any) => {
-        const isBudget = item.budgetId === props.budgetId;
-        const isCorrectType = isCurrentState ? item.isCurrent : !item.isCurrent;
-        return isBudget && isCorrectType;
-    });
+    const filteredTransactions = props.transactions
+        .filter((item: any) => {
+            const isCorrectType = isCurrentState
+                ? item.isCurrent
+                : !item.isCurrent;
+            return isCorrectType;
+        })
+        .map((item: any) => {
+            return Transaction.getTransaction(item);
+        });
 
     const transactions: { date: string; transactions: Transaction[] }[] = [];
-    filteredTransactions.forEach((transaction: any) => {
+    filteredTransactions.forEach((transaction: Transaction) => {
         const date = transaction.date.toLocaleDateString('ko-KR');
         const target = transactions.find((item) => item.date === date);
         if (target) {

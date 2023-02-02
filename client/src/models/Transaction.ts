@@ -108,6 +108,37 @@ class Transaction {
         this._memo = memo;
     }
 
+    static getTransaction = (item: any) => {
+        const {
+            _id: id,
+            budgetId,
+            linkId,
+            isExpense,
+            isCurrent,
+            title,
+            amount,
+            date,
+            category,
+            icon,
+            memo,
+            tags,
+        } = item;
+        return new Transaction({
+            id,
+            budgetId,
+            linkId,
+            isCurrent,
+            isExpense,
+            title,
+            date: new Date(date),
+            amount,
+            categoryId: category.categoryId,
+            icon: icon ? icon : category.icon,
+            tags,
+            memo,
+        });
+    };
+
     constructor(transaction: {
         id: string;
         budgetId: string;
