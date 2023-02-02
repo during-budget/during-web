@@ -45,6 +45,19 @@ const categorySlice = createSlice({
             // );
             // category.amounts[budgetId] = nextAmount;
         },
+        updatePlannedAmount(state, action) {
+            // TODO: Implement UpdatePlannedAmount
+
+            // const { budgetId, isExpense, amount } = action.payload;
+            // const idx = state.findIndex((item) => item.id === budgetId);
+            // if (state[idx]) {
+            //     state[idx] = Budget.getBudgetUpdatedPlan(
+            //         state[idx],
+            //         isExpense,
+            //         amount
+            //     );
+            // }
+        }
     },
 });
 
