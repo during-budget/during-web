@@ -18,15 +18,15 @@ module.exports.create = async (req, res) => {
       "budgetId",
       "date",
       "isCurrent",
+      "isExpense",
+      "isIncome",
       "title",
       "amount",
       "categoryId",
-      "isExpense",
-      "isIncome",
     ])
       if (!(field in req.body))
         return res.status(400).send({
-          message: `fields(budgetId, date, isCurrent, title, amount, categoryId, isExpense, isIncome) are required`,
+          message: `fields(budgetId, date, isCurrent, isExpense, isIncome, title, amount, categoryId) are required`,
         });
     if (req.body.isExpense === req.body.isIncome)
       return res.status(400).send({
@@ -42,13 +42,15 @@ module.exports.create = async (req, res) => {
         .status(404)
         .send({ message: `budget(${req.body.budgetId}) not found` });
 
-    const category = _.find(user.categories, {
-      _id: mongoose.Types.ObjectId(req.body.categoryId),
+    const category = _.find(budget.categories, {
+      categoryId: mongoose.Types.ObjectId(req.body.categoryId),
     });
     if (!category)
       return res
         .status(404)
-        .send({ message: `category(${req.body.categoryId}) not found` });
+        .send({
+          message: `category(${req.body.categoryId}) not found in budget`,
+        });
 
     if (req.body.isExpense !== category.isExpense)
       return res.status(409).send({
@@ -87,6 +89,8 @@ module.exports.create = async (req, res) => {
 
     // 1. scheduled transaction
     if (!transaction.isCurrent) {
+      category.amountScheduled += transaction.amount;
+
       // 1-1. expense transaction
       if (transaction.isExpense) {
         budget.expenseScheduled += transaction.amount;
@@ -105,6 +109,8 @@ module.exports.create = async (req, res) => {
           { linkId: transaction._id }
         );
       }
+      category.amountCurrent += transaction.amount;
+
       // 2-1. expense transaction
       if (transaction.isExpense) {
         budget.expenseCurrent += transaction.amount;
@@ -190,8 +196,29 @@ module.exports.updateField = async (req, res) => {
       await transaction.save();
 
       const budget = await Budget.findById(transaction.budgetId);
-      if (transaction.isCurrent) budget.amountCurrent += diff;
-      else budget.amountScheduled += diff;
+
+      // 1. scheduled transaction
+      if (!transaction.isCurrent) {
+        // 1-1. expense transaction
+        if (transaction.isExpense) {
+          budget.expenseScheduled += diff;
+        }
+        // 1-2. income transaction
+        else if (transaction.isIncome) {
+          budget.incomeScheduled += diff;
+        }
+      }
+      // 2. current transaction
+      else {
+        // 2-1. expense transaction
+        if (transaction.isExpense) {
+          budget.expenseCurrent += diff;
+        }
+        // 2-2. income transaction
+        else if (transaction.isIncome) {
+          budget.incomeCurrent += diff;
+        }
+      }
       await budget.save();
     } else {
       await transaction.save();
