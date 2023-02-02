@@ -78,11 +78,15 @@ function TransactionForm(props: { budgetId: string }) {
             })
         );
 
-        if (formState.isExpense) {
-            // TODO: Update category amount (needs Category API)
-        } else {
-            // TODO: Update category amount (needs Category API)
-        }
+        dispatch(
+            categoryActions.updateAmount({
+                categoryId,
+                budgetId: props.budgetId,
+                isExpense: formState.isExpense,
+                isCurrent: formState.isCurrent,
+                amount: updatedAmount,
+            })
+        );
     };
 
     const dispatchAddAmount = (data: {
@@ -101,18 +105,15 @@ function TransactionForm(props: { budgetId: string }) {
             })
         );
 
-        if (isExpense) {
-            // dispatch(
-            //     categoryActions.updateAmount({
-            //         categoryId,
-            //         budgetId: props.budgetId,
-            //         isCurrent: formState.isCurrent,
-            //         amount,
-            //     })
-            // );
-        } else {
-            // TODO: Needs income amount chart
-        }
+        dispatch(
+            categoryActions.updateAmount({
+                categoryId,
+                budgetId: props.budgetId,
+                isExpense,
+                isCurrent: formState.isCurrent,
+                amount,
+            })
+        );
     };
 
     const dispatchTransaction = (data: {
