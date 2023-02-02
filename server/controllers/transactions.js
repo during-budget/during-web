@@ -8,7 +8,7 @@ const Transaction = require("../models/Transaction");
 /**
  * Create transaction
  *
- * @body { budgetId, date, isCurrent, title: [String], ammount: Number, categoryId, tags?, memo?, linkId?}
+ * @body { budgetId, date, isCurrent, title: [String], amount: Number, categoryId, tags?, memo?, linkId?}
  * @return transaction
  */
 
@@ -19,12 +19,12 @@ module.exports.create = async (req, res) => {
       "date",
       "isCurrent",
       "title",
-      "ammount",
+      "amount",
       "categoryId",
     ])
       if (!(field in req.body))
         return res.status(409).send({
-          message: `fields(budgetId, date, isCurrent, title, ammount, categoryId) are required`,
+          message: `fields(budgetId, date, isCurrent, title, amount, categoryId) are required`,
         });
 
     const user = req.user;
@@ -50,7 +50,7 @@ module.exports.create = async (req, res) => {
       isCurrent: req.body.isCurrent,
       linkId: req.body.linkId,
       title: req.body.title,
-      ammount: req.body.ammount,
+      amount: req.body.amount,
       category: {
         categoryId: category._id,
         isExpense: category.isExpense,
@@ -71,8 +71,8 @@ module.exports.create = async (req, res) => {
       );
     }
 
-    if (transaction.isCurrent) budget.ammountCurrent += transaction.ammount;
-    else budget.ammountScheduled += transaction.ammount;
+    if (transaction.isCurrent) budget.amountCurrent += transaction.amount;
+    else budget.amountScheduled += transaction.amount;
     await budget.save();
 
     return res.status(200).send({ transaction });
@@ -129,7 +129,7 @@ module.exports.updateCategory = async (req, res) => {
  * Update transaction field
  *
  * @param {_id: transactionId}
- * @body { date?, title?, ammount?, tags?, memo? }
+ * @body { date?, title?, amount?, tags?, memo? }
  * @return transaction
  */
 module.exports.updateField = async (req, res) => {
@@ -143,14 +143,14 @@ module.exports.updateField = async (req, res) => {
     transaction.title = req.body.title ?? transaction.title;
     transaction.tags = req.body.tags ?? transaction.tags;
     transaction.memo = req.body.memo ?? transaction.memo;
-    if (req.body.ammount) {
-      const diff = req.body.ammount - transaction.ammount;
-      transaction.ammount = req.body.ammount;
+    if (req.body.amount) {
+      const diff = req.body.amount - transaction.amount;
+      transaction.amount = req.body.amount;
       await transaction.save();
 
       const budget = await Budget.findById(transaction.budgetId);
-      if (transaction.isCurrent) budget.ammountCurrent += diff;
-      else budget.ammountScheduled += diff;
+      if (transaction.isCurrent) budget.amountCurrent += diff;
+      else budget.amountScheduled += diff;
       await budget.save();
     } else {
       await transaction.save();
@@ -215,8 +215,8 @@ module.exports.remove = async (req, res) => {
         await _transaction.save();
       }
     }
-    if (transaction.isCurrent) budget.ammountCurrent -= transaction.ammount;
-    else budget.ammountScheduled -= transaction.ammount;
+    if (transaction.isCurrent) budget.amountCurrent -= transaction.amount;
+    else budget.amountScheduled -= transaction.amount;
 
     await transaction.remove();
     return res.status(200).send();

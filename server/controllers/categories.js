@@ -105,7 +105,7 @@ module.exports.update = async (req, res) => {
         });
         budget.categories[idx] = {
           ...category,
-          ammount: budget.categories[idx].ammount,
+          amount: budget.categories[idx].amount,
         };
         budget.save();
       }),

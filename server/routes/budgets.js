@@ -7,7 +7,7 @@ const budgets = require("../controllers/budgets");
 router.post("/", isLoggedIn, budgets.create);
 
 router.post("/:_id/category", isLoggedIn, budgets.createCategory);
-router.put("/:_id/category/ammount", isLoggedIn, budgets.updateCategoryAmmount);
+router.put("/:_id/category/amount", isLoggedIn, budgets.updateCategoryamount);
 router.delete("/:_id/category", isLoggedIn, budgets.removeCategory);
 
 router.patch("/:_id", isLoggedIn, budgets.updateField);
