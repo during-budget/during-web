@@ -8,6 +8,14 @@ const categorySchema = mongoose.Schema(
     isIncome: { type: Boolean, default: false },
     title: String,
     icon: String,
+    amountScheduled: {
+      type: Number,
+      default: 0,
+    },
+    amountCurrent: {
+      type: Number,
+      default: 0,
+    },
     amountPlanned: {
       type: Number,
       default: 0,
