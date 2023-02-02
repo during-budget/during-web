@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import Budget from '../models/Budget';
 
@@ -41,9 +41,9 @@ const budgetSlice = createSlice({
     reducers: {
         setBudgets(state, action) {
             const budgets = action.payload;
+            state.splice(0, state.length); // initialize state
             budgets.forEach((budget: any) => {
                 const newBudget = getBudgetFromData(budget);
-                state.splice(0, state.length); // initialize state
                 state.push(newBudget);
             });
         },
