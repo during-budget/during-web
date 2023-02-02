@@ -81,7 +81,7 @@ const TitleInput = React.forwardRef(
 
         return (
             <div className="input-field">
-                <label>제목</label>
+                <label>내용</label>
                 <div className={classes.inputs}>
                     <input
                         ref={iconRef}

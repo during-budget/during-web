@@ -99,7 +99,7 @@ function TransactionDetail() {
                                 defaultChecked={true}
                             ></input>
                             <label htmlFor="transaction-detail-titl1">
-                                제목1
+                                내용1
                             </label>
                         </li>
                     </ul>

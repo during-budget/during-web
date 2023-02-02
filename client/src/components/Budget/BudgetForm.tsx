@@ -85,7 +85,7 @@ function BudgetForm() {
                     formState.endDate.toLocaleDateString('ko-KR')}
             </h5>
             <div className="input-field">
-                <label>제목</label>
+                <label>내용</label>
                 <input ref={titleRef} defaultValue={formState.title} />
             </div>
             <div className={classes.total}>
