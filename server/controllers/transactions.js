@@ -359,7 +359,8 @@ module.exports.remove = async (req, res) => {
 
     const user = req.user;
     const transaction = await Transaction.findById(req.params._id);
-    if (!transaction) return res.status(404).send();
+    if (!transaction)
+      return res.status(404).send({ message: "transaction not found" });
 
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
 
@@ -368,6 +369,48 @@ module.exports.remove = async (req, res) => {
       return res
         .status(404)
         .send({ message: `budget(${transaction.budgetId}) not found` });
+
+    const categoryIdx = budget.findCategoryIdx(transaction.category.categoryId);
+    if (categoryIdx === -1)
+      return res.status(404).send({
+        message: `category(${transaction.category.categoryId}) not found in budget`,
+        transaction,
+      });
+
+    const category = budget.categories[categoryIdx];
+
+    // 1. scheduled transaction
+    if (!transaction.isCurrent) {
+      category.amountScheduled -= transaction.amount;
+
+      // 1-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseScheduled -= transaction.amount;
+      }
+      // 1-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeScheduled -= transaction.amount;
+      }
+    }
+    // 2. current transaction
+    else {
+      category.amountCurrent -= transaction.amount;
+
+      // 2-1. expense transaction
+      if (transaction.isExpense) {
+        budget.expenseCurrent -= transaction.amount;
+      }
+      // 2-2. income transaction
+      else if (transaction.isIncome) {
+        budget.incomeCurrent -= transaction.amount;
+      }
+    }
+
+    await transaction.remove();
+
+    budget.categories[categoryIdx] = category;
+    budget.isModified("categories");
+    await budget.save();
 
     if (transaction.linkId) {
       const _transaction = await Transaction.findById(transaction.linkId);
@@ -379,7 +422,6 @@ module.exports.remove = async (req, res) => {
     if (transaction.isCurrent) budget.amountCurrent -= transaction.amount;
     else budget.amountScheduled -= transaction.amount;
 
-    await transaction.remove();
     return res.status(200).send();
   } catch (err) {
     return res.status(500).send({ message: err.message });
