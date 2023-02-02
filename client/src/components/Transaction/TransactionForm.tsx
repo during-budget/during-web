@@ -11,6 +11,7 @@ import { uiActions } from '../../store/ui';
 import CategoryInput from '../UI/input/CategoryInput';
 import TitleInput from '../UI/input/TitleInput';
 import TagInput from '../UI/input/TagInput';
+import { createTransaction } from '../../util/api';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -78,16 +79,9 @@ function TransactionForm(props: { budgetId: string }) {
         );
 
         if (formState.isExpense) {
-            dispatch(
-                categoryActions.updateAmount({
-                    categoryId,
-                    budgetId: props.budgetId,
-                    isCurrent: formState.isCurrent,
-                    amount: updatedAmount,
-                })
-            );
+            // TODO: Update category amount (needs Category API)
         } else {
-            // TODO: Needs income amount chart
+            // TODO: Update category amount (needs Category API)
         }
     };
 
@@ -108,14 +102,14 @@ function TransactionForm(props: { budgetId: string }) {
         );
 
         if (isExpense) {
-            dispatch(
-                categoryActions.updateAmount({
-                    categoryId,
-                    budgetId: props.budgetId,
-                    isCurrent: formState.isCurrent,
-                    amount,
-                })
-            );
+            // dispatch(
+            //     categoryActions.updateAmount({
+            //         categoryId,
+            //         budgetId: props.budgetId,
+            //         isCurrent: formState.isCurrent,
+            //         amount,
+            //     })
+            // );
         } else {
             // TODO: Needs income amount chart
         }
@@ -131,26 +125,22 @@ function TransactionForm(props: { budgetId: string }) {
             titleRef.current!.icon() ||
             categories.find((item: any) => item.id === categoryId).icon;
 
-        dispatch(
-            transactionActions.addTransaction(
-                new Transaction({
-                    id: formState.isCompleted ? id : formState.id || id,
-                    budgetId: props.budgetId,
-                    linkId:
-                        formState.linkId ||
-                        (formState.isCompleted && formState.id),
-                    isCurrent: formState.isCurrent,
-                    isExpense,
-                    title: titleRef.current!.value(),
-                    date: new Date(dateRef.current!.value),
-                    amount: +expandAmountRef.current!.value,
-                    categoryId,
-                    icon,
-                    tags: tagRef.current!.value,
-                    memo: memoRef.current!.value,
-                })
-            )
-        );
+        const newTransaction = new Transaction({
+            id: formState.isCompleted ? id : formState.id || id,
+            budgetId: props.budgetId,
+            linkId: formState.linkId || (formState.isCompleted && formState.id),
+            isCurrent: formState.isCurrent,
+            isExpense,
+            title: titleRef.current!.value(),
+            date: new Date(dateRef.current!.value),
+            amount: +expandAmountRef.current!.value,
+            categoryId,
+            icon,
+            tags: tagRef.current!.value,
+            memo: memoRef.current!.value,
+        });
+        dispatch(transactionActions.addTransaction(newTransaction));
+        createTransaction(newTransaction);
     };
 
     const dispatchLink = (linkId: string) => {

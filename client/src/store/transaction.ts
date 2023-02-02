@@ -1,38 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Transaction from '../models/Transaction';
 
-const initialState: Transaction[] = [
-    new Transaction({
-        id: 't1',
-        budgetId: 'b1',
-        isCurrent: false,
-        isExpense: true,
-        title: ['Title1', 'Title2'],
-        date: new Date(),
-        amount: 60000,
-        categoryId: '63d23dab0efb4d90194987a3',
-    }),
-    new Transaction({
-        id: 't2',
-        budgetId: 'b2',
-        isCurrent: false,
-        isExpense: true,
-        title: ['Budget2', 'Title2'],
-        date: new Date(),
-        amount: 60000,
-        categoryId: '63d23dab0efb4d90194987a3',
-    }),
-    new Transaction({
-        id: 't3',
-        budgetId: 'b1',
-        isCurrent: true,
-        isExpense: true,
-        title: ['Title', 'SubTitle'],
-        date: new Date(),
-        amount: 20000,
-        categoryId: '63d23dab0efb4d90194987a3',
-    }),
-];
+const initialState: Transaction[] = [];
 
 const transactionSlice = createSlice({
     name: 'transaction',
@@ -54,7 +23,7 @@ const transactionSlice = createSlice({
             }
 
             // sort by date (desc)
-            state.sort((prev, next) => (+next.date - +prev.date));
+            state.sort((prev, next) => +next.date - +prev.date);
         },
         removeTransaction(state, action) {
             const id = action.payload;

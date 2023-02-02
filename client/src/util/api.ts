@@ -1,4 +1,5 @@
 import Category from '../models/Category';
+import Transaction from '../models/Transaction';
 import category from '../store/category';
 
 const BASE_URL = 'http://localhost:5555';
@@ -134,4 +135,38 @@ export const createBudget = async (budget: any) => {
     }
 
     return data.budget._id;
+};
+
+export const createTransaction = async (transaction: Transaction) => {
+    const url = `${BASE_URL}/api/transactions`;
+
+    const { budgetId, date, isCurrent, title, amount, categoryId, tags, memo } =
+        transaction;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+            budgetId,
+            date,
+            isCurrent,
+            title,
+            ammount: amount,
+            categoryId,
+            tags,
+            memo,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.log('create transaction fail');
+        throw new Error(
+            `Failed to create transaction.\n${data.message ? data.message : ''}`
+        );
+    }
 };
