@@ -1,3 +1,6 @@
+import Category from '../models/Category';
+import category from '../store/category';
+
 const BASE_URL = 'http://localhost:5555';
 
 export const getTestData = async () => {
@@ -103,4 +106,33 @@ export const getBudgetById = async (id: string) => {
     }
 
     return response.json();
+};
+
+export const createBudget = async (budget: any) => {
+    const url = `${BASE_URL}/api/budgets`;
+
+    const categories = budget.categories.map((category: Category) => {
+        return { categoryId: category.id, amount: category.amount!.planned };
+    });
+    budget.categories = categories;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(budget),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.log('create budget fail');
+        throw new Error(
+            `Failed to create budget.\n${data.message ? data.message : ''}`
+        );
+    }
+
+    return data.budget._id;
 };

@@ -6,6 +6,7 @@ class Category {
     private _icon: string;
     private _isExpense: boolean;
     private _isIncome: boolean;
+    private _amount: Amount | undefined;
 
     get id() {
         return this._id;
@@ -25,6 +26,10 @@ class Category {
 
     get isIncome() {
         return this._isIncome;
+    }
+
+    get amount() {
+        return this._amount;
     }
 
     set title(title: string) {
@@ -49,14 +54,15 @@ class Category {
         icon: string;
         isExpense: boolean;
         isIncome: boolean;
-        amounts?: { [key: string]: Amount };
+        amount?: Amount;
     }) {
-        const { id, title, icon, isExpense, isIncome } = category;
+        const { id, title, icon, isExpense, isIncome, amount } = category;
         this._id = id;
         this._title = title;
         this._icon = icon;
         this._isExpense = isExpense;
         this._isIncome = isIncome;
+        this._amount = amount ? amount : undefined;
     }
 }
 
