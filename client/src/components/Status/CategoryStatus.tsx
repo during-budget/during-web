@@ -4,6 +4,18 @@ import RadioTab from '../UI/RadioTab';
 import { useState } from 'react';
 import Category from '../../models/Category';
 import Budget from '../../models/Budget';
+import Amount from '../../models/Amount';
+
+const DUMMY_AMOUNT = [
+    new Amount(20000, 80000, 100000),
+    new Amount(180000, 260000, 300000),
+    new Amount(22000, 30000, 50000),
+    new Amount(60000, 100000, 150000),
+    new Amount(120000, 140000, 200000),
+    new Amount(12000, 74000, 80000),
+    new Amount(430000, 500000, 500000),
+    new Amount(40000, 80000, 100000),
+];
 
 function CategoryStatus(props: { budgetId: string }) {
     const [isExpense, setIsExpense] = useState(true);
