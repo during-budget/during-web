@@ -57,7 +57,7 @@ function Budget() {
                         endDate={endDate}
                     />
                     <TotalStatus budgetId={budgetId!} total={total} />
-                    {<CategoryStatus />}
+                    {<CategoryStatus budgetId={budgetId!} />}
                 </Carousel>
                 <hr />
                 <section>
