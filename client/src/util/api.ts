@@ -209,6 +209,7 @@ export const deleteTransaction = async (transactionId: string) => {
         transactionId
     )}`;
     const response = await fetch(url, {
+        method: 'DELETE',
         credentials: 'include',
     });
 

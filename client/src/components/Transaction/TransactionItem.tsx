@@ -8,6 +8,7 @@ import OptionButton from '../UI/OptionButton';
 import { transactionActions } from '../../store/transaction';
 import { uiActions } from '../../store/ui';
 import { budgetActions } from '../../store/budget';
+import { deleteTransaction } from '../../util/api';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const dispatch = useDispatch();
@@ -71,6 +72,15 @@ function TransactionItem(props: { transaction: Transaction }) {
                         amount: -amount,
                     })
                 );
+                dispatch(
+                    budgetActions.updateCategoryAmount({
+                        budgetId,
+                        categoryId,
+                        isCurrent,
+                        amount: -amount,
+                    })
+                );
+                deleteTransaction(id);
             },
         },
     ];
