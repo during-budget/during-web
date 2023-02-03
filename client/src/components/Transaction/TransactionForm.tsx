@@ -5,13 +5,17 @@ import OverlayForm from '../UI/form/OverlayForm';
 import TransactionNav from './TransactionNav';
 import Transaction from '../../models/Transaction';
 import { budgetActions } from '../../store/budget';
-import { categoryActions } from '../../store/category';
 import { transactionActions } from '../../store/transaction';
 import { uiActions } from '../../store/ui';
 import CategoryInput from '../UI/input/CategoryInput';
 import TitleInput from '../UI/input/TitleInput';
 import TagInput from '../UI/input/TagInput';
-import { createTransaction } from '../../util/api';
+import {
+    createTransaction,
+    updateTransactionAmount,
+    updateTransactionCategory,
+    updateTransactionFields,
+} from '../../util/api';
 import Category from '../../models/Category';
 
 function TransactionForm(props: { budgetId: string }) {
@@ -134,7 +138,14 @@ function TransactionForm(props: { budgetId: string }) {
             memo: memoRef.current!.value,
         });
         dispatch(transactionActions.addTransaction(newTransaction));
-        createTransaction(newTransaction);
+
+        if (formState.isEdit) {
+            updateTransactionFields(newTransaction);
+            updateTransactionAmount(newTransaction);
+            updateTransactionCategory(newTransaction);
+        } else {
+            createTransaction(newTransaction);
+        }
     };
 
     const dispatchLink = (linkId: string) => {

@@ -204,6 +204,86 @@ export const getTransaction = async (budgetId: string) => {
     return response.json();
 };
 
+export const updateTransactionFields = async (transaction: Transaction) => {
+    const url = `${BASE_URL}/api/transactions/${transaction.id}`;
+
+    const { date, title, tags, memo } = transaction;
+
+    const response = await fetch(url, {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify({
+            date,
+            title,
+            tags,
+            memo,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!response.ok) {
+        console.log('create transaction fail');
+        throw new Error(
+            `Failed to create transaction.\n${data.message ? data.message : ''}`
+        );
+    }
+};
+
+export const updateTransactionAmount = async (transaction: Transaction) => {
+    const url = `${BASE_URL}/api/transactions/${transaction.id}/amount`;
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        credentials: 'include',
+        body: JSON.stringify({
+            amount: transaction.amount,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!response.ok) {
+        console.log('create transaction fail');
+        throw new Error(
+            `Failed to create transaction.\n${data.message ? data.message : ''}`
+        );
+    }
+};
+
+export const updateTransactionCategory = async (transaction: Transaction) => {
+    const url = `${BASE_URL}/api/transactions/${transaction.id}/category`;
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        credentials: 'include',
+        body: JSON.stringify({
+            categoryId: transaction.categoryId,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!response.ok) {
+        console.log('create transaction fail');
+        throw new Error(
+            `Failed to create transaction.\n${data.message ? data.message : ''}`
+        );
+    }
+};
+
 export const deleteTransaction = async (transactionId: string) => {
     const url = `${BASE_URL}/api/transactions/${encodeURIComponent(
         transactionId
