@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import Budget from '../models/Budget';
 import Category from '../models/Category';
