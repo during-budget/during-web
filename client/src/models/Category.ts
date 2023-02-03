@@ -48,6 +48,25 @@ class Category {
         this._isIncome = isIncome;
     }
 
+    static getCategoryUpdatedPlan(
+        prevCategory: Category | any,
+        plannedAmount: number
+    ) {
+        const { id, title, icon, isExpense, isIncome, amount } = prevCategory;
+        return new Category({
+            id,
+            title,
+            icon,
+            isExpense,
+            isIncome,
+            amount: new Amount(
+                amount?.current || 0,
+                amount?.scheduled || 0,
+                plannedAmount
+            ),
+        });
+    }
+
     constructor(category: {
         id: string;
         title: string;

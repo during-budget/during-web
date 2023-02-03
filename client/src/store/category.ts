@@ -28,36 +28,6 @@ const categorySlice = createSlice({
             //     })
             // );
         },
-        // TODO: budget에서 소속 category amount 업데이트 하기,,
-        updateAmount(state, action) {
-            const { categoryId, budgetId, isCurrent, amount } = action.payload;
-            const category = state.find((item: any) => item.id === categoryId);
-
-            if (!category) {
-                throw new Error('Category not exists.');
-            }
-
-            // const currentAmount = category.amounts[budgetId];
-            // const nextAmount = Amount.getUpdatedAmount(
-            //     currentAmount,
-            //     isCurrent,
-            //     amount
-            // );
-            // category.amounts[budgetId] = nextAmount;
-        },
-        updatePlannedAmount(state, action) {
-            // TODO: Implement UpdatePlannedAmount
-
-            // const { budgetId, isExpense, amount } = action.payload;
-            // const idx = state.findIndex((item) => item.id === budgetId);
-            // if (state[idx]) {
-            //     state[idx] = Budget.getBudgetUpdatedPlan(
-            //         state[idx],
-            //         isExpense,
-            //         amount
-            //     );
-            // }
-        }
     },
 });
 

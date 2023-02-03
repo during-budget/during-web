@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import Budget from '../models/Budget';
 import Category from '../models/Category';
@@ -101,6 +101,18 @@ const budgetSlice = createSlice({
                     state[idx],
                     isExpense,
                     isCurrent,
+                    amount
+                );
+            }
+        },
+        updateCategoryPlan(state, action) {
+            const { budgetId, categoryId, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedCateogryTotal(
+                    state[idx],
+                    categoryId,
                     amount
                 );
             }
