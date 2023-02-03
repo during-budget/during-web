@@ -4,10 +4,9 @@ import classes from './CategoryStatus.module.css';
 import Category from '../../models/Category';
 import Budget from '../../models/Budget';
 import RadioTab from '../UI/RadioTab';
-import Amount from '../../models/Amount';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountBars from '../Amount/AmountBars';
-import { categoryActions } from '../../store/category';
+import { budgetActions } from '../../store/budget';
 
 function CategoryStatus(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -22,8 +21,13 @@ function CategoryStatus(props: { budgetId: string }) {
     );
 
     const editPlanHandler = (amount: number) => {
-        // TODO: implement editPlan
-        dispatch(categoryActions.updateAmount);
+        dispatch(
+            budgetActions.updateCategoryPlan({
+                budgetId: props.budgetId,
+                categoryId: categories[currentCategoryIdx].categoryId,
+                amount,
+            })
+        );
     };
 
     const plusCategoryIdx = () => {
