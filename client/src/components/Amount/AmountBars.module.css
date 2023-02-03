@@ -12,6 +12,7 @@
     justify-content: center;
     text-align: center;
     height: 100%;
+    transition: 0.5s;
 }
 
 .category .label {

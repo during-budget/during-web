@@ -82,14 +82,10 @@ class Budget {
         amount: number
     ) {
         const { id, title, startDate, total, endDate, categories } = prevBudget;
-        console.log(categories);
-        const idx = categories.findIndex(
-            (item: any) => item.categoryId === categoryId
-        );
+        const idx = categories.findIndex((item: any) => item.id === categoryId);
         if (categories[idx]) {
             categories[idx].amount.planned = amount;
         }
-        console.log('update!', categories[idx]);
         return new Budget({ id, title, startDate, endDate, total, categories });
     }
 

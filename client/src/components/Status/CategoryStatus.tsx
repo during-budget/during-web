@@ -24,7 +24,7 @@ function CategoryStatus(props: { budgetId: string }) {
         dispatch(
             budgetActions.updateCategoryPlan({
                 budgetId: props.budgetId,
-                categoryId: categories[currentCategoryIdx].categoryId,
+                categoryId: categories[currentCategoryIdx].id,
                 amount,
             })
         );

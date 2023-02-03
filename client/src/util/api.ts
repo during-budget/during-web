@@ -128,7 +128,6 @@ export const createBudget = async (budget: any) => {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log('create budget fail');
         throw new Error(
             `Failed to create budget.\n${data.message ? data.message : ''}`
         );
