@@ -1,6 +1,7 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import Budget from '../models/Budget';
+import Category from '../models/Category';
 
 const getBudgetFromData = (budget: any) => {
     const {
@@ -29,7 +30,31 @@ const getBudgetFromData = (budget: any) => {
             ),
             income: new Amount(incomeCurrent, incomeScheduled, incomePlanned),
         },
-        categories,
+        categories: categories.map((category: any) => {
+            const {
+                categoryId: id,
+                icon,
+                isExpense,
+                isIncome,
+                title,
+                amountCurrent,
+                amountPlanned,
+                amountScheduled,
+            } = category;
+            const amount = new Amount(
+                amountCurrent,
+                amountScheduled,
+                amountPlanned
+            );
+            return new Category({
+                id,
+                title,
+                icon,
+                isExpense,
+                isIncome,
+                amount,
+            });
+        }),
     });
 };
 

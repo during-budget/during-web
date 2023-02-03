@@ -74,11 +74,7 @@ function CategoryStatus(props: { budgetId: string }) {
                 <AmountBars
                     amountData={categories.map((item: any, i: number) => {
                         return {
-                            amount: new Amount(
-                                item.amountCurrent,
-                                item.amountScheduled,
-                                item.amountPlanned
-                            ),
+                            amount: item.amount,
                             label: item.icon,
                         };
                     })}
@@ -87,13 +83,7 @@ function CategoryStatus(props: { budgetId: string }) {
             <div className={classes.detail}>
                 <AmountDetail
                     id="category"
-                    amount={
-                        new Amount(
-                            categories[currentCategoryIdx].amountCurrent,
-                            categories[currentCategoryIdx].amountScheduled,
-                            categories[currentCategoryIdx].amountPlanned
-                        )
-                    }
+                    amount={categories[currentCategoryIdx].amount}
                     onEdit={editPlanHandler}
                 />
             </div>
