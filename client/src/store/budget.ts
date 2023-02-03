@@ -117,6 +117,19 @@ const budgetSlice = createSlice({
                 );
             }
         },
+        updateCategoryAmount(state, action) {
+            const { budgetId, categoryId, isCurrent, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedCategoryAmount(
+                    state[idx],
+                    categoryId,
+                    isCurrent,
+                    amount
+                )
+            }
+        }
     },
 });
 
