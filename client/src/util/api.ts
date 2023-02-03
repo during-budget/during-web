@@ -204,6 +204,53 @@ export const getTransaction = async (budgetId: string) => {
     return response.json();
 };
 
+export const updateTransaction = async (transaction: Transaction) => {
+    const url = `${BASE_URL}/api/transactions/${transaction.id}`;
+
+    const {
+        budgetId,
+        date,
+        isExpense,
+        isIncome,
+        isCurrent,
+        title,
+        amount,
+        categoryId,
+        tags,
+        memo,
+    } = transaction;
+
+    const response = await fetch(url, {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify({
+            budgetId,
+            date,
+            isExpense,
+            isIncome,
+            isCurrent,
+            title,
+            amount,
+            categoryId,
+            tags,
+            memo,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!response.ok) {
+        console.log('create transaction fail');
+        throw new Error(
+            `Failed to create transaction.\n${data.message ? data.message : ''}`
+        );
+    }
+};
+
 export const deleteTransaction = async (transactionId: string) => {
     const url = `${BASE_URL}/api/transactions/${encodeURIComponent(
         transactionId
