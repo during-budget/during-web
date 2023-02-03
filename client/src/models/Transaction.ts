@@ -4,6 +4,7 @@ class Transaction {
     private _linkId: string | undefined;
     private _isCurrent: boolean;
     private _isExpense: boolean;
+    private _isIncome: boolean;
     private _icon: string;
     private _title: string[];
     private _date: Date;
@@ -30,6 +31,10 @@ class Transaction {
 
     get isExpense() {
         return this._isExpense;
+    }
+
+    get isIncome() {
+        return this._isIncome;
     }
 
     get icon() {
@@ -114,6 +119,7 @@ class Transaction {
             budgetId,
             linkId,
             isExpense,
+            isIncome,
             isCurrent,
             title,
             amount,
@@ -129,6 +135,7 @@ class Transaction {
             linkId,
             isCurrent,
             isExpense,
+            isIncome,
             title,
             date: new Date(date),
             amount,
@@ -145,6 +152,7 @@ class Transaction {
         linkId?: string;
         isCurrent: boolean;
         isExpense: boolean;
+        isIncome: boolean;
         title: string[];
         date: Date;
         amount: number;
@@ -159,6 +167,7 @@ class Transaction {
             linkId,
             isCurrent,
             isExpense,
+            isIncome,
             icon,
             title,
             date,
@@ -172,6 +181,7 @@ class Transaction {
         this._linkId = linkId;
         this._isCurrent = isCurrent;
         this._isExpense = isExpense;
+        this._isIncome = isIncome;
         this._icon = icon || '';
         this._title = title;
         this._date = date;
