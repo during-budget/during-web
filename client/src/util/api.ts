@@ -112,7 +112,10 @@ export const createBudget = async (budget: any) => {
     const url = `${BASE_URL}/api/budgets`;
 
     const categories = budget.categories.map((category: Category) => {
-        return { categoryId: category.id, amount: category.amount!.planned };
+        return {
+            categoryId: category.id,
+            amountPlanned: category.amount!.planned,
+        };
     });
     budget.categories = categories;
 
@@ -139,8 +142,18 @@ export const createBudget = async (budget: any) => {
 export const createTransaction = async (transaction: Transaction) => {
     const url = `${BASE_URL}/api/transactions`;
 
-    const { budgetId, date, isCurrent, title, amount, categoryId, tags, memo } =
-        transaction;
+    const {
+        budgetId,
+        date,
+        isExpense,
+        isIncome,
+        isCurrent,
+        title,
+        amount,
+        categoryId,
+        tags,
+        memo,
+    } = transaction;
 
     const response = await fetch(url, {
         method: 'POST',
@@ -148,6 +161,8 @@ export const createTransaction = async (transaction: Transaction) => {
         body: JSON.stringify({
             budgetId,
             date,
+            isExpense,
+            isIncome,
             isCurrent,
             title,
             amount,
@@ -187,4 +202,21 @@ export const getTransaction = async (budgetId: string) => {
     }
 
     return response.json();
+};
+
+export const deleteTransaction = async (transactionId: string) => {
+    const url = `${BASE_URL}/api/transactions/${encodeURIComponent(
+        transactionId
+    )}`;
+    const response = await fetch(url, {
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Response(
+            `Failed to get transactions.\n${data.message ? data.message : ''}`,
+            { status: response.status }
+        );
+    }
 };

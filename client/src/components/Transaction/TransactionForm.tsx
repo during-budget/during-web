@@ -12,6 +12,7 @@ import CategoryInput from '../UI/input/CategoryInput';
 import TitleInput from '../UI/input/TitleInput';
 import TagInput from '../UI/input/TagInput';
 import { createTransaction } from '../../util/api';
+import Category from '../../models/Category';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -41,20 +42,20 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
     };
 
-    const submit = (option: { isExpense: boolean }) => {
-        const { isExpense } = option;
+    const submit = () => {
         const categoryId = categoryRef.current!.value;
+        const category = categories.find((item: any) => item.id === categoryId);
 
         // update amount
         if (formState.isEdit) {
-            dispatchEditAmount({ categoryId });
+            dispatchEditAmount(category);
         } else {
-            dispatchAddAmount({ categoryId, isExpense });
+            dispatchAddAmount(category);
         }
 
         // add or update transaction
         const id = (+new Date()).toString();
-        dispatchTransaction({ id, isExpense, categoryId });
+        dispatchTransaction({ id, category });
         if (formState.isCompleted) {
             dispatchLink(id);
         }
@@ -63,8 +64,7 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(uiActions.resetTransactionForm());
     };
 
-    const dispatchEditAmount = (data: { categoryId: string }) => {
-        const { categoryId } = data;
+    const dispatchEditAmount = (category: Category) => {
         const currentAmount = +expandAmountRef.current!.value;
         const prevAmount = formState.input.amount;
         const updatedAmount = currentAmount - prevAmount;
@@ -72,15 +72,16 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
-                isExpense: formState.isExpense,
+                isExpense: category.isExpense,
+                isIncome: category.isIncome,
                 isCurrent: formState.isCurrent,
                 amount: updatedAmount,
             })
         );
 
         dispatch(
-            categoryActions.updateAmount({
-                categoryId,
+            budgetActions.updateCategoryAmount({
+                categoryId: category.id,
                 budgetId: props.budgetId,
                 isExpense: formState.isExpense,
                 isCurrent: formState.isCurrent,
@@ -89,25 +90,22 @@ function TransactionForm(props: { budgetId: string }) {
         );
     };
 
-    const dispatchAddAmount = (data: {
-        categoryId: string;
-        isExpense: boolean;
-    }) => {
-        const { categoryId, isExpense } = data;
+    const dispatchAddAmount = (category: Category) => {
         const amount = +expandAmountRef.current!.value;
 
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId: props.budgetId,
-                isExpense,
+                isExpense: category.isExpense,
+                isIncome: category.isIncome,
                 isCurrent: formState.isCurrent,
                 amount,
             })
         );
 
         dispatch(
-            categoryActions.updateAmount({
-                categoryId,
+            budgetActions.updateCategoryAmount({
+                categoryId: category.id,
                 budgetId: props.budgetId,
                 isExpense,
                 isCurrent: formState.isCurrent,
@@ -116,26 +114,21 @@ function TransactionForm(props: { budgetId: string }) {
         );
     };
 
-    const dispatchTransaction = (data: {
-        id: string;
-        categoryId: string;
-        isExpense: boolean;
-    }) => {
-        const { id, isExpense, categoryId } = data;
-        const icon =
-            titleRef.current!.icon() ||
-            categories.find((item: any) => item.id === categoryId).icon;
+    const dispatchTransaction = (data: { id: string; category: Category }) => {
+        const { id, category } = data;
+        const icon = titleRef.current!.icon() || category.icon;
 
         const newTransaction = new Transaction({
             id: formState.isCompleted ? id : formState.id || id,
             budgetId: props.budgetId,
             linkId: formState.linkId || (formState.isCompleted && formState.id),
             isCurrent: formState.isCurrent,
-            isExpense,
+            isExpense: category.isExpense,
+            isIncome: category.isIncome,
             title: titleRef.current!.value(),
             date: new Date(dateRef.current!.value),
             amount: +expandAmountRef.current!.value,
-            categoryId,
+            categoryId: category.id,
             icon,
             tags: tagRef.current!.value,
             memo: memoRef.current!.value,
@@ -151,15 +144,6 @@ function TransactionForm(props: { budgetId: string }) {
                 linkId,
             })
         );
-    };
-
-    const submitExpenseHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-        submit({ isExpense: true });
-    };
-    const submitIncomeHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-        submit({ isExpense: false });
     };
 
     const shortInput = (
@@ -184,33 +168,14 @@ function TransactionForm(props: { budgetId: string }) {
         </div>
     );
 
-    const submitButton = formState.isEdit ? (
+    const submitButton = (
         <button
             className={`button__primary ${classes.submit}`}
             type="submit"
-            onClick={() => {
-                submit({ isExpense: formState.isExpense });
-            }}
+            onClick={submit}
         >
             완료
         </button>
-    ) : (
-        <>
-            <button
-                className={`button__primary ${classes.submit}`}
-                type="submit"
-                onClick={submitIncomeHandler}
-            >
-                수입 내역 추가
-            </button>
-            <button
-                className={`button__primary ${classes.submit}`}
-                type="submit"
-                onClick={submitExpenseHandler}
-            >
-                지출 내역 추가
-            </button>
-        </>
     );
 
     const expandInput = (
