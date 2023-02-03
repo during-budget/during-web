@@ -19,7 +19,6 @@ import { getBudgetById, getTransaction } from '../../util/api';
 import { useEffect } from 'react';
 import { budgetActions } from '../../store/budget';
 import { transactionActions } from '../../store/transaction';
-import Transaction from '../../models/Transaction';
 
 function Budget() {
     const dispatch = useDispatch();
@@ -29,9 +28,9 @@ function Budget() {
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: any) => item.id === budgetId);
     const totalTransactions = useSelector((state: any) => state.transactions);
-    const transactions = totalTransactions
-        .filter((item: any) => item.budgetId === budgetId)
-        .map((item: any) => Transaction.getTransaction(item));
+    const transactions = totalTransactions.filter(
+        (item: any) => item.budgetId === budgetId
+    );
 
     useEffect(() => {
         dispatch(budgetActions.addBudget(loaderData.budget.budget));
@@ -67,7 +66,7 @@ function Budget() {
             <main className={classes.container}>
                 <Carousel id="status" initialIndex={1}>
                     <DateStatus
-                        budgetId={budgetId!}
+                        transactions={transactions}
                         startDate={startDate}
                         endDate={endDate}
                     />

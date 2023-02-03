@@ -1,23 +1,14 @@
 import classes from './Calendar.module.css';
 import { WEEK_DAYS } from '../../constants/date';
-import { useSelector } from 'react-redux';
 import Transaction from '../../models/Transaction';
 
 function Calendar(props: {
     startDate: Date;
     endDate: Date;
-    budgetId?: string;
+    transactions: Transaction[];
     onClick?: (event: React.MouseEvent) => void;
 }) {
-    const { startDate, endDate } = props;
-    const totalTransacitons = useSelector((state: any) => state.transactions);
-
-    let transactions: Transaction[];
-    if (props.budgetId) {
-        transactions = totalTransacitons.filter(
-            (item: any) => item.budgetId === props.budgetId
-        );
-    }
+    const { startDate, endDate, transactions } = props;
 
     const getDateStatus = (date: Date) => {
         let expenseTotal = 0;

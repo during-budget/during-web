@@ -8,16 +8,10 @@ function TransactionList(props: { transactions: Transaction[] }) {
         (state: any) => state.ui.transactionForm.isCurrent
     );
 
-    const filteredTransactions = props.transactions
-        .filter((item: any) => {
-            const isCorrectType = isCurrentState
-                ? item.isCurrent
-                : !item.isCurrent;
-            return isCorrectType;
-        })
-        .map((item: any) => {
-            return Transaction.getTransaction(item);
-        });
+    const filteredTransactions = props.transactions.filter((item: any) => {
+        const isCorrectType = isCurrentState ? item.isCurrent : !item.isCurrent;
+        return isCorrectType;
+    });
 
     const transactions: { date: string; transactions: Transaction[] }[] = [];
     filteredTransactions.forEach((transaction: Transaction) => {
