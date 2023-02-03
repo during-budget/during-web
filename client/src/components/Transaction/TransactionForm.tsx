@@ -87,7 +87,6 @@ function TransactionForm(props: { budgetId: string }) {
             budgetActions.updateCategoryAmount({
                 categoryId: category.id,
                 budgetId: props.budgetId,
-                isExpense: formState.isExpense,
                 isCurrent: formState.isCurrent,
                 amount: updatedAmount,
             })
@@ -111,7 +110,6 @@ function TransactionForm(props: { budgetId: string }) {
             budgetActions.updateCategoryAmount({
                 categoryId: category.id,
                 budgetId: props.budgetId,
-                isExpense,
                 isCurrent: formState.isCurrent,
                 amount,
             })

@@ -140,7 +140,7 @@ class Transaction {
             date: new Date(date),
             amount,
             categoryId: category.categoryId,
-            icon: icon ? icon : category.icon,
+            icon,
             tags,
             memo,
         });

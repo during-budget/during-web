@@ -89,6 +89,24 @@ class Budget {
         return new Budget({ id, title, startDate, endDate, total, categories });
     }
 
+    static getBudgetUpdatedCategoryAmount = (
+        prevBudget: Budget | any,
+        categoryId: string,
+        isCurrent: boolean,
+        addingAmount: number
+    ) => {
+        const { id, title, startDate, total, endDate, categories } = prevBudget;
+        const idx = categories.findIndex((item: any) => item.id === categoryId);
+        if (categories[idx]) {
+            if (isCurrent) {
+                categories[idx].amount.addCurrent(addingAmount);
+            } else {
+                categories[idx].amount.addScheduled(addingAmount);
+            }
+        }
+        return new Budget({ id, title, startDate, endDate, total, categories });
+    };
+
     constructor(budget: {
         id: string;
         title: string;
