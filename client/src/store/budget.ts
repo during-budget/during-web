@@ -66,7 +66,7 @@ const budgetSlice = createSlice({
     reducers: {
         setBudgets(state, action) {
             const budgets = action.payload;
-            state.splice(0, state.length); // initialize state
+            state.splice(0, state.length); // NOTE: initialize state
             budgets.forEach((budget: any) => {
                 const newBudget = getBudgetFromData(budget);
                 state.push(newBudget);

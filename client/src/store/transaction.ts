@@ -7,6 +7,10 @@ const transactionSlice = createSlice({
     name: 'transaction',
     initialState,
     reducers: {
+        setTransaction(state, action) {
+            state.splice(0, state.length); // NOTE: initialize state
+            state.push(...action.payload);
+        },
         addTransaction(state, action) {
             const transaction = action.payload;
 
