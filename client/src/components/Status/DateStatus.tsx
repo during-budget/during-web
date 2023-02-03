@@ -4,11 +4,12 @@ import { uiActions } from '../../store/ui';
 import Calendar from '../UI/Calendar';
 import { Fragment, useState } from 'react';
 import RadioTab from '../UI/RadioTab';
+import Transaction from '../../models/Transaction';
 
 function DateStatus(props: {
     startDate: Date;
     endDate: Date;
-    budgetId: string;
+    transactions: Transaction[];
 }) {
     const dispatch = useDispatch();
     const [isScroll, setIsScroll] = useState(false);
@@ -49,7 +50,7 @@ function DateStatus(props: {
             <Calendar
                 startDate={props.startDate}
                 endDate={props.endDate}
-                budgetId={props.budgetId}
+                transactions={props.transactions}
                 onClick={isScroll ? scrollHandler : formHandler}
             ></Calendar>
 
