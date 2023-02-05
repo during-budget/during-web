@@ -46,13 +46,13 @@ function BudgetForm() {
     useEffect(() => {
         let totalCategory = 0;
         for (const key in categoryState) {
-            totalCategory += categoryState[key];
+            totalCategory += +categoryState[key];
         }
 
         if (isExpense) {
-            setOverAmount(expensePlannedState - totalCategory);
+            setOverAmount(+expensePlannedState - totalCategory);
         } else {
-            setOverAmount(incomePlannedState - totalCategory);
+            setOverAmount(+incomePlannedState - totalCategory);
         }
     }, [isExpense, categoryState, expensePlannedState, incomePlannedState]);
 
