@@ -144,6 +144,7 @@ export const createTransaction = async (transaction: Transaction) => {
 
     const {
         budgetId,
+        linkId,
         date,
         isExpense,
         isIncome,
@@ -160,6 +161,7 @@ export const createTransaction = async (transaction: Transaction) => {
         credentials: 'include',
         body: JSON.stringify({
             budgetId,
+            linkId,
             date,
             isExpense,
             isIncome,
@@ -207,13 +209,14 @@ export const getTransaction = async (budgetId: string) => {
 export const updateTransactionFields = async (transaction: Transaction) => {
     const url = `${BASE_URL}/api/transactions/${transaction.id}`;
 
-    const { date, title, tags, memo } = transaction;
+    const { date, title, linkId, tags, memo } = transaction;
 
     const response = await fetch(url, {
         method: 'PATCH',
         credentials: 'include',
         body: JSON.stringify({
             date,
+            linkId,
             title,
             tags,
             memo,
