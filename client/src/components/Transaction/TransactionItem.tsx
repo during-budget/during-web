@@ -27,10 +27,14 @@ function TransactionItem(props: { transaction: Transaction }) {
         budgetId,
         tags,
         memo,
+        linkAmount,
     } = props.transaction;
 
     const categories = useSelector((state: any) => state.categories);
     const category = categories.find((item: any) => item.id === categoryId);
+
+    const overAmount = linkAmount - amount;
+    const isOverPlan = overAmount < 0;
 
     if (!category) {
         throw new Error("Category doesn't exists");
@@ -151,6 +155,19 @@ function TransactionItem(props: { transaction: Transaction }) {
                         <div className={classes.amount}>
                             {isExpense ? '-' : '+'}
                             {Amount.getAmountString(amount)}
+                            {isCurrent && linkId && overAmount !== 0 && (
+                                <p
+                                    className={`${classes.informLink} ${
+                                        isOverPlan
+                                            ? classes.overAmount
+                                            : classes.underAmount
+                                    }`}
+                                >
+                                    계획보다{' '}
+                                    {isOverPlan ? -overAmount : overAmount}원{' '}
+                                    {isOverPlan ? '더' : '덜'} 썼어요.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>

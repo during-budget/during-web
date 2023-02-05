@@ -61,4 +61,18 @@
     flex-basis: auto;
     font-size: 1.2rem;
     font-weight: 600;
+    text-align: right;
+}
+
+.informLink {
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.overAmount {
+    color: var(--error-text);
+}
+
+.underAmount {
+    color: var(--tertiary-text);
 }
