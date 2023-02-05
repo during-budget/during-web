@@ -60,30 +60,35 @@ function TransactionItem(props: { transaction: Transaction }) {
                 );
             },
         },
-        {
-            name: '내역 삭제',
-            action: () => {
-                dispatch(transactionActions.removeTransaction(id));
-                dispatch(
-                    budgetActions.updateTotalAmount({
-                        budgetId,
-                        isExpense,
-                        isCurrent,
-                        amount: -amount,
-                    })
-                );
-                dispatch(
-                    budgetActions.updateCategoryAmount({
-                        budgetId,
-                        categoryId,
-                        isCurrent,
-                        amount: -amount,
-                    })
-                );
-                deleteTransaction(id);
-            },
-        },
     ];
+
+    const remove = (isCurrent || !linkId) && {
+        name: '내역 삭제',
+        action: () => {
+            dispatch(transactionActions.removeTransaction(id));
+            if (isCurrent && linkId) {
+                dispatch(transactionActions.removeLink(linkId));
+            }
+
+            dispatch(
+                budgetActions.updateTotalAmount({
+                    budgetId,
+                    isExpense,
+                    isCurrent,
+                    amount: -amount,
+                })
+            );
+            dispatch(
+                budgetActions.updateCategoryAmount({
+                    budgetId,
+                    categoryId,
+                    isCurrent,
+                    amount: -amount,
+                })
+            );
+            deleteTransaction(id);
+        },
+    };
 
     const getDone = !isCurrent &&
         !linkId && {
@@ -120,6 +125,7 @@ function TransactionItem(props: { transaction: Transaction }) {
 
     getDone && contextMenu.unshift(getDone);
     goToLink && contextMenu.unshift(goToLink);
+    remove && contextMenu.push(remove);
 
     const navigateHandler = () => {
         navigation(`/budget/${budgetId}/${id}`);
