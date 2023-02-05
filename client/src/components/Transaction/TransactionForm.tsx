@@ -134,6 +134,9 @@ function TransactionForm(props: { budgetId: string }) {
             icon,
             tags: tagRef.current!.value,
             memo: memoRef.current!.value,
+            linkAmount:
+                (formState.isCompleted && formState.input.amount) ||
+                +expandAmountRef.current!.value,
         });
         dispatch(transactionActions.addTransaction(newTransaction));
 

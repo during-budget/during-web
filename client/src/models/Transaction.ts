@@ -12,6 +12,7 @@ class Transaction {
     private _categoryId: string;
     private _tags: string[];
     private _memo: string;
+    private _linkAmount: number;
 
     get id() {
         return this._id;
@@ -63,6 +64,10 @@ class Transaction {
 
     get memo() {
         return this._memo;
+    }
+
+    get linkAmount() {
+        return this._linkAmount;
     }
 
     set id(id: string) {
@@ -160,6 +165,7 @@ class Transaction {
         tags?: string[];
         icon?: string;
         memo?: string;
+        linkAmount?: number;
     }) {
         const {
             id,
@@ -175,6 +181,7 @@ class Transaction {
             categoryId,
             tags,
             memo,
+            linkAmount,
         } = transaction;
         this._id = id;
         this._budgetId = budgetId;
@@ -189,6 +196,7 @@ class Transaction {
         this._categoryId = categoryId;
         this._tags = tags || [];
         this._memo = memo || '';
+        this._linkAmount = linkAmount || 0;
     }
 }
 
