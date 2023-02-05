@@ -21,8 +21,16 @@
     width: calc(100% - 2rem);
 }
 
+.inform {
+    margin-bottom: 1rem;
+}
+
+.inform i {
+    margin-right: 0.5rem;
+}
+
 .categories {
-    height: 30vh;
+    height: 25vh;
     overflow-y: scroll;
 }
 

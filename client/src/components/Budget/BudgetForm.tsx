@@ -19,11 +19,16 @@ function BudgetForm() {
 
     const [isExpense, setIsExpense] = useState(true);
     const titleRef = useRef<HTMLInputElement>(null);
-    const expensePlannedRef = useRef<HTMLInputElement>(null);
-    const incomePlannedRef = useRef<HTMLInputElement>(null);
+    const [expensePlannedState, setExpensePlannedState] = useState(
+        formState.expensePlanned
+    );
+    const [incomePlannedState, setIncomePlannedState] = useState(
+        formState.incomePlanned
+    );
     const [categoryState, setCategoryState] = useState(
         {} as Record<string, any>
     );
+    const [overAmount, setOverAmount] = useState(0);
 
     useEffect(() => {
         categories.forEach((category: any) => {
@@ -37,6 +42,27 @@ function BudgetForm() {
         titleRef.current?.focus();
     }, [formState.isShow]);
 
+    useEffect(() => {
+        let totalCategory = 0;
+        for (const key in categoryState) {
+            totalCategory += categoryState[key];
+        }
+
+        if (isExpense) {
+            setOverAmount(expensePlannedState - totalCategory);
+        } else {
+            setOverAmount(incomePlannedState - totalCategory);
+        }
+    }, [isExpense, categoryState, expensePlannedState, incomePlannedState]);
+
+    const expensePlanHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setExpensePlannedState(event.target.value);
+    };
+
+    const incomePlanHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIncomePlannedState(event.target.value);
+    };
+
     const cancelHandler = () => {
         dispatch(uiActions.resetBudgetForm());
     };
@@ -44,8 +70,8 @@ function BudgetForm() {
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         const title = titleRef.current?.value;
-        const expensePlanned = +expensePlannedRef.current!.value;
-        const incomePlanned = +incomePlannedRef.current!.value;
+        const expensePlanned = expensePlannedState;
+        const incomePlanned = incomePlannedState;
         const budgetCategories = categories.map((category: Category) => {
             const { id, title, icon, isExpense, isIncome } = category;
             const planned = categoryState[id] || '';
@@ -75,6 +101,7 @@ function BudgetForm() {
         const budgetId = await createBudget(newBudget);
         navigation(`/budget/${budgetId}`);
     };
+
     const inputs = (
         <div className={classes.inputs}>
             <h5>
@@ -85,22 +112,24 @@ function BudgetForm() {
                     formState.endDate.toLocaleDateString('ko-KR')}
             </h5>
             <div className="input-field">
-                <label>내용</label>
+                <label>제목</label>
                 <input ref={titleRef} defaultValue={formState.title} />
             </div>
             <div className={classes.total}>
                 <div className="input-field">
                     <label>목표 지출</label>
                     <input
-                        ref={expensePlannedRef}
-                        defaultValue={formState.expansePlanned}
+                        type="number"
+                        onChange={expensePlanHandler}
+                        value={expensePlannedState}
                     />
                 </div>
                 <div className="input-field">
                     <label>목표 수입</label>
                     <input
-                        ref={incomePlannedRef}
-                        defaultValue={formState.incomePlanned}
+                        type="number"
+                        onChange={incomePlanHandler}
+                        value={incomePlannedState}
                     />
                 </div>
             </div>
@@ -130,7 +159,25 @@ function BudgetForm() {
                         ]}
                     />
                 </div>
-                <div className={classes.categories}>
+                {overAmount !== 0 && (
+                    <div
+                        className={
+                            overAmount < 0
+                                ? `error ${classes.inform}`
+                                : `inform ${classes.inform}`
+                        }
+                    >
+                        <p>
+                            <i className="fa-solid fa-circle-exclamation" />
+                            카테고리별 목표의 합이 전체 목표보다
+                        </p>
+                        <p>
+                            <strong>{overAmount}원</strong>
+                            {overAmount < 0 ? ' 더 큽니다' : ' 모자랍니다'}
+                        </p>
+                    </div>
+                )}
+                <ul className={classes.categories}>
                     {formState.categories
                         .filter((category: any) => {
                             if (isExpense) {
@@ -141,7 +188,7 @@ function BudgetForm() {
                         })
                         .map((category: any) => {
                             return (
-                                <div
+                                <li
                                     key={category.id}
                                     className={classes.category}
                                 >
@@ -152,6 +199,7 @@ function BudgetForm() {
                                         <p>{category.title}</p>
                                     </div>
                                     <input
+                                        type="number"
                                         onChange={(
                                             event: React.ChangeEvent<HTMLInputElement>
                                         ) => {
@@ -165,10 +213,10 @@ function BudgetForm() {
                                         }}
                                         value={categoryState[category.id]}
                                     />
-                                </div>
+                                </li>
                             );
                         })}
-                </div>
+                </ul>
             </div>
             <div className={classes.buttons}>
                 <button
