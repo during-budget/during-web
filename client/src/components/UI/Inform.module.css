@@ -1,0 +1,24 @@
+.msg {
+    padding: 0.8rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+}
+
+.msg strong {
+    font-size: 1rem;
+}
+
+.error {
+    color: var(--error-text);
+    background-color: var(--error-background);
+}
+
+.inform {
+    color: var(--secondary-text);
+    background-color: var(--background);
+}
+
+.icon {
+    margin-right: 0.3rem;
+}

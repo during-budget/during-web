@@ -9,6 +9,7 @@ import { budgetActions } from '../../store/budget';
 import Amount from '../../models/Amount';
 import { createBudget } from '../../util/api';
 import { useNavigate } from 'react-router-dom';
+import Inform from '../UI/Inform';
 
 function BudgetForm() {
     const dispatch = useDispatch();
@@ -160,22 +161,13 @@ function BudgetForm() {
                     />
                 </div>
                 {overAmount !== 0 && (
-                    <div
-                        className={
-                            overAmount < 0
-                                ? `error ${classes.inform}`
-                                : `inform ${classes.inform}`
-                        }
-                    >
-                        <p>
-                            <i className="fa-solid fa-circle-exclamation" />
-                            카테고리별 목표의 합이 전체 목표보다
-                        </p>
+                    <Inform isError={overAmount < 0}>
+                        <span>카테고리별 목표의 합이 전체 목표보다</span>
                         <p>
                             <strong>{overAmount}원</strong>
                             {overAmount < 0 ? ' 더 큽니다' : ' 모자랍니다'}
                         </p>
-                    </div>
+                    </Inform>
                 )}
                 <ul className={classes.categories}>
                     {formState.categories

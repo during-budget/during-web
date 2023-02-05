@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import Amount from '../../models/Amount';
 import BarChart from '../UI/BarChart';
+import Inform from '../UI/Inform';
 import classes from './AmountRing.module.css';
 
 const EARS = require('../../assets/svg/cat_ears.svg').default;
@@ -24,7 +25,7 @@ function AmountRing(props: {
             .map((item: any, i) => {
                 if (item.isTrue) {
                     return (
-                        <p key={i}>
+                        <p className={classes.inform} key={i}>
                             <i className="fa-solid fa-circle-exclamation" />
                             <strong>{item.target}</strong>
                             {`이 ${item.over}보다 `}
@@ -71,15 +72,9 @@ function AmountRing(props: {
     return (
         <Fragment>
             {isOverAmount && props.showMsg && (
-                <>
-                    <div
-                        className={`${props.isExpense ? 'error' : 'inform'} ${
-                            classes.inform
-                        }`}
-                    >
-                        {overState}
-                    </div>
-                </>
+                <Inform isError={props.isExpense} hideIcon={true}>
+                    {overState}
+                </Inform>
             )}
             <div
                 className={classes.container}

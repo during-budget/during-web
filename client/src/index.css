@@ -148,31 +148,3 @@ hr {
 .status-header h2 {
     font-size: 1.1rem;
 }
-
-/* error */
-.error {
-    padding: 0.8rem;
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--error-text);
-    background-color: var(--error-background);
-    border-radius: 0.5rem;
-}
-
-.error strong {
-    font-size: 1rem;
-}
-
-/* inform */
-.inform {
-    padding: 0.8rem;
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--secondary-text);
-    background-color: var(--background);
-    border-radius: 0.5rem;
-}
-
-.inform strong {
-    font-size: 1rem;
-}

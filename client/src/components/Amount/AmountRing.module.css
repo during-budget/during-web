@@ -76,13 +76,9 @@
 }
 
 .inform {
-    margin-top: 0.2rem;
-}
-
-.inform > p {
     line-height: 1.3rem;
 }
 
-.inform > p > i {
+.inform i {
     margin-right: 0.2rem;
 }
