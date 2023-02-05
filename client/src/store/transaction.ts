@@ -37,6 +37,13 @@ const transactionSlice = createSlice({
             const idx = state.findIndex((item: any) => item.id === id);
             state.splice(idx, 1);
         },
+        removeLink(state, action) {
+            const linkId = action.payload;
+            const target = state.find((item: any) => item.id === linkId);
+            if (target) {
+                target.linkId = undefined;
+            }
+        },
         addLink(state, action) {
             const { targetId, linkId } = action.payload;
             const target = state.find((item) => item.id === targetId);
