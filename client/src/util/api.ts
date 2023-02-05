@@ -227,7 +227,6 @@ export const updateTransactionFields = async (transaction: Transaction) => {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
         console.log('create transaction fail');
@@ -252,7 +251,6 @@ export const updateTransactionAmount = async (transaction: Transaction) => {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
         console.log('create transaction fail');
@@ -277,7 +275,6 @@ export const updateTransactionCategory = async (transaction: Transaction) => {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
         console.log('create transaction fail');
