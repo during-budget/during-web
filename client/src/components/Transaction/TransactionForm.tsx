@@ -22,8 +22,11 @@ import RadioTab from '../UI/RadioTab';
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
 
-    const categories = useSelector((state: any) => state.categories);
     const formState = useSelector((state: any) => state.ui.transactionForm);
+    const totalCategories = useSelector((state: any) => state.categories);
+    const categories = totalCategories.filter((item: Category) => {
+        return formState.isExpense ? item.isExpense : item.isIncome;
+    });
 
     const shortAmountRef = useRef<HTMLInputElement>(null);
     const expandAmountRef = useRef<HTMLInputElement>(null);
