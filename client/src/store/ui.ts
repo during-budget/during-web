@@ -7,7 +7,7 @@ const initialState = {
         isExpand: false,
         isCompleted: undefined,
         isCurrent: false,
-        isExpense: undefined,
+        isExpense: true,
         input: {},
     },
     budgetForm: {

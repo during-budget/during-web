@@ -47,6 +47,22 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(uiActions.setTransactionForm({ isExpand: false }));
     };
 
+    const changeExpenseHandler = () => {
+        dispatch(
+            uiActions.setTransactionForm({
+                isExpense: true,
+            })
+        );
+    };
+
+    const changeIncomeHandler = () => {
+        dispatch(
+            uiActions.setTransactionForm({
+                isExpense: false,
+            })
+        );
+    };
+
     const submit = () => {
         const categoryId = categoryRef.current!.value;
         const category = categories.find((item: any) => item.id === categoryId);
@@ -126,8 +142,8 @@ function TransactionForm(props: { budgetId: string }) {
             budgetId: props.budgetId,
             linkId: formState.linkId || (formState.isCompleted && formState.id),
             isCurrent: formState.isCurrent,
-            isExpense: category.isExpense,
-            isIncome: category.isIncome,
+            isExpense: formState.isExpense,
+            isIncome: !formState.isIncome,
             title: titleRef.current!.value(),
             date: new Date(dateRef.current!.value),
             amount: +expandAmountRef.current!.value,
@@ -247,9 +263,15 @@ function TransactionForm(props: { budgetId: string }) {
                         {
                             label: '지출',
                             value: 'expense',
-                            defaultChecked: true,
+                            checked: formState.isExpense,
+                            onChange: changeExpenseHandler,
                         },
-                        { label: '수입', value: 'income' },
+                        {
+                            label: '수입',
+                            value: 'income',
+                            checked: !formState.isExpense,
+                            onChange: changeIncomeHandler,
+                        },
                     ]}
                 />
                 <span>|</span>
