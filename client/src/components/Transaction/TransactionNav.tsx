@@ -7,6 +7,8 @@ function TransactionNav(props: {
     id: string;
     isExpand: boolean;
     isCompleted?: boolean;
+    isHideLine?: boolean;
+    isClearGap?: boolean;
 }) {
     const dispatch = useDispatch();
     const isCurrent = useSelector(
@@ -33,7 +35,9 @@ function TransactionNav(props: {
 
     return (
         <RadioTab
-            className={classes.nav}
+            className={`${classes.nav} ${!props.isHideLine && classes.line} ${
+                !props.isClearGap && classes.gap
+            }`}
             name="tansaction-list"
             values={[
                 {

@@ -279,6 +279,8 @@ function TransactionForm(props: { budgetId: string }) {
                     id="form"
                     isExpand={true}
                     isCompleted={formState.isCompleted}
+                    isHideLine={true}
+                    isClearGap={true}
                 />
             </div>
             <div className={classes.buttons}>
