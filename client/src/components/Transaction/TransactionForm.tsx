@@ -17,6 +17,7 @@ import {
     updateTransactionFields,
 } from '../../util/api';
 import Category from '../../models/Category';
+import RadioTab from '../UI/RadioTab';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -192,11 +193,6 @@ function TransactionForm(props: { budgetId: string }) {
 
     const expandInput = (
         <div className={classes.expand}>
-            <TransactionNav
-                id="form"
-                isExpand={true}
-                isCompleted={formState.isCompleted}
-            />
             <div className={classes.inputs}>
                 <div className="input-field">
                     <label>금액</label>
@@ -243,6 +239,25 @@ function TransactionForm(props: { budgetId: string }) {
                         defaultValue={formState.input.memo}
                     />
                 </div>
+            </div>
+            <div className={classes.types}>
+                <RadioTab
+                    name="type"
+                    values={[
+                        {
+                            label: '지출',
+                            value: 'expense',
+                            defaultChecked: true,
+                        },
+                        { label: '수입', value: 'income' },
+                    ]}
+                />
+                <span>|</span>
+                <TransactionNav
+                    id="form"
+                    isExpand={true}
+                    isCompleted={formState.isCompleted}
+                />
             </div>
             <div className={classes.buttons}>
                 <button
