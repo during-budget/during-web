@@ -16,8 +16,7 @@
 }
 
 .expand {
-    padding: 1rem;
-    padding-top: 0;
+    padding: 2rem;
 }
 
 .expand .selects {
@@ -33,6 +32,18 @@
 
 .expand .selects > div:last-child {
     flex: 2 1 auto;
+}
+
+.expand .types {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.expand .types > span {
+    margin: 0 1rem;
+    margin-bottom: 1rem;
 }
 
 .expand .buttons {
