@@ -17,6 +17,7 @@ import Test, { loader as testLoader } from './screens/Test';
 import RequireAuth from './screens/auth/RequireAuth';
 import Root from './screens/Root';
 import ErrorBoundary from './screens/ErrorBoundary';
+import Nav from './screens/Nav';
 
 const router = createBrowserRouter([
     {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
                 path: '/budget',
                 element: (
                     <RequireAuth>
-                        <Root />
+                        <Nav />
                     </RequireAuth>
                 ),
                 children: [
@@ -62,6 +63,24 @@ const router = createBrowserRouter([
                 path: '/test',
                 element: <Test />,
                 loader: testLoader,
+            },
+            {
+                path: '/during',
+                element: (
+                    <RequireAuth>
+                        <Nav />
+                    </RequireAuth>
+                ),
+                children: [],
+            },
+            {
+                path: '/user',
+                element: (
+                    <RequireAuth>
+                        <Nav />
+                    </RequireAuth>
+                ),
+                children: [],
             },
         ],
     },

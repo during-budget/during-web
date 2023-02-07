@@ -1,0 +1,43 @@
+.nav {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary);
+    height: 6rem;
+    width: 100%;
+    z-index: 10;
+}
+
+.link {
+    color: var(--tertiary-text);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+    font-size: 2rem;
+}
+
+.link > span {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.link:after {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-top: 0.5rem;
+    border-radius: 50%;
+    background-color: #000;
+}
+
+.link.active {
+    color: #fff
+}
+
+.link.active:after {
+    background-color: #fff;
+}
