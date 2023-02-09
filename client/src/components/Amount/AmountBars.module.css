@@ -6,16 +6,21 @@
     height: 100%;
 }
 
-.category {
+.bar {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     height: 100%;
     transition: 0.5s;
+    cursor: pointer;
 }
 
-.category .label {
+.bar i {
+    margin-bottom: 1rem;
+}
+
+.bar .label {
     margin: 0.4rem 0;
     font-size: 1.4rem;
     line-height: 1.4rem;
