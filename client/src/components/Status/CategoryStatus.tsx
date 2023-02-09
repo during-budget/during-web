@@ -125,6 +125,11 @@ function CategoryStatus(props: { budgetId: string }) {
                     );
                 }
             })}
+            <div className={classes.setting}>
+                <button>
+                    <i className="fa-solid fa-gear"></i>
+                </button>
+            </div>
         </div>
     );
 }
