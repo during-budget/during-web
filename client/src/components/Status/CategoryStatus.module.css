@@ -6,6 +6,7 @@
 
 .bars {
     height: 40%;
+    flex-shrink: 1;
 }
 
 .title {
@@ -27,4 +28,19 @@
 
 .title .icon {
     margin-right: 0.5rem;
+}
+
+.inform {
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.inform i {
+    margin-right: 0.2rem;
+}
+
+.error {
+    color: var(--error-text);
 }
