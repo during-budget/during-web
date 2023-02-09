@@ -20,7 +20,7 @@ class Amount {
     private _state: {
         target: string;
         over: string;
-        isTrue: boolean;
+        isOver: boolean;
         amount: number;
     }[];
 
@@ -117,12 +117,12 @@ class Amount {
         over: string,
         overAmount: number
     ) => {
-        const isTrue = overAmount < 0;
+        const isOver = overAmount < 0;
         return {
             target,
             over,
-            isTrue,
-            amount: isTrue ? -overAmount : 0,
+            isOver,
+            amount: isOver ? -overAmount : 0,
         };
     };
 
