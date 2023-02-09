@@ -49,7 +49,7 @@ function CategoryStatus(props: { budgetId: string }) {
     return (
         <div className={`status-container ${classes.container}`}>
             <div className="status-header">
-                <h2>카테고리별 예산</h2>
+                <h2>카테고리별 예산</h2>{' '}
                 <RadioTab
                     name="category-status-type"
                     values={[
@@ -74,23 +74,21 @@ function CategoryStatus(props: { budgetId: string }) {
                     ]}
                 />
             </div>
-            <div className={classes.bars}>
-                <AmountBars
-                    amountData={categories.map((item: any, i: number) => {
-                        return {
-                            amount: item.amount,
-                            label: item.icon,
-                        };
-                    })}
-                />
-            </div>
-            <div className={classes.detail}>
-                <AmountDetail
-                    id="category"
-                    amount={categories[currentCategoryIdx].amount}
-                    onEdit={editPlanHandler}
-                />
-            </div>
+            <AmountBars
+                className={classes.bars}
+                amountData={categories.map((item: any, i: number) => {
+                    return {
+                        amount: item.amount,
+                        label: item.icon,
+                    };
+                })}
+            />
+            <AmountDetail
+                className={classes.detail}
+                id="category"
+                amount={categories[currentCategoryIdx].amount}
+                onEdit={editPlanHandler}
+            />
             <div className={classes.title}>
                 <button type="button" onClick={minusCategoryIdx}>
                     <i className="fa-solid fa-chevron-left"></i>
@@ -105,6 +103,22 @@ function CategoryStatus(props: { budgetId: string }) {
                     <i className="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
+            {categories[currentCategoryIdx].amount.state.map((item: any) => {
+                if (item.isOver) {
+                    return (
+                        <span
+                            className={`${classes.inform} ${
+                                isExpense && classes.error
+                            }`}
+                        >
+                            <i className="fa-solid fa-circle-exclamation"></i>
+                            <strong>{item.target}</strong>이{' '}
+                            <strong>{item.over}</strong>보다{' '}
+                            <strong>{item.amount}</strong> 더 큽니다.
+                        </span>
+                    );
+                }
+            })}
         </div>
     );
 }
