@@ -23,7 +23,7 @@ function AmountRing(props: {
     useEffect(() => {
         const overMsg = amount.state
             .map((item: any, i) => {
-                if (item.isTrue) {
+                if (item.isOver) {
                     return (
                         <p className={classes.inform} key={i}>
                             <i className="fa-solid fa-circle-exclamation" />
