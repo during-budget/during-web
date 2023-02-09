@@ -47,7 +47,7 @@ function CategoryStatus(props: { budgetId: string }) {
     };
 
     return (
-        <div className="status-container">
+        <div className={`status-container ${classes.container}`}>
             <div className="status-header">
                 <h2>카테고리별 예산</h2>
                 <RadioTab
