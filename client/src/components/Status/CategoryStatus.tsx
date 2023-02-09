@@ -76,10 +76,16 @@ function CategoryStatus(props: { budgetId: string }) {
             </div>
             <AmountBars
                 className={classes.bars}
-                amountData={categories.map((item: any, i: number) => {
+                amountData={categories.map((item: Category, i: number) => {
                     return {
                         amount: item.amount,
                         label: item.icon,
+                        isOver: item.amount?.state
+                            .map((state) => state.isOver)
+                            .includes(true),
+                        onClick: (i: number) => {
+                            setCurrentCategoryIdx(i);
+                        },
                     };
                 })}
             />
