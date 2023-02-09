@@ -7,6 +7,7 @@ function AmountDetail(props: {
     id: string;
     amount: Amount;
     onEdit: (amount: number) => void;
+    className?: string;
 }) {
     const { id, amount, onEdit } = props;
 
@@ -52,7 +53,7 @@ function AmountDetail(props: {
     );
 
     return (
-        <div className={classes.container}>
+        <div className={`${classes.container} ${props.className}`}>
             <RadioTab
                 name={`${id}-amount-detail`}
                 values={[

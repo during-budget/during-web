@@ -5,6 +5,8 @@ import Amount from '../../models/Amount';
 function AmountBars(props: {
     amountData: { amount: Amount; label: string }[];
     isTop?: boolean;
+    isExpense?: boolean;
+    className?: string;
 }) {
     const amountData = props.amountData;
     const plans = amountData.map((data) => {
@@ -14,7 +16,7 @@ function AmountBars(props: {
     const widths = plans.map((planned) => (planned / totalPlanned) * 90 + '%');
 
     return (
-        <ul className={classes.container}>
+        <ul className={`${classes.container} ${props.className}`}>
             {amountData.map((data, i) => {
                 return (
                     <li
@@ -22,9 +24,13 @@ function AmountBars(props: {
                         className={classes.category}
                         style={{ width: widths[i] }}
                     >
-                        { props.isTop && <span className={classes.label}>{data.label}</span> }
+                        {props.isTop && (
+                            <span className={classes.label}>{data.label}</span>
+                        )}
                         <AmountBar amount={data.amount} />
-                        { !props.isTop && <span className={classes.label}>{data.label}</span> }
+                        {!props.isTop && (
+                            <span className={classes.label}>{data.label}</span>
+                        )}
                     </li>
                 );
             })}
