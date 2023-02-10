@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
 import { userActions } from '../../store/user';
 import { login, register } from '../../util/api';
+import Inform from '../../components/UI/Inform';
 
 function AuthForm(props: { from?: string }) {
     const dispatch = useDispatch();
@@ -81,7 +82,7 @@ function AuthForm(props: { from?: string }) {
     return (
         <div>
             {errorState.length !== 0 && (
-                <div className={`error ${classes.error}`}>
+                <Inform isError={true} className={classes.error} hideIcon={true}>
                     {errorState.map((error, i) => {
                         return (
                             <p key={i}>
@@ -93,7 +94,7 @@ function AuthForm(props: { from?: string }) {
                             </p>
                         );
                     })}
-                </div>
+                </Inform>
             )}
             <form className={classes.form} onSubmit={submitHandler}>
                 {!isLoginMode && <h3>Create Account</h3>}
