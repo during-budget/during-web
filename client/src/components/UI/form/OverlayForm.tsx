@@ -4,6 +4,7 @@ function OverlayForm(props: {
     onSubmit?: (event: React.FormEvent) => void;
     isShowBackdrop?: boolean;
     children?: React.ReactNode;
+    className?: string;
 }) {
     const preventEnterSubmitHandler = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
@@ -17,7 +18,7 @@ function OverlayForm(props: {
                 <div className={classes.backdrop}></div>
             ) : null}
             <form
-                className={classes.overlay}
+                className={`${classes.overlay} ${props.className}`}
                 onSubmit={props.onSubmit}
                 onKeyDown={preventEnterSubmitHandler}
             >

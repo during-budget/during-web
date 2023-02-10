@@ -19,6 +19,9 @@ const initialState = {
         expensePlanned: 0,
         incomePlanned: 0,
     },
+    categoryForm: {
+        isShow: false,
+    },
 };
 
 const uiSlice = createSlice({
@@ -70,6 +73,10 @@ const uiSlice = createSlice({
         },
         resetBudgetForm(state) {
             state.budgetForm = initialState.budgetForm;
+        },
+        setCategoryForm(state, action) {
+            const data = action.payload;
+            state.categoryForm.isShow = data.isShow;
         },
     },
 });
