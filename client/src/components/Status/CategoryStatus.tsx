@@ -7,6 +7,8 @@ import RadioTab from '../UI/RadioTab';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountBars from '../Amount/AmountBars';
 import { budgetActions } from '../../store/budget';
+import { uiActions } from '../../store/ui';
+import CategoryForm from '../Category/CategoryForm';
 
 function CategoryStatus(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -14,6 +16,7 @@ function CategoryStatus(props: { budgetId: string }) {
     const [isExpense, setIsExpense] = useState(true);
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
 
+    const formState = useSelector((state: any) => state.ui.categoryForm);
     const budgets = useSelector((state: any) => state.budgets);
     const budget = budgets.find((item: Budget) => item.id === props.budgetId);
     const categories = budget.categories.filter((category: Category) =>
@@ -126,10 +129,22 @@ function CategoryStatus(props: { budgetId: string }) {
                 }
             })}
             <div className={classes.setting}>
-                <button>
+                <button
+                    onClick={() => {
+                        dispatch(uiActions.setCategoryForm({ isShow: true }));
+                    }}
+                >
                     <i className="fa-solid fa-gear"></i>
                 </button>
             </div>
+            {formState.isShow && (
+                <CategoryForm
+                    categories={categories}
+                    onCancel={() => {
+                        dispatch(uiActions.setCategoryForm({ isShow: false }));
+                    }}
+                ></CategoryForm>
+            )}
         </div>
     );
 }
