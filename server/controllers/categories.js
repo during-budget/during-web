@@ -20,18 +20,11 @@ module.exports.create = async (req, res) => {
       return res
         .status(409)
         .send({ message: "isExpense and isIncome is required" });
-    const user = req.user;
 
-    user.categories.push({
-      isExpense: req.body.isExpense,
-      isIncome: req.body.isIncome,
-      title: req.body.title,
-      icon: req.body.icon,
-    });
-
+    req.user.pushCategory(req.body);
     await req.user.save();
 
-    return res.status(200).send({ categories: user.categories });
+    return res.status(200).send({ categories: req.user.categories });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -73,6 +66,10 @@ module.exports.update = async (req, res) => {
       _id: mongoose.Types.ObjectId(req.params._id),
     });
     if (idx === -1) return res.status(404).send();
+    if (user.categories[idx].isDefault)
+      return res
+        .status(409)
+        .send({ message: "default category cannot be updated" });
 
     user.categories[idx] = {
       _id: user.categories[idx]._id,
@@ -142,10 +139,18 @@ module.exports.swap = async (req, res) => {
       _id: mongoose.Types.ObjectId(req.body._id1),
     });
     if (idx1 === -1) return res.status(404).send();
+    if (user.categories[idx1].isDefault)
+      return res
+        .status(409)
+        .send({ message: "default category cannot be swapped" });
     const idx2 = _.findIndex(user.categories, {
       _id: mongoose.Types.ObjectId(req.body._id2),
     });
     if (idx2 === -1) return res.status(404).send();
+    if (user.categories[idx2].isDefault)
+      return res
+        .status(409)
+        .send({ message: "default category cannot be swapped" });
 
     const temp = user.categories[idx1];
     user.categories[idx1] = user.categories[idx2];
@@ -173,6 +178,10 @@ module.exports.remove = async (req, res) => {
       _id: mongoose.Types.ObjectId(req.params._id),
     });
     if (idx === -1) return res.status(404).send();
+    if (user.categories[idx].isDefault)
+      return res
+        .status(409)
+        .send({ message: "default category cannot be removed" });
 
     // 해당 카테고리를 사용하는 budget이 존재하는가?
     const budgets = await Budget.find({

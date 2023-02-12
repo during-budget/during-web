@@ -5,6 +5,7 @@ const _ = require("lodash");
 const categorySettingSchema = mongoose.Schema({
   isExpense: { type: Boolean, default: false },
   isIncome: { type: Boolean, default: false },
+  isDefault: { type: Boolean, default: false },
   title: String,
   icon: String,
 });
@@ -38,6 +39,9 @@ const userSchema = mongoose.Schema(
         // 기타 카테고리
         { isExpense: true, isIncome: true, title: "이체", icon: "🍫" },
         { isExpense: true, isIncome: true, title: "채무", icon: "🍟" },
+        // 기본 카테고리
+        { isExpense: true, isDefault: true, title: "기타", icon: "💸" },
+        { isIncome: true, isDefault: true, title: "기타", icon: "💰" },
       ],
     },
   },
@@ -75,6 +79,20 @@ userSchema.methods.findCategory = function (categoryId) {
   return _.find(this.categories, {
     _id: mongoose.Types.ObjectId(categoryId),
   })?.toObject();
+};
+
+userSchema.methods.pushCategory = function ({
+  isExpense,
+  isIncome,
+  title,
+  icon,
+}) {
+  this.categories.splice(this.categories.length - 2, 0, {
+    isExpense,
+    isIncome,
+    title,
+    icon,
+  });
 };
 
 module.exports = mongoose.model("User", userSchema);
