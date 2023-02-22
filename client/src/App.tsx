@@ -1,7 +1,17 @@
 import './App.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Root from './screens/Root';
+
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <Root />,
+        children: [],
+    },
+]);
 
 function App() {
-    return <div className="App">Hellog</div>;
+    return <RouterProvider router={router} />;
 }
 
 export default App;
