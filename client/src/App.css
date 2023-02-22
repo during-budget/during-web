@@ -35,6 +35,30 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+h1 {
+    font-size: var(--size-1);
+}
+
+h2 {
+    font-size: var(--size-2);
+}
+
+h3 {
+    font-size: var(--size-3);
+}
+
+h4 {
+    font-size: var(--size-4);
+}
+
+h5 {
+    font-size: var(--size-5);
+}
+h6
+ {
+    font-size: var(--size-6);
+}
+
 a {
     text-decoration: none;
 }
