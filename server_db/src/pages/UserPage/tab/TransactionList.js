@@ -1,20 +1,23 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import useAPI from "../../../hooks/useAPI";
 import StickyTable from "../../../components/StickyTable";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@mui/material";
+import TransactionPopup from "../../../popups/Transaction";
 
 function List() {
   const API = useAPI();
-  const navigate = useNavigate();
   const { _id } = useParams();
 
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const [transaction, setTransaction] = useState({});
+  const [transactionPopupOpen, setTransactionPopupOpen] = useState(false);
 
   const updateDocuments = async () => {
     const { documents: transactions } = await API.GET({
@@ -36,7 +39,8 @@ function List() {
     <div>
       <StickyTable
         onClick={(e) => {
-          navigate(e._id);
+          setTransaction(e);
+          setTransactionPopupOpen(true);
         }}
         columns={[
           {
@@ -45,11 +49,19 @@ function List() {
             width: "112px",
           },
           {
+            label: "budgetId",
+          },
+          {
+            label: "category",
+            type: "object",
+            stringify: (obj) => `${obj?.icon}/${obj?.title}`,
+          },
+          {
             label: "title",
             type: "array-string",
           },
           {
-            label: "createdAt",
+            label: "amount",
           },
           {
             label: "삭제",
@@ -78,6 +90,11 @@ function List() {
           {"deleted"}
         </Alert>
       </Snackbar>
+      <TransactionPopup
+        open={transactionPopupOpen}
+        setOpen={setTransactionPopupOpen}
+        transaction={transaction}
+      />
     </div>
   );
 }

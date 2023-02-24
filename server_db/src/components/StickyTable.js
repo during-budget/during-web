@@ -64,7 +64,11 @@ export default function StickyHeadTable({ columns, rows, onClick }) {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => {
-                    const value = row[column.label];
+                    const keys = _.split(column.label, ".");
+                    let value = row[keys[0]];
+                    for (let i = 1; i < keys.length; i++) {
+                      value = value[keys[i]];
+                    }
 
                     if (column.type === "button-delete") {
                       return (
@@ -133,7 +137,7 @@ export default function StickyHeadTable({ columns, rows, onClick }) {
                               column.onClick || onClick ? "pointer" : "default",
                           }}
                         >
-                          {_.join(value, "/")}
+                          {JSON.stringify(value)}
                         </TableCell>
                       );
                     }
