@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const test = require("../controllers/test");
 
+/**
+ */
+router.get("/:model", test.findDocuments);
+router.get("/:model/:_id", test.findDocument);
+router.delete("/:model/:_id", test.removeDocument);
+
 router.get("/", test.hello);
 router.get("/dataList", test.dataList);
 /**
