@@ -5,6 +5,7 @@ import { FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
 
 import useAPI from "../../../hooks/useAPI";
 import StickyHeadTable from "../../../components/StickyTable";
+import CategoryPopup from "../../../popups/Category";
 
 function Index() {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ function Index() {
   const [categoryType, setCategoryType] = useState("isExpense");
 
   const [isLoading, setIsLoading] = useState(true);
+  const [category, setCategory] = useState({});
+  const [cotegoryPopupOpen, setCategoryPopupOpen] = useState(false);
 
   const updateData = async () => {
     const { document: user } = await API.GET({ location: "test/users/" + _id });
@@ -83,6 +86,10 @@ function Index() {
           </RadioGroup>
         </div>
         <StickyHeadTable
+          onClick={(e) => {
+            setCategory(e);
+            setCategoryPopupOpen(true);
+          }}
           columns={[
             {
               label: "_id",
@@ -99,6 +106,11 @@ function Index() {
           rows={categories}
         />
       </div>
+      <CategoryPopup
+        open={cotegoryPopupOpen}
+        setOpen={setCategoryPopupOpen}
+        category={category}
+      />
     </div>
   ) : (
     <div>loading...</div>
