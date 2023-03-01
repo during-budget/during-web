@@ -1,0 +1,23 @@
+.emailField {
+    margin-bottom: var(--size-11);
+}
+
+.emailLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code {
+    display: flex;
+    gap: var(--size-11);
+}
+
+.codeInform {
+    font-size: var(--size-8);
+    text-align: center;
+}
+
+.passwordField {
+    margin: 4vh 0;
+}
