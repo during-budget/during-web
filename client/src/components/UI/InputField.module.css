@@ -1,0 +1,46 @@
+.field {
+    position: relative;
+    text-align: left;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--size-10);
+}
+
+.field input,
+.field select,
+.filed textarea {
+    width: calc(100% - var(--size-6) * 2);
+    height: var(--size-6);
+    background-color: var(--gray-1);
+    border: none;
+    border-radius: var(--size-10);
+    padding: var(--size-6);
+    font-size: var(--size-5);
+}
+
+.field input::placeholder {
+    color: var(--gray-3);
+}
+
+.field label {
+    font-weight: 600;
+}
+
+.field.floating input {
+    padding-top: var(--size-3);
+}
+
+.field.floating input + label {
+    position: absolute;
+    top: var(--size-5);
+    left: var(--size-8);
+    margin-bottom: 0;
+    color: var(--gray-3);
+    transition: top 0.3s ease-in-out;
+}
+
+.field.floating input:focus + label,
+.field.floating input:not([value='']) + label {
+    top: var(--size-10);
+    font-size: var(--size-8);
+}
