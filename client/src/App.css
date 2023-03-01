@@ -18,11 +18,14 @@
     --size-7: 0.875rem;
     --size-8: 0.75rem;
     --size-9: 0.625rem;
+    --size-10: 0.5rem;
+    --size-11: 0.250rem;
 }
 
 * {
     margin: 0;
     padding: 0;
+    color: var(--gray-4);
 }
 
 body {
