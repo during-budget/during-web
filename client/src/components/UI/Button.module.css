@@ -1,0 +1,33 @@
+.button {
+    width: 100%;
+    font-weight: 600;
+    border-radius: var(--size-10);
+}
+
+.primary {
+    color: #fff;
+    background-color: var(--primary);
+}
+
+.extra {
+    color: var(--gray-4);
+    background-color: transparent;
+}
+
+.lg {
+    height: 3.5rem;
+    font-size: var(--size-6);
+}
+
+.md {
+    height: 3rem;
+    font-size: var(--size-6);
+}
+
+.sm {
+    width: fit-content;
+    padding: 0 1rem;
+    height: 2rem;
+    font-size: var(--size-7);
+    border-radius: var(--size-11);
+}
