@@ -1,0 +1,11 @@
+.form {
+    width: 100%;
+}
+
+.field {
+    margin-bottom: var(--size-10);
+}
+
+.submit {
+    margin-top: var(--size-9);
+}
