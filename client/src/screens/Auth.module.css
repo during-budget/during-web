@@ -1,0 +1,23 @@
+.auth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 3rem;
+    margin-top: 8vh;
+}
+
+.auth img {
+    width: 16vh;
+    height: 16vh;
+    margin-bottom: var(--size-8);
+}
+
+.auth h1 {
+    margin-bottom: 6vh;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
