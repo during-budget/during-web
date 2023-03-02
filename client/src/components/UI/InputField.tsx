@@ -1,6 +1,7 @@
 import classes from './InputField.module.css';
 
 function InputField(props: {
+    id: string;
     isFloatLabel?: boolean;
     className?: string;
     children?: React.ReactNode;
@@ -10,7 +11,7 @@ function InputField(props: {
     }`;
 
     return (
-        <div className={`${className} ${props.className}`}>
+        <div id={props.id} className={`${className} ${props.className}`}>
             {props.children}
         </div>
     );

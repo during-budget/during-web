@@ -17,25 +17,33 @@ function LoginForm() {
 
     return (
         <form className={classes.form}>
-            <InputField className={classes.field} isFloatLabel={true}>
+            <InputField
+                id="login-email-field"
+                className={classes.field}
+                isFloatLabel={true}
+            >
                 <input
-                    id="auth-email"
+                    id="login-email"
                     type="email"
                     value={emailState}
                     onChange={emailHandler}
                     required
                 />
-                <label htmlFor="auth-email">이메일</label>
+                <label htmlFor="login-email">이메일</label>
             </InputField>
-            <InputField className={classes.field} isFloatLabel={true}>
+            <InputField
+                id="login-email-field"
+                className={classes.field}
+                isFloatLabel={true}
+            >
                 <input
-                    id="auth-password"
+                    id="login-password"
                     type="password"
                     value={passwordState}
                     onChange={passwordHandler}
                     required
                 />
-                <label htmlFor="auth-email">비밀번호</label>
+                <label htmlFor="login-password">비밀번호</label>
             </InputField>
             <Button type="submit" className={classes.submit}>
                 로그인

@@ -25,7 +25,7 @@ function LoginForm() {
     };
 
     const codeField = (
-        <InputField className={registerClasses.codeField}>
+        <InputField id="register-code-field" className={registerClasses.codeField}>
             <p className={registerClasses.codeInform}>
                 이메일로 보내드린 확인 코드 여섯 자리를 입력하세요.
             </p>
@@ -45,11 +45,12 @@ function LoginForm() {
         <form className={classes.form}>
             {/* E-mail */}
             <InputField
+                id="register-email-field"
                 className={`${classes.field} ${registerClasses.emailField}`}
                 isFloatLabel={false}
             >
                 <input
-                    id="auth-email"
+                    id="register-email"
                     type="email"
                     value={emailState}
                     placeholder="이메일을 입력하세요"
@@ -57,7 +58,7 @@ function LoginForm() {
                     required
                 />
                 <p className={registerClasses.emailLabel}>
-                    <label htmlFor="auth-email">이메일</label>
+                    <label htmlFor="register-email">이메일</label>
                     <Button
                         sizeClass="sm"
                         onClick={() => {
@@ -72,11 +73,12 @@ function LoginForm() {
 
             {/* Password */}
             <InputField
+                id="register-password-field"
                 className={`${classes.field} ${registerClasses.passwordField}`}
                 isFloatLabel={false}
             >
                 <input
-                    id="auth-password-check"
+                    id="register-password-check"
                     type="password"
                     value={passwordState}
                     placeholder="비밀번호를 다시 입력하세요"
@@ -84,14 +86,14 @@ function LoginForm() {
                     required
                 />
                 <input
-                    id="auth-password"
+                    id="register-password"
                     type="password"
                     value={passwordCheckState}
                     placeholder="비밀번호를 입력하세요"
                     onChange={passwordCheckHandler}
                     required
                 />
-                <label htmlFor="auth-email">비밀번호</label>
+                <label htmlFor="register-email">비밀번호</label>
             </InputField>
             <Button type="submit" className={classes.submit}>
                 회원가입
