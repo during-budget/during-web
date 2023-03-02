@@ -19,7 +19,7 @@
     --size-8: 0.75rem;
     --size-9: 0.625rem;
     --size-10: 0.5rem;
-    --size-11: 0.250rem;
+    --size-11: 0.25rem;
 }
 
 * {
@@ -57,8 +57,7 @@ h4 {
 h5 {
     font-size: var(--size-5);
 }
-h6
- {
+h6 {
     font-size: var(--size-6);
 }
 

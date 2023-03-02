@@ -37,7 +37,9 @@ function LoginForm() {
                 />
                 <label htmlFor="auth-email">비밀번호</label>
             </InputField>
-            <Button type="submit" className={classes.submit}>로그인</Button>
+            <Button type="submit" className={classes.submit}>
+                로그인
+            </Button>
         </form>
     );
 }

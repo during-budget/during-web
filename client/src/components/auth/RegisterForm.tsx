@@ -76,7 +76,7 @@ function LoginForm() {
                 isFloatLabel={false}
             >
                 <input
-                    id="auth-password"
+                    id="auth-password-check"
                     type="password"
                     value={passwordState}
                     placeholder="비밀번호를 다시 입력하세요"
