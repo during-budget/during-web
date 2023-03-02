@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import classes from './InputField.module.css';
 
 function InputField(props: {
@@ -6,6 +7,18 @@ function InputField(props: {
     className?: string;
     children?: React.ReactNode;
 }) {
+    // NOTE: For scroll on focus
+    useEffect(() => {
+        const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+            `#${props.id} input`
+        );
+        inputs.forEach((input) => {
+            input.addEventListener('click', () => {
+                input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            });
+        });
+    });
+
     const className = `${classes.field} ${
         props.isFloatLabel ? classes.floating : ''
     }`;
