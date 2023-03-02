@@ -3,6 +3,7 @@ import registerClasses from './RegisterForm.module.css';
 import { useState } from 'react';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
+import CodeField from './CodeField';
 
 function LoginForm() {
     const [emailState, setEmailState] = useState('');
@@ -23,23 +24,6 @@ function LoginForm() {
     ) => {
         setPasswordCheckState(event.target.value);
     };
-
-    const codeField = (
-        <InputField id="register-code-field" className={registerClasses.codeField}>
-            <p className={registerClasses.codeInform}>
-                이메일로 보내드린 확인 코드 여섯 자리를 입력하세요.
-            </p>
-            {/* TODO: limit maxlength, focus next */}
-            <div className={registerClasses.code}>
-                <input type="number"></input>
-                <input type="number"></input>
-                <input type="number"></input>
-                <input type="number"></input>
-                <input type="number"></input>
-                <input type="number"></input>
-            </div>
-        </InputField>
-    );
 
     return (
         <form className={classes.form}>
@@ -63,13 +47,14 @@ function LoginForm() {
                         sizeClass="sm"
                         onClick={() => {
                             setEmailCheckState(true);
+                            // TODO: focus to CodeField
                         }}
                     >
                         인증하기
                     </Button>
                 </p>
             </InputField>
-            {emailCheckState && codeField}
+            {emailCheckState && <CodeField />}
 
             {/* Password */}
             <InputField
