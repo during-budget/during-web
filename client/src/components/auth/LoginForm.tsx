@@ -1,11 +1,17 @@
+import { useEffect, useState } from 'react';
 import classes from './AuthForm.module.css';
 import InputField from '../UI/InputField';
-import { useState } from 'react';
 import Button from '../UI/Button';
 
 function LoginForm() {
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
+
+    useEffect(() => {
+        const emailInput: HTMLInputElement | null =
+            document.querySelector('#login-email');
+        emailInput?.focus();
+    });
 
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmailState(event.target.value);
