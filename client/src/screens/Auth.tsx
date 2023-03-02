@@ -5,7 +5,7 @@ import RegisterForm from '../components/auth/RegisterForm';
 import Button from '../components/UI/Button';
 
 function Auth() {
-    const [isLoginMode, setIsLoginMode] = useState(false);
+    const [isLoginMode, setIsLoginMode] = useState(true);
     const logo = require('../assets/png/logo.png');
 
     const loginActions = (
