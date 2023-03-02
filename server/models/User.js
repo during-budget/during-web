@@ -27,11 +27,18 @@ const userSchema = mongoose.Schema(
       type: [categorySettingSchema],
       default: [
         // 지출 카테고리
-        { isExpense: true, title: "교통비", icon: "🚉" },
-        { isExpense: true, title: "경조사비", icon: "🎉" },
         { isExpense: true, title: "식비", icon: "🍚" },
-        { isExpense: true, title: "건강", icon: "🏃‍♀️" },
+        { isExpense: true, title: "간식", icon: "🍫" },
+        { isExpense: true, title: "생활", icon: "💸" },
+        { isExpense: true, title: "교통", icon: "🚉" },
         { isExpense: true, title: "교육", icon: "🎓" },
+        { isExpense: true, title: "문화/여가", icon: "🎬" },
+        { isExpense: true, title: "의료/건강", icon: "💊" },
+        { isExpense: true, title: "주거/통신", icon: "🏠" },
+        { isExpense: true, title: "의류/미용", icon: "🛍️" },
+        { isExpense: true, title: "기부/후원", icon: "🕊️" },
+        { isExpense: true, title: "경조사비", icon: "💌" },
+        { isExpense: true, title: "선물", icon: "🎁" },
         // 수입 카테고리
         { isIncome: true, title: "월급", icon: "💙" },
         { isIncome: true, title: "보너스", icon: "💜" },
@@ -40,8 +47,8 @@ const userSchema = mongoose.Schema(
         { isExpense: true, isIncome: true, title: "이체", icon: "🍫" },
         { isExpense: true, isIncome: true, title: "채무", icon: "🍟" },
         // 기본 카테고리
-        { isExpense: true, isDefault: true, title: "기타", icon: "💸" },
-        { isIncome: true, isDefault: true, title: "기타", icon: "💰" },
+        { isExpense: true, isDefault: true, title: "기타", icon: "" },
+        { isIncome: true, isDefault: true, title: "기타", icon: "" },
       ],
     },
   },
