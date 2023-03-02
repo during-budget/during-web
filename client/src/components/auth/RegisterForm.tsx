@@ -1,6 +1,6 @@
 import classes from './AuthForm.module.css';
 import registerClasses from './RegisterForm.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
 import CodeField from './CodeField';
@@ -10,6 +10,12 @@ function LoginForm() {
     const [emailCheckState, setEmailCheckState] = useState(false);
     const [passwordState, setPasswordState] = useState('');
     const [passwordCheckState, setPasswordCheckState] = useState('');
+
+    useEffect(() => {
+        const emailInput: HTMLInputElement | null =
+            document.querySelector('#register-email');
+        emailInput?.focus();
+    });
 
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmailState(event.target.value);
