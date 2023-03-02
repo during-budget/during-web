@@ -43,7 +43,7 @@ function CodeField() {
                 }
             });
         });
-    });
+    }, []);
 
     return (
         <InputField id="register-code-field" className={classes.codeField}>

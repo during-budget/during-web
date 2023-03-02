@@ -15,7 +15,7 @@ function LoginForm() {
         const emailInput: HTMLInputElement | null =
             document.querySelector('#register-email');
         emailInput?.focus();
-    });
+    }, []);
 
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmailState(event.target.value);
