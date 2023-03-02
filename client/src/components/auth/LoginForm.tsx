@@ -2,8 +2,14 @@ import { useEffect, useState } from 'react';
 import classes from './AuthForm.module.css';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
+import { loginUser } from '../../util/api/userAPI';
+import { throwError } from '../../util/error';
+import { useDispatch } from 'react-redux';
+import { userActions } from '../../store/user';
 
 function LoginForm() {
+    const dispatch = useDispatch();
+
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
 
@@ -21,8 +27,25 @@ function LoginForm() {
         setPasswordState(event.target.value);
     };
 
+    const submitHandler = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        try {
+            loginUser(emailState, passwordState);
+        } catch (error) {
+            setEmailState('');
+            setPasswordState('');
+
+            throwError(error);
+        }
+
+        setEmailState('');
+        setPasswordState('');
+        dispatch(userActions.login());
+    };
+
     return (
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={submitHandler}>
             <InputField
                 id="login-email-field"
                 className={classes.field}
