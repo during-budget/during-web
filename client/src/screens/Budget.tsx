@@ -1,8 +1,13 @@
 import { useSelector } from 'react-redux';
 import { useLoaderData } from 'react-router-dom';
+import classes from './Budget.module.css';
 import BudgetHeader from '../components/Budget/BudgetHeader';
 import { getBudgetById } from '../util/api/budgetAPI';
 import BudgetModel from '../models/Budget';
+import Carousel from '../components/UI/Carousel';
+import TotalStatus from '../components/Status/TotalStatus';
+import DateStatus from '../components/Status/DateStatus';
+import CategoryStatus from '../components/Status/CategoryStatus';
 
 function Budget() {
     const loaderData: any = useLoaderData();
@@ -17,6 +22,18 @@ function Budget() {
                 endDate={new Date(budget.date.end)}
                 title={budget.title}
             />
+            <main>
+                <Carousel
+                    id="status"
+                    initialIndex={1}
+                    itemClassName={classes.status}
+                >
+                    <DateStatus />
+                    <TotalStatus />
+                    <CategoryStatus />
+                </Carousel>
+                <hr />
+            </main>
         </>
     );
 }
