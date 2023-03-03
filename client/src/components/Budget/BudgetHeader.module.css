@@ -1,0 +1,33 @@
+.header {
+    margin: 3vh 0;
+}
+
+.top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
+.top .date {
+    margin: 0 var(--size-1);
+}
+
+.top button {
+    padding: var(--size-6);
+    font-size: var(--size-4);
+}
+
+.bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom a {
+    font-size: var(--size-10);
+}
+
+.bottom h1 {
+    margin: 0 5rem;
+}
