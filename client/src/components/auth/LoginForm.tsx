@@ -33,15 +33,17 @@ function LoginForm() {
         try {
             loginUser(emailState, passwordState);
         } catch (error) {
-            setEmailState('');
-            setPasswordState('');
-
+            resetInput();
             throwError(error);
         }
 
+        resetInput();
+        dispatch(userActions.login());
+    };
+
+    const resetInput = () => {
         setEmailState('');
         setPasswordState('');
-        dispatch(userActions.login());
     };
 
     return (
