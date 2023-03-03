@@ -88,6 +88,20 @@ userSchema.methods.findCategory = function (categoryId) {
   })?.toObject();
 };
 
+userSchema.methods.findDefaultExpenseCategory = function () {
+  return _.find(this.categories, {
+    isExpense: true,
+    isDefault: true,
+  })?.toObject();
+};
+
+userSchema.methods.findDefaultIncomeCategory = function () {
+  return _.find(this.categories, {
+    isIncome: true,
+    isDefault: true,
+  })?.toObject();
+};
+
 userSchema.methods.pushCategory = function ({
   isExpense,
   isIncome,

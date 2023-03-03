@@ -4,6 +4,8 @@ const { isLoggedIn } = require("../middleware/auth");
 
 const categories = require("../controllers/categories");
 
+router.put("/", isLoggedIn, categories.updateV2);
+
 router.get("/", isLoggedIn, categories.find);
 
 router.post("/", isLoggedIn, categories.create);
