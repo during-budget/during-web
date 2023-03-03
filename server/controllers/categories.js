@@ -3,8 +3,110 @@ const mongoose = require("mongoose");
 const Budget = require("../models/Budget");
 const Transaction = require("../models/Transaction");
 const { updateCategory } = require("./transactions");
+const compareById = require("../utils/compareById");
 
 // category settings controller
+
+module.exports.updateV2 = async (req, res) => {
+  try {
+    if (!("categories" in req.body))
+      return res
+        .status(409)
+        .send({ message: "field 'categories' is required" });
+
+    const user = req.user;
+
+    const _categories = user.categories;
+    const defaultExpenseCategory = user.findDefaultExpenseCategory();
+    const defaultIncomeCategory = user.findDefaultIncomeCategory();
+    user.categories = [
+      ...req.body.categories,
+      defaultExpenseCategory,
+      defaultIncomeCategory,
+    ];
+    await user.save();
+
+    const { updated, added, removed } = compareById(
+      _categories,
+      user.categories,
+      (c1, c2) => c1?.title === c2?.title && c1?.icon === c2?.icon
+    );
+
+    for (const category of updated) {
+      // update budgets and transactions categories
+
+      const budgets = await Budget.find({
+        userId: user._id,
+        "categories.categoryId": category._id,
+      });
+      const transactions = await Transaction.find({
+        userId: user._id,
+        "category.categoryId": category._id,
+      });
+
+      await Promise.all([
+        budgets.forEach((budget) => {
+          const idx = _.findIndex(budget.categories, {
+            categoryId: category._id,
+          });
+          budget.categories[idx] = {
+            ...category,
+            categoryId: category._id,
+            amount: budget.categories[idx].amount,
+          };
+          budget.save();
+        }),
+        transactions.forEach((transaction) => {
+          transaction.category = {
+            ...category,
+            categoryId: category._id,
+          };
+          transaction.save();
+        }),
+      ]);
+    }
+
+    for (const category of removed) {
+      const budgets = await Budget.find({
+        userId: user._id,
+        "categories.categoryId": category._id,
+      });
+      const transactions = await Transaction.find({
+        userId: user._id,
+        "category.categoryId": category._id,
+      });
+
+      await Promise.all([
+        budgets.forEach((budget) => {
+          const idx = _.findIndex(budget.categories, {
+            categoryId: category._id,
+          });
+          budget.categories.splice(idx, 1);
+          budget.save();
+        }),
+        transactions.forEach((transaction) => {
+          if (transaction.category.isExpense) {
+            transaction.category = {
+              ...defaultExpenseCategory,
+              categoryId: defaultExpenseCategory._id,
+            };
+          } else {
+            transaction.category = {
+              ...defaultIncomeCategory,
+              categoryId: defaultIncomeCategory._id,
+            };
+          }
+
+          transaction.save();
+        }),
+      ]);
+    }
+
+    return res.status(200).send({ updated, added, removed });
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};
 
 /**
  * Create category setting element
