@@ -7,6 +7,7 @@ import {
 import Root from './screens/Root';
 import Auth from './screens/Auth';
 import Nav from './screens/Nav';
+import Budget, { loader as budgetLoader } from './screens/Budget';
 import BudgetNavigation, {
     loader as budgetListLoader,
 } from './screens/BudgetNavigation';
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
                         path: '/budget',
                         element: <BudgetNavigation />,
                         loader: budgetListLoader,
+                    },
+                    {
+                        path: '/budget/:budgetId',
+                        element: <Budget />,
+                        loader: budgetLoader,
                     },
                 ],
             },
