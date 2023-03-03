@@ -6,9 +6,11 @@ import { loginUser } from '../../util/api/userAPI';
 import { throwError } from '../../util/error';
 import { useDispatch } from 'react-redux';
 import { userActions } from '../../store/user';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
@@ -39,6 +41,7 @@ function LoginForm() {
 
         resetInput();
         dispatch(userActions.login());
+        navigate('/budget', { replace: true });
     };
 
     const resetInput = () => {
