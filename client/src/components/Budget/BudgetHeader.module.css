@@ -7,10 +7,17 @@
     justify-content: center;
     align-items: center;
     font-weight: 700;
+    padding: 2vh 0;
 }
 
-.top .date {
-    margin: 0 var(--size-1);
+.top button:first-child {
+    position: absolute;
+    left: 5vw;
+}
+
+.top button:last-child {
+    position: absolute;
+    right: 5vw;
 }
 
 .top button {
@@ -29,5 +36,5 @@
 }
 
 .bottom h1 {
-    margin: 0 5rem;
+    margin: 0 20vw;
 }
