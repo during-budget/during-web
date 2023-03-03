@@ -7,6 +7,9 @@ import {
 import Root from './screens/Root';
 import Auth from './screens/Auth';
 import Nav from './screens/Nav';
+import BudgetNavigation, {
+    loader as budgetListLoader,
+} from './screens/BudgetNavigation';
 
 const router = createBrowserRouter([
     {
@@ -25,6 +28,13 @@ const router = createBrowserRouter([
             {
                 path: '/budget',
                 element: <Nav />,
+                children: [
+                    {
+                        path: '/budget',
+                        element: <BudgetNavigation />,
+                        loader: budgetListLoader,
+                    },
+                ],
             },
             {
                 path: '/during',
