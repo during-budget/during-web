@@ -6,6 +6,7 @@ const categorySchema = mongoose.Schema(
     categoryId: mongoose.Types.ObjectId,
     isExpense: { type: Boolean, default: false },
     isIncome: { type: Boolean, default: false },
+    isDefault: { type: Boolean, default: false },
     title: String,
     icon: String,
     amountScheduled: {

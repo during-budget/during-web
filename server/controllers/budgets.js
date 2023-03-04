@@ -25,6 +25,9 @@ module.exports.create = async (req, res) => {
       incomePlanned: req.body.incomePlanned,
     });
 
+    let sumExpenseAmountPlanned = 0;
+    let sumIncomeAmountPlanned = 0;
+
     for (let _category of req.body.categories) {
       const category = user.findCategory(_category.categoryId);
 
@@ -32,17 +35,45 @@ module.exports.create = async (req, res) => {
         return res.status(404).send({
           message: `category with _id ${_category.categoryId} not found`,
         });
+      if (category.isDefault)
+        return res.status(404).send({
+          message: `you can't set default category`,
+        });
 
       if (!("amountPlanned" in _category))
         return res
           .status(400)
           .send({ message: "field 'amountPlanned' is required" });
+
+      if ("isExpense" in _category || "isIncome" in _category) {
+        if (_category.isExpense)
+          sumExpenseAmountPlanned += _category.amountPlanned;
+        else sumIncomeAmountPlanned += _category.amountPlanned;
+      } else {
+        if (category.isExpense)
+          sumExpenseAmountPlanned += _category.amountPlanned;
+        else sumIncomeAmountPlanned += _category.amountPlanned;
+      }
+
       budget.categories.push({
         ...category,
         categoryId: _category.categoryId,
         amountPlanned: _category.amountPlanned,
       });
     }
+    const defaultExpenseCategory = user.findDefaultExpenseCategory();
+    const defaultIncomeCategory = user.findDefaultIncomeCategory();
+    budget.categories.push({
+      ...defaultExpenseCategory,
+      categoryId: defaultExpenseCategory._id,
+      amountPlanned: budget.expensePlanned - sumExpenseAmountPlanned,
+    });
+    budget.categories.push({
+      ...defaultIncomeCategory,
+      categoryId: defaultIncomeCategory._id,
+      amountPlanned: budget.incomePlanned - sumIncomeAmountPlanned,
+    });
+
     await budget.save();
 
     return res.status(200).send({ budget });
