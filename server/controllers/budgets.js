@@ -113,7 +113,8 @@ module.exports.createCategory = async (req, res) => {
         .status(400)
         .send({ message: "field 'amountPlanned' is required" });
 
-    budget.categories.push({
+    budget.addDefaultCategory(category.isExpense, -1 * req.body.amountPlanned);
+    budget.pushCategory({
       ...category,
       categoryId: category._id,
       amountPlanned: req.body.amountPlanned,
@@ -157,6 +158,10 @@ module.exports.updateCategoryAmountPlanned = async (req, res) => {
         message: `amountPlanned of default category cannot be updated`,
       });
 
+    budget.addDefaultCategory(
+      budget.categories[idx].isExpense,
+      budget.categories[idx].amountPlanned - req.body.amountPlanned
+    );
     budget.categories[idx].amountPlanned = req.body.amountPlanned;
     await budget.save();
 
@@ -198,6 +203,10 @@ module.exports.removeCategory = async (req, res) => {
         transactions,
       });
 
+    budget.addDefaultCategory(
+      budget.categories[idx].isExpense,
+      budget.categories[idx].amountPlanned
+    );
     budget.categories.splice(idx, 1);
     await budget.save();
 
@@ -222,8 +231,20 @@ module.exports.updateField = async (req, res) => {
     budget.startDate = req.body.startDate ?? budget.startDate;
     budget.endDate = req.body.endDate ?? budget.endDate;
     budget.title = req.body.title ?? budget.title;
-    budget.expensePlanned = req.body.expensePlanned ?? budget.expensePlanned;
-    budget.incomePlanned = req.body.incomePlanned ?? budget.incomePlanned;
+    if ("expensePlanned" in req.body) {
+      budget.addDefaultCategory(
+        true,
+        req.body.expensePlanned - budget.expensePlanned
+      );
+      budget.expensePlanned = req.body.expensePlanned;
+    }
+    if ("incomePlanned" in req.body) {
+      budget.addDefaultCategory(
+        false,
+        req.body.incomePlanned - budget.incomePlanned
+      );
+      budget.incomePlanned = req.body.incomePlanned;
+    }
     await budget.save();
 
     return res.status(200).send({ budget });

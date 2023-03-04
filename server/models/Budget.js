@@ -91,4 +91,15 @@ budgetSchema.methods.findCategoryIdx = function (categoryId) {
   });
 };
 
+budgetSchema.methods.pushCategory = function (category) {
+  this.categories.splice(this.categories.length - 2, 0, category);
+  return;
+};
+
+budgetSchema.methods.addDefaultCategory = function (isIncome, amount) {
+  const idx = this.categories.length - (isIncome ? 2 : 1);
+  this.categories[idx].amountPlanned += amount;
+  return;
+};
+
 module.exports = mongoose.model("Budget", budgetSchema);
