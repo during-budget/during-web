@@ -152,6 +152,11 @@ module.exports.updateCategoryAmountPlanned = async (req, res) => {
         message: `budget category with _id ${req.query.categoryId} not found`,
       });
 
+    if (budget.categories[idx].isDefault)
+      return res.status(409).send({
+        message: `amountPlanned of default category cannot be updated`,
+      });
+
     budget.categories[idx].amountPlanned = req.body.amountPlanned;
     await budget.save();
 
