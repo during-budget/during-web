@@ -30,3 +30,16 @@
     border-radius: 50%;
     background: var(--gray-4);
 }
+
+/* line */
+.tab.line label {
+    padding-top: 1rem;
+}
+
+.tab.line label {
+    border-top: 0.1rem solid transparent;
+}
+
+.tab.line input:checked + label {
+    border-color: var(--primary);
+}
