@@ -9,6 +9,7 @@ const {
 
 // Authentication
 router.post("/register", isNotLoggedIn, users.register);
+router.post("/login/guest", forceNotLoggedIn, users.loginGuest);
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
 router.get("/logout", isLoggedIn, users.logout);
 
