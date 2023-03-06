@@ -22,10 +22,10 @@ function Nav() {
     });
 
     return (
-        <div>
+        <>
             <Outlet />
             <nav className={classes.nav}>{navList}</nav>
-        </div>
+        </>
     );
 }
 
