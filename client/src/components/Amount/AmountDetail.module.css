@@ -1,0 +1,7 @@
+.container {
+    width: 60%;
+}
+
+.container ul {
+    margin: var(--size-6) 0;
+}
