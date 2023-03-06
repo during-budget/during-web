@@ -1,14 +1,39 @@
 import { useState } from 'react';
 import classes from './Auth.module.css';
-import LoginForm from '../components/auth/LoginForm';
-import RegisterForm from '../components/auth/RegisterForm';
+import LoginForm from '../components/Auth/LoginForm';
+import RegisterForm from '../components/Auth/RegisterForm';
 import Button from '../components/UI/Button';
+import { loginUser } from '../util/api/userAPI';
+import { throwError } from '../util/error';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { userActions } from '../store/user';
 
 function Auth() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const [isLoginMode, setIsLoginMode] = useState(true);
     const logo = require('../assets/png/logo.png');
 
-    const loginActions = (
+    const loginHandler = async (
+        email: string,
+        password: string,
+        reset: () => void
+    ) => {
+        try {
+            await loginUser(email, password);
+        } catch (error) {
+            reset();
+            throwError(error);
+        }
+
+        reset();
+        dispatch(userActions.login());
+        navigate('/budget', { replace: true });
+    };
+
+    const registerButtons = (
         <div className={classes.actions}>
             <Button styleClass="extra">둘러보기</Button> |{' '}
             <Button
@@ -21,7 +46,8 @@ function Auth() {
             </Button>
         </div>
     );
-    const registerActions = (
+
+    const loginButtons = (
         <Button
             styleClass="extra"
             onClick={() => {
@@ -40,8 +66,12 @@ function Auth() {
                 style={{ display: isLoginMode ? 'block' : 'none' }}
             />
             <h1>{isLoginMode ? '듀링 가계부' : '회원가입'}</h1>
-            {isLoginMode ? <LoginForm /> : <RegisterForm />}
-            {isLoginMode ? loginActions : registerActions}
+            {isLoginMode ? (
+                <LoginForm loginHandler={loginHandler} />
+            ) : (
+                <RegisterForm />
+            )}
+            {isLoginMode ? registerButtons : loginButtons}
         </div>
     );
 }
