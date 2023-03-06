@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema(
       type: String,
       select: false, //alwasy exclude password in user document
     },
+    isGuest: {
+      type: Boolean,
+      default: false,
+    },
 
     /* ____________ categories ____________ */
     categories: {
