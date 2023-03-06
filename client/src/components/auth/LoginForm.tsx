@@ -2,16 +2,10 @@ import { useEffect, useState } from 'react';
 import classes from './AuthForm.module.css';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
-import { loginUser } from '../../util/api/userAPI';
-import { throwError } from '../../util/error';
-import { useDispatch } from 'react-redux';
-import { userActions } from '../../store/user';
-import { useNavigate } from 'react-router-dom';
 
-function LoginForm() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
+function LoginForm(props: {
+    loginHandler: (email: string, password: string, reset: () => void) => void;
+}) {
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
 
@@ -29,19 +23,9 @@ function LoginForm() {
         setPasswordState(event.target.value);
     };
 
-    const submitHandler = async (event: React.FormEvent) => {
+    const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
-
-        try {
-            loginUser(emailState, passwordState);
-        } catch (error) {
-            resetInput();
-            throwError(error);
-        }
-
-        resetInput();
-        dispatch(userActions.login());
-        navigate('/budget', { replace: true });
+        props.loginHandler(emailState, passwordState, resetInput);
     };
 
     const resetInput = () => {
