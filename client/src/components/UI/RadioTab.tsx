@@ -11,11 +11,14 @@ function RadioTab(props: {
         disabled?: boolean;
     }[];
     isBold?: boolean;
+    isLine?: boolean;
 }) {
     const { className, name, values } = props;
     const boldStyle = props.isBold === false ? {} : { fontWeight: '600' };
+    const lineClass = props.isLine ? classes.line : '';
+
     return (
-        <ul className={`${classes.tab} ${className}`}>
+        <ul className={`${classes.tab} ${lineClass} ${className}`}>
             {values.map((item) => {
                 return (
                     <li key={item.value}>
