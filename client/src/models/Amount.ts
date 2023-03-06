@@ -1,3 +1,32 @@
+import { ObjectType } from 'typescript';
+
+const locale: 'ko-KR' | 'en-US' =
+    navigator.language === 'ko-KR' ? 'ko-KR' : 'en-US';
+const amountUnit = {
+    'en-US': {
+        prefix: '$',
+        suffix: '',
+    },
+    'ko-KR': {
+        prefix: '',
+        suffix: '원',
+    },
+};
+const prefix = amountUnit[locale].prefix;
+const suffix = amountUnit[locale].suffix;
+
+const formatCurrent = (amount: number) => {
+    return `${prefix}${amount.toLocaleString()}${suffix}`;
+};
+
+const formatScheduled = (amount: number) => {
+    return `(${prefix}${amount.toLocaleString()}${suffix})`;
+};
+
+const formatPlanned = (amount: number) => {
+    return `/${prefix}${amount.toLocaleString()}${suffix}`;
+};
+
 class Amount {
     private _current: number;
     private _scheduled: number;
@@ -24,6 +53,38 @@ class Amount {
     get state() {
         return this._state;
     }
+
+    getLeftScheduled = () => {
+        return this._scheduled - this._current;
+    };
+
+    getLeftPlanned = () => {
+        const bigger =
+            this._scheduled > this._current ? this._scheduled : this._current;
+        return this._planned - bigger;
+    };
+
+    getCurrentStr = () => {
+        return formatCurrent(this.current);
+    };
+
+    getScheduledStr = (isLeft?: boolean) => {
+        const scheduled = isLeft ? this.getLeftScheduled() : this._scheduled;
+        return formatScheduled(scheduled);
+    };
+
+    getPlannedStr = (isLeft?: boolean) => {
+        const planned = isLeft ? this.getLeftPlanned() : this._planned;
+        return formatPlanned(planned);
+    };
+
+    getLeftScheduledStr = () => {
+        return formatScheduled(this.getLeftScheduled());
+    };
+
+    getLeftPlannedStr = () => {
+        return formatPlanned(this.getLeftPlanned());
+    };
 
     getCurrentRatio = () => {
         if (this._planned === 0) {

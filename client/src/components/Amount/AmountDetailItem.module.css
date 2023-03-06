@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container span {
+    display: flex;
+    align-items: center;
+}
+
+.label::before {
+    content: '';
+    display: inline-block;
+    width: var(--size-6);
+    height: var(--size-6);
+    margin-right: var(--size-10);
+    border-radius: 0.2rem;
+    background-color: var(--label-color);
+}
+
+.amount {
+    font-size: var(--font-size);
+    color: var(--font-color);
+    font-weight: 600;
+}
