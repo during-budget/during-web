@@ -1,0 +1,15 @@
+.ring {
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.ring > * {
+    fill: none; /* NOTE: fill 없이 stroke로 처리 */
+    transform: rotate(-90deg);
+}
+
+.rounded {
+    filter: url('#rounded');
+}

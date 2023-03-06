@@ -25,6 +25,22 @@ class Amount {
         return this._state;
     }
 
+    getCurrentRatio = () => {
+        if (this._planned === 0) {
+            return 0;
+        } else {
+            return this._current / this._planned;
+        }
+    };
+
+    getScheduledRatio = () => {
+        if (this._planned === 0) {
+            return 0;
+        } else {
+            return this._scheduled / this._planned;
+        }
+    };
+
     private getEachState = (
         target: string,
         over: string,
