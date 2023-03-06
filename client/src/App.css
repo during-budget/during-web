@@ -97,3 +97,7 @@ hr {
     border: none;
     background-color: #f6f6f6;
 }
+
+main {
+    margin-bottom: 9vh; /* NOTE: Nav height */
+}
