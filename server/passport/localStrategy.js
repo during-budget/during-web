@@ -6,11 +6,11 @@ module.exports = () => {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: "userName",
+        usernameField: "email",
         passwordField: "password",
       },
-      async function (userName, password, done) {
-        const user = await User.findOne({ userName }).select("+password");
+      async function (email, password, done) {
+        const user = await User.findOne({ email }).select("+password");
         if (!user) {
           const err = new Error("User not found");
           err.status = 404;
