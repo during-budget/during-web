@@ -4,14 +4,14 @@ import {
     Navigate,
     RouterProvider,
 } from 'react-router-dom';
-import Root from './screens/Root';
-import Auth, { loader as AuthLoader } from './screens/Auth';
-import Nav from './screens/Nav';
-import Budget, { loader as budgetLoader } from './screens/Budget';
+import Root from './layout/Root';
+import Nav from './layout/Nav';
+import ErrorBoundary from './layout/ErrorBoundary';
 import BudgetNavigation, {
     loader as budgetListLoader,
-} from './screens/BudgetNavigation';
-import ErrorBoundary from './screens/ErrorBoundary';
+} from './layout/BudgetNavigation';
+import Auth, { loader as AuthLoader } from './screens/Auth';
+import Budget, { loader as budgetLoader } from './screens/Budget';
 
 const router = createBrowserRouter([
     {
