@@ -41,8 +41,9 @@ function AmountRing(props: {
             className={classes.container}
             style={{ width: props.size, height: props.size }}
         >
-            {rings.map((data) => (
+            {rings.map((data, i) => (
                 <Ring
+                    key={i}
                     className={data.className}
                     dash={data.dash}
                     r={data.r}

@@ -60,8 +60,9 @@ function AmountDetail(props: { id: string; amount: Amount }) {
                 isBold={false}
             />
             <ul>
-                {details.map((data) => (
+                {details.map((data, i) => (
                     <AmountDetailItem
+                        key={i}
                         labelColor={data.labelColor}
                         fontColor={data.fontColor}
                         fontSize={data.fontSize}
