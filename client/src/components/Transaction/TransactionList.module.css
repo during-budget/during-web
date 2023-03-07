@@ -1,0 +1,12 @@
+.container {
+    margin: 0 var(--size-2);
+    padding-bottom: calc(1rem); /* NOTE: TransactionForm height */
+}
+
+.container > li {
+    margin-bottom: 3rem;
+}
+
+.date {
+    margin-bottom: var(--size-6);
+}
