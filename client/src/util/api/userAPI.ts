@@ -20,13 +20,13 @@ export const registerUser = async (userName: string, password: string) => {
     }
 };
 
-export const loginUser = async (userName: string, password: string) => {
+export const loginUser = async (email: string, password: string) => {
     const url = `${BASE_URL}/login/local`;
     const response = await fetch(url, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({
-            userName,
+            email,
             password,
         }),
         headers: {
