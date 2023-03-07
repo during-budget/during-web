@@ -1,0 +1,14 @@
+.tag {
+    display: inline-block;
+    margin-right: var(--size-11);
+    margin-bottom: var(--size-11);
+    padding: var(--size-11) var(--size-8);
+    text-align: center;
+    border-radius: var(--size-10);
+    background-color: var(--gray-1);
+    color: var(--gray-3);
+}
+
+.tag::before {
+    content: '#';
+}
