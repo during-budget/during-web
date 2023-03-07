@@ -14,6 +14,27 @@ class Budget {
     };
     private _categories: Category;
 
+    constructor(budget: {
+        id: string;
+        title: string;
+        date: {
+            start: Date;
+            end: Date;
+        };
+        total: {
+            expense: Amount;
+            income: Amount;
+        };
+        categories: Category;
+    }) {
+        const { id, title, date, total, categories } = budget;
+        this._id = id;
+        this._title = title;
+        this._date = date;
+        this._total = total;
+        this._categories = categories;
+    }
+
     get id() {
         return this._id;
     }
@@ -94,27 +115,6 @@ class Budget {
             }),
         });
     };
-
-    constructor(budget: {
-        id: string;
-        title: string;
-        date: {
-            start: Date;
-            end: Date;
-        };
-        total: {
-            expense: Amount;
-            income: Amount;
-        };
-        categories: Category;
-    }) {
-        const { id, title, date, total, categories } = budget;
-        this._id = id;
-        this._title = title;
-        this._date = date;
-        this._total = total;
-        this._categories = categories;
-    }
 }
 
 export default Budget;
