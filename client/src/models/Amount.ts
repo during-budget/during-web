@@ -107,6 +107,10 @@ class Amount {
         }
     };
 
+    static getAmountStr = (amount: number) => {
+        return formatCurrent(amount);
+    }
+
     private getEachState = (
         target: string,
         over: string,
