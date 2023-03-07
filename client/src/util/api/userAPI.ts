@@ -41,6 +41,8 @@ export const loginUser = async (userName: string, password: string) => {
             `Failed to login.\n${data.message ? data.message : ''}`
         );
     }
+
+    return data;
 };
 
 export const getUserState = async () => {

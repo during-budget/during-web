@@ -8,6 +8,7 @@ import { throwError } from '../util/error';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { userActions } from '../store/user';
+import { categoryActions } from '../store/category';
 
 function Auth() {
     const dispatch = useDispatch();
@@ -21,16 +22,23 @@ function Auth() {
         password: string,
         reset: () => void
     ) => {
+        let data;
+
         try {
-            await loginUser(email, password);
+            data = await loginUser(email, password);
         } catch (error) {
             reset();
             throwError(error);
         }
 
         reset();
-        dispatch(userActions.login());
+        setUserData(data.user);
         navigate('/budget', { replace: true });
+    };
+
+    const setUserData = async (user: any) => {
+        dispatch(userActions.login());
+        dispatch(categoryActions.setCategories(user.categories));
     };
 
     const registerButtons = (
