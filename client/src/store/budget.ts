@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Budget from '../models/Budget';
 
-const budgets: Budget[] = [];
+const initialState: Budget[] = [];
+
 const budgetSlice = createSlice({
     name: 'budget',
-    initialState: budgets,
+    initialState,
     reducers: {
         setBudgets(state, action) {
             const budgets = action.payload;
