@@ -1,5 +1,3 @@
-import { ObjectType } from 'typescript';
-
 const locale: 'ko-KR' | 'en-US' =
     navigator.language === 'ko-KR' ? 'ko-KR' : 'en-US';
 const amountUnit = {
@@ -37,6 +35,13 @@ class Amount {
         isOver: boolean;
         amount: number;
     }[];
+
+    constructor(current: number, scheduled: number, planned: number) {
+        this._current = current;
+        this._scheduled = scheduled;
+        this._planned = planned;
+        this._state = this.getState();
+    }
 
     get current() {
         return this._current;
@@ -135,13 +140,6 @@ class Amount {
 
         return [currentOverSchedule, currentOverPlanned, scheduledOverplanned];
     };
-
-    constructor(current: number, scheduled: number, planned: number) {
-        this._current = current;
-        this._scheduled = scheduled;
-        this._planned = planned;
-        this._state = this.getState();
-    }
 }
 
 export default Amount;

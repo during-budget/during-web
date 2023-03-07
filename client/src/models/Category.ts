@@ -8,6 +8,23 @@ class Category {
     private _isIncome: boolean;
     private _amount: Amount | undefined;
 
+    constructor(category: {
+        id: string;
+        title: string;
+        icon: string;
+        isExpense: boolean;
+        isIncome: boolean;
+        amount?: Amount;
+    }) {
+        const { id, title, icon, isExpense, isIncome, amount } = category;
+        this._id = id;
+        this._title = title;
+        this._icon = icon;
+        this._isExpense = isExpense;
+        this._isIncome = isIncome;
+        this._amount = amount ? amount : undefined;
+    }
+
     get id() {
         return this._id;
     }
@@ -30,23 +47,6 @@ class Category {
 
     get amount() {
         return this._amount;
-    }
-
-    constructor(category: {
-        id: string;
-        title: string;
-        icon: string;
-        isExpense: boolean;
-        isIncome: boolean;
-        amount?: Amount;
-    }) {
-        const { id, title, icon, isExpense, isIncome, amount } = category;
-        this._id = id;
-        this._title = title;
-        this._icon = icon;
-        this._isExpense = isExpense;
-        this._isIncome = isIncome;
-        this._amount = amount ? amount : undefined;
     }
 }
 
