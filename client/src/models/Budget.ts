@@ -93,7 +93,6 @@ class Budget {
                     categoryId: id,
                     icon,
                     isExpense,
-                    isIncome,
                     title,
                     amountCurrent,
                     amountPlanned,
@@ -109,7 +108,6 @@ class Budget {
                     title,
                     icon,
                     isExpense,
-                    isIncome,
                     amount,
                 });
             }),
