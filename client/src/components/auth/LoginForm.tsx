@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import classes from './AuthForm.module.css';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
+import { throwError } from '../../util/error';
+import { loginUser } from '../../util/api/userAPI';
 
-function LoginForm(props: {
-    loginHandler: (email: string, password: string, reset: () => void) => void;
-}) {
+function LoginForm(props: { setUserData: (user: any) => void }) {
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
 
@@ -15,22 +15,32 @@ function LoginForm(props: {
         emailInput?.focus();
     }, []);
 
+    const submitHandler = async (event: React.FormEvent) => {
+        event.preventDefault();
+        let data;
+
+        try {
+            data = await loginUser(emailState, passwordState);
+        } catch (error) {
+            resetInput();
+            throwError(error);
+        }
+
+        resetInput();
+        props.setUserData(data.user);
+    };
+
+    const resetInput = () => {
+        setEmailState('');
+        setPasswordState('');
+    };
+
     const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmailState(event.target.value);
     };
 
     const passwordHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPasswordState(event.target.value);
-    };
-
-    const submitHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-        props.loginHandler(emailState, passwordState, resetInput);
-    };
-
-    const resetInput = () => {
-        setEmailState('');
-        setPasswordState('');
     };
 
     return (

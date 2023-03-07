@@ -24,19 +24,7 @@ function Auth() {
     ) => {
         let data;
 
-        try {
-            data = await loginUser(email, password);
-        } catch (error) {
-            reset();
-            throwError(error);
-        }
-
-        reset();
-        setUserData(data.user);
-        navigate('/budget', { replace: true });
-    };
-
-    const setUserData = async (user: any) => {
+    const setUserData = (user: any) => {
         dispatch(userActions.login());
         dispatch(categoryActions.setCategories(user.categories));
     };
@@ -75,7 +63,7 @@ function Auth() {
             />
             <h1>{isLoginMode ? '듀링 가계부' : '회원가입'}</h1>
             {isLoginMode ? (
-                <LoginForm loginHandler={loginHandler} />
+                <LoginForm setUserData={setUserData} />
             ) : (
                 <RegisterForm />
             )}
