@@ -42,7 +42,7 @@ function List() {
             width: "112px",
           },
           {
-            label: "userName",
+            label: "email",
           },
           {
             label: "createdAt",

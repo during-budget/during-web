@@ -14,6 +14,10 @@ const userSchema = mongoose.Schema(
   {
     // user fields
     userName: {
+      //deprecated
+      type: String,
+    },
+    email: {
       type: String,
       unique: true,
     },

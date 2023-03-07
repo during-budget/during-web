@@ -9,21 +9,21 @@ const generateRandomString = require("../utils/generateRandomString");
 /**
  * Register
  *
- * @body {userName: 'user00001', password: 'asdfasdf!!'}
+ * @body {email: 'user00001', password: 'asdfasdf!!'}
  */
 module.exports.register = async (req, res) => {
   try {
-    const exUser = await User.findOne({ userName: req.body.userName });
+    const exUser = await User.findOne({ email: req.body.email });
     if (exUser)
       return res
         .status(409)
-        .send({ message: `userName ${req.body.userName} is already in use` });
+        .send({ message: `email ${req.body.email} is already in use` });
 
     // userId, password 유효성 검사
     // ...
 
     const user = new User({
-      userName: req.body.userName,
+      email: req.body.email,
       password: req.body.password,
     });
     await user.save();
@@ -39,22 +39,22 @@ module.exports.register = async (req, res) => {
  */
 module.exports.loginGuest = async (req, res) => {
   try {
-    let userName = generateRandomString(8);
+    let email = generateRandomString(8);
     while (true) {
-      const exUser = await User.findOne({ userName });
-      if (exUser) userName = generateRandomString(16);
+      const exUser = await User.findOne({ email });
+      if (exUser) email = generateRandomString(8);
       else break;
     }
     const password = generateRandomString(16);
 
     const user = new User({
-      userName,
+      email,
       password,
       isGuest: true,
     });
     await user.save();
 
-    req.body.userName = user.userName;
+    req.body.email = user.email;
     req.body.password = password;
     passport.authenticate("local", (authError, user) => {
       try {
@@ -75,7 +75,7 @@ module.exports.loginGuest = async (req, res) => {
 /**
  * Login (local)
  *
- * @body {userName: 'user00001', password: 'asdfasdf!!'}
+ * @body {email: 'user00001', password: 'asdfasdf!!'}
  */
 module.exports.loginLocal = async (req, res) => {
   passport.authenticate("local", (authError, user) => {
