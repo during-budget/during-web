@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classes from './Auth.module.css';
 import LoginForm from '../components/Auth/LoginForm';
 import RegisterForm from '../components/Auth/RegisterForm';
 import Button from '../components/UI/Button';
-import { loginUser } from '../util/api/userAPI';
-import { throwError } from '../util/error';
+import { getUserState } from '../util/api/userAPI';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { userActions } from '../store/user';
 import { categoryActions } from '../store/category';
 
@@ -14,19 +13,25 @@ function Auth() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const location = useLocation();
+    const from = location.state?.from?.pathname;
+
+    const loaderData: any = useLoaderData();
+
     const [isLoginMode, setIsLoginMode] = useState(true);
+
     const logo = require('../assets/png/logo.png');
 
-    const loginHandler = async (
-        email: string,
-        password: string,
-        reset: () => void
-    ) => {
-        let data;
+    useEffect(() => {
+        if (loaderData) {
+            setUserData(loaderData.user);
+        }
+    }, [loaderData]);
 
     const setUserData = (user: any) => {
         dispatch(userActions.login());
         dispatch(categoryActions.setCategories(user.categories));
+        navigate(from || '/budget', { replace: true });
     };
 
     const registerButtons = (
@@ -71,5 +76,9 @@ function Auth() {
         </div>
     );
 }
+
+export const loader = () => {
+    return getUserState();
+};
 
 export default Auth;

@@ -5,7 +5,7 @@ import {
     RouterProvider,
 } from 'react-router-dom';
 import Root from './screens/Root';
-import Auth from './screens/Auth';
+import Auth, { loader as AuthLoader } from './screens/Auth';
 import Nav from './screens/Nav';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import BudgetNavigation, {
@@ -25,6 +25,7 @@ const router = createBrowserRouter([
             {
                 path: '/auth',
                 element: <Auth />,
+                loader: AuthLoader,
             },
             {
                 path: '/budget',
