@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import RequireAuth from '../components/Auth/RequireAuth';
 import classes from './Nav.module.css';
 
 function Nav() {
@@ -22,10 +23,10 @@ function Nav() {
     });
 
     return (
-        <>
+        <RequireAuth>
             <Outlet />
             <nav className={classes.nav}>{navList}</nav>
-        </>
+        </RequireAuth>
     );
 }
 

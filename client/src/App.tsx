@@ -11,6 +11,7 @@ import Budget, { loader as budgetLoader } from './screens/Budget';
 import BudgetNavigation, {
     loader as budgetListLoader,
 } from './screens/BudgetNavigation';
+import ErrorBoundary from './screens/ErrorBoundary';
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
             {
                 path: '/budget',
                 element: <Nav />,
+                errorElement: <ErrorBoundary />,
                 children: [
                     {
                         path: '/budget',
