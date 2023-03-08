@@ -139,9 +139,20 @@ module.exports.findDocument = async (req, res) => {
   }
 };
 
-module.exports.removeDocument = async (req, res) => {
+module.exports.removeUser = async (req, res) => {
   try {
-    await model[req.params.model].findByIdAndRemove(req.params._id);
+    await Transaction.deleteMany({ userId: req.params._id });
+    await Budget.deleteMany({ userId: req.params._id });
+    await User.findByIdAndRemove(req.params._id);
+    return res.status(200).send();
+  } catch (err) {
+    return res.status(err.status || 500).send({ message: err.message });
+  }
+};
+module.exports.removeBudget = async (req, res) => {
+  try {
+    await Transaction.deleteMany({ userId: eq.params._id });
+    await Budget.findByIdAndRemove(req.params._id);
     return res.status(200).send();
   } catch (err) {
     return res.status(err.status || 500).send({ message: err.message });
