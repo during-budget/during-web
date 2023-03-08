@@ -55,7 +55,7 @@ function List() {
             type: "button-delete",
             onClick: async (e) => {
               if (window.confirm("정말 삭제하시겠습니까?") === true) {
-                await API.DELETE({ location: "test/users/" + e._id });
+                await API.DELETE({ location: "test/budgets/" + e._id });
                 setIsLoading(true);
                 setShowSnackbar(true);
                 setTimeout(() => setShowSnackbar(false), 1000);

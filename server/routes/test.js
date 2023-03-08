@@ -1,12 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const test = require("../controllers/test");
+const budgets = require("../controllers/budgets");
+const transactions = require("../controllers/transactions");
 
 /**
  */
 router.get("/:model", test.findDocuments);
 router.get("/:model/:_id", test.findDocument);
-router.delete("/:model/:_id", test.removeDocument);
+
+router.delete("/users/:_id", test.removeUser);
+router.delete("/budgets/:_id", budgets.remove);
+router.delete("/transactions/:_id", transactions.remove);
 
 router.get("/", test.hello);
 router.get("/dataList", test.dataList);
