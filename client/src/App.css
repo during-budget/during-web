@@ -101,3 +101,9 @@ hr {
 main {
     margin-bottom: 9vh; /* NOTE: Nav height */
 }
+
+@media screen and (max-width: 300px) {
+    html {
+        font-size: 12px;
+    }
+}
