@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import Amount from '../../models/Amount';
 import Category from '../../models/Category';
-import AmountBars from '../Amount/AmountBars';
 import StatusHeader from './StatusHeader';
+import AmountBars from '../Amount/AmountBars';
+import AmountDetail from '../Amount/AmountDetail';
+import CategoryStatusNav from './CategoryStatusNav';
 
 function CategoryStatus(props: { categories: Category[] }) {
     const [isExpense, setIsExpense] = useState(true);
@@ -53,6 +55,15 @@ function CategoryStatus(props: { categories: Category[] }) {
                         },
                     };
                 })}
+            />
+            <AmountDetail
+                id="category"
+                amount={categories[currentCategoryIdx].amount!}
+            />
+            <CategoryStatusNav
+                idx={currentCategoryIdx}
+                setIdx={setCurrentCategoryIdx}
+                categories={categories}
             />
         </>
     );
