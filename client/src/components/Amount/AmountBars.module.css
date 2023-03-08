@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.bar i {
+    margin-bottom: 1rem;
+}
+
+.bar .label {
+    text-align: center;
+    margin: var(--size-11);
+    font-size: var(--size-3);
+    line-height: var(--size-3);
+}
+
+/* NOTE: for centering */
+.label.small {
+    transform: translateX(calc(-1 * var(--size-11)));
+}
+
+.label.tiny {
+    transform: translateX(calc(-1 * var(--size-9)));
+}
+
+.mark.tiny {
+    transform: translateX(calc(-1 * 0.125rem));
+}
