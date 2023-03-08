@@ -324,6 +324,8 @@ module.exports.remove = async (req, res) => {
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send();
     if (!budget.userId.equals(user._id)) return res.status(401).send();
+
+    await Transaction.deleteMany({ budgetId: budget._id });
     await budget.remove();
     return res.status(200).send();
   } catch (err) {
