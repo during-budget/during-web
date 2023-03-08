@@ -36,7 +36,7 @@ function Budget() {
                 >
                     <DateStatus />
                     <TotalStatus total={total} />
-                    <CategoryStatus />
+                    <CategoryStatus categories={budget.categories} />
                 </Carousel>
                 <hr />
                 <TransactionLayout transactions={transactions} />

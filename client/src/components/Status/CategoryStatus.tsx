@@ -1,9 +1,16 @@
 import { useState } from 'react';
+import Amount from '../../models/Amount';
+import Category from '../../models/Category';
+import AmountBars from '../Amount/AmountBars';
 import StatusHeader from './StatusHeader';
 
-function CategoryStatus() {
+function CategoryStatus(props: { categories: Category[] }) {
     const [isExpense, setIsExpense] = useState(true);
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
+
+    const categories = props.categories.filter((item: Category) =>
+        isExpense ? item.isExpense : !item.isExpense
+    );
 
     const tabs = [
         {
@@ -32,6 +39,20 @@ function CategoryStatus() {
                 id="category-status-type"
                 title="카테고리별 예산"
                 values={tabs}
+            />
+            <AmountBars
+                amountData={categories.map((item: Category, i) => {
+                    return {
+                        amount: item.amount || new Amount(0, 0, 0),
+                        label: item.icon,
+                        isOver: item.amount?.state
+                            .map((state) => state.isOver)
+                            .includes(true),
+                        onClick: () => {
+                            setCurrentCategoryIdx(i);
+                        },
+                    };
+                })}
             />
         </>
     );

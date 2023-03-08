@@ -12,7 +12,7 @@ class Budget {
         expense: Amount;
         income: Amount;
     };
-    private _categories: Category;
+    private _categories: Category[];
 
     constructor(budget: {
         id: string;
@@ -25,7 +25,7 @@ class Budget {
             expense: Amount;
             income: Amount;
         };
-        categories: Category;
+        categories: Category[];
     }) {
         const { id, title, date, total, categories } = budget;
         this._id = id;
