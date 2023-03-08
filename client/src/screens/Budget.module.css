@@ -1,3 +1,4 @@
 .status {
+    width: calc(100% - 20vw) !important;
     margin-bottom: 3vh;
 }

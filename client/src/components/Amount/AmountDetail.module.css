@@ -1,5 +1,5 @@
 .container {
-    width: 60%;
+    width: calc(100% - 16vw);
 }
 
 .container ul {
