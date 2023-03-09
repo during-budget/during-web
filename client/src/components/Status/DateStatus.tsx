@@ -58,10 +58,14 @@ function DateStatus(props: {
         let date: string | null;
 
         const eventTarget = event.target as HTMLElement;
-        if (eventTarget.nodeName === 'P' || eventTarget.nodeName === 'DIV') {
+        if (eventTarget.nodeName === 'P') {
             date = (
                 eventTarget.parentNode?.parentNode
                     ?.parentNode as HTMLTableDataCellElement
+            ).getAttribute('data-date');
+        } else if (eventTarget.nodeName === 'SPAN') {
+            date = (
+                eventTarget.parentNode?.parentNode as HTMLTableDataCellElement
             ).getAttribute('data-date');
         } else if (eventTarget.nodeName === 'TD') {
             date = (eventTarget as HTMLTableDataCellElement).getAttribute(

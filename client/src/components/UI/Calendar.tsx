@@ -64,7 +64,7 @@ function Calendar(props: {
                         >
                             <div className={classes.center}>
                                 <>
-                                    <p>{currDay}</p>
+                                    <span>{currDay}</span>
                                     {props.getDateStatus &&
                                         props.getDateStatus(date)}
                                 </>
