@@ -114,12 +114,16 @@ module.exports.create = async (req, res) => {
   try {
     if (!("title" in req.body) || !("icon" in req.body))
       return res.status(409).send({ message: "title and icon is required" });
-    if (!("isExpense" in req.body) || !("isIncome" in req.body))
+
+    const category = req.body;
+    if ("isExpense" in category) category.isIncome = !category.isExpense;
+    else if ("isIncome" in category) category.isExpense = !category.isIncome;
+    else
       return res
         .status(409)
-        .send({ message: "isExpense and isIncome is required" });
+        .send({ message: "isExpense or isIncome is required" });
 
-    req.user.pushCategory(req.body);
+    req.user.pushCategory(category);
     await req.user.save();
 
     return res.status(200).send({ categories: req.user.categories });

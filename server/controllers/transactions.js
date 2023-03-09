@@ -18,22 +18,14 @@ module.exports.create = async (req, res) => {
       "budgetId",
       "date",
       "isCurrent",
-      "isExpense",
-      "isIncome",
       "title",
       "amount",
       "categoryId",
     ])
       if (!(field in req.body))
         return res.status(400).send({
-          message: `fields(budgetId, date, isCurrent, isExpense, isIncome, title, amount, categoryId) are required`,
+          message: `fields(budgetId, date, isCurrent, title, amount, categoryId) are required`,
         });
-    if (req.body.isExpense === req.body.isIncome)
-      return res.status(400).send({
-        message:
-          "set {isExpense:true, isIncome:false} or {isExpense:false, isIncome:true}",
-      });
-
     const user = req.user;
 
     const budget = await Budget.findById(req.body.budgetId);
@@ -50,36 +42,17 @@ module.exports.create = async (req, res) => {
         message: `category(${req.body.categoryId}) not found in budget`,
       });
 
-    if (req.body.isExpense !== category.isExpense)
-      return res.status(409).send({
-        message: `field isExpense and category(${JSON.stringify(
-          category
-        )}) does not match`,
-      });
-    else if (req.body.isIncome !== category.isIncome)
-      return res.status(409).send({
-        message: `field isIncome and category(${JSON.stringify(
-          category
-        )}) does not match`,
-      });
-
     const transaction = new Transaction({
       userId: req.user._id,
       budgetId: budget._id,
       date: req.body.date,
       isCurrent: req.body.isCurrent,
-      isExpense: req.body.isExpense,
-      isIncome: req.body.isIncome,
+      isExpense: category.isExpense,
+      isIncome: category.isIncome,
       linkId: req.body.linkId,
       title: req.body.title,
       amount: req.body.amount,
-      category: {
-        categoryId: category.categoryId,
-        isExpense: category.isExpense,
-        isIncome: category.isIncome,
-        title: category.title,
-        icon: category.icon,
-      },
+      category,
       tags: req.body.tags ?? [],
       memo: req.body.memo ?? "",
     });
@@ -97,26 +70,18 @@ module.exports.create = async (req, res) => {
       category.amountScheduled += transaction.amount;
 
       // 1-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseScheduled += transaction.amount;
-      }
+      if (transaction.isExpense) budget.expenseScheduled += transaction.amount;
       // 1-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeScheduled += transaction.amount;
-      }
+      else budget.incomeScheduled += transaction.amount;
     }
     // 2. current transaction
     else {
       category.amountCurrent += transaction.amount;
 
       // 2-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseCurrent += transaction.amount;
-      }
+      if (transaction.isExpense) budget.expenseCurrent += transaction.amount;
       // 2-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeCurrent += transaction.amount;
-      }
+      else budget.incomeCurrent += transaction.amount;
     }
     await budget.save();
 
@@ -297,13 +262,9 @@ module.exports.updateAmount = async (req, res) => {
       category.amountScheduled += diff;
 
       // 1-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseScheduled += diff;
-      }
+      if (transaction.isExpense) budget.expenseScheduled += diff;
       // 1-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeScheduled += diff;
-      }
+      else budget.incomeScheduled += diff;
     }
     // 2. current transaction
     else {
@@ -311,13 +272,9 @@ module.exports.updateAmount = async (req, res) => {
       category.amountCurrent += diff;
 
       // 2-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseCurrent += diff;
-      }
+      if (transaction.isExpense) budget.expenseCurrent += diff;
       // 2-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeCurrent += diff;
-      }
+      else budget.incomeCurrent += diff;
     }
 
     await transaction.save();
@@ -393,26 +350,18 @@ module.exports.remove = async (req, res) => {
       category.amountScheduled -= transaction.amount;
 
       // 1-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseScheduled -= transaction.amount;
-      }
+      if (transaction.isExpense) budget.expenseScheduled -= transaction.amount;
       // 1-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeScheduled -= transaction.amount;
-      }
+      else budget.incomeScheduled -= transaction.amount;
     }
     // 2. current transaction
     else {
       category.amountCurrent -= transaction.amount;
 
       // 2-1. expense transaction
-      if (transaction.isExpense) {
-        budget.expenseCurrent -= transaction.amount;
-      }
+      if (transaction.isExpense) budget.expenseCurrent -= transaction.amount;
       // 2-2. income transaction
-      else if (transaction.isIncome) {
-        budget.incomeCurrent -= transaction.amount;
-      }
+      else budget.incomeCurrent -= transaction.amount;
     }
 
     await transaction.remove();
