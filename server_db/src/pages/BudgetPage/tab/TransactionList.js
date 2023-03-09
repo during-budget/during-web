@@ -110,6 +110,15 @@ function List({ isExpense = false, isIncome = false }) {
                   }
                 },
               },
+              {
+                label: "current.overAmount",
+                onClick: (e) => {
+                  if (e.current?._id) {
+                    setTransaction(e.current);
+                    setIsDialogActive(true);
+                  }
+                },
+              },
             ]}
             rows={transactions}
           />
