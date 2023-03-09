@@ -47,13 +47,14 @@ const userSchema = mongoose.Schema(
         { isExpense: true, title: "기부/후원", icon: "🕊️" },
         { isExpense: true, title: "경조사비", icon: "💌" },
         { isExpense: true, title: "선물", icon: "🎁" },
+        { isExpense: true, title: "이체", icon: "🍎" },
+        { isExpense: true, title: "채무", icon: "🥭" },
         // 수입 카테고리
         { isIncome: true, title: "월급", icon: "💙" },
         { isIncome: true, title: "보너스", icon: "💜" },
         { isIncome: true, title: "용돈", icon: "💚" },
-        // 기타 카테고리
-        { isExpense: true, isIncome: true, title: "이체", icon: "🍫" },
-        { isExpense: true, isIncome: true, title: "채무", icon: "🍟" },
+        { isIncome: true, title: "이체", icon: "🍏" },
+        { isIncome: true, title: "채무", icon: "🍋" },
         // 기본 카테고리
         { isExpense: true, isDefault: true, title: "기타", icon: "" },
         { isIncome: true, isDefault: true, title: "기타", icon: "" },
