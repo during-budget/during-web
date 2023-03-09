@@ -1,4 +1,8 @@
-.status {
+.header {
+    margin-bottom: var(--size-10);
+}
+
+.content {
     padding-top: var(--size-11);
     font-size: var(--size-8);
     font-weight: 400;
