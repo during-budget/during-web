@@ -97,32 +97,22 @@ userSchema.methods.findCategory = function (categoryId) {
   })?.toObject();
 };
 
+userSchema.methods.findCategoryIdx = function (categoryId) {
+  return _.findIndex(this.categories, {
+    _id: mongoose.Types.ObjectId(categoryId),
+  });
+};
+
 userSchema.methods.findDefaultExpenseCategory = function () {
-  return _.find(this.categories, {
-    isExpense: true,
-    isDefault: true,
-  })?.toObject();
+  return this.categories[this.categories.length - 2].toObject();
 };
 
 userSchema.methods.findDefaultIncomeCategory = function () {
-  return _.find(this.categories, {
-    isIncome: true,
-    isDefault: true,
-  })?.toObject();
+  return this.categories[this.categories.length - 1].toObject();
 };
 
-userSchema.methods.pushCategory = function ({
-  isExpense,
-  isIncome,
-  title,
-  icon,
-}) {
-  this.categories.splice(this.categories.length - 2, 0, {
-    isExpense,
-    isIncome,
-    title,
-    icon,
-  });
+userSchema.methods.pushCategory = function (category) {
+  this.categories.splice(this.categories.length - 2, 0, category);
 };
 
 module.exports = mongoose.model("User", userSchema);
