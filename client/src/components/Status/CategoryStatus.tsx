@@ -39,7 +39,7 @@ function CategoryStatus(props: { categories: Category[] }) {
         <>
             <StatusHeader
                 id="category-status-type"
-                title="카테고리별 예산"
+                title="카테고리별 현황"
                 values={tabs}
             />
             <AmountBars
