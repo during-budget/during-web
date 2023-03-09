@@ -22,6 +22,7 @@ const transactionSchema = mongoose.Schema(
     linkId: mongoose.Types.ObjectId, // isCurrent - scheduledId, !isCurrent - currentId
     title: [String],
     amount: Number,
+    overAmount: Number,
     category: categorySchema, // category of budget
     tags: [String],
     memo: {
