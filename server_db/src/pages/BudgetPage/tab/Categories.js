@@ -59,15 +59,9 @@ function Index() {
                 setCategories(
                   budget.categories.filter((category) => category.isExpense)
                 );
-              } else if (e.target.value === "isIncome") {
-                setCategories(
-                  budget.categories.filter((category) => category.isIncome)
-                );
               } else {
                 setCategories(
-                  budget.categories.filter(
-                    (category) => category.isExpense && category.isIncome
-                  )
+                  budget.categories.filter((category) => category.isIncome)
                 );
               }
             }}
@@ -82,11 +76,6 @@ function Index() {
               value="isIncome"
               control={<Radio />}
               label="isIncome"
-            />
-            <FormControlLabel
-              value="isBoth"
-              control={<Radio />}
-              label="isExpense && isIncome"
             />
           </RadioGroup>
         </div>
