@@ -8,10 +8,9 @@ router.put("/", isLoggedIn, categories.updateV2);
 
 router.get("/", isLoggedIn, categories.find);
 
-router.post("/", isLoggedIn, categories.create);
-router.put("/swap", isLoggedIn, categories.swap);
-router.put("/:_id", isLoggedIn, categories.update);
-
-router.delete("/:_id", isLoggedIn, categories.remove);
+router.post("/", isLoggedIn, categories.create); //deprecated
+router.put("/swap", isLoggedIn, categories.swap); //deprecated
+router.put("/:_id", isLoggedIn, categories.update); //deprecated
+router.delete("/:_id", isLoggedIn, categories.remove); //deprecated
 
 module.exports = router;
