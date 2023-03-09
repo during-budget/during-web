@@ -5,11 +5,21 @@
     top: 12rem;
     height: 38rem;
     width: 100%;
-    padding-top: 2rem;
+    padding-top: 1rem;
     background-color: #fff;
     border-radius: 1.5rem;
     box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
     z-index: 10;
+}
+
+.header {
+    text-align: right;
+    padding: 0 3rem;
+}
+
+.icons {
+    margin-left: 0.5rem;
+    cursor: pointer;
 }
 
 em-emoji-picker {
