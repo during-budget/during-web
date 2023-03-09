@@ -45,19 +45,13 @@ module.exports.create = async (req, res) => {
           .status(400)
           .send({ message: "field 'amountPlanned' is required" });
 
-      if ("isExpense" in _category || "isIncome" in _category) {
-        if (_category.isExpense)
-          sumExpenseAmountPlanned += _category.amountPlanned;
-        else sumIncomeAmountPlanned += _category.amountPlanned;
-      } else {
-        if (category.isExpense)
-          sumExpenseAmountPlanned += _category.amountPlanned;
-        else sumIncomeAmountPlanned += _category.amountPlanned;
-      }
+      if (category.isExpense)
+        sumExpenseAmountPlanned += _category.amountPlanned;
+      else sumIncomeAmountPlanned += _category.amountPlanned;
 
       budget.categories.push({
         ...category,
-        categoryId: _category.categoryId,
+        categoryId: category._id,
         amountPlanned: _category.amountPlanned,
       });
     }
