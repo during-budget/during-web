@@ -46,9 +46,7 @@ module.exports.updateV2 = async (req, res) => {
 
       await Promise.all([
         budgets.forEach((budget) => {
-          const idx = _.findIndex(budget.categories, {
-            categoryId: category._id,
-          });
+          const idx = budget.findCategoryIdx(category._id);
           budget.categories[idx] = {
             ...category,
             categoryId: category._id,
@@ -78,9 +76,7 @@ module.exports.updateV2 = async (req, res) => {
 
       await Promise.all([
         budgets.forEach((budget) => {
-          const idx = _.findIndex(budget.categories, {
-            categoryId: category._id,
-          });
+          const idx = budget.findCategoryIdx(budget.categories, category._id);
           budget.categories.splice(idx, 1);
           budget.save();
         }),
