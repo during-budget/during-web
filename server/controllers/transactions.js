@@ -83,6 +83,13 @@ module.exports.create = async (req, res) => {
       tags: req.body.tags ?? [],
       memo: req.body.memo ?? "",
     });
+    if (transaction.isCurrent && transaction?.linkId) {
+      const transactionScheduled = await Transaction.findByIdAndUpdate(
+        { _id: transaction.linkId },
+        { linkId: transaction._id }
+      );
+      transaction.overAmount = transaction.amount - transactionScheduled.amount;
+    }
     await transaction.save();
 
     // 1. scheduled transaction
@@ -100,13 +107,6 @@ module.exports.create = async (req, res) => {
     }
     // 2. current transaction
     else {
-      // if transaction is linked - create link to another transaction
-      if (transaction.linkId) {
-        await Transaction.findByIdAndUpdate(
-          { _id: transaction.linkId },
-          { linkId: transaction._id }
-        );
-      }
       category.amountCurrent += transaction.amount;
 
       // 2-1. expense transaction
@@ -285,10 +285,15 @@ module.exports.updateAmount = async (req, res) => {
 
     const category = budget.categories[categoryIdx];
 
-    await transaction.save();
-
     // 1. scheduled transaction
     if (!transaction.isCurrent) {
+      if (transaction.linkId) {
+        const transactionCurrent = await Transaction.findById(
+          transaction.linkId
+        );
+        transactionCurrent.overAmount -= diff;
+        await transactionCurrent.save();
+      }
       category.amountScheduled += diff;
 
       // 1-1. expense transaction
@@ -302,6 +307,7 @@ module.exports.updateAmount = async (req, res) => {
     }
     // 2. current transaction
     else {
+      transaction.overAmount += diff;
       category.amountCurrent += diff;
 
       // 2-1. expense transaction
@@ -313,6 +319,9 @@ module.exports.updateAmount = async (req, res) => {
         budget.incomeCurrent += diff;
       }
     }
+
+    await transaction.save();
+
     budget.categories[categoryIdx] = category;
     budget.isModified("categories");
     await budget.save();
@@ -416,6 +425,7 @@ module.exports.remove = async (req, res) => {
       const _transaction = await Transaction.findById(transaction.linkId);
       if (_transaction) {
         _transaction.linkId = undefined;
+        _transaction.overAmount = undefined;
         await _transaction.save();
       }
     }
