@@ -96,8 +96,8 @@ budgetSchema.methods.pushCategory = function (category) {
   return;
 };
 
-budgetSchema.methods.addDefaultCategory = function (isIncome, amount) {
-  const idx = this.categories.length - (isIncome ? 2 : 1);
+budgetSchema.methods.addDefaultCategory = function (isExpense, amount) {
+  const idx = this.categories.length - (isExpense ? 2 : 1);
   this.categories[idx].amountPlanned += amount;
   return;
 };
