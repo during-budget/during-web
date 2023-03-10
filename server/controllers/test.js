@@ -2,15 +2,44 @@ const Test = require("../models/Test");
 const User = require("../models/User");
 const Budget = require("../models/Budget");
 const Transaction = require("../models/Transaction");
+const nodeMailer = require("nodemailer");
+
 // test controller
+
+const sendMail = async () => {
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: "During Team",
+    to: process.env.NODEMAILER_TO,
+    subject: "가입 인증 메일",
+    html: `
+      가입확인 버튼를 누르시면 가입 인증이 완료됩니다.<br/>
+      <form action="#" method="POST">
+        <button>가입확인</button>
+      </form>  
+      `,
+  };
+  await transporter.sendMail(mailOptions);
+};
 
 /**
  * Hello
  *
  * @return message: 'hello world'
  */
-module.exports.hello = (req, res) => {
+module.exports.hello = async (req, res) => {
   try {
+    await sendMail();
     return res.status(200).send({ message: "hello world!" });
   } catch (err) {
     return res.status(500).send({ message: err.message });
