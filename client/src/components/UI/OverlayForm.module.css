@@ -1,0 +1,28 @@
+.overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-radius: 2rem 2rem 0 0;
+    box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
+    z-index: 2;
+    overflow: hidden;
+}
+
+.backdrop {
+    visibility: hidden;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    opacity: 0;
+    transition: 0.3s ease-in-out;
+}
+
+.backdrop.show {
+    visibility: visible;
+    opacity: 0.6;
+}
