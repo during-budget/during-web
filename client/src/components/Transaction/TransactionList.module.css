@@ -1,6 +1,6 @@
 .container {
     margin: 0 var(--size-2);
-    padding-bottom: calc(1rem); /* NOTE: TransactionForm height */
+    padding-bottom: 8rem; /* NOTE: Nav & TransactionForm height */
 }
 
 .container > li {
