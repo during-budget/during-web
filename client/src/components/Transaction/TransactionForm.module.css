@@ -1,0 +1,81 @@
+.container {
+    padding: var(--size-5);
+    position: fixed;
+    height: calc(3.5rem + 9vh);
+    transition: 0.3s ease-out;
+    clip-path: inset(-100% -100% calc(9vh + 1px) -100%);
+}
+
+.container input {
+    margin-bottom: var(--size-9);
+}
+
+.container.expand {
+    height: 85vh;
+    clip-path: inset(-100% -100% 0 -100%);
+}
+
+.amount {
+    display: flex;
+    width: 100%;
+    gap: var(--size-8);
+}
+
+.amount input {
+    margin-bottom: var(--size-5);
+}
+
+.amount button {
+    height: 3.5rem;
+    width: 30%;
+    transition: 0.3s ease-out;
+}
+
+.container.expand .amount {
+    gap: 0;
+}
+
+.container.expand .amount input {
+    margin-bottom: var(--size-9);
+}
+
+.container.expand .amount button {
+    width: 0;
+}
+
+.buttons {
+    visibility: hidden;
+    display: flex;
+    left: var(--size-5);
+    right: var(--size-5);
+    bottom: var(--size-2);
+    position: absolute;
+}
+
+.buttons .cancel {
+    width: 50%;
+}
+.container.expand .buttons {
+    visibility: visible;
+}
+
+
+.note, .type {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.emoji {
+    width: 3.8835rem;
+}
+
+.emoji input {
+    display: flex;
+    box-sizing: border-box;
+    font-size: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    text-align: center;
+    overflow: visible;
+    border-radius: 50%;
+}
