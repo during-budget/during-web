@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
 import classes from './EmojiInput.module.css';
@@ -6,9 +7,14 @@ import Picker from '@emoji-mart/react';
 import { BiEraser } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
 
-const EmojiInput = () => {
+const EmojiInput = ({ defaultIcon }: any) => {
     const dispatch = useDispatch();
 
+    const [open, setOpen] = useState(false);
+
+    const iconRef = useRef<HTMLInputElement>(null);
+
+    
     // Note: 선택한 이모티콘 값 저장 함수
     const changeIconHandler = (emoji: string) => {
         dispatch(uiActions.setTransactionForm({ input: { icon: emoji } }));
@@ -16,7 +22,7 @@ const EmojiInput = () => {
 
     // Note: 이모티콘 팝업창 닫기 함수
     const cancelHandler = () => {
-        dispatch(uiActions.setEmojiForm({ isExpand: false }));
+        setOpen(false);
     };
 
     // Note: 선택한 이모티콘 값 삭제 함수
@@ -32,28 +38,46 @@ const EmojiInput = () => {
         cancelHandler();
     };
 
+    // Note : 이모지 팝업 오픈 함수
+    const handleEmojiPopup = () => {
+        setOpen(!open);
+    };
+
     return (
-        <div className={classes.overlay}>
-            <div className={classes.header}>
-                <BiEraser
-                    className={classes.icons}
-                    onClick={deleteIconHandler}
-                />
-                <MdOutlineCancel
-                    className={classes.icons}
-                    onClick={cancelHandler}
-                />
-            </div>
-            <Picker
-                data={data}
-                locale='kr'
-                onEmojiSelect={onEmojiClick}
-                navPosition='bottom'
-                previewPosition='none'
-                skinTonePosition='none'
-                dynamicWidth='true'
+        <>
+            <input
+                ref={iconRef}
+                className={classes.icon}
+                type='text'
+                placeholder='💰'
+                maxLength={2}
+                defaultValue={defaultIcon}
+                onClick={handleEmojiPopup}
             />
-        </div>
+            {open ? (
+                <div className={classes.overlay}>
+                    <div className={classes.header}>
+                        <BiEraser
+                            className={classes.icons}
+                            onClick={deleteIconHandler}
+                        />
+                        <MdOutlineCancel
+                            className={classes.icons}
+                            onClick={cancelHandler}
+                        />
+                    </div>
+                    <Picker
+                        data={data}
+                        locale='kr'
+                        onEmojiSelect={onEmojiClick}
+                        navPosition='bottom'
+                        previewPosition='none'
+                        skinTonePosition='none'
+                        dynamicWidth='true'
+                    />
+                </div>
+            ) : null}
+        </>
     );
 };
 
