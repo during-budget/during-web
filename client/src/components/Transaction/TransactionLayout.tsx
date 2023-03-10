@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Transaction from '../../models/Transaction';
+import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
 import TransactionNav from './TransactionNav';
 
@@ -18,6 +19,7 @@ function TransactionLayout(props: { transactions: Transaction[] }) {
                 transactions={props.transactions}
                 isCurrent={isCurrent}
             />
+            <TransactionForm />
         </section>
     );
 }
