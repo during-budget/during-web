@@ -102,7 +102,13 @@ main {
     margin-bottom: 9vh; /* NOTE: Nav height */
 }
 
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 400px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 350px) {
     html {
         font-size: 12px;
     }
