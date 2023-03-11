@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Transaction from '../../models/Transaction';
+import Transaction from '../../../models/Transaction';
 import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
 import TransactionNav from './TransactionNav';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Amount from '../../models/Amount';
-import Category from '../../models/Category';
+import Amount from '../../../models/Amount';
+import Category from '../../../models/Category';
 import StatusHeader from './StatusHeader';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';

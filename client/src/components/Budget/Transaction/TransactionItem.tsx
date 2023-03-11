@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import classes from './TransactionItem.module.css';
-import Amount from '../../models/Amount';
-import Transaction from '../../models/Transaction';
-import Tag from '../UI/Tag';
+import Amount from '../../../models/Amount';
+import Transaction from '../../../models/Transaction';
+import Tag from '../../UI/Tag';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const {

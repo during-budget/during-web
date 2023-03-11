@@ -1,5 +1,5 @@
-import Category from '../../models/Category';
-import NavButton from '../UI/NavButton';
+import Category from '../../../models/Category';
+import NavButton from '../../UI/NavButton';
 import classes from './CategoryStatusNav.module.css';
 
 function CategoryStatusNav(props: {

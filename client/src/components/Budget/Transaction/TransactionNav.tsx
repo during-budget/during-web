@@ -1,4 +1,4 @@
-import RadioTab from '../UI/RadioTab';
+import RadioTab from '../../UI/RadioTab';
 
 function TransactionNav(props: {
     id: string;

@@ -1,4 +1,4 @@
-import Amount from '../../models/Amount';
+import Amount from '../../../models/Amount';
 import classes from './AmountBar.module.css';
 
 function AmountBar(props: { amount: Amount }) {

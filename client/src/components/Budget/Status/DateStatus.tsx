@@ -1,9 +1,9 @@
 import classes from './DateStatus.module.css';
-import Transaction from '../../models/Transaction';
-import Calendar from '../UI/Calendar';
+import Transaction from '../../../models/Transaction';
+import Calendar from '../../UI/Calendar';
 import StatusHeader from './StatusHeader';
 import { useState } from 'react';
-import RadioTab from '../UI/RadioTab';
+import RadioTab from '../../UI/RadioTab';
 
 function DateStatus(props: {
     date: { start: Date; end: Date };

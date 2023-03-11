@@ -1,4 +1,4 @@
-import RadioTab from './RadioTab';
+import RadioTab from '../../UI/RadioTab';
 
 function ExpenseTab(props: {
     id: string;

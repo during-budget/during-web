@@ -1,4 +1,4 @@
-import InputField from '../UI/InputField';
+import InputField from '../../UI/InputField';
 
 function NoteInput(props: { id: string; className: string }) {
     return (

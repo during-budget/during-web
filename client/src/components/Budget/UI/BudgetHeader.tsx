@@ -1,6 +1,6 @@
 import classes from './BudgetHeader.module.css';
-import { getNumericDotDateString } from '../../util/date';
-import NavButton from '../UI/NavButton';
+import { getNumericDotDateString } from '../../../util/date';
+import NavButton from '../../UI/NavButton';
 
 function BudgetHeader(props: {
     startDate: Date;

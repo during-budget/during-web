@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Amount from '../../models/Amount';
+import Amount from '../../../models/Amount';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import ExpenseTab from '../UI/ExpenseTab';

@@ -1,6 +1,6 @@
-import Transaction from '../../models/Transaction';
+import Transaction from '../../../models/Transaction';
 import classes from './TransactionList.module.css';
-import { getNumericHypenDateString } from '../../util/date';
+import { getNumericHypenDateString } from '../../../util/date';
 import TransactionItem from './TransactionItem';
 
 function TransactionList(props: {

@@ -1,5 +1,5 @@
-import Amount from '../../models/Amount';
-import Ring from '../UI/Ring';
+import Amount from '../../../models/Amount';
+import Ring from './Ring';
 import classes from './AmountRing.module.css';
 
 function AmountRing(props: {

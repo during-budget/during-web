@@ -4,11 +4,11 @@ import { getBudgetById } from '../util/api/budgetAPI';
 import { getTransactions } from '../util/api/transactionAPI';
 import BudgetModel from '../models/Budget';
 import Carousel from '../components/UI/Carousel';
-import BudgetHeader from '../components/Budget/BudgetHeader';
-import TotalStatus from '../components/Status/TotalStatus';
-import DateStatus from '../components/Status/DateStatus';
-import CategoryStatus from '../components/Status/CategoryStatus';
-import TransactionLayout from '../components/Transaction/TransactionLayout';
+import BudgetHeader from '../components/Budget/UI/BudgetHeader';
+import TotalStatus from '../components/Budget/Status/TotalStatus';
+import DateStatus from '../components/Budget/Status/DateStatus';
+import CategoryStatus from '../components/Budget/Status/CategoryStatus';
+import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
 import TransactionModel from '../models/Transaction';
 
 function Budget() {

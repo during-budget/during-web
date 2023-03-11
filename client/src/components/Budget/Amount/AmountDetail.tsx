@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classes from './AmountDetail.module.css';
-import Amount from '../../models/Amount';
-import RadioTab from '../UI/RadioTab';
+import Amount from '../../../models/Amount';
+import RadioTab from '../../UI/RadioTab';
 import AmountDetailItem from './AmountDetailItem';
 
 function AmountDetail(props: { id: string; amount: Amount }) {

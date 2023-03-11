@@ -1,6 +1,6 @@
 import classes from './AmountBars.module.css';
 import AmountBar from './AmountBar';
-import Amount from '../../models/Amount';
+import Amount from '../../../models/Amount';
 
 const getLabel = (label: string, width: string) => (
     <span className={`${classes.label} ${getCenteringClass(width)}`}>

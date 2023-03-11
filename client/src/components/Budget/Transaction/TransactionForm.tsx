@@ -7,9 +7,9 @@ import EmojiInput from '../Input/EmojiInput';
 import NoteInput from '../Input/NoteInput';
 import PaymentInput from '../Input/PaymentInput';
 import TagInput from '../Input/TagInput';
-import Button from '../UI/Button';
+import Button from '../../UI/Button';
 import ExpenseTab from '../UI/ExpenseTab';
-import Overlay from '../UI/Overlay';
+import Overlay from '../../UI/Overlay';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
 
