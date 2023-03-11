@@ -1,9 +1,7 @@
 .container {
     padding: var(--size-5);
-    position: fixed;
-    height: calc(3.5rem + 9vh);
-    transition: 0.3s ease-out;
-    clip-path: inset(-100% -100% calc(9vh + 1px) -100%);
+    height: calc(5.8rem + 9vh);
+    clip-path: inset(-100% -100% calc(9vh + 0.05rem) -100%);
 }
 
 .container input,
