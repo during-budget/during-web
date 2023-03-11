@@ -4,6 +4,7 @@ import classes from './InputField.module.css';
 function InputField(props: {
     id: string;
     isFloatLabel?: boolean;
+    isReverse?: boolean;
     className?: string;
     children?: React.ReactNode;
 }) {
@@ -24,7 +25,16 @@ function InputField(props: {
     }`;
 
     return (
-        <div id={props.id} className={`${className} ${props.className}`}>
+        <div
+            id={props.id}
+            className={`${className} ${props.className}`}
+            style={{
+                flexDirection:
+                    props.isReverse || props.isFloatLabel
+                        ? 'column-reverse'
+                        : 'column',
+            }}
+        >
             {props.children}
         </div>
     );
