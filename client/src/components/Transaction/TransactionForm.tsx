@@ -60,22 +60,23 @@ function TransactionForm() {
                     id="transaction-form-amount-field"
                     className={classes.field}
                 >
-                    <input placeholder="카테고리를 입력하세요" />
+                    <select>
+                        <option>카테고리 없음</option>
+                    </select>
                 </InputField>
                 <InputField
                     id="transaction-form-amount-field"
                     className={classes.field}
                 >
-                    <input placeholder="결제수단을 입력하세요" />
+                    <select>
+                        <option>결제수단 없음</option>
+                    </select>
                 </InputField>
             </div>
             <div className={classes.note}>
-                <InputField
-                    id="transaction-form-amount-field"
-                    className={classes.emoji}
-                >
-                    <input placeholder="이모지" />
-                </InputField>
+                <div className={classes.emoji}>
+                    <input placeholder="😀"></input>
+                </div>
                 <InputField
                     id="transaction-form-amount-field"
                     className={classes.field}
@@ -88,6 +89,12 @@ function TransactionForm() {
                 className={classes.field}
             >
                 <input placeholder="태그를 입력하세요" />
+            </InputField>
+            <InputField
+                id="transaction-form-amount-field"
+                className={classes.field}
+            >
+                <textarea placeholder="상세 내용을 입력하세요" />
             </InputField>
             <div className={classes.buttons}>
                 <Button

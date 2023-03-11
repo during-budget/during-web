@@ -6,7 +6,9 @@
     clip-path: inset(-100% -100% calc(9vh + 1px) -100%);
 }
 
-.container input {
+.container input,
+.container select,
+.container textarea {
     margin-bottom: var(--size-9);
 }
 
@@ -50,6 +52,7 @@
     right: var(--size-5);
     bottom: var(--size-2);
     position: absolute;
+    bottom: 4rem;
 }
 
 .buttons .cancel {
@@ -59,8 +62,8 @@
     visibility: visible;
 }
 
-
-.note, .type {
+.note,
+.type {
     display: flex;
     gap: 0.5rem;
 }
@@ -76,6 +79,9 @@
     width: 3.5rem;
     height: 3.5rem;
     text-align: center;
-    overflow: visible;
     border-radius: 50%;
+}
+
+.emoji input::placeholder {
+    opacity: 0.5;
 }
