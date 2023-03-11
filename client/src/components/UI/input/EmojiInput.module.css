@@ -1,7 +1,6 @@
 input.icon {
     flex: 0 0 auto;
-    width: 1rem;
-    height: 1rem;
+    text-align: center;
     border-radius: 50%;
 }
 
