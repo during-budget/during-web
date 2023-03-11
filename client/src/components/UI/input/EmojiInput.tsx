@@ -1,24 +1,14 @@
 import { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { uiActions } from '../../../store/ui';
 import classes from './EmojiInput.module.css';
 import data from 'emoji_data_kr';
 import Picker from '@emoji-mart/react';
 import { BiEraser } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
 
-const EmojiInput = ({ defaultIcon }: any) => {
-    const dispatch = useDispatch();
-
+const EmojiInput = (props: {id: string, className?: string}) => {
     const [open, setOpen] = useState(false);
 
     const iconRef = useRef<HTMLInputElement>(null);
-
-    
-    // Note: 선택한 이모티콘 값 저장 함수
-    const changeIconHandler = (emoji: string) => {
-        dispatch(uiActions.setTransactionForm({ input: { icon: emoji } }));
-    };
 
     // Note: 이모티콘 팝업창 닫기 함수
     const cancelHandler = () => {
@@ -27,14 +17,12 @@ const EmojiInput = ({ defaultIcon }: any) => {
 
     // Note: 선택한 이모티콘 값 삭제 함수
     const deleteIconHandler = () => {
-        dispatch(uiActions.setTransactionForm({ input: { icon: '' } }));
+        iconRef.current!.value = "";
     };
 
     // Note: 이모티콘 클릭 시 동작하는 함수
     const onEmojiClick = (value: any) => {
-        const currentEmoji = value.native;
-
-        changeIconHandler(currentEmoji);
+        iconRef.current!.value = value.native;
         cancelHandler();
     };
 
@@ -44,14 +32,13 @@ const EmojiInput = ({ defaultIcon }: any) => {
     };
 
     return (
-        <>
+        <div className={props.className}>
             <input
                 ref={iconRef}
                 className={classes.icon}
                 type='text'
                 placeholder='💰'
                 maxLength={2}
-                defaultValue={defaultIcon}
                 onClick={handleEmojiPopup}
             />
             {open ? (
@@ -77,7 +64,7 @@ const EmojiInput = ({ defaultIcon }: any) => {
                     />
                 </div>
             ) : null}
-        </>
+        </div>
     );
 };
 
