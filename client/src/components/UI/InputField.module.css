@@ -9,18 +9,16 @@
 
 .field input,
 .field select,
-.filed textarea {
-    box-sizing: border-box;
+.field textarea {
     width: 100%;
     height: 3.5rem;
-    background-color: var(--gray-1);
-    border: none;
     border-radius: var(--size-10);
     padding: var(--size-6);
     font-size: var(--size-5);
 }
 
-.field input::placeholder {
+.field input::placeholder,
+.field textarea::placeholder {
     color: var(--gray-3);
 }
 

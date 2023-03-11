@@ -65,6 +65,15 @@ a {
     text-decoration: none;
 }
 
+input,
+select,
+textarea {
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    background-color: var(--gray-1);
+}
+
 input:focus {
     outline: none;
 }
@@ -73,9 +82,8 @@ input::placeholder {
     color: var();
 }
 
-select {
-    border: none;
-    outline: none;
+textarea {
+    font-family: inherit;
 }
 
 button {
