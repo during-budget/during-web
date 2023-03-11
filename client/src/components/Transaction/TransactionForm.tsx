@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import Button from '../UI/Button';
+import ExpenseTab from '../UI/ExpenseTab';
 import InputField from '../UI/InputField';
 import OverlayForm from '../UI/OverlayForm';
 import classes from './TransactionForm.module.css';
+import TransactionNav from './TransactionNav';
 
 function TransactionForm() {
     const [isExpand, setIsExpand] = useState(false);
@@ -56,7 +58,7 @@ function TransactionForm() {
                     lang="en-US"
                 />
             </InputField>
-            <div className={classes.type}>
+            <div className={classes.select}>
                 <InputField
                     id="transaction-form-amount-field"
                     className={classes.field}
@@ -97,6 +99,21 @@ function TransactionForm() {
             >
                 <textarea placeholder="상세 내용을 입력하세요" rows={2} />
             </InputField>
+
+            <div className={classes.types}>
+                <ExpenseTab
+                    id="transaction-form-expense"
+                    isExpense={true}
+                    setIsExpense={() => {}}
+                />
+                <span>|</span>
+                <TransactionNav
+                    id="transaction-form-current"
+                    isCurrent={true}
+                    setIsCurrent={() => {}}
+                />
+            </div>
+
             <div className={classes.buttons}>
                 <Button
                     className={classes.cancel}
