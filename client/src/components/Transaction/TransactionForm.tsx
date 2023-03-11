@@ -38,6 +38,7 @@ function TransactionForm() {
                     className={classes.field}
                 >
                     <input
+                        type="number"
                         placeholder="금액을 입력하세요"
                         onFocus={expandHandler}
                         onClick={expandHandler}
@@ -75,26 +76,26 @@ function TransactionForm() {
             </div>
             <div className={classes.note}>
                 <div className={classes.emoji}>
-                    <input placeholder="😀"></input>
+                    <input type="text" placeholder="😀"></input>
                 </div>
                 <InputField
                     id="transaction-form-amount-field"
                     className={classes.field}
                 >
-                    <input placeholder="내용을 입력하세요" />
+                    <input type="text" placeholder="내용을 입력하세요" />
                 </InputField>
             </div>
             <InputField
                 id="transaction-form-amount-field"
                 className={classes.field}
             >
-                <input placeholder="태그를 입력하세요" />
+                <input type="text" placeholder="태그를 입력하세요" />
             </InputField>
             <InputField
                 id="transaction-form-amount-field"
                 className={classes.field}
             >
-                <textarea placeholder="상세 내용을 입력하세요" />
+                <textarea placeholder="상세 내용을 입력하세요" rows={2} />
             </InputField>
             <div className={classes.buttons}>
                 <Button
