@@ -1,0 +1,7 @@
+.container {
+    margin-bottom: 3rem;
+}
+
+.container h5 {
+    margin-bottom: var(--size-6);
+}
