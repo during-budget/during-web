@@ -72,7 +72,9 @@ function TransactionForm() {
     return (
         <Overlay
             className={`${classes.container} ${isExpand && classes.expand}`}
-            isShowBackdrop={isExpand}
+            isOpen={isExpand}
+            isClip={true}
+            isShowBackdrop={true}
             onClose={closeHandler}
         >
             {/* form */}
