@@ -4,47 +4,27 @@ input.icon {
     border-radius: 50%;
 }
 
-input.icon::-webkit-input-placeholder {
-    opacity: 0.3;
-}
-
 .overlay {
-    position: absolute;
-    right: 0.1rem;
-    left: 0;
-    top: 12rem;
-    height: 38rem;
     width: 100%;
-    padding-top: 1rem;
     background-color: #fff;
-    border-radius: 1.5rem;
+    border-radius: 1.5rem 1.5rem 0 0;
     box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
-    z-index: 10;
 }
 
 .header {
-    text-align: right;
-    padding: 0 3rem;
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-right: 1.5rem;
 }
 
-.icons {
-    margin-left: 0.5rem;
+.icon {
     cursor: pointer;
 }
 
 em-emoji-picker {
     --category-icon-size: 24px;
-
-    height: 32.5rem;
-    width: 90%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
+    width: 100%;
     box-shadow: none;
-}
-
-@media screen and (min-width: 960px) {
-    em-emoji-picker {
-        height: 35.5rem;
-    }
 }
