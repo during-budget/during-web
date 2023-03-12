@@ -1,0 +1,10 @@
+.container a {
+    display: flex;
+    align-items: center;
+    font-size: var(--size-5);
+    gap: 1rem;
+}
+
+.container {
+    margin-bottom: var(--size-7);
+}
