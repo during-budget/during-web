@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10vh;
+    margin-bottom: 8vh;
+}
+
+.profile {
+    width: 8rem;
+    height: 8rem;
+    background-color: var(--gray-1);
+    border-radius: 50%;
+    margin-bottom: 2vh;
+    overflow: hidden;
+}
+
+.profile input {
+    cursor: pointer;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    opacity: 0;
+}
