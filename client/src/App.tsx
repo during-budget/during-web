@@ -12,6 +12,7 @@ import BudgetNavigation, {
 } from './layout/BudgetNavigation';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
+import User from './screens/User';
 
 const router = createBrowserRouter([
     {
@@ -52,6 +53,12 @@ const router = createBrowserRouter([
             {
                 path: '/user',
                 element: <Nav />,
+                children: [
+                    {
+                        path: '/user',
+                        element: <User />,
+                    },
+                ],
             },
         ],
     },
