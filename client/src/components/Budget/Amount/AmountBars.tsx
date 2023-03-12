@@ -3,21 +3,8 @@ import AmountBar from './AmountBar';
 import Amount from '../../../models/Amount';
 
 const getLabel = (label: string, width: string) => (
-    <span className={`${classes.label} ${getCenteringClass(width)}`}>
-        {label}
-    </span>
+    <span className={classes.label}>{label}</span>
 );
-
-const getCenteringClass = (width: string) => {
-    const w = +width.split('%')[0];
-    if (w >= 8) {
-        return '';
-    } else if (w >= 7) {
-        return classes.small;
-    } else {
-        return classes.tiny;
-    }
-};
 
 function AmountBars(props: {
     amountData: {
@@ -50,9 +37,7 @@ function AmountBars(props: {
                         {/* over mark */}
                         {data.isOver && (
                             <i
-                                className={`fa-solid fa-circle-exclamation ${
-                                    classes.mark
-                                } ${getCenteringClass(widths[i])}`}
+                                className={`fa-solid fa-circle-exclamation ${classes.mark}`}
                             ></i>
                         )}
 
