@@ -3,6 +3,7 @@ import classes from './TransactionItem.module.css';
 import Amount from '../../../models/Amount';
 import Transaction from '../../../models/Transaction';
 import Tag from '../../UI/Tag';
+import Icon from '../../UI/Icon';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const {
@@ -27,7 +28,7 @@ function TransactionItem(props: { transaction: Transaction }) {
     return (
         <li className={classes.container}>
             {/* icon */}
-            <span className={classes.icon}>{icon || category.icon}</span>
+            <Icon>{icon || category.icon}</Icon>
             <div className={classes.data}>
                 <div className={classes.top}>
                     <div className={classes.left}>
