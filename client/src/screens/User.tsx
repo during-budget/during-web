@@ -1,6 +1,7 @@
 import classes from './User.module.css';
 import UserHeader from '../components/User/Profile/UserHeader';
 import SettingList from '../components/User/Setting/SettingList';
+import { ScrollRestoration } from 'react-router-dom';
 
 const SETTING_DATA = [
     {
@@ -28,11 +29,12 @@ const SETTING_DATA = [
 function User() {
     return (
         <>
+            <ScrollRestoration />
             <UserHeader userName="이름" email="username@gmail.com" />
             <main className={classes.container}>
                 <section>
-                    {SETTING_DATA.map((data) => (
-                        <SettingList title={data.title} items={data.items} />
+                    {SETTING_DATA.map((data, i) => (
+                        <SettingList key={i} title={data.title} items={data.items} />
                     ))}
                 </section>
             </main>

@@ -8,8 +8,8 @@ function SettingList(props: {
     return (
         <ul className={classes.container}>
             <h5>{props.title}</h5>
-            {props.items.map((item) => (
-                <SettingItem icon={item.icon} label={item.label} to={item.to} />
+            {props.items.map((item, i) => (
+                <SettingItem key={i} icon={item.icon} label={item.label} to={item.to} />
             ))}
         </ul>
     );
