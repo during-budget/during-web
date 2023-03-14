@@ -9,6 +9,8 @@ const session = require("express-session");
 const passport = require("passport");
 const passportConfig = require("./passport");
 const FileStore = require("session-file-store")(session);
+const RedisStore = require("connect-redis")(session);
+const client = require("./redis/index.js");
 const app = express();
 
 passportConfig();
@@ -38,6 +40,11 @@ app.use(
       secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
     },
     rolling: true,
+    // store: new RedisStore({
+    //   client,
+    //   ttl: 24 * 60 * 60, //1 day
+    //   // no need to set reapInterval
+    // }),
     store: new FileStore({
       ttl: 24 * 60 * 60, // 1 day
       // ttl: 10, // 10 secs
