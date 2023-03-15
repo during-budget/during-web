@@ -4,12 +4,17 @@ const Budget = require("../models/Budget");
 const Transaction = require("../models/Transaction");
 const passport = require("passport");
 const generateRandomString = require("../utils/generateRandomString");
+const generateRandomNumber = require("../utils/generateRandomNumber");
+const client = require("../redis");
+const sendEmail = require("../utils/sendEmail");
+const { cipher, decipher } = require("../utils/crypto");
+
 //_____________________________________________________________________________
 
 /**
  * Register
  *
- * @body {email: 'user00001', password: 'asdfasdf!!'}
+ * @body {email, password}
  */
 module.exports.register = async (req, res) => {
   try {
@@ -21,12 +26,52 @@ module.exports.register = async (req, res) => {
 
     // userId, password 유효성 검사
     // ...
+    const code = generateRandomNumber(6);
+    sendEmail({
+      to: req.body.email,
+      subject: "가입 인증 메일입니다.",
+      html: `가입 확인 코드는 [ ${code} ]입니다. <br/>
+      코드는 5분간 유효합니다.`,
+    });
+    await Promise.all([
+      client.v4.hSet(req.body.email, "code", cipher(code)),
+      client.v4.hSet(req.body.email, "password", cipher(req.body.password)),
+      client.expire(req.body.email, 60 * 5),
+    ]);
+    return res.status(200).send({});
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+/**
+ * Verify
+ *
+ * @body {email, code}
+ */
+module.exports.verify = async (req, res) => {
+  try {
+    if (!("email" in req.body) || !("code" in req.body))
+      return res.status(400).send({ message: "required field is missing" });
+
+    const [code, password] = await Promise.all([
+      client.v4.hGet(req.body.email, "code"),
+      client.v4.hGet(req.body.email, "password"),
+    ]);
+    if (!code || !password)
+      return res
+        .status(404)
+        .send({ message: "verification code is expired", key });
+
+    if (decipher(code) !== req.body.code)
+      return res.status(409).send({ message: "wrong code" });
 
     const user = new User({
       email: req.body.email,
-      password: req.body.password,
+      password: decipher(password),
     });
     await user.save();
+    await client.del(req.body.email);
     return res.status(200).send({});
   } catch (err) {
     return res.status(500).send({ message: err.message });
