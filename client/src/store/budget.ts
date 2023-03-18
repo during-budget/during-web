@@ -1,25 +1,49 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Budget from '../models/Budget';
 
-const initialState: Budget[] = [];
+const initialState: any[] = [];
 
 const budgetSlice = createSlice({
     name: 'budget',
     initialState,
     reducers: {
         setBudgets(state, action) {
-            const budgets = action.payload;
-            state.splice(0, state.length); // NOTE: 빈 배열로 초기화
+            const data = action.payload;
+            const budgets = data.map((item: any) =>
+                Budget.getBudgetFromData(item)
+            );
 
-            budgets.forEach((budget: any) => {
-                const newBudget = Budget.getBudgetFromData(budget);
-                state.push(newBudget);
-            });
-
+            state.push(...budgets);
             state.sort(
                 (prev, next) =>
                     +new Date(prev.date.start) - +new Date(next.date.start)
             );
+        },
+        updateTotalAmount(state, action) {
+            const { budgetId, isExpense, isCurrent, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedTotalAmount(
+                    state[idx],
+                    isExpense,
+                    isCurrent,
+                    amount
+                );
+            }
+        },
+        updateCategoryAmount(state, action) {
+            const { budgetId, categoryId, isCurrent, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedCategoryAmount(
+                    state[idx],
+                    categoryId,
+                    isCurrent,
+                    +amount
+                );
+            }
         },
     },
 });
