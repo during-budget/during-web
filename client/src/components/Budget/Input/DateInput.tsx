@@ -1,11 +1,29 @@
-import InputField from '../../UI/InputField';
+import React, { useImperativeHandle, useRef } from 'react';
 
-function DateInput(props: { id: string; className: string }) {
-    return (
-        <InputField id={`${props.id}-date-field`} className={props.className}>
-            <input type="date" placeholder="날짜를 입력하세요" />
-        </InputField>
-    );
-}
+const DateInput = React.forwardRef(
+    (
+        props: { className: string; defaultValue?: string; required?: boolean },
+        ref
+    ) => {
+        useImperativeHandle(ref, () => {
+            return {
+                value: () => dateRef.current!.value,
+            };
+        });
+
+        const dateRef = useRef<HTMLInputElement>(null);
+
+        return (
+            <input
+                className={props.className}
+                ref={dateRef}
+                type="date"
+                placeholder="날짜를 입력하세요"
+                defaultValue={props.defaultValue}
+                required={props.required}
+            />
+        );
+    }
+);
 
 export default DateInput;

@@ -1,16 +1,19 @@
-import InputField from '../../UI/InputField';
+import React, { useImperativeHandle, useRef } from 'react';
 
-function PaymentInput(props: { id: string; className: string }) {
+const PaymentInput = React.forwardRef((props: { className: string }, ref) => {
+    useImperativeHandle(ref, () => {
+        return {
+            value: () => paymentRef.current!.value,
+        };
+    });
+
+    const paymentRef = useRef<HTMLSelectElement>(null);
+
     return (
-        <InputField
-            id={`${props.id}-payment-field`}
-            className={props.className}
-        >
-            <select>
-                <option>결제수단 없음</option>
-            </select>
-        </InputField>
+        <select ref={paymentRef} className={props.className}>
+            <option value="">결제수단 없음</option>
+        </select>
     );
-}
+});
 
 export default PaymentInput;
