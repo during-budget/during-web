@@ -1,11 +1,31 @@
-import InputField from '../../UI/InputField';
+import React, { useImperativeHandle, useRef } from 'react';
 
-function TagInput(props: { id: string; className: string }) {
-    return (
-        <InputField id={`${props.id}-tag-field`} className={props.className}>
-            <input type="text" placeholder="내용을 입력하세요" />
-        </InputField>
-    );
-}
+const TagInput = React.forwardRef(
+    (
+        props: {
+            className?: string;
+            defaultValue?: string[];
+        },
+        ref
+    ) => {
+        useImperativeHandle(ref, () => {
+            return {
+                value: () => [tagsRef.current!.value].filter((item) => item),
+            };
+        });
+
+        const tagsRef = useRef<HTMLInputElement>(null);
+
+        return (
+            <input
+                ref={tagsRef}
+                className={props.className}
+                type="text"
+                placeholder="태그를 입력하세요"
+                defaultValue={props.defaultValue![0]}
+            />
+        );
+    }
+);
 
 export default TagInput;
