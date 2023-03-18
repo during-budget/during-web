@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../store/budget';
@@ -6,7 +7,10 @@ import { getBudgetList } from '../util/api/budgetAPI';
 function BudgetNavigation() {
     const dispatch = useDispatch();
     const loaderData: any = useLoaderData();
-    dispatch(budgetActions.setBudgets(loaderData.budgets.budgets));
+
+    useEffect(() => {
+        dispatch(budgetActions.setBudgets(loaderData.budgets.budgets));
+    }, []);
 
     return <Navigate to={`/budget/${loaderData.id}`} replace={true} />;
 }
