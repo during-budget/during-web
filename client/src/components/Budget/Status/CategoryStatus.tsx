@@ -22,7 +22,7 @@ function CategoryStatus(props: { categories: Category[] }) {
                 setIsExpense(true);
                 setCurrentCategoryIdx(0);
             },
-            defaultChecked: isExpense,
+            checked: isExpense,
         },
         {
             label: '수입',
@@ -31,7 +31,7 @@ function CategoryStatus(props: { categories: Category[] }) {
                 setIsExpense(false);
                 setCurrentCategoryIdx(0);
             },
-            defaultChecked: !isExpense,
+            checked: !isExpense,
         },
     ];
 

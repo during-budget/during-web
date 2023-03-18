@@ -6,7 +6,7 @@ function RadioTab(props: {
     values: {
         label: string;
         value: string;
-        defaultChecked?: boolean;
+        checked?: boolean;
         onChange?: () => void;
         disabled?: boolean;
     }[];
@@ -26,7 +26,7 @@ function RadioTab(props: {
                             id={`${name}-${item.value}`}
                             type="radio"
                             name={name}
-                            defaultChecked={item.defaultChecked}
+                            checked={item.checked}
                             onChange={item.onChange}
                             disabled={item.disabled}
                         ></input>

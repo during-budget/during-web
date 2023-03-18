@@ -13,7 +13,7 @@ function AmountDetail(props: { id: string; amount: Amount }) {
         {
             label: '전체 금액',
             value: 'total',
-            defaultChecked: !isLeft,
+            checked: !isLeft,
             onChange: () => {
                 setIsLeft(false);
             },
@@ -21,7 +21,7 @@ function AmountDetail(props: { id: string; amount: Amount }) {
         {
             label: '남은 금액',
             value: 'left`',
-            defaultChecked: isLeft,
+            checked: isLeft,
             onChange: () => {
                 setIsLeft(true);
             },
