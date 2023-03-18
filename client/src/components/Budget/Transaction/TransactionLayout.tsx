@@ -4,7 +4,10 @@ import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
 import TransactionNav from './TransactionNav';
 
-function TransactionLayout(props: { transactions: Transaction[] }) {
+function TransactionLayout(props: {
+    budgetId: string;
+    transactions: Transaction[];
+}) {
     const [isCurrent, setIsCurrent] = useState(false);
 
     return (
@@ -19,7 +22,7 @@ function TransactionLayout(props: { transactions: Transaction[] }) {
                 transactions={props.transactions}
                 isCurrent={isCurrent}
             />
-            <TransactionForm />
+            <TransactionForm budgetId={props.budgetId} />
         </section>
     );
 }
