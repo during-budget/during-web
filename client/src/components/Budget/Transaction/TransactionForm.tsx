@@ -16,7 +16,6 @@ import Transaction from '../../../models/Transaction';
 import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../../../store/transaction';
 import { createTransaction } from '../../../util/api/transactionAPI';
-import category from '../../../store/category';
 import { budgetActions } from '../../../store/budget';
 
 function TransactionForm(props: { budgetId: string }) {
