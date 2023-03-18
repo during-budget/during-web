@@ -55,7 +55,7 @@ function Budget() {
                     <CategoryStatus categories={categories} />
                 </Carousel>
                 <hr />
-                <TransactionLayout transactions={transactions} />
+                <TransactionLayout budgetId={id} transactions={transactions} />
             </main>
         </>
     );
