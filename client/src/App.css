@@ -69,17 +69,23 @@ input,
 select,
 textarea {
     box-sizing: border-box;
+    padding: var(--size-6);
+    width: 100%;
+    height: 3.5rem;
+    font-size: var(--size-5);
+    border-radius: var(--size-10);
+    background-color: var(--gray-1);
     border: none;
     outline: none;
-    background-color: var(--gray-1);
 }
 
 input:focus {
     outline: none;
 }
 
-input::placeholder {
-    color: var();
+input::placeholder,
+textarea::placeholder {
+    color: var(--gray-3);
 }
 
 textarea {

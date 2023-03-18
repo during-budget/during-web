@@ -6,21 +6,6 @@
     gap: var(--size-10);
 }
 
-.field input,
-.field select,
-.field textarea {
-    width: 100%;
-    height: 3.5rem;
-    border-radius: var(--size-10);
-    padding: var(--size-6);
-    font-size: var(--size-5);
-}
-
-.field input::placeholder,
-.field textarea::placeholder {
-    color: var(--gray-3);
-}
-
 .field label {
     font-weight: 600;
 }

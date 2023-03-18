@@ -21,6 +21,10 @@
     opacity: 1;
 }
 
+.field {
+    width: 100%;
+}
+
 .amount {
     display: flex;
     width: 100%;
