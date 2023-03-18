@@ -9,7 +9,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 
 /* routers */
-// import routers from "./routes/index";
+import { routers } from "./routes/index";
 
 /* session */
 import session from "express-session";
@@ -66,9 +66,9 @@ app.use(
 // app.use(passport.initialize());
 // app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
 
-// routers.forEach((router) => {
-//   app.use("/api/" + router, require("./routes/" + router));
-// });
+routers.forEach((router: string) => {
+  app.use("/api/" + router, require("./routes/" + router));
+});
 
 app.get("/api/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send({ message: "hello world!" });

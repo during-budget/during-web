@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 const Test = require("../models/Test");
 const User = require("../models/User");
 const Budget = require("../models/Budget");
@@ -37,11 +38,11 @@ const sendMail = async () => {
  *
  * @return message: 'hello world'
  */
-module.exports.hello = async (req, res) => {
+export const hello = async (req: Request, res: Response) => {
   try {
     await sendMail();
     return res.status(200).send({ message: "hello world!" });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -51,13 +52,13 @@ module.exports.hello = async (req, res) => {
  *
  * @return {users,budgets,transactions}
  */
-module.exports.dataList = async (req, res) => {
+export const dataList = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
     const budgets = await Budget.find();
     const transactions = await Transaction.find();
     return res.status(200).send({ users, budgets, transactions });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -68,12 +69,12 @@ module.exports.dataList = async (req, res) => {
  * @body {field1: val1, field2: val2}
  * @return testData({_id, data: {field1: val1, field2: val2}})
  */
-module.exports.create = async (req, res) => {
+export const create = async (req: Request, res: Response) => {
   try {
     const testData = new Test({ data: req.body });
     await testData.save();
     return res.status(200).send({ testData });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -84,13 +85,13 @@ module.exports.create = async (req, res) => {
  * @params oid
  * @return testData({_id, data: {field1: val1, field2: val2}})
  */
-module.exports.find = async (req, res) => {
+export const find = async (req: Request, res: Response) => {
   try {
     const testData = await Test.findById(req.params._id);
     if (!testData)
       return res.status(404).send({ message: "testData not found" });
     return res.status(200).send({ testData });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -101,7 +102,7 @@ module.exports.find = async (req, res) => {
  * @params oid
  * @return testData({_id, data: {field1: val1, field2: val2}})
  */
-module.exports.update = async (req, res) => {
+export const update = async (req: Request, res: Response) => {
   try {
     const testData = await Test.findByIdAndUpdate(
       req.params._id,
@@ -113,7 +114,7 @@ module.exports.update = async (req, res) => {
     if (!testData)
       return res.status(404).send({ message: "testData not found" });
     return res.status(200).send({ testData });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -123,11 +124,11 @@ module.exports.update = async (req, res) => {
  *
  * @params oid
  */
-module.exports.remove = async (req, res) => {
+export const remove = async (req: Request, res: Response) => {
   try {
     await Test.findByIdAndRemove(req.params._id);
     return res.status(200).send();
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
 };
@@ -135,55 +136,55 @@ module.exports.remove = async (req, res) => {
 /**
  * Read all documents(master)
  */
-const model = {
-  users: User,
-  budgets: Budget,
-  transactions: Transaction,
+const model = (_model: string) => {
+  if (_model === "users") return User;
+  if (_model === "budgets") return Budget;
+  if (_model === "transactions") return Transaction;
+  return undefined;
 };
 
-module.exports.findDocuments = async (req, res) => {
+export const findDocuments = async (req: Request, res: Response) => {
   try {
-    const query = {};
+    const query: { [key: string]: boolean | string } = {};
     for (let key of Object.keys(req.query)) {
       if (req.query[key] === "true") query[key] = true;
       else if (req.query[key] === "false") query[key] = false;
-      else query[key] = req.query[key];
+      else query[key] = req.query[key]?.toString()!;
     }
-    console.log(query);
-    const documents = await model[req.params.model].find(query);
+    const documents = await model(req.params.model).find(query);
     return res.status(200).send({ documents });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
 
-module.exports.findDocument = async (req, res) => {
+export const findDocument = async (req: Request, res: Response) => {
   try {
-    const document = await model[req.params.model].findById(req.params._id);
+    const document = await model(req.params.model).findById(req.params._id);
     if (!document)
       return res.status(404).send({ message: "document not found" });
     return res.status(200).send({ document });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
 
-module.exports.removeUser = async (req, res) => {
+export const removeUser = async (req: Request, res: Response) => {
   try {
     await Transaction.deleteMany({ userId: req.params._id });
     await Budget.deleteMany({ userId: req.params._id });
     await User.findByIdAndRemove(req.params._id);
     return res.status(200).send();
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
-module.exports.removeBudget = async (req, res) => {
+export const removeBudget = async (req: Request, res: Response) => {
   try {
-    await Transaction.deleteMany({ userId: eq.params._id });
+    await Transaction.deleteMany({ userId: req.params._id });
     await Budget.findByIdAndRemove(req.params._id);
     return res.status(200).send();
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
@@ -191,23 +192,23 @@ module.exports.removeBudget = async (req, res) => {
 /**
  * Read all users (master)
  */
-module.exports.findUsers = async (req, res) => {
+export const findUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find({});
     return res.status(200).send({ users });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
 /**
  * Read user (master)
  */
-module.exports.findUser = async (req, res) => {
+export const findUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params._id);
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ user, budgets });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
@@ -215,12 +216,12 @@ module.exports.findUser = async (req, res) => {
 /**
  * Read user (master)
  */
-module.exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params._id);
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ user, budgets });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
@@ -228,11 +229,11 @@ module.exports.deleteUser = async (req, res) => {
 /**
  * Read budgets (master)
  */
-module.exports.findBudgets = async (req, res) => {
+export const findBudgets = async (req: Request, res: Response) => {
   try {
     const budgets = await Budget.find({});
     return res.status(200).send({ budgets });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
@@ -240,13 +241,16 @@ module.exports.findBudgets = async (req, res) => {
 /**
  * Read budget (master)
  */
-module.exports.findBudgetWithTransactions = async (req, res) => {
+export const findBudgetWithTransactions = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({ message: "budget not found" });
     const transactions = await Transaction.find({ budgetId: budget._id });
     return res.status(200).send({ budget, transactions });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
@@ -254,14 +258,14 @@ module.exports.findBudgetWithTransactions = async (req, res) => {
 /**
  * Read transactions (master)
  */
-module.exports.findTransactions = async (req, res) => {
+export const findTransactions = async (req: Request, res: Response) => {
   try {
     const transactions = await Transaction.find({
       budgetId: req.query.budgetId,
       "category.categoryId": req.query.categoryId,
     });
     return res.status(200).send({ transactions });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
