@@ -10,7 +10,7 @@ function TransactionNav(props: {
         {
             label: '예정내역',
             value: 'scheduled',
-            defaultChecked: !props.isCurrent,
+            checked: !props.isCurrent,
             onChange: () => {
                 props.setIsCurrent(false);
             },
@@ -18,7 +18,7 @@ function TransactionNav(props: {
         {
             label: '거래내역',
             value: 'current',
-            defaultChecked: props.isCurrent,
+            checked: props.isCurrent,
             onChange: () => {
                 props.setIsCurrent(true);
             },
