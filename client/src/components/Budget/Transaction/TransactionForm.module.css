@@ -5,9 +5,8 @@
 }
 
 .container input,
-.container select,
+.container .select,
 .container textarea {
-    height: auto;
     margin-bottom: var(--size-9);
 }
 
@@ -68,7 +67,7 @@
 }
 
 .note,
-.select {
+.selects {
     display: flex;
     gap: var(--size-10);
 }

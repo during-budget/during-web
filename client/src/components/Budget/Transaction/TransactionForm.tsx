@@ -135,17 +135,17 @@ function TransactionForm(props: { budgetId: string }) {
     );
 
     const selectField = (
-        <div className={classes.select}>
+        <div className={classes.selects}>
             <CategoryInput
                 ref={categoryRef}
                 isExpense={isExpense}
-                className={classes.field}
+                className={`${classes.field} ${classes.select}`}
                 defaultValue={defaultValue.categoryId}
                 onChange={() => {
                     setIconState(categoryRef.current!.icon());
                 }}
             />
-            <PaymentInput className={classes.field} />
+            <PaymentInput className={`${classes.field} ${classes.select}`} />
         </div>
     );
 
