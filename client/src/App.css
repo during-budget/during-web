@@ -92,6 +92,10 @@ textarea {
     font-family: inherit;
 }
 
+select {
+    appearance: none;
+}
+
 button {
     cursor: pointer;
     border: 0;

@@ -1,0 +1,43 @@
+.container {
+    position: relative;
+}
+
+.container::before {
+    position: absolute;
+    top: calc(50% - 0.7rem);
+    right: 1rem;
+    content: '↓';
+    display: block;
+    z-index: 3;
+}
+
+.container select {
+    position: absolute;
+    z-index: 2;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.container ul {
+    position: absolute;
+    top: -0.5rem;
+    left: -0.5rem;
+    right: -0.5rem;
+    padding: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
+    border-radius: 0.5rem;
+    z-index: 1;
+}
+
+.list {
+    margin-top: 4rem;
+    max-height: 45vh;
+    overflow: scroll;
+}
+
+.list li {
+    font-size: var(--size-4);
+    padding: var(--size-8) 0.5rem;
+}
