@@ -7,6 +7,7 @@
 .container input,
 .container select,
 .container textarea {
+    height: auto;
     margin-bottom: var(--size-9);
 }
 

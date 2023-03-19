@@ -1,6 +1,7 @@
 import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Category from '../../../models/Category';
+import Select from '../../UI/Select';
 
 const CategoryInput = React.forwardRef(
     (
@@ -14,13 +15,13 @@ const CategoryInput = React.forwardRef(
     ) => {
         useImperativeHandle(ref, () => {
             return {
-                value: () => categoryRef.current!.value,
+                value: () => categoryRef.current!.value(),
                 icon: () => {
-                    const currentId = categoryRef.current!.value;
+                    const currentId = categoryRef.current!.value();
                     const currentCategory = filteredCategories.find(
                         (item: Category) => item.id === currentId
                     );
-                    return currentCategory.icon;
+                    return currentCategory.icon || '';
                 },
             };
         });
@@ -31,25 +32,33 @@ const CategoryInput = React.forwardRef(
         }, []);
 
         const categories = useSelector((state: any) => state.category);
+        const categoryRef = useRef<any>(null);
+
         const filteredCategories = categories.filter(
             (item: Category) => item.isExpense === props.isExpense
         );
 
-        const categoryRef = useRef<HTMLSelectElement>(null);
+        const data = filteredCategories.map((item: Category) => {
+            return {
+                value: item.id,
+                label: `${item.icon} ${item.title}`,
+            };
+        });
+
+        const defaultValue =
+            props.defaultValue ||
+            filteredCategories[filteredCategories.length - 1].id;
 
         return (
-            <select
-                ref={categoryRef}
-                className={props.className}
-                defaultValue={props.defaultValue}
-                onChange={props.onChange}
-            >
-                {filteredCategories.map((item: Category, i: number) => (
-                    <option key={item.id} value={item.id}>
-                        {item.icon} {item.title}
-                    </option>
-                ))}
-            </select>
+            <>
+                <Select
+                    ref={categoryRef}
+                    className={props.className}
+                    data={data}
+                    defaultValue={props.defaultValue || defaultValue}
+                    onChange={props.onChange}
+                />
+            </>
         );
     }
 );
