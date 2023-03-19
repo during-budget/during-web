@@ -15,7 +15,7 @@ const initialState: { data: Transaction[]; form: any } = {
             isCurrent: true,
             isExpense: true,
             amount: '',
-            linkAmount: '',
+            linkAmount: 0,
             categoryId: '',
             date: null,
             icon: '',
@@ -37,13 +37,15 @@ const transactionSlice = createSlice({
             const setData = action.payload;
             const form = state.form;
             form.mode = { ...form.mode, ...setData.mode };
-            form.value = { ...form.value, ...setData.value };
+            form.default = { ...form.default, ...setData.default };
         },
         setTransaction(state, action) {
             const transactions = action.payload;
             state.data = transactions.map((item: any) =>
                 Transaction.getTransactionFromData(item)
             );
+
+            state.data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
         },
         addTransaction(state, action) {
             const data = state.data;
@@ -58,7 +60,6 @@ const transactionSlice = createSlice({
             }
 
             data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
-            // state.data = data; // 필요할까?
         },
         removeTransaction(state, action) {
             const data = state.data;

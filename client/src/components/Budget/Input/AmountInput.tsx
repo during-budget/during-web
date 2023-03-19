@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 
 const AmountInput = React.forwardRef(
     (
@@ -7,7 +7,6 @@ const AmountInput = React.forwardRef(
             onFocus?: (event: React.FocusEvent) => void;
             onClick?: (event: React.MouseEvent) => void;
             defaultValue?: string;
-            value?: string;
             required?: boolean;
             readOnly?: boolean;
         },
@@ -22,6 +21,10 @@ const AmountInput = React.forwardRef(
             };
         });
 
+        useEffect(() => {
+            amountRef.current!.value = props.defaultValue || '';
+        }, [props.defaultValue]);
+
         const amountRef = useRef<HTMLInputElement>(null);
 
         return (
@@ -32,8 +35,6 @@ const AmountInput = React.forwardRef(
                 placeholder="금액을 입력하세요"
                 onFocus={props.onFocus}
                 onClick={props.onClick}
-                value={props.value}
-                defaultValue={props.defaultValue}
                 required={props.required}
                 readOnly={props.readOnly}
             />

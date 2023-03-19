@@ -6,6 +6,8 @@ import Tag from '../../UI/Tag';
 import Icon from '../../UI/Icon';
 import OptionButton from '../../UI/OptionButton';
 import { useNavigate } from 'react-router-dom';
+import { transactionActions } from '../../../store/transaction';
+import { getNumericHypenDateString } from '../../../util/date';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const {
@@ -34,7 +36,25 @@ function TransactionItem(props: { transaction: Transaction }) {
         {
             name: '내역 수정',
             action: () => {
-                // dispatch();
+                dispatch(
+                    transactionActions.setForm({
+                        mode: { isExpand: true, isEdit: true },
+                        default: {
+                            id,
+                            linkId,
+                            icon,
+                            isCurrent,
+                            isExpense,
+                            titles,
+                            date: getNumericHypenDateString(date),
+                            amount,
+                            categoryId,
+                            tags,
+                            memo,
+                            linkAmount,
+                        },
+                    })
+                );
             },
         },
     ];

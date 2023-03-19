@@ -127,7 +127,6 @@ function TransactionForm(props: { budgetId: string }) {
                 onFocus={expandHandler}
                 onClick={expandHandler}
                 defaultValue={defaultValue.amount}
-                readOnly={!mode.isExpand}
                 required={true}
             />
             <Button onClick={expandHandler}>내역 추가</Button>
