@@ -1,9 +1,11 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classes from './TransactionItem.module.css';
 import Amount from '../../../models/Amount';
 import Transaction from '../../../models/Transaction';
 import Tag from '../../UI/Tag';
 import Icon from '../../UI/Icon';
+import OptionButton from '../../UI/OptionButton';
+import { useNavigate } from 'react-router-dom';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const {
@@ -22,11 +24,49 @@ function TransactionItem(props: { transaction: Transaction }) {
         linkAmount,
     } = props.transaction;
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const categories = useSelector((state: any) => state.category);
     const category = categories?.find((item: any) => item.id === categoryId);
 
+    const options = [
+        {
+            name: '내역 수정',
+            action: () => {
+                // dispatch();
+            },
+        },
+    ];
+
+    const goTo = linkId && {
+        name: isCurrent ? '이전 예정 내역 보기' : '완료된 거래 내역 보기',
+        action: () => {
+            navigate(`/budget/${budgetId}#${linkId}`);
+        },
+    };
+
+    const getDone = !isCurrent &&
+        !linkId && {
+            name: '거래 내역으로 이동',
+            action: () => {
+                // dispatch();
+            },
+        };
+
+    const remove = (isCurrent || !linkId) && {
+        name: '내역 삭제',
+        action: () => {
+            // dispatch();
+        },
+    };
+
+    goTo && options.unshift(goTo);
+    getDone && options.unshift(getDone);
+    remove && options.push(remove);
+
     return (
-        <li className={classes.container}>
+        <li id={id} className={classes.container}>
             {/* icon */}
             <Icon>{icon || category?.icon}</Icon>
             <div className={classes.data}>
@@ -51,6 +91,8 @@ function TransactionItem(props: { transaction: Transaction }) {
                         })}
                 </div>
             </div>
+            {/* <div className={classes.testWrapper}></div> */}
+            <OptionButton className={classes.option} menu={options} />
         </li>
     );
 }
