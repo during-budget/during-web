@@ -20,6 +20,7 @@ const Select = React.forwardRef(
         });
 
         const selectRef = useRef<HTMLSelectElement>(null);
+        const [selectState, setSelectState] = useState(props.defaultValue);
         const [isExpand, setIsExpand] = useState(false);
 
         const toggleList = () => {
@@ -30,18 +31,25 @@ const Select = React.forwardRef(
             setIsExpand(false);
         };
 
+        const changeHandler = async (value: string) => {
+            await setSelectState(value);
+            props.onChange && props.onChange();
+        };
+
         const expandClass = isExpand ? classes.expand : '';
 
         return (
             <div
                 className={`${classes.container} ${expandClass} ${props.className}`}
             >
-                <div className={classes.backdrop} onClick={closeList} />
+                {isExpand && (
+                    <div className={classes.backdrop} onClick={closeList} />
+                )}
                 <div className={classes.wrapper} onClick={toggleList}>
                     <div className={classes.clickable} />
                     <select
                         ref={selectRef}
-                        defaultValue={props.defaultValue}
+                        value={selectState}
                         onChange={props.onChange}
                         disabled
                     >
@@ -54,7 +62,16 @@ const Select = React.forwardRef(
                     <ul>
                         <div className={classes.list}>
                             {props.data.map((item, i) => {
-                                return <li key={i}>{item.label}</li>;
+                                return (
+                                    <li
+                                        key={i}
+                                        onClick={() => {
+                                            changeHandler(item.value);
+                                        }}
+                                    >
+                                        {item.label}
+                                    </li>
+                                );
                             })}
                         </div>
                     </ul>

@@ -7,8 +7,8 @@ const CategoryInput = React.forwardRef(
     (
         props: {
             isExpense: boolean;
+            defaultValue: string;
             className?: string;
-            defaultValue?: string;
             onChange?: (event?: React.ChangeEvent) => void;
         },
         ref
