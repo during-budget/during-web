@@ -6,7 +6,6 @@
 }
 
 .data {
-    width: calc(100% - (3rem + var(--size-10)));
     flex: 1 0 auto;
 }
 
@@ -41,4 +40,10 @@
 
 .tags {
     font-size: var(--size-7);
+}
+
+/* Option */
+.option button {
+    padding-left: 1rem;
+    padding-bottom: 0.5rem;
 }
