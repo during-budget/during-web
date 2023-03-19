@@ -1,4 +1,5 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
+import Button from './Button';
 import classes from './Select.module.css';
 
 const Select = React.forwardRef(
@@ -8,6 +9,7 @@ const Select = React.forwardRef(
             data: { value: string; label: string }[];
             defaultValue?: string;
             onChange?: (event?: React.ChangeEvent) => void;
+            showEdit?: () => void;
         },
         ref
     ) => {
@@ -73,6 +75,16 @@ const Select = React.forwardRef(
                                     </li>
                                 );
                             })}
+                            {props.showEdit && (
+                                <li onClick={props.showEdit}>
+                                    <Button
+                                        className={classes.edit}
+                                        styleClass="extra"
+                                    >
+                                        편집하기
+                                    </Button>
+                                </li>
+                            )}
                         </div>
                     </ul>
                 </div>

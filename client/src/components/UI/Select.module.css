@@ -78,3 +78,15 @@
     cursor: pointer;
     opacity: 0;
 }
+
+.edit {
+    /* NOTE: 시각적 중앙 정렬을 위한 보정 */
+    transform: translateX(-0.5rem);
+}
+
+.edit::before {
+    font: var(--fa-font-solid);
+    content: '\f303';
+    font-size: 0.5rem;
+    margin-right: 0.5rem;
+}
