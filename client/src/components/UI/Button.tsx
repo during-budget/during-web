@@ -5,7 +5,7 @@ function Button(props: {
     className?: string;
     onClick?: () => void;
     disabled?: boolean;
-    styleClass?: 'primary' | 'extra';
+    styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
     sizeClass?: 'lg' | 'md' | 'sm';
     children?: React.ReactNode;
 }) {
