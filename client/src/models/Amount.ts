@@ -107,9 +107,21 @@ class Amount {
         }
     };
 
+    addCurrent = (amount: number) => {
+        this._current += amount;
+    };
+
+    addScheduled = (amount: number) => {
+        this._scheduled += amount;
+    };
+
+    addPlanned = (amount: number) => {
+        this._planned += amount;
+    };
+
     static getAmountStr = (amount: number) => {
         return formatCurrent(amount);
-    }
+    };
 
     private getEachState = (
         target: string,

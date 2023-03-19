@@ -19,7 +19,13 @@ function AmountBars(props: {
 }) {
     const plans = props.amountData.map((data) => data.amount.planned);
     const planTotal = plans.reduce((curr, next) => curr + next, 0);
-    const widths = plans.map((plan) => (plan / planTotal) * 90 + '%');
+    const widths = plans.map((plan) => {
+        if (!planTotal) {
+            return '0';
+        } else {
+            return (plan / planTotal) * 90 + '%';
+        }
+    });
 
     return (
         <ul className={`${classes.container} ${props.className}`}>

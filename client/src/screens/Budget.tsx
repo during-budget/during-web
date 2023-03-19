@@ -9,17 +9,33 @@ import TotalStatus from '../components/Budget/Status/TotalStatus';
 import DateStatus from '../components/Budget/Status/DateStatus';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
-import TransactionModel from '../models/Transaction';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { transactionActions } from '../store/transaction';
 
 function Budget() {
+    const dispatch = useDispatch();
     const loaderData: any = useLoaderData();
 
-    const budget = BudgetModel.getBudgetFromData(loaderData.budget);
-    const { title, date, total } = budget;
+    let budget, transactions;
 
-    const transactions = loaderData.transactions.map((data: any) =>
-        TransactionModel.getTransactionFromData(data)
-    );
+    // budget
+    const budgets = useSelector((state: any) => state.budget);
+    budget = budgets.find((item: BudgetModel) => item.id === loaderData.id);
+
+    if (!budget) {
+        budget = BudgetModel.getBudgetFromData(loaderData.budget);
+    }
+
+    const { id, title, date, total, categories } = budget;
+
+    // transaction
+    transactions = useSelector((state: any) => state.transaction.data);
+
+    // set
+    useEffect(() => {
+        dispatch(transactionActions.setTransaction(loaderData.transactions));
+    }, []);
 
     return (
         <>
@@ -34,15 +50,12 @@ function Budget() {
                     initialIndex={1}
                     itemClassName={classes.status}
                 >
-                    <DateStatus
-                        date={budget.date}
-                        transactions={transactions}
-                    />
+                    <DateStatus date={date} transactions={transactions} />
                     <TotalStatus total={total} />
-                    <CategoryStatus categories={budget.categories} />
+                    <CategoryStatus categories={categories} />
                 </Carousel>
                 <hr />
-                <TransactionLayout transactions={transactions} />
+                <TransactionLayout budgetId={id} transactions={transactions} />
             </main>
         </>
     );
@@ -57,6 +70,7 @@ export const loader = async (data: any) => {
     const transactionData = await getTransactions(params.budgetId);
 
     return {
+        id: params.budgetId,
         budget: budgetData.budget,
         transactions: transactionData.transactions,
     };

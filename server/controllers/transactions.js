@@ -268,7 +268,9 @@ module.exports.updateAmount = async (req, res) => {
     }
     // 2. current transaction
     else {
-      transaction.overAmount += diff;
+      if (transaction.linkId) {
+        transaction.overAmount += diff;
+      }
       category.amountCurrent += diff;
 
       // 2-1. expense transaction

@@ -9,7 +9,7 @@ function ExpenseTab(props: {
         {
             label: '지출',
             value: 'expense',
-            defaultChecked: props.isExpense,
+            checked: props.isExpense,
             onChange: () => {
                 props.setIsExpense(true);
             },
@@ -17,7 +17,7 @@ function ExpenseTab(props: {
         {
             label: '수입',
             value: 'income',
-            defaultChecked: !props.isExpense,
+            checked: !props.isExpense,
             onChange: () => {
                 props.setIsExpense(false);
             },

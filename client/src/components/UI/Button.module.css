@@ -9,9 +9,19 @@
     background-color: var(--primary);
 }
 
+.secondary {
+    color: #fff;
+    background-color: var(--secondary);
+}
+
 .extra {
     color: var(--gray-4);
     background-color: transparent;
+}
+
+.gray {
+    color: #fff;
+    background-color: var(--gray-3);
 }
 
 .lg {

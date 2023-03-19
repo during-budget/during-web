@@ -82,7 +82,7 @@ function DateStatus(props: {
             onChange: () => {
                 setIsMonthly(true);
             },
-            defaultChecked: isMonthly,
+            checked: isMonthly,
         },
         {
             label: '주간',
@@ -90,7 +90,7 @@ function DateStatus(props: {
             onChange: () => {
                 setIsMonthly(false);
             },
-            defaultChecked: !isMonthly,
+            checked: !isMonthly,
         },
     ];
 
@@ -99,14 +99,14 @@ function DateStatus(props: {
             label: '내역 조회',
             value: 'view',
             onChange: () => setIsView(true),
-            defaultChecked: isView,
+            checked: isView,
         },
 
         {
             label: '내역 추가',
             value: 'add',
             onChange: () => setIsView(false),
-            defaultChecked: !isView,
+            checked: !isView,
         },
     ];
 

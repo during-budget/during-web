@@ -115,6 +115,43 @@ class Budget {
             }),
         });
     };
+
+    static getBudgetUpdatedTotalAmount = (
+        prevBudget: Budget | any,
+        isExpense: boolean,
+        isCurrent: boolean,
+        amount: number
+    ) => {
+        const key = isExpense ? 'expense' : 'income';
+        const total = prevBudget.total;
+
+        if (isCurrent) {
+            total[key].addCurrent(amount);
+        } else {
+            total[key].addScheduled(amount);
+        }
+
+        const { id, title, date, categories } = prevBudget;
+        return new Budget({ id, title, date, total, categories });
+    };
+
+    static getBudgetUpdatedCategoryAmount = (
+        prevBudget: Budget | any,
+        categoryId: string,
+        isCurrent: boolean,
+        addingAmount: number
+    ) => {
+        const { id, title, date, total, categories } = prevBudget;
+        const idx = categories.findIndex((item: any) => item.id === categoryId);
+        if (categories[idx]) {
+            if (isCurrent) {
+                categories[idx].amount.addCurrent(addingAmount);
+            } else {
+                categories[idx].amount.addScheduled(addingAmount);
+            }
+        }
+        return new Budget({ id, title, date, total, categories });
+    };
 }
 
 export default Budget;

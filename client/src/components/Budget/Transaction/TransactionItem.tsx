@@ -12,7 +12,7 @@ function TransactionItem(props: { transaction: Transaction }) {
         icon,
         isCurrent,
         isExpense,
-        title,
+        titles,
         date,
         amount,
         categoryId,
@@ -28,14 +28,14 @@ function TransactionItem(props: { transaction: Transaction }) {
     return (
         <li className={classes.container}>
             {/* icon */}
-            <Icon>{icon || category.icon}</Icon>
+            <Icon>{icon || category?.icon}</Icon>
             <div className={classes.data}>
                 <div className={classes.top}>
                     <div className={classes.left}>
                         {/* category */}
                         <p className={classes.category}>{category?.title}</p>
                         {/* title */}
-                        <p className={classes.title}>{title.join(' | ')}</p>
+                        <p className={classes.title}>{titles?.join(' | ')}</p>
                     </div>
                     {/* amount */}
                     <p className={classes.amount}>

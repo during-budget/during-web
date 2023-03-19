@@ -5,7 +5,7 @@ class Transaction {
     private _isCurrent: boolean;
     private _isExpense: boolean;
     private _icon: string;
-    private _title: string[];
+    private _titles: string[];
     private _date: Date;
     private _amount: number;
     private _categoryId: string;
@@ -19,7 +19,7 @@ class Transaction {
         linkId?: string;
         isCurrent: boolean;
         isExpense: boolean;
-        title: string[];
+        titles: string[];
         date: Date;
         amount: number;
         categoryId: string;
@@ -34,7 +34,7 @@ class Transaction {
         this._isCurrent = transaction.isCurrent;
         this._isExpense = transaction.isExpense;
         this._icon = transaction.icon || '';
-        this._title = transaction.title;
+        this._titles = transaction.titles;
         this._date = transaction.date;
         this._amount = transaction.amount;
         this._categoryId = transaction.categoryId;
@@ -67,8 +67,8 @@ class Transaction {
         return this._icon;
     }
 
-    get title() {
-        return this._title;
+    get titles() {
+        return this._titles;
     }
 
     get date() {
@@ -116,7 +116,7 @@ class Transaction {
             linkId: item.linkId,
             isCurrent: item.isCurrent,
             isExpense: item.isExpense,
-            title: item.title,
+            titles: item.title,
             date: new Date(item.date),
             amount: item.amount,
             categoryId: item.category.categoryId,
