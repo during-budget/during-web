@@ -15,7 +15,12 @@ import TransactionNav from './TransactionNav';
 import Transaction from '../../../models/Transaction';
 import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../../../store/transaction';
-import { createTransaction } from '../../../util/api/transactionAPI';
+import {
+    createTransaction,
+    updateTransactionAmount,
+    updateTransactionCategory,
+    updateTransactionFields,
+} from '../../../util/api/transactionAPI';
 import { budgetActions } from '../../../store/budget';
 
 function TransactionForm(props: { budgetId: string }) {
@@ -62,12 +67,20 @@ function TransactionForm(props: { budgetId: string }) {
             linkAmount: 0,
         });
 
-        dispatch(transactionActions.addTransaction(transaction));
+        dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
 
         if (mode.isEdit) {
+            // api
+            updateTransactionFields(transaction);
+            updateTransactionAmount(transaction);
+            updateTransactionCategory(transaction);
+            // amount
+            dispatchEditAmount(transaction);
         } else {
-            dispatchAddAmount(transaction);
+            // api
             createTransaction(transaction);
+            // amouont
+            dispatchAddAmount(transaction);
         }
         clearForm();
     };
@@ -91,6 +104,29 @@ function TransactionForm(props: { budgetId: string }) {
                 categoryId,
                 isCurrent,
                 amount,
+            })
+        );
+    };
+
+    const dispatchEditAmount = (transaction: Transaction) => {
+        const { budgetId, isExpense, isCurrent, amount, categoryId } =
+            transaction;
+
+        dispatch(
+            budgetActions.updateTotalAmount({
+                budgetId,
+                isExpense,
+                isCurrent,
+                amount: amount - defaultValue.amount,
+            })
+        );
+
+        dispatch(
+            budgetActions.updateCategoryAmount({
+                categoryId,
+                budgetId,
+                isCurrent,
+                amount: amount - defaultValue.amount,
             })
         );
     };
