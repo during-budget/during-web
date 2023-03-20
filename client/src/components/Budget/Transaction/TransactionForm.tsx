@@ -46,7 +46,7 @@ function TransactionForm(props: { budgetId: string }) {
     const budgetId = props.budgetId;
 
     // handlers
-    const submitHandler = (event: React.FormEvent) => {
+    const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
 
         const transaction = new Transaction({
@@ -77,16 +77,17 @@ function TransactionForm(props: { budgetId: string }) {
             );
         }
 
-        dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
-        dispatchAmount(transaction);
-
         if (mode.isEdit) {
             updateTransactionFields(transaction);
             updateTransactionAmount(transaction);
             updateTransactionCategory(transaction);
         } else {
-            createTransaction(transaction);
+            const createdId = await createTransaction(transaction);
+            transaction.id = createdId;
         }
+
+        dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
+        dispatchAmount(transaction);
 
         clearForm();
     };

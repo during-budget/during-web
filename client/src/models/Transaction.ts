@@ -95,6 +95,10 @@ class Transaction {
         return this._overAmount;
     }
 
+    set id(id: string) {
+        this._id = id;
+    }
+
     set linkId(id: string | undefined) {
         this._linkId = id;
     }

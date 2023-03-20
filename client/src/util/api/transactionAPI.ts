@@ -63,6 +63,8 @@ export const createTransaction = async (transaction: Transaction) => {
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
     }
+
+    return data.transaction._id;
 };
 
 export const deleteTransaction = async (transactionId: string) => {
