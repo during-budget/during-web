@@ -72,9 +72,9 @@ const transactionSlice = createSlice({
             const idx = state.data.findIndex((item) => item.id === targetId);
 
             const target = state.data[idx];
-            target.linkId = linkId;
 
             if (target) {
+                target.linkId = linkId;
                 state.data[idx] = target;
             }
         },
@@ -83,9 +83,9 @@ const transactionSlice = createSlice({
             const idx = state.data.findIndex((item: any) => item.id === linkId);
 
             const target = state.data[idx];
-            target.linkId = undefined;
 
             if (target) {
+                target.linkId = undefined;
                 state.data[idx] = target;
             }
         },
