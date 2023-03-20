@@ -4,6 +4,7 @@ function ExpenseTab(props: {
     id: string;
     isExpense: boolean;
     setIsExpense: (isExpense: boolean) => void;
+    disabled?: boolean;
 }) {
     const tabs = [
         {
@@ -13,6 +14,7 @@ function ExpenseTab(props: {
             onChange: () => {
                 props.setIsExpense(true);
             },
+            disabled: props.disabled,
         },
         {
             label: '수입',
@@ -21,6 +23,7 @@ function ExpenseTab(props: {
             onChange: () => {
                 props.setIsExpense(false);
             },
+            disabled: props.disabled,
         },
     ];
 
