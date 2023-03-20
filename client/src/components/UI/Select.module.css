@@ -2,13 +2,13 @@
     position: relative;
 }
 
-.container::before {
+.container::after {
     content: '↓';
     position: absolute;
     top: calc(50% - var(--size-9));
     right: 1rem;
     display: block;
-    z-index: 3;
+    z-index: 2;
     font-family: inherit;
 }
 
