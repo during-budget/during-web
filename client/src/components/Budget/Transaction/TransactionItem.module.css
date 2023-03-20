@@ -5,12 +5,12 @@
     margin-bottom: var(--size-6);
 }
 
-.done {
+.done p {
     text-decoration: line-through;
+    color: var(--gray-4-opacity);
 }
 
-.done .icon,
-.done .data {
+.done span {
     opacity: 0.5;
 }
 
