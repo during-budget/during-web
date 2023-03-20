@@ -10,6 +10,7 @@ const Select = React.forwardRef(
             defaultValue?: string;
             onChange?: (event?: React.ChangeEvent) => void;
             showEdit?: () => void;
+            disabled?: boolean;
         },
         ref
     ) => {
@@ -61,32 +62,34 @@ const Select = React.forwardRef(
                             </option>
                         ))}
                     </select>
-                    <ul>
-                        <div className={classes.list}>
-                            {props.data.map((item, i) => {
-                                return (
-                                    <li
-                                        key={i}
-                                        onClick={() => {
-                                            changeHandler(item.value);
-                                        }}
-                                    >
-                                        {item.label}
+                    {!props.disabled && (
+                        <ul>
+                            <div className={classes.list}>
+                                {props.data.map((item, i) => {
+                                    return (
+                                        <li
+                                            key={i}
+                                            onClick={() => {
+                                                changeHandler(item.value);
+                                            }}
+                                        >
+                                            {item.label}
+                                        </li>
+                                    );
+                                })}
+                                {props.showEdit && (
+                                    <li onClick={props.showEdit}>
+                                        <Button
+                                            className={classes.edit}
+                                            styleClass="extra"
+                                        >
+                                            편집하기
+                                        </Button>
                                     </li>
-                                );
-                            })}
-                            {props.showEdit && (
-                                <li onClick={props.showEdit}>
-                                    <Button
-                                        className={classes.edit}
-                                        styleClass="extra"
-                                    >
-                                        편집하기
-                                    </Button>
-                                </li>
-                            )}
-                        </div>
-                    </ul>
+                                )}
+                            </div>
+                        </ul>
+                    )}
                 </div>
             </div>
         );

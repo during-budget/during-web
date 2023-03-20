@@ -193,6 +193,7 @@ function TransactionForm(props: { budgetId: string }) {
                 onChange={() => {
                     setIconState(categoryRef.current!.icon());
                 }}
+                disabled={mode.isDone}
             />
             <PaymentInput className={`${classes.field} ${classes.select}`} />
         </div>
@@ -256,10 +257,12 @@ function TransactionForm(props: { budgetId: string }) {
                                     id="transaction-form-expense"
                                     isExpense={isExpense}
                                     setIsExpense={setIsExpense}
+                                    disabled={mode.isDone}
                                 />
                                 <span>|</span>
                                 <TransactionNav
                                     id="transaction-form-current"
+                                    disabled={mode.isDone}
                                 />
                             </div>
                         )}

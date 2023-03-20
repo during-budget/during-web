@@ -11,6 +11,7 @@ const CategoryInput = React.forwardRef(
             className?: string;
             onChange?: (event?: React.ChangeEvent) => void;
             showEdit?: () => void;
+            disabled?: boolean;
         },
         ref
     ) => {
@@ -59,6 +60,7 @@ const CategoryInput = React.forwardRef(
                     defaultValue={props.defaultValue || defaultValue}
                     onChange={props.onChange}
                     showEdit={props.showEdit}
+                    disabled={props.disabled}
                 />
             </>
         );

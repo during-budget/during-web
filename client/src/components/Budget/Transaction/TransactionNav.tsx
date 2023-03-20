@@ -5,7 +5,7 @@ import RadioTab from '../../UI/RadioTab';
 function TransactionNav(props: {
     id: string;
     isLine?: boolean;
-    setIsCurrent: (isCurrent: boolean) => void;
+    disabled?: boolean;
 }) {
     const dispatch = useDispatch();
 
@@ -22,6 +22,7 @@ function TransactionNav(props: {
             onChange: () => {
                 setIsCurrent(false);
             },
+            disabled: props.disabled,
         },
         {
             label: '거래내역',
@@ -30,6 +31,7 @@ function TransactionNav(props: {
             onChange: () => {
                 setIsCurrent(true);
             },
+            disabled: props.disabled,
         },
     ];
 
