@@ -67,8 +67,28 @@ const transactionSlice = createSlice({
             const idx = data.findIndex((item: any) => item.id === id);
             data.splice(idx, 1);
         },
-        removeLink(state, action) {},
-        addLink(state, action) {},
+        addLink(state, action) {
+            const { targetId, linkId } = action.payload;
+            const idx = state.data.findIndex((item) => item.id === targetId);
+
+            const target = state.data[idx];
+            target.linkId = linkId;
+
+            if (target) {
+                state.data[idx] = target;
+            }
+        },
+        removeLink(state, action) {
+            const linkId = action.payload;
+            const idx = state.data.findIndex((item: any) => item.id === linkId);
+
+            const target = state.data[idx];
+            target.linkId = undefined;
+
+            if (target) {
+                state.data[idx] = target;
+            }
+        },
     },
 });
 
