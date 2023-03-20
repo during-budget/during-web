@@ -26,6 +26,10 @@
     padding-top: var(--size-10);
 }
 
+.data .right {
+    display: flex;
+}
+
 .tags {
     margin-top: var(--size-10);
 }
@@ -54,5 +58,4 @@
 /* Option */
 .option button {
     padding-left: 1rem;
-    padding-bottom: 0.5rem;
 }

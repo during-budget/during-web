@@ -46,7 +46,7 @@ function OptionButton(props: {
                         setIsShowMenu(true);
                     }}
                 >
-                    …
+                    ・・・
                 </button>
                 {isShowMenu && contextMenu}
             </div>

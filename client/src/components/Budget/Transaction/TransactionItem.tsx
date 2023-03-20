@@ -30,7 +30,6 @@ function TransactionItem(props: { transaction: Transaction }) {
     } = props.transaction;
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const categories = useSelector((state: any) => state.category);
     const category = categories?.find((item: any) => item.id === categoryId);
@@ -146,10 +145,16 @@ function TransactionItem(props: { transaction: Transaction }) {
                         <p className={classes.title}>{titles?.join(' | ')}</p>
                     </div>
                     {/* amount */}
-                    <p className={classes.amount}>
-                        {isExpense ? '-' : '+'}
-                        {Amount.getAmountStr(amount)}
-                    </p>
+                    <div className={classes.right}>
+                        <p className={classes.amount}>
+                            {isExpense ? '-' : '+'}
+                            {Amount.getAmountStr(amount)}
+                        </p>
+                        <OptionButton
+                            className={classes.option}
+                            menu={options}
+                        />
+                    </div>
                 </div>
                 {/* tags */}
                 <div className={classes.tags}>
@@ -159,8 +164,6 @@ function TransactionItem(props: { transaction: Transaction }) {
                         })}
                 </div>
             </div>
-            {/* <div className={classes.testWrapper}></div> */}
-            <OptionButton className={classes.option} menu={options} />
         </li>
     );
 }
