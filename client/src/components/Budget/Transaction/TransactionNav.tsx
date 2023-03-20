@@ -1,26 +1,34 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { uiActions } from '../../../store/ui';
 import RadioTab from '../../UI/RadioTab';
 
 function TransactionNav(props: {
     id: string;
-    isCurrent: boolean;
     isLine?: boolean;
     setIsCurrent: (isCurrent: boolean) => void;
 }) {
+    const dispatch = useDispatch();
+
+    const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
+    const setIsCurrent = (state: boolean) => {
+        dispatch(uiActions.setIsCurrent(state));
+    };
+
     const tabs = [
         {
             label: '예정내역',
             value: 'scheduled',
-            checked: !props.isCurrent,
+            checked: !isCurrent,
             onChange: () => {
-                props.setIsCurrent(false);
+                setIsCurrent(false);
             },
         },
         {
             label: '거래내역',
             value: 'current',
-            checked: props.isCurrent,
+            checked: isCurrent,
             onChange: () => {
-                props.setIsCurrent(true);
+                setIsCurrent(true);
             },
         },
     ];

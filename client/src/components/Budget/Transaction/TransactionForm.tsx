@@ -22,6 +22,7 @@ import {
     updateTransactionFields,
 } from '../../../util/api/transactionAPI';
 import { budgetActions } from '../../../store/budget';
+import { uiActions } from '../../../store/ui';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -29,8 +30,8 @@ function TransactionForm(props: { budgetId: string }) {
     const { mode, default: defaultValue } = useSelector(
         (state: any) => state.transaction.form
     );
+    const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
 
-    const [isCurrent, setIsCurrent] = useState(defaultValue.isCurrent);
     const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
     const [iconState, setIconState] = useState('');
 
@@ -146,6 +147,9 @@ function TransactionForm(props: { budgetId: string }) {
     };
 
     const closeHandler = () => {
+        if (mode.isDone) {
+            dispatch(uiActions.setIsCurrent(false));
+        }
         clearForm();
     };
 
@@ -246,19 +250,19 @@ function TransactionForm(props: { budgetId: string }) {
                             defaultValue={defaultValue.memo}
                         />
                         {/* types */}
-                        <div className={classes.types}>
-                            <ExpenseTab
-                                id="transaction-form-expense"
-                                isExpense={isExpense}
-                                setIsExpense={setIsExpense}
-                            />
-                            <span>|</span>
-                            <TransactionNav
-                                id="transaction-form-current"
-                                isCurrent={isCurrent}
-                                setIsCurrent={setIsCurrent}
-                            />
-                        </div>
+                        {!defaultValue.isDone && (
+                            <div className={classes.types}>
+                                <ExpenseTab
+                                    id="transaction-form-expense"
+                                    isExpense={isExpense}
+                                    setIsExpense={setIsExpense}
+                                />
+                                <span>|</span>
+                                <TransactionNav
+                                    id="transaction-form-current"
+                                />
+                            </div>
+                        )}
                         {/* buttons */}
                         <div className={classes.buttons}>
                             <Button

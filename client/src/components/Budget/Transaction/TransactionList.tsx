@@ -2,12 +2,12 @@ import Transaction from '../../../models/Transaction';
 import classes from './TransactionList.module.css';
 import { getNumericHypenDateString } from '../../../util/date';
 import TransactionItem from './TransactionItem';
+import { useSelector } from 'react-redux';
 
-function TransactionList(props: {
-    transactions: Transaction[];
-    isCurrent: boolean;
-}) {
-    const { transactions, isCurrent } = props;
+function TransactionList(props: { transactions: Transaction[] }) {
+    const { transactions } = props;
+
+    const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
     const transactionList = Transaction.getTransacitonsFilteredByDate({
         transactions,
         isCurrent,
