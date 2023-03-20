@@ -26,7 +26,7 @@ function TransactionItem(props: { transaction: Transaction }) {
         budgetId,
         tags,
         memo,
-        linkAmount,
+        overAmount,
     } = props.transaction;
 
     const dispatch = useDispatch();
@@ -53,7 +53,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                             categoryId,
                             tags,
                             memo,
-                            linkAmount,
+                            overAmount,
                         },
                     })
                 );
@@ -132,6 +132,15 @@ function TransactionItem(props: { transaction: Transaction }) {
         linkId && !isCurrent ? classes.done : '',
     ];
 
+    let overAmountMsg;
+    if (overAmount < 0) {
+        overAmountMsg = `계획보다 ${-1 * overAmount}원 절약`;
+    } else if (overAmount > 0) {
+        overAmountMsg = `계획보다 ${overAmount}원 초과`;
+    } else {
+        overAmountMsg = `계획대로 실행`;
+    }
+
     return (
         <li id={id} className={liClass.join(' ')}>
             {/* icon */}
@@ -146,10 +155,17 @@ function TransactionItem(props: { transaction: Transaction }) {
                     </div>
                     {/* amount */}
                     <div className={classes.right}>
-                        <p className={classes.amount}>
-                            {isExpense ? '-' : '+'}
-                            {Amount.getAmountStr(amount)}
-                        </p>
+                        <div>
+                            <p className={classes.amount}>
+                                {isExpense ? '-' : '+'}
+                                {Amount.getAmountStr(amount)}
+                            </p>
+                            {isCurrent && linkId && (
+                                <p className={classes.overAmount}>
+                                    {overAmountMsg}
+                                </p>
+                            )}
+                        </div>
                         <OptionButton
                             className={classes.option}
                             menu={options}

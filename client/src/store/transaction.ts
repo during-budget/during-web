@@ -15,7 +15,7 @@ const initialState: { data: Transaction[]; form: any } = {
             isCurrent: true,
             isExpense: true,
             amount: '',
-            linkAmount: 0,
+            overAmount: 0,
             categoryId: '',
             date: null,
             icon: '',
@@ -86,6 +86,17 @@ const transactionSlice = createSlice({
 
             if (target) {
                 target.linkId = undefined;
+                state.data[idx] = target;
+            }
+        },
+        updateOverAmount(state, action) {
+            const { id, amount } = action.payload;
+            const idx = state.data.findIndex((item: any) => item.id === id);
+
+            const target = state.data[idx];
+
+            if (target) {
+                target.overAmount += amount;
                 state.data[idx] = target;
             }
         },

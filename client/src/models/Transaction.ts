@@ -11,7 +11,7 @@ class Transaction {
     private _categoryId: string;
     private _tags: string[];
     private _memo: string;
-    private _linkAmount: number;
+    private _overAmount: number;
 
     constructor(transaction: {
         id: string;
@@ -26,7 +26,7 @@ class Transaction {
         tags?: string[];
         icon?: string;
         memo?: string;
-        linkAmount?: number;
+        overAmount?: number;
     }) {
         this._id = transaction.id;
         this._budgetId = transaction.budgetId;
@@ -40,7 +40,7 @@ class Transaction {
         this._categoryId = transaction.categoryId;
         this._tags = transaction.tags || [];
         this._memo = transaction.memo || '';
-        this._linkAmount = transaction.linkAmount || 0;
+        this._overAmount = transaction.overAmount || 0;
     }
 
     get id() {
@@ -91,16 +91,16 @@ class Transaction {
         return this._memo;
     }
 
-    get linkAmount() {
-        return this._linkAmount;
+    get overAmount() {
+        return this._overAmount;
     }
 
     set linkId(id: string | undefined) {
         this._linkId = id;
     }
 
-    set linkAmount(amount: number) {
-        this._linkAmount = amount;
+    set overAmount(amount: number) {
+        this._overAmount = amount;
     }
 
     static getTransactionFromData = (item: {
@@ -116,7 +116,7 @@ class Transaction {
         tags?: string[];
         icon?: string;
         memo?: string;
-        linkAmount?: number;
+        overAmount?: number;
     }) => {
         return new Transaction({
             id: item._id,
@@ -131,7 +131,7 @@ class Transaction {
             icon: item.icon,
             tags: item.tags,
             memo: item.memo,
-            linkAmount: item.linkAmount,
+            overAmount: item.overAmount,
         });
     };
 
