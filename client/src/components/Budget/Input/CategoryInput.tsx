@@ -31,7 +31,7 @@ const CategoryInput = React.forwardRef(
         useEffect(() => {
             // NOTE: 초기값 기반 onChange 함수 실행
             props.onChange && props.onChange();
-        }, []);
+        }, [props, props.onChange]);
 
         const categories = useSelector((state: any) => state.category);
         const categoryRef = useRef<any>(null);
