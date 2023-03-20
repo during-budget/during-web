@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Budget from '../models/Budget';
 
-const initialState: any[] = [];
+const initialState: Budget[] = [];
 
 const budgetSlice = createSlice({
     name: 'budget',
