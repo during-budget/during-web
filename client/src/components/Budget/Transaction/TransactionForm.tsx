@@ -62,7 +62,7 @@ function TransactionForm(props: { budgetId: string }) {
             tags: tagsRef.current!.value(),
             memo: memoRef.current!.value(),
             linkId: defaultValue.linkId || null,
-            linkAmount: 0,
+            overAmount: defaultValue.overAmount || 0,
         });
 
         dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
@@ -77,7 +77,7 @@ function TransactionForm(props: { budgetId: string }) {
         } else {
             if (mode.isDone) {
                 // link amount
-                transaction.linkAmount =
+                transaction.overAmount =
                     defaultValue.amount - transaction.amount;
                 // link id (to scheduled)
                 dispatch(
@@ -120,15 +120,33 @@ function TransactionForm(props: { budgetId: string }) {
     };
 
     const dispatchEditAmount = (transaction: Transaction) => {
-        const { budgetId, isExpense, isCurrent, amount, categoryId } =
-            transaction;
+        const {
+            budgetId,
+            id,
+            isExpense,
+            isCurrent,
+            amount,
+            categoryId,
+            linkId,
+        } = transaction;
+
+        const updatedAmount = amount - defaultValue.amount;
+
+        if (linkId) {
+            dispatch(
+                transactionActions.updateOverAmount({
+                    id: isCurrent ? id : linkId,
+                    amount: isCurrent ? updatedAmount : -updatedAmount,
+                })
+            );
+        }
 
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId,
                 isExpense,
                 isCurrent,
-                amount: amount - defaultValue.amount,
+                amount: updatedAmount,
             })
         );
 
@@ -137,7 +155,7 @@ function TransactionForm(props: { budgetId: string }) {
                 categoryId,
                 budgetId,
                 isCurrent,
-                amount: amount - defaultValue.amount,
+                amount: updatedAmount,
             })
         );
     };
