@@ -65,47 +65,46 @@ function TransactionForm(props: { budgetId: string }) {
             overAmount: defaultValue.overAmount || 0,
         });
 
+        if (mode.isDone) {
+            // set overAmount
+            transaction.overAmount = transaction.amount - defaultValue.amount;
+            // add linkId to scheduled
+            dispatch(
+                transactionActions.addLink({
+                    targetId: transaction.linkId,
+                    linkId: transaction.id,
+                })
+            );
+        }
+
         dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
+        dispatchAmount(transaction);
 
         if (mode.isEdit) {
-            // api
             updateTransactionFields(transaction);
             updateTransactionAmount(transaction);
             updateTransactionCategory(transaction);
-            // amount
-            dispatchEditAmount(transaction);
         } else {
-            if (mode.isDone) {
-                // link amount
-                transaction.overAmount =
-                    defaultValue.amount - transaction.amount;
-                // link id (to scheduled)
-                dispatch(
-                    transactionActions.addLink({
-                        targetId: transaction.linkId,
-                        linkId: transaction.id,
-                    })
-                );
-            }
-
-            // api
             createTransaction(transaction);
-            // amount
-            dispatchAddAmount(transaction);
         }
+
         clearForm();
     };
 
-    const dispatchAddAmount = (transaction: Transaction) => {
-        const { budgetId, isExpense, isCurrent, amount, categoryId } =
-            transaction;
+    const dispatchAmount = (transaction: Transaction) => {
+        const { id, amount, categoryId, linkId } = transaction;
 
+        const updatedAmount = mode.isEdit
+            ? amount - defaultValue.amount
+            : amount;
+
+        // update amount status chart
         dispatch(
             budgetActions.updateTotalAmount({
                 budgetId,
                 isExpense,
                 isCurrent,
-                amount,
+                amount: updatedAmount,
             })
         );
 
@@ -114,25 +113,12 @@ function TransactionForm(props: { budgetId: string }) {
                 budgetId,
                 categoryId,
                 isCurrent,
-                amount,
+                amount: updatedAmount,
             })
         );
-    };
 
-    const dispatchEditAmount = (transaction: Transaction) => {
-        const {
-            budgetId,
-            id,
-            isExpense,
-            isCurrent,
-            amount,
-            categoryId,
-            linkId,
-        } = transaction;
-
-        const updatedAmount = amount - defaultValue.amount;
-
-        if (linkId) {
+        // update overAmount
+        if (mode.isEdit && linkId) {
             dispatch(
                 transactionActions.updateOverAmount({
                     id: isCurrent ? id : linkId,
@@ -140,24 +126,6 @@ function TransactionForm(props: { budgetId: string }) {
                 })
             );
         }
-
-        dispatch(
-            budgetActions.updateTotalAmount({
-                budgetId,
-                isExpense,
-                isCurrent,
-                amount: updatedAmount,
-            })
-        );
-
-        dispatch(
-            budgetActions.updateCategoryAmount({
-                categoryId,
-                budgetId,
-                isCurrent,
-                amount: updatedAmount,
-            })
-        );
     };
 
     const expandHandler = () => {
