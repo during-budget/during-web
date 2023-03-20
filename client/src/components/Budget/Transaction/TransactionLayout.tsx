@@ -8,20 +8,10 @@ function TransactionLayout(props: {
     budgetId: string;
     transactions: Transaction[];
 }) {
-    const [isCurrent, setIsCurrent] = useState(false);
-
     return (
         <section>
-            <TransactionNav
-                id="layout"
-                isCurrent={isCurrent}
-                setIsCurrent={setIsCurrent}
-                isLine={true}
-            />
-            <TransactionList
-                transactions={props.transactions}
-                isCurrent={isCurrent}
-            />
+            <TransactionNav id="layout" isLine={true} />
+            <TransactionList transactions={props.transactions} />
             <TransactionForm budgetId={props.budgetId} />
         </section>
     );
