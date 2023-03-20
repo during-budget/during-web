@@ -95,6 +95,14 @@ class Transaction {
         return this._linkAmount;
     }
 
+    set linkId(id: string | undefined) {
+        this._linkId = id;
+    }
+
+    set linkAmount(amount: number) {
+        this._linkAmount = amount;
+    }
+
     static getTransactionFromData = (item: {
         _id: string;
         budgetId: string;
