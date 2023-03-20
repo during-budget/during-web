@@ -136,7 +136,7 @@ function TransactionItem(props: { transaction: Transaction }) {
     return (
         <li id={id} className={liClass.join(' ')}>
             {/* icon */}
-            <Icon>{icon || category?.icon}</Icon>
+            <Icon className={classes.icon}>{icon || category?.icon}</Icon>
             <div className={classes.data}>
                 <div className={classes.top}>
                     <div className={classes.left}>

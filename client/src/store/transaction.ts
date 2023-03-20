@@ -7,7 +7,7 @@ const initialState: { data: Transaction[]; form: any } = {
         mode: {
             isExpand: false,
             isEdit: false,
-            isCompleted: false,
+            isDone: false,
         },
         default: {
             id: '',

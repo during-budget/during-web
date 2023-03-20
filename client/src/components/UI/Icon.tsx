@@ -14,7 +14,7 @@ function Icon(props: {
     const fontSize = props.fontSize ? props.fontSize : DEFUALT_FONT_SIZE;
     return (
         <span
-            className={`${classes.container} ${classes.className ? classes.className : ''}`}
+            className={`${classes.container} ${props.className ? props.className : ''}`}
             style={{ width, height, fontSize }}
         >
             {props.children}

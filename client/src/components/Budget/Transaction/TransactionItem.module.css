@@ -5,6 +5,15 @@
     margin-bottom: var(--size-6);
 }
 
+.done {
+    text-decoration: line-through;
+}
+
+.done .icon,
+.done .data {
+    opacity: 0.5;
+}
+
 .data {
     flex: 1 0 auto;
 }

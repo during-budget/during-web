@@ -60,10 +60,7 @@ function TransactionForm(props: { budgetId: string }) {
             categoryId: categoryRef.current!.value(),
             tags: tagsRef.current!.value(),
             memo: memoRef.current!.value(),
-            linkId:
-                defaultValue.linkId ||
-                (mode.isCompleted && defaultValue.id) ||
-                null,
+            linkId: defaultValue.linkId || null,
             linkAmount: 0,
         });
 
@@ -77,9 +74,22 @@ function TransactionForm(props: { budgetId: string }) {
             // amount
             dispatchEditAmount(transaction);
         } else {
+            if (mode.isDone) {
+                // link amount
+                transaction.linkAmount =
+                    defaultValue.amount - transaction.amount;
+                // link id (to scheduled)
+                dispatch(
+                    transactionActions.addLink({
+                        targetId: transaction.linkId,
+                        linkId: transaction.id,
+                    })
+                );
+            }
+
             // api
             createTransaction(transaction);
-            // amouont
+            // amount
             dispatchAddAmount(transaction);
         }
         clearForm();
