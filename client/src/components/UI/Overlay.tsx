@@ -3,7 +3,7 @@ import classes from './Overlay.module.css';
 function Overlay(props: {
     isOpen: boolean;
     isClip?: boolean;
-    onClose?: () => void;
+    closeHandler?: () => void;
     isShowBackdrop?: boolean;
     children?: React.ReactNode;
     className?: string;
@@ -18,7 +18,7 @@ function Overlay(props: {
                 className={`${classes.backdrop} ${
                     props.isShowBackdrop ? classes.show : ''
                 }`}
-                onClick={props.onClose}
+                onClick={props.closeHandler}
             ></div>
             <div className={`${classes.overlay} ${props.className}`}>
                 {props.children}
