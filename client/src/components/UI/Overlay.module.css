@@ -16,7 +16,7 @@
     border-radius: 2rem 2rem 0 0;
     box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
     z-index: 3;
-    overflow: hidden;
+    overflow: scroll;
     transition: 0.3s ease-out;
     max-height: 0;
 }
@@ -34,7 +34,7 @@
 }
 
 .open > .overlay {
-    max-height: 100%;
+    max-height: 95vh;
 }
 
 .open > .backdrop.show {
