@@ -5,6 +5,7 @@ import Transaction from '../../../models/Transaction';
 import Tag from '../../UI/Tag';
 import Icon from '../../UI/Icon';
 import TransactionOption from './TransactionOption';
+import OverAmountMsg from './OverAmountMsg';
 
 function TransactionItem(props: { transaction: Transaction }) {
     const {
@@ -28,15 +29,6 @@ function TransactionItem(props: { transaction: Transaction }) {
         linkId && !isCurrent ? classes.done : '',
     ];
 
-    let overAmountMsg;
-    if (overAmount < 0) {
-        overAmountMsg = `계획보다 ${-1 * overAmount}원 절약`;
-    } else if (overAmount > 0) {
-        overAmountMsg = `계획보다 ${overAmount}원 초과`;
-    } else {
-        overAmountMsg = `계획대로 실행`;
-    }
-
     return (
         <li id={id} className={liClass.join(' ')}>
             {/* icon */}
@@ -57,9 +49,10 @@ function TransactionItem(props: { transaction: Transaction }) {
                                 {Amount.getAmountStr(amount)}
                             </p>
                             {isCurrent && linkId && (
-                                <p className={classes.overAmount}>
-                                    {overAmountMsg}
-                                </p>
+                                <OverAmountMsg
+                                    className={classes.over}
+                                    overAmount={overAmount}
+                                />
                             )}
                         </div>
                         <TransactionOption
