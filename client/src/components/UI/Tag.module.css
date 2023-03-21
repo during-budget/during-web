@@ -12,3 +12,7 @@
 .tag::before {
     content: '#';
 }
+
+.tag.dark {
+    background-color: #fff;
+}
