@@ -4,11 +4,16 @@ import Calendar from '../../UI/Calendar';
 import StatusHeader from './StatusHeader';
 import { useState } from 'react';
 import RadioTab from '../../UI/RadioTab';
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../../store/ui';
+import { transactionActions } from '../../../store/transaction';
 
 function DateStatus(props: {
     date: { start: Date; end: Date };
     transactions: Transaction[];
 }) {
+    const dispatch = useDispatch();
+
     const [isMonthly, setIsMonthly] = useState(true);
     const [isView, setIsView] = useState(true);
 
@@ -48,10 +53,21 @@ function DateStatus(props: {
         );
     };
 
-    const viewHandler = (event: React.MouseEvent) => {
+    const clickHandler = async (event: React.MouseEvent) => {
         const date = getDate(event);
-        // TODO: 거래내역 탭으로 업데이트...
-        window.location.replace('#' + date);
+
+        if (isView) {
+            await dispatch(uiActions.setIsCurrent(true));
+            const dateList = document.getElementById(date);
+            dateList?.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            dispatch(
+                transactionActions.setForm({
+                    mode: { isExpand: true },
+                    default: { date },
+                })
+            );
+        }
     };
 
     const getDate = (event: React.MouseEvent) => {
@@ -122,7 +138,7 @@ function DateStatus(props: {
                 startDate={props.date.start}
                 endDate={props.date.end}
                 getDateStatus={getDateStatus}
-                onClick={viewHandler}
+                onClick={clickHandler}
             />
             <RadioTab name="date-status-action" values={actionTabs} />
         </>
