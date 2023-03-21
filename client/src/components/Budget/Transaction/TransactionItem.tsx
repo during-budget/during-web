@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classes from './TransactionItem.module.css';
 import Amount from '../../../models/Amount';
 import Transaction from '../../../models/Transaction';
@@ -6,8 +6,11 @@ import Tag from '../../UI/Tag';
 import Icon from '../../UI/Icon';
 import TransactionOption from './TransactionOption';
 import OverAmountMsg from './OverAmountMsg';
+import { transactionActions } from '../../../store/transaction';
 
 function TransactionItem(props: { transaction: Transaction }) {
+    const dispatch = useDispatch();
+
     const {
         id,
         linkId,
@@ -29,8 +32,17 @@ function TransactionItem(props: { transaction: Transaction }) {
         linkId && !isCurrent ? classes.done : '',
     ];
 
+    const openDetail = (event: React.MouseEvent<HTMLLIElement>) => {
+        dispatch(
+            transactionActions.openDetail({
+                transaction: props.transaction,
+                category,
+            })
+        );
+    };
+
     return (
-        <li id={id} className={liClass.join(' ')}>
+        <li id={id} className={liClass.join(' ')} onClick={openDetail}>
             {/* icon */}
             <Icon className={classes.icon}>{icon || category?.icon}</Icon>
             <div className={classes.data}>
@@ -58,6 +70,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                         <TransactionOption
                             className={classes.option}
                             transaction={props.transaction}
+                            category={category}
                         />
                     </div>
                 </div>
