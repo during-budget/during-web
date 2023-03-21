@@ -1,0 +1,100 @@
+.container {
+    position: relative;
+    text-align: center;
+}
+
+.container.open {
+    padding: 10%;
+}
+
+.type {
+    display: block;
+    margin-top: 2vh;
+    margin-bottom: 6vh;
+    font-size: var(--size-5);
+    font-weight: 700;
+}
+
+.content {
+    max-height: 60vh;
+    overflow: scroll;
+}
+
+.date {
+    font-size: var(--size-3);
+    font-weight: 600;
+}
+
+.amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.info {
+    font-size: var(--size-5);
+    font-weight: 600;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 4vh 0;
+}
+
+.category {
+    font-size: var(--size-6);
+    font-weight: 700;
+    margin-top: 2vh;
+}
+
+.titles {
+    font-size: var(--size-5);
+}
+
+.tags {
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+}
+
+.detail {
+    font-size: var(--size-5);
+    margin-bottom: 4vh;
+}
+
+.detail > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5vh 0;
+}
+
+.detail dt {
+    font-weight: 700;
+}
+
+.memo {
+    height: 2.625rem;
+    padding: 1rem;
+    background-color: var(--gray-1);
+    border-radius: 0.5rem;
+    text-align: left;
+    overflow: hidden;
+}
+
+.memo p {
+    height: 2.5rem;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    margin-top: 4vh;
+}
+
+.option button {
+    padding: calc(3.5rem / 2);
+    padding-left: 0;
+}
