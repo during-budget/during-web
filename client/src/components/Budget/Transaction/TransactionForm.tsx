@@ -210,7 +210,7 @@ function TransactionForm(props: { budgetId: string }) {
             isOpen={mode.isExpand}
             isClip={true}
             isShowBackdrop={true}
-            onClose={closeHandler}
+            closeHandler={closeHandler}
         >
             <form onSubmit={submitHandler}>
                 {/* shortField */}

@@ -54,7 +54,7 @@ const EmojiInput = React.forwardRef(
                     className={classes.overlay}
                     isOpen={open}
                     isShowBackdrop={true}
-                    onClose={cancelHandler}
+                    closeHandler={cancelHandler}
                 >
                     <div className={classes.header}>
                         <BiEraser
