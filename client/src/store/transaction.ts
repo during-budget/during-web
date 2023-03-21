@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Transaction from '../models/Transaction';
 
-const initialState: { data: Transaction[]; form: any } = {
+const initialState: { data: Transaction[]; form: any; detail: any } = {
     data: [],
     form: {
         mode: {
@@ -23,6 +23,11 @@ const initialState: { data: Transaction[]; form: any } = {
             tags: [''],
             memo: '',
         },
+    },
+    detail: {
+        isOpen: false,
+        transaction: null,
+        category: '',
     },
 };
 
@@ -99,6 +104,18 @@ const transactionSlice = createSlice({
                 target.overAmount += amount;
                 state.data[idx] = target;
             }
+        },
+        openDetail(state, action) {
+            const { transaction, category } = action.payload;
+            state.detail = { isOpen: true, transaction, category };
+        },
+        openLink(state, action) {
+            const { id, category } = action.payload;
+            const transaction = state.data.find((item) => item.id === id);
+            state.detail = { isOpen: true, transaction, category };
+        },
+        closeDetail(state) {
+            state.detail = initialState.detail;
         },
     },
 });
