@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
@@ -144,16 +144,6 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(transactionActions.clearForm());
         amountRef.current!.clear();
     };
-
-    // disable body scroll
-    useEffect(() => {
-        const body = document.querySelector('body');
-        if (mode.isExpand) {
-            body?.style.setProperty('overflow', 'hidden');
-        } else {
-            body?.style.setProperty('overflow', 'scroll');
-        }
-    }, [mode.isExpand]);
 
     // fields
     const amountField = (
