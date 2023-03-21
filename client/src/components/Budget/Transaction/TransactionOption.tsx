@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import Category from '../../../models/Category';
 import Transaction from '../../../models/Transaction';
 import { budgetActions } from '../../../store/budget';
 import { transactionActions } from '../../../store/transaction';
@@ -9,7 +10,11 @@ import OptionButton from '../../UI/OptionButton';
 
 function TransactionOption(props: {
     transaction: Transaction;
+    category: Category;
+    onSelect?: () => void;
+    onClick?: (event?: React.MouseEvent) => void;
     className?: string;
+    contextStyle?: any;
 }) {
     const {
         id,
@@ -29,36 +34,41 @@ function TransactionOption(props: {
 
     const dispatch = useDispatch();
 
-    const options = [
-        {
-            name: '내역 수정',
-            action: () => {
-                dispatch(
-                    transactionActions.setForm({
-                        mode: { isExpand: true, isEdit: true },
-                        default: {
-                            id,
-                            linkId,
-                            icon,
-                            isCurrent,
-                            isExpense,
-                            titles,
-                            date: getNumericHypenDateString(date),
-                            amount,
-                            categoryId,
-                            tags,
-                            memo,
-                            overAmount,
-                        },
-                    })
-                );
-            },
+    const edit = (isCurrent || !linkId) && {
+        name: '내역 수정',
+        action: () => {
+            dispatch(
+                transactionActions.setForm({
+                    mode: { isExpand: true, isEdit: true },
+                    default: {
+                        id,
+                        linkId,
+                        icon,
+                        isCurrent,
+                        isExpense,
+                        titles,
+                        date: getNumericHypenDateString(date),
+                        amount,
+                        categoryId,
+                        tags,
+                        memo,
+                        overAmount,
+                    },
+                })
+            );
         },
-    ];
+    };
 
     const goTo = linkId && {
         name: isCurrent ? '이전 예정 내역 보기' : '완료된 거래 내역 보기',
-        action: async () => {},
+        action: () => {
+            dispatch(
+                transactionActions.openLink({
+                    id: linkId,
+                    category: props.category,
+                })
+            );
+        },
     };
 
     const getDone = !isCurrent &&
@@ -118,11 +128,21 @@ function TransactionOption(props: {
         },
     };
 
-    goTo && options.unshift(goTo);
-    getDone && options.unshift(getDone);
+    const options = [];
+
+    getDone && options.push(getDone);
+    goTo && options.push(goTo);
+    edit && options.push(edit);
     remove && options.push(remove);
 
-    return <OptionButton className={props.className} menu={options} />;
+    return (
+        <OptionButton
+            menu={options}
+            onSelect={props.onSelect}
+            className={props.className}
+            contextStyle={props.contextStyle}
+        />
+    );
 }
 
 export default TransactionOption;
