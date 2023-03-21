@@ -61,7 +61,6 @@
 }
 
 /* overAmount */
-.overAmount {
+.over {
     font-size: var(--size-7);
-    color: var(--gray-3);
 }
