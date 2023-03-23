@@ -20,7 +20,7 @@ const initialState: { data: Transaction[]; form: any; detail: any } = {
             date: null,
             icon: '',
             titles: [''],
-            tags: [''],
+            tags: [],
             memo: '',
         },
     },
