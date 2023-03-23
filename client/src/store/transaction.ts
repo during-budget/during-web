@@ -59,7 +59,7 @@ const transactionSlice = createSlice({
             const idx = data.findIndex((item) => item.id === transaction.id);
 
             if (idx === -1) {
-                data.push(transaction);
+                data.unshift(transaction);
             } else {
                 data[idx] = transaction;
             }
