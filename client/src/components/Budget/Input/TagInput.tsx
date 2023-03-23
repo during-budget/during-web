@@ -40,19 +40,12 @@ const TagInput = React.forwardRef(
         const keyUpHandler = (event: React.KeyboardEvent) => {
             const input = event.target as HTMLInputElement;
 
-            const addKey = event.key === ' ' || event.key === 'Enter';
-            const removeKey = event.key === 'Backspace' && input.value === '';
-
-            if (addKey) {
+            if (event.key === ' ' || event.key === 'Enter') {
                 setTagState((prevState: any) => {
                     const value = input.value;
                     input.value = '';
 
                     return addTag(prevState, value);
-                });
-            } else if (removeKey) {
-                setTagState((prevState) => {
-                    return prevState.slice(0, -1) || []; // remove last item
                 });
             }
         };
