@@ -2,6 +2,23 @@ import React, { useImperativeHandle, useRef, useState } from 'react';
 import classes from './TagInput.module.css';
 import Tag from '../../UI/Tag';
 
+const addTag = (prevState: any, value: string) => {
+    // check empty input
+    if (!value || value === ' ') {
+        return prevState;
+    }
+
+    // check same item
+    const sameItem = prevState.find((item: string) => item === value);
+
+    // set state
+    if (sameItem) {
+        return prevState;
+    } else {
+        return [...prevState, value];
+    }
+};
+
 const TagInput = React.forwardRef(
     (
         props: {
@@ -31,29 +48,24 @@ const TagInput = React.forwardRef(
                     const value = input.value;
                     input.value = '';
 
-                    // check empty input
-                    if (!value || value === ' ') {
-                        return prevState;
-                    }
-
-                    // check same item
-                    const sameItem = prevState.find(
-                        (item: string) => item === value
-                    );
-
-                    // set state
-                    if (sameItem) {
-                        return prevState;
-                    } else {
-                        return [...prevState, value];
-                    }
+                    return addTag(prevState, value);
                 });
             } else if (removeKey) {
                 setTagState((prevState) => {
-                    // remove last item
-                    return prevState.slice(0, -1) || [];
+                    return prevState.slice(0, -1) || []; // remove last item
                 });
             }
+        };
+
+        const blurHandler = (event: React.FocusEvent) => {
+            const input = event.target as HTMLInputElement;
+
+            const value = input.value;
+            input.value = '';
+
+            setTagState((prevState: any) => {
+                return addTag(prevState, value);
+            });
         };
 
         const removeHandler = (event: React.MouseEvent) => {
@@ -88,6 +100,7 @@ const TagInput = React.forwardRef(
                         type="text"
                         onKeyUp={keyUpHandler}
                         onKeyDown={preventSubmit}
+                        onBlur={blurHandler}
                         placeholder="태그를 입력하세요"
                     />
                 </li>
