@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle, useState } from 'react';
 import classes from './TagInput.module.css';
 import Tag from '../../UI/Tag';
 
