@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
@@ -144,6 +144,28 @@ function TransactionForm(props: { budgetId: string }) {
         dispatch(transactionActions.clearForm());
         amountRef.current!.clear();
     };
+
+    // NOTE: For scroll on focus
+    useEffect(() => {
+        const inputs: NodeListOf<HTMLElement> = document.querySelectorAll(
+            `.${classes.field}`
+        );
+        const selects: NodeListOf<HTMLElement> = document.querySelectorAll(
+            `.${classes.select}`
+        );
+
+        inputs.forEach((input) => {
+            input.addEventListener('focus', () => {
+                input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            });
+        });
+
+        selects.forEach((select) => {
+            select.addEventListener('click', () => {
+                select.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            });
+        });
+    });
 
     // fields
     const amountField = (
