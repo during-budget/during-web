@@ -15,6 +15,18 @@
     display: inline-block;
 }
 
+.container li span {
+    display: flex;
+    align-items: center;
+}
+
+.container li span::after {
+    content: 'X';
+    display: inline-block;
+    font-size: 0.05rem;
+    margin-left: 0.5rem;
+}
+
 /* input */
 .container li:last-child {
     display: block;
