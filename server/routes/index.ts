@@ -1,3 +1,3 @@
-const routers = ["test"];
+const routers = ["test", "users"];
 
 export { routers };

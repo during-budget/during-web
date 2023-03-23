@@ -1,16 +1,18 @@
-const passport = require("passport");
-const { Strategy: LocalStrategy } = require("passport-local");
-const User = require("../models/User");
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { User } from "../models/User";
 
-module.exports = () => {
+const local = () => {
   passport.use(
     new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
       },
-      async function (email, password, done) {
-        const user = await User.findOne({ email }).select("+password");
+      async function (email: string, password: string, done: any) {
+        const user = await User.findOne({
+          email,
+        }).select("+password");
         if (!user) {
           const err = new Error("User not found");
           err.status = 404;
@@ -22,9 +24,9 @@ module.exports = () => {
           err.status = 409;
           return done(err, null, null);
         }
-
         return done(null, user);
       }
     )
   );
 };
+export { local };
