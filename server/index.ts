@@ -19,11 +19,11 @@ const RedisStore = require("connect-redis")(session);
 
 /* passport */
 import passport from "passport";
-// import passportConfig from "./passport";
+import { config as passportConfig } from "./passport";
 
 const app: Express = express();
 
-// passportConfig();
+passportConfig();
 
 mongoose
   .connect(process.env.DB_URL!)
@@ -63,8 +63,8 @@ app.use(
     }),
   })
 );
-// app.use(passport.initialize());
-// app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
+app.use(passport.initialize());
+app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
 
 routers.forEach((router: string) => {
   app.use("/api/" + router, require("./routes/" + router));
