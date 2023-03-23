@@ -64,7 +64,9 @@ export const createTransaction = async (transaction: Transaction) => {
         );
     }
 
-    return data.transaction._id;
+    const { _id: createdId, linkId: createdLinkId } = data.transaction;
+
+    return { createdId, createdLinkId };
 };
 
 export const deleteTransaction = async (transactionId: string) => {
