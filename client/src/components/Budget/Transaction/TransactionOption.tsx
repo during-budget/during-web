@@ -61,7 +61,13 @@ function TransactionOption(props: {
 
     const goTo = linkId && {
         name: isCurrent ? '이전 예정 내역 보기' : '완료된 거래 내역 보기',
-        action: () => {
+        action: async () => {
+            // scroll
+            await dispatch(uiActions.setIsCurrent(!isCurrent));
+
+            const target = document.getElementById(linkId);
+            target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
             dispatch(
                 transactionActions.openLink({
                     id: linkId,

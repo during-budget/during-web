@@ -49,6 +49,7 @@ function TransactionForm(props: { budgetId: string }) {
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        // set transaction
         const transaction = new Transaction({
             id: defaultValue.id || (+new Date()).toString(),
             budgetId,
@@ -66,9 +67,24 @@ function TransactionForm(props: { budgetId: string }) {
         });
 
         if (mode.isDone) {
-            // set overAmount
             transaction.overAmount = transaction.amount - defaultValue.amount;
-            // add linkId to scheduled
+        }
+
+        // send request
+        if (mode.isEdit) {
+            updateTransactionFields(transaction);
+            updateTransactionAmount(transaction);
+            updateTransactionCategory(transaction);
+        } else {
+            const { createdId, createdLinkId } = await createTransaction(
+                transaction
+            );
+            transaction.id = createdId;
+            transaction.linkId = createdLinkId;
+        }
+
+        // add linkId to scheduled
+        if (mode.isDone) {
             dispatch(
                 transactionActions.addLink({
                     targetId: transaction.linkId,
@@ -77,17 +93,13 @@ function TransactionForm(props: { budgetId: string }) {
             );
         }
 
-        if (mode.isEdit) {
-            updateTransactionFields(transaction);
-            updateTransactionAmount(transaction);
-            updateTransactionCategory(transaction);
-        } else {
-            const createdId = await createTransaction(transaction);
-            transaction.id = createdId;
-        }
-
-        dispatch(transactionActions.addTransaction(transaction)); // NOTE: add or replace
+        // add or replace
+        await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
         dispatchAmount(transaction);
+
+        // scroll to
+        const target = document.getElementById(transaction.id);
+        target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
         clearForm();
     };
