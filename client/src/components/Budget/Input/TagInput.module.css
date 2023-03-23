@@ -1,0 +1,26 @@
+.container {
+    margin-bottom: var(--size-9);
+    padding: 0 var(--size-9);
+    padding-top: var(--size-9);
+    background-color: var(--gray-1);
+    border-radius: var(--size-10);
+}
+
+.container.empty {
+    padding: 0 var(--size-9);
+}
+
+/* tags */
+.container li {
+    display: inline-block;
+}
+
+/* input */
+.container li:last-child {
+    display: block;
+}
+
+.container li:last-child > input {
+    padding: 0 var(--size-9);
+    margin: 0;
+}
