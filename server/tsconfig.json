@@ -1,4 +1,5 @@
 {
+  "ts-node": { "files": true },
   "compilerOptions": {
     "target": "es6", // 어떤 버전으로 컴파일할지 작성
     "module": "commonjs", //어떤 모듈 방식으로 컴파일할지 설정
@@ -7,6 +8,7 @@
     "strict": true, //strict 옵션 활성화
     "moduleResolution": "node", //모듈 해석 방법 설정: 'node' (Node.js)
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "typeRoots": ["./node_modules/@types", "./@types"]
   }
 }
