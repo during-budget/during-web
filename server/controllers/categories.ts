@@ -24,7 +24,7 @@ export const updateV2 = async (req: Request, res: Response) => {
       defaultExpenseCategory,
       defaultIncomeCategory,
     ];
-    await user.save();
+    await user.saveReqUser();
 
     const { updated, added, removed } = compareCategories(
       _categories,

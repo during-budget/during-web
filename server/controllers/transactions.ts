@@ -258,7 +258,7 @@ export const updateAmount = async (req: Request, res: Response) => {
         );
         if (!transactionCurrent) return res.status(404).send({});
         transactionCurrent.overAmount =
-          transactionCurrent.overAmount ?? 0 - diff;
+          (transactionCurrent.overAmount ?? 0) - diff;
         await transactionCurrent.save();
       }
       category.amountScheduled += diff;
@@ -271,7 +271,7 @@ export const updateAmount = async (req: Request, res: Response) => {
     // 2. current transaction
     else {
       if (transaction.linkId) {
-        transaction.overAmount = transaction.overAmount ?? 0 + diff;
+        transaction.overAmount = (transaction.overAmount ?? 0) + diff;
       }
       category.amountCurrent += diff;
 
