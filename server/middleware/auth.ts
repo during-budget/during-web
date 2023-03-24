@@ -1,6 +1,6 @@
-const User = require("../models/User");
+import { Request, Response, NextFunction } from "express";
 
-exports.isLoggedIn = (req, res, next) => {
+export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     next();
   } else {
@@ -8,7 +8,11 @@ exports.isLoggedIn = (req, res, next) => {
   }
 };
 
-exports.isNotLoggedIn = (req, res, next) => {
+export const isNotLoggedIn = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (!req.isAuthenticated()) {
     next();
   } else {
@@ -16,7 +20,11 @@ exports.isNotLoggedIn = (req, res, next) => {
   }
 };
 
-exports.forceNotLoggedIn = (req, res, next) => {
+export const forceNotLoggedIn = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (req.isAuthenticated()) {
     req.logout((err) => {
       if (err) return res.status(500).send({ err: err.message });
