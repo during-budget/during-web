@@ -1,9 +1,9 @@
 import _ from "lodash";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument } from "mongoose";
 
 import { ICategory } from "../models/User";
 
-module.exports = (
+export const compareCategories = (
   prevArr: HydratedDocument<ICategory>[],
   newArr: HydratedDocument<ICategory>[],
   isEqual: (
