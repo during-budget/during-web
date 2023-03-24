@@ -5,8 +5,13 @@ import StatusHeader from './StatusHeader';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import CategoryStatusNav from './CategoryStatusNav';
+import { useDispatch } from 'react-redux';
+import { budgetActions } from '../../../store/budget';
+import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 
-function CategoryStatus(props: { categories: Category[] }) {
+function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
+    const dispatch = useDispatch();
+
     const [isExpense, setIsExpense] = useState(true);
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
 
@@ -35,6 +40,20 @@ function CategoryStatus(props: { categories: Category[] }) {
         },
     ];
 
+    const updatePlan = (amount: number) => {
+        const categoryId = categories[currentCategoryIdx].id;
+
+        dispatch(
+            budgetActions.updateCategoryPlan({
+                budgetId: props.budgetId,
+                categoryId,
+                amount,
+            })
+        );
+
+        updateCategoryPlan(props.budgetId, categoryId, amount);
+    };
+
     return (
         <>
             <StatusHeader
@@ -59,6 +78,7 @@ function CategoryStatus(props: { categories: Category[] }) {
             <AmountDetail
                 id="category"
                 amount={categories[currentCategoryIdx].amount!}
+                editPlanHandler={updatePlan}
             />
             <CategoryStatusNav
                 idx={currentCategoryIdx}

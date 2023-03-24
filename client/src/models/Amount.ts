@@ -59,6 +59,10 @@ class Amount {
         return this._state;
     }
 
+    set planned(amount: number) {
+        this._planned = amount;
+    }
+
     getLeftScheduled = () => {
         return this._scheduled - this._current;
     };

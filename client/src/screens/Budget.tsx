@@ -19,7 +19,7 @@ function Budget() {
 
     let budget, transactions;
 
-    // budget
+    // get budget
     const budgets = useSelector((state: any) => state.budget);
     budget = budgets.find((item: BudgetModel) => item.id === loaderData.id);
 
@@ -29,10 +29,10 @@ function Budget() {
 
     const { id, title, date, total, categories } = budget;
 
-    // transaction
+    // get transaction
     transactions = useSelector((state: any) => state.transaction.data);
 
-    // set
+    // set transaction
     useEffect(() => {
         dispatch(transactionActions.setTransaction(loaderData.transactions));
     }, []);
@@ -51,8 +51,8 @@ function Budget() {
                     itemClassName={classes.status}
                 >
                     <DateStatus date={date} transactions={transactions} />
-                    <TotalStatus total={total} />
-                    <CategoryStatus categories={categories} />
+                    <TotalStatus budgetId={id} total={total} />
+                    <CategoryStatus budgetId={id} categories={categories} />
                 </Carousel>
                 <hr />
                 <TransactionLayout budgetId={id} transactions={transactions} />
