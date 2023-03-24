@@ -40,9 +40,9 @@ interface IUserProps {
   pushCategory: (category: any) => void;
 }
 
-interface UserModelType extends Model<IUser, {}, IUserProps> {}
+interface IUserModel extends Model<IUser, {}, IUserProps> {}
 
-const userSchema = new Schema<IUser, UserModelType, IUserProps>(
+const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   {
     // user fields
     userName: {
@@ -147,5 +147,5 @@ userSchema.methods.pushCategory = function (category: any) {
   this.categories.splice(this.categories.length - 2, 0, category);
 };
 
-const User = model<IUser, UserModelType>("User", userSchema);
-export { User, IUser, UserModelType };
+const User = model<IUser, IUserModel>("User", userSchema);
+export { User, IUser, IUserModel };

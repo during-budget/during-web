@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { User, IUser, UserModelType } from "../models/User";
+import { User, IUser, IUserModel } from "../models/User";
 // import Budget from "../models/Budget";
 // import Transaction from "../models/Transaction";
 import passport from "passport";
