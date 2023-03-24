@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import _ from "lodash";
-import { User, IUser, IUserModel } from "../models/User";
+import { User, IUser, IUserProps } from "../models/User";
 import { Budget } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 import passport from "passport";
@@ -12,7 +12,6 @@ import {
 import { client } from "../redis";
 import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
-import { NextFunction } from "express-serve-static-core";
 
 //_____________________________________________________________________________
 
@@ -106,7 +105,7 @@ export const loginGuest = async (req: Request, res: Response) => {
     req.body.password = password;
     passport.authenticate(
       "local",
-      (authError: Error, user: HydratedDocument<IUser, IUserModel>) => {
+      (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
         try {
           if (authError) throw authError;
           return req.login(user, (loginError: Error) => {
@@ -135,7 +134,7 @@ export const loginLocal = async (
 ) => {
   passport.authenticate(
     "local",
-    (authError: Error, user: HydratedDocument<IUser, IUserModel>) => {
+    (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
       try {
         if (authError) throw authError;
         console.log("DEBUG: authentication is over");
