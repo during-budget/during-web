@@ -4,7 +4,11 @@ import Amount from '../../../models/Amount';
 import RadioTab from '../../UI/RadioTab';
 import AmountDetailItem from './AmountDetailItem';
 
-function AmountDetail(props: { id: string; amount: Amount }) {
+function AmountDetail(props: {
+    id: string;
+    amount: Amount;
+    editPlanHandler?: (amount: number) => void;
+}) {
     const [isLeft, setIsLeft] = useState(false);
 
     const amount = props.amount;
@@ -31,24 +35,25 @@ function AmountDetail(props: { id: string; amount: Amount }) {
     const details = [
         {
             label: isLeft ? '남은 예정' : '예정 금액',
-            amount: amount.getScheduledStr(isLeft),
+            amountStr: amount.getScheduledStr(isLeft),
             labelColor: 'var(--secondary)',
             fontColor: 'var(--gray-3)',
             fontSize: 'var(--size-5)',
         },
         {
             label: '현재 금액',
-            amount: amount.getCurrentStr(),
+            amountStr: amount.getCurrentStr(),
             labelColor: 'var(--primary)',
             fontColor: 'var(--gray-4)',
             fontSize: 'var(--size-3)',
         },
         {
             label: isLeft ? '남은 목표' : '목표 금액',
-            amount: amount.getPlannedStr(isLeft),
+            amountStr: amount.getPlannedStr(isLeft),
             labelColor: 'var(--gray-1)',
             fontColor: 'var(--gray-2)',
             fontSize: 'var(--size-5)',
+            editHandler: props.editPlanHandler,
         },
     ];
 
@@ -67,7 +72,8 @@ function AmountDetail(props: { id: string; amount: Amount }) {
                         fontColor={data.fontColor}
                         fontSize={data.fontSize}
                         label={data.label}
-                        amount={data.amount}
+                        amountStr={data.amountStr}
+                        editHandler={data.editHandler}
                     />
                 ))}
             </ul>
