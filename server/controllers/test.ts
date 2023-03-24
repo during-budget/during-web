@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-const Test = require("../models/Test");
-const User = require("../models/User");
-const Budget = require("../models/Budget");
-const Transaction = require("../models/Transaction");
-const nodeMailer = require("nodemailer");
+import { Test } from "../models/Test";
+import { User, IUser, IUserModel } from "../models/User";
+import { Budget, BudgetModelType, IBudget } from "../models/Budget";
+import { Transaction, ITransaction } from "../models/Transaction";
+import nodeMailer from "nodemailer";
+import { Model } from "mongoose";
 
 // test controller
 
@@ -136,11 +137,12 @@ export const remove = async (req: Request, res: Response) => {
 /**
  * Read all documents(master)
  */
-const model = (_model: string) => {
+const model = (
+  _model: string
+): IUserModel | BudgetModelType | Model<ITransaction> => {
   if (_model === "users") return User;
   if (_model === "budgets") return Budget;
-  if (_model === "transactions") return Transaction;
-  return undefined;
+  return Transaction;
 };
 
 export const findDocuments = async (req: Request, res: Response) => {
@@ -151,7 +153,12 @@ export const findDocuments = async (req: Request, res: Response) => {
       else if (req.query[key] === "false") query[key] = false;
       else query[key] = req.query[key]?.toString()!;
     }
-    const documents = await model(req.params.model).find(query);
+    let documents = [];
+    if (req.params.model === "users") documents = await User.find(query);
+    else if (req.params.model === "budgets")
+      documents = await Budget.find(query);
+    else documents = await Transaction.find(query);
+
     return res.status(200).send({ documents });
   } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
@@ -160,7 +167,13 @@ export const findDocuments = async (req: Request, res: Response) => {
 
 export const findDocument = async (req: Request, res: Response) => {
   try {
-    const document = await model(req.params.model).findById(req.params._id);
+    let document = undefined;
+    if (req.params.model === "users")
+      document = await User.findById(req.params._id);
+    else if (req.params.model === "budgets")
+      document = await Budget.findById(req.params._id);
+    else document = await Transaction.findById(req.params._id);
+
     if (!document)
       return res.status(404).send({ message: "document not found" });
     return res.status(200).send({ document });
@@ -206,6 +219,7 @@ export const findUsers = async (req: Request, res: Response) => {
 export const findUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params._id);
+    if (!user) return res.status(404).send({});
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ user, budgets });
   } catch (err: any) {
@@ -219,6 +233,7 @@ export const findUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params._id);
+    if (!user) return res.status(404).send({});
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ user, budgets });
   } catch (err: any) {

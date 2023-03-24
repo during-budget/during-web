@@ -33,7 +33,7 @@ interface IUserProps {
   /* subdocument array */
   categories: Types.DocumentArray<ICategory>;
   /* methods */
-  save: () => Promise<void>;
+  saveReqUser: () => Promise<void>;
   comparePassword: (password: string) => Promise<boolean | Error>;
   findCategory: (categoryId: string) => HydratedDocument<ICategory> | undefined;
   findCategoryIdx: (categoryId: string) => number;
@@ -201,7 +201,7 @@ userSchema.pre("save", function (next) {
   }
 });
 
-userSchema.methods.save = async function () {
+userSchema.methods.saveReqUser = async function () {
   try {
     return await this.save();
   } catch (err: any) {

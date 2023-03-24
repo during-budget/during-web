@@ -144,7 +144,7 @@ budgetSchema.methods.pushCategory = function (category: any) {
 budgetSchema.methods.addDefaultCategory = function (isExpense, amount) {
   const idx = this.categories.length - (isExpense ? 2 : 1);
   this.categories[idx].amountPlanned =
-    this.categories[idx].amountPlanned ?? 0 + amount;
+    (this.categories[idx].amountPlanned ?? 0) + amount;
   return;
 };
 

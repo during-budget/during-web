@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
 import * as test from "../controllers/test";
-// import budgets from "../controllers/budgets";
-// import transactions from "../controllers/transactions";
+import * as budgets from "../controllers/budgets";
+import * as transactions from "../controllers/transactions";
 
 /**
  */
@@ -10,8 +10,8 @@ router.get("/:model", test.findDocuments);
 router.get("/:model/:_id", test.findDocument);
 
 router.delete("/users/:_id", test.removeUser);
-// router.delete("/budgets/:_id", budgets.remove);
-// router.delete("/transactions/:_id", transactions.remove);
+router.delete("/budgets/:_id", budgets.remove);
+router.delete("/transactions/:_id", transactions.remove);
 
 router.get("/", test.hello);
 router.get("/dataList", test.dataList);
