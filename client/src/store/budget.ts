@@ -45,6 +45,30 @@ const budgetSlice = createSlice({
                 );
             }
         },
+        updateTotalPlan(state, action) {
+            const { budgetId, isExpense, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedPlan(
+                    state[idx],
+                    isExpense,
+                    amount
+                );
+            }
+        },
+        updateCategoryPlan(state, action) {
+            const { budgetId, categoryId, amount } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+            console.log(state[idx]);
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedCategoryPlan(
+                    state[idx],
+                    categoryId,
+                    amount
+                );
+                console.log(state[idx]);
+            }
+        },
     },
 });
 
