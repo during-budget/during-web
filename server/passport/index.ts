@@ -1,7 +1,7 @@
 import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
 import { local } from "./localStrategy";
-import { User, IUser, IUserModel } from "../models/User";
+import { User, IUser, IUserProps } from "../models/User";
 
 type TUser = {
   _id?: Types.ObjectId;
@@ -16,7 +16,7 @@ const config = () => {
   passport.deserializeUser(({ _id }, done) => {
     User.findById(
       _id,
-      (err: any, user: HydratedDocument<IUser, IUserModel>) => {
+      (err: any, user: HydratedDocument<IUser, IUserProps>) => {
         if (err) done(err);
         done(null, user);
       }
