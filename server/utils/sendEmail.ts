@@ -1,6 +1,10 @@
-const nodeMailer = require("nodemailer");
+import nodeMailer from "nodemailer";
 
-module.exports = async ({ to, subject, html }) => {
+module.exports = async (props: {
+  to: string;
+  subject: string;
+  html: string;
+}) => {
   const transporter = nodeMailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com",
@@ -14,9 +18,9 @@ module.exports = async ({ to, subject, html }) => {
 
   const mailOptions = {
     from: "During Team",
-    to,
-    subject,
-    html,
+    to: props.to,
+    subject: props.subject,
+    html: props.html,
   };
   await transporter.sendMail(mailOptions);
 };

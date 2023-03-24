@@ -148,4 +148,4 @@ userSchema.methods.pushCategory = function (category: any) {
 };
 
 const User = model<IUser, IUserModel>("User", userSchema);
-export { User, IUser, IUserModel };
+export { User, IUser, IUserModel, ICategory };
