@@ -37,6 +37,7 @@
     "@types/express-session": "^1.17.6",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.3",
+    "@types/nodemailer": "^6.4.7",
     "@types/passport": "^1.0.12",
     "@types/passport-local": "^1.0.35",
     "typescript": "^5.0.2"
