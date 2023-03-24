@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import _ from "lodash";
 
 interface ICategory {
+  _id?: Types.ObjectId;
   isExpense?: boolean;
   isIncome?: boolean;
   isDefault?: boolean;
@@ -32,6 +33,7 @@ interface IUserProps {
   /* subdocument array */
   categories: Types.DocumentArray<ICategory>;
   /* methods */
+  save: () => Promise<void>;
   comparePassword: (password: string) => Promise<boolean | Error>;
   findCategory: (categoryId: string) => HydratedDocument<ICategory> | undefined;
   findCategoryIdx: (categoryId: string) => number;
@@ -67,29 +69,115 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
       type: [categorySchema],
       default: [
         // 지출 카테고리
-        { isExpense: true, title: "식비", icon: "🍚" },
-        { isExpense: true, title: "간식", icon: "🍫" },
-        { isExpense: true, title: "생활", icon: "💸" },
-        { isExpense: true, title: "교통", icon: "🚉" },
-        { isExpense: true, title: "교육", icon: "🎓" },
-        { isExpense: true, title: "문화/여가", icon: "🎬" },
-        { isExpense: true, title: "의료/건강", icon: "💊" },
-        { isExpense: true, title: "주거/통신", icon: "🏠" },
-        { isExpense: true, title: "의류/미용", icon: "🛍️" },
-        { isExpense: true, title: "기부/후원", icon: "🕊️" },
-        { isExpense: true, title: "경조사비", icon: "💌" },
-        { isExpense: true, title: "선물", icon: "🎁" },
-        { isExpense: true, title: "이체", icon: "🍎" },
-        { isExpense: true, title: "채무", icon: "🥭" },
+        {
+          isExpense: true,
+          title: "식비",
+          icon: "🍚",
+        },
+        {
+          isExpense: true,
+          title: "간식",
+          icon: "🍫",
+        },
+        {
+          isExpense: true,
+          title: "생활",
+          icon: "💸",
+        },
+        {
+          isExpense: true,
+          title: "교통",
+          icon: "🚉",
+        },
+        {
+          isExpense: true,
+          title: "교육",
+          icon: "🎓",
+        },
+        {
+          isExpense: true,
+          title: "문화/여가",
+          icon: "🎬",
+        },
+        {
+          isExpense: true,
+          title: "의료/건강",
+          icon: "💊",
+        },
+        {
+          isExpense: true,
+          title: "주거/통신",
+          icon: "🏠",
+        },
+        {
+          isExpense: true,
+          title: "의류/미용",
+          icon: "🛍️",
+        },
+        {
+          isExpense: true,
+          title: "기부/후원",
+          icon: "🕊️",
+        },
+        {
+          isExpense: true,
+          title: "경조사비",
+          icon: "💌",
+        },
+        {
+          isExpense: true,
+          title: "선물",
+          icon: "🎁",
+        },
+        {
+          isExpense: true,
+          title: "이체",
+          icon: "🍎",
+        },
+        {
+          isExpense: true,
+          title: "채무",
+          icon: "🥭",
+        },
         // 수입 카테고리
-        { isIncome: true, title: "월급", icon: "💙" },
-        { isIncome: true, title: "보너스", icon: "💜" },
-        { isIncome: true, title: "용돈", icon: "💚" },
-        { isIncome: true, title: "이체", icon: "🍏" },
-        { isIncome: true, title: "채무", icon: "🍋" },
+        {
+          isIncome: true,
+          title: "월급",
+          icon: "💙",
+        },
+        {
+          isIncome: true,
+          title: "보너스",
+          icon: "💜",
+        },
+        {
+          isIncome: true,
+          title: "용돈",
+          icon: "💚",
+        },
+        {
+          isIncome: true,
+          title: "이체",
+          icon: "🍏",
+        },
+        {
+          isIncome: true,
+          title: "채무",
+          icon: "🍋",
+        },
         // 기본 카테고리
-        { isExpense: true, isDefault: true, title: "기타", icon: "" },
-        { isIncome: true, isDefault: true, title: "기타", icon: "" },
+        {
+          isExpense: true,
+          isDefault: true,
+          title: "기타",
+          icon: "",
+        },
+        {
+          isIncome: true,
+          isDefault: true,
+          title: "기타",
+          icon: "",
+        },
       ],
     },
   },
@@ -112,6 +200,14 @@ userSchema.pre("save", function (next) {
     next();
   }
 });
+
+userSchema.methods.save = async function () {
+  try {
+    return await this.save();
+  } catch (err: any) {
+    return err;
+  }
+};
 
 userSchema.methods.comparePassword = async function (plainPassword: string) {
   var user = this;
@@ -148,4 +244,4 @@ userSchema.methods.pushCategory = function (category: any) {
 };
 
 const User = model<IUser, IUserModel>("User", userSchema);
-export { User, IUser, IUserModel, ICategory };
+export { User, IUser, IUserProps, ICategory, IUserModel };

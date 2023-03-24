@@ -1,4 +1,4 @@
-import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 
 interface ICategory {
   categoryId: Types.ObjectId;
@@ -30,28 +30,13 @@ interface ITransaction {
   linkId?: Types.ObjectId;
   title: [string];
   amount: number;
-  overAmount: number;
+  overAmount?: number;
   category: ICategory;
   tags: [string];
-  memo?: string;
+  memo: string;
 }
 
-interface ITransactionProps {
-  /* methods */
-  findCategory: (categoryId: string) => HydratedDocument<ICategory> | undefined;
-  findCategoryIdx: (categoryId: string) => number;
-  pushCategory: (category: any) => void;
-  addDefaultCategory: (isExpense: boolean, amount: number) => void;
-}
-
-interface TransactionModelType
-  extends Model<ITransaction, {}, ITransactionProps> {}
-
-const transactionSchema = new Schema<
-  ITransaction,
-  TransactionModelType,
-  ITransactionProps
->(
+const transactionSchema = new Schema<ITransaction>(
   {
     userId: Schema.Types.ObjectId,
     budgetId: Schema.Types.ObjectId,
@@ -78,8 +63,5 @@ transactionSchema.index({
   Date: -1,
 });
 
-const Transaction = model<ITransaction, TransactionModelType>(
-  "Transaction",
-  transactionSchema
-);
-export { Transaction, ITransaction, TransactionModelType };
+const Transaction = model<ITransaction>("Transaction", transactionSchema);
+export { Transaction, ITransaction };
