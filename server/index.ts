@@ -15,7 +15,7 @@ import { routers } from "./routes/index";
 import session from "express-session";
 const FileStore = require("session-file-store")(session);
 const RedisStore = require("connect-redis")(session);
-// import client from "./redis/index.js";
+import { client } from "./redis";
 
 /* passport */
 import passport from "passport";
