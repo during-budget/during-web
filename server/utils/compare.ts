@@ -4,22 +4,16 @@ import { HydratedDocument } from "mongoose";
 import { ICategory } from "../models/User";
 
 export const compareCategories = (
-  prevArr: HydratedDocument<ICategory>[],
-  newArr: HydratedDocument<ICategory>[],
-  isEqual: (
-    val1: HydratedDocument<ICategory>,
-    val2: HydratedDocument<ICategory>
-  ) => boolean
+  prevArr: ICategory[],
+  newArr: ICategory[],
+  isEqual: (val1: ICategory, val2: ICategory) => boolean
 ) => {
-  const prevDict: { [key: string]: HydratedDocument<ICategory> } = _.keyBy(
-    prevArr,
-    "_id"
-  );
+  const prevDict: { [key: string]: ICategory } = _.keyBy(prevArr, "_id");
 
   const updated = [];
   const added = [];
   for (let val of newArr) {
-    const _id = val?._id.toString();
+    const _id = val._id?.toString() ?? "";
     if (prevDict[_id]) {
       if (!isEqual(prevDict[_id], val)) {
         updated.push(val);
