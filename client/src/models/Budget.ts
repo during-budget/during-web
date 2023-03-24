@@ -152,6 +152,36 @@ class Budget {
         }
         return new Budget({ id, title, date, total, categories });
     };
+
+    static getBudgetUpdatedPlan = (
+        prevBudget: Budget | any,
+        isExpense: boolean,
+        amount: number
+    ) => {
+        const key = isExpense ? 'expense' : 'income';
+        const total = prevBudget.total;
+        total[key] = new Amount(
+            total[key].current,
+            total[key].scheduled,
+            amount
+        );
+
+        const { id, title, date, categories } = prevBudget;
+        return new Budget({ id, title, date, total, categories });
+    };
+
+    static getBudgetUpdatedCategoryPlan(
+        prevBudget: Budget | any,
+        categoryId: string,
+        amount: number
+    ) {
+        const { id, title, date, total, categories } = prevBudget;
+        const idx = categories.findIndex((item: any) => item.id === categoryId);
+        if (categories[idx]) {
+            categories[idx].amount.planned = amount;
+        }
+        return new Budget({ id, title, date, total, categories });
+    }
 }
 
 export default Budget;
