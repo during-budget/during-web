@@ -1,6 +1,6 @@
 import nodeMailer from "nodemailer";
 
-module.exports = async (props: {
+export const sendEmail = async (props: {
   to: string;
   subject: string;
   html: string;
