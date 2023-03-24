@@ -8,9 +8,9 @@ interface ICategory {
   isDefault?: boolean;
   title: string;
   icon: string;
-  amountScheduled?: number;
-  amountCurrent?: number;
-  amountPlanned?: number;
+  amountScheduled: number;
+  amountCurrent: number;
+  amountPlanned: number;
 }
 
 const categorySchema = new Schema<ICategory>(
@@ -38,17 +38,17 @@ const categorySchema = new Schema<ICategory>(
 );
 
 interface IBudget {
-  _id: Types.ObjectId;
+  _id?: Types.ObjectId;
   userId: Types.ObjectId;
   startDate: Date;
   endDate: Date;
   title: string;
-  expenseScheduled?: number;
-  expenseCurrent?: number;
-  expensePlanned?: number;
-  incomeScheduled?: number;
-  incomeCurrent?: number;
-  incomePlanned?: number;
+  expenseScheduled: number;
+  expenseCurrent: number;
+  expensePlanned: number;
+  incomeScheduled: number;
+  incomeCurrent: number;
+  incomePlanned: number;
   categories: ICategory[];
 }
 
@@ -56,8 +56,10 @@ interface IBudgetProps {
   /* subdocument array */
   categories: Types.DocumentArray<ICategory>;
   /* methods */
-  findCategory: (categoryId: string) => HydratedDocument<ICategory> | undefined;
-  findCategoryIdx: (categoryId: string) => number;
+  findCategory: (
+    categoryId: string | Types.ObjectId
+  ) => HydratedDocument<ICategory> | undefined;
+  findCategoryIdx: (categoryId: string | Types.ObjectId) => number;
   pushCategory: (category: any) => void;
   addDefaultCategory: (isExpense: boolean, amount: number) => void;
 }
@@ -118,13 +120,17 @@ budgetSchema.index({
   startDate: -1,
 });
 
-budgetSchema.methods.findCategory = function (categoryId: string) {
+budgetSchema.methods.findCategory = function (
+  categoryId: string | Types.ObjectId
+) {
   return _.find(this.categories, {
     categoryId: new Types.ObjectId(categoryId),
   })?.toObject();
 };
 
-budgetSchema.methods.findCategoryIdx = function (categoryId: string) {
+budgetSchema.methods.findCategoryIdx = function (
+  categoryId: string | Types.ObjectId
+) {
   return _.findIndex(this.categories, {
     categoryId: new Types.ObjectId(categoryId),
   });
