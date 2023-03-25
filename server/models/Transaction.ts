@@ -28,6 +28,7 @@ interface ITransaction {
   isExpense?: boolean;
   isIncome?: boolean;
   linkId?: Types.ObjectId;
+  icon: string;
   title: [string];
   amount: number;
   overAmount?: number;
@@ -45,6 +46,7 @@ const transactionSchema = new Schema<ITransaction>(
     isExpense: { type: Boolean, default: false },
     isIncome: { type: Boolean, default: false },
     linkId: Schema.Types.ObjectId, // isCurrent - scheduledId, !isCurrent - currentId
+    icon: { type: String, default: "" },
     title: [String],
     amount: Number,
     overAmount: Number,

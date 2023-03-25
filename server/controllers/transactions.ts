@@ -51,6 +51,7 @@ export const create = async (req: Request, res: Response) => {
       isExpense: category.isExpense,
       isIncome: category.isIncome,
       linkId: req.body.linkId,
+      icon: req.body.icon ?? "",
       title: req.body.title,
       amount: req.body.amount,
       category,
@@ -192,7 +193,7 @@ export const updateCategory = async (req: Request, res: Response) => {
  * Update transaction field
  *
  * @param {_id: transactionId}
- * @body { date?, title?,  tags?, memo? }
+ * @body { date?, icon?,title?,  tags?, memo? }
  * @return transaction
  */
 export const updateField = async (req: Request, res: Response) => {
@@ -203,6 +204,7 @@ export const updateField = async (req: Request, res: Response) => {
     if (!transaction.userId.equals(user._id)) return res.status(401).send();
 
     transaction.date = req.body.date ?? transaction.date;
+    transaction.icon = req.body.icon ?? transaction.icon;
     transaction.title = req.body.title ?? transaction.title;
     transaction.tags = req.body.tags ?? transaction.tags;
     transaction.memo = req.body.memo ?? transaction.memo;
