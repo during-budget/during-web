@@ -7,6 +7,7 @@ import RadioTab from '../../UI/RadioTab';
 import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
 import { transactionActions } from '../../../store/transaction';
+import IndexNav from '../../UI/IndexNav';
 
 function DateStatus(props: {
     date: { start: Date; end: Date };
@@ -15,6 +16,7 @@ function DateStatus(props: {
     const dispatch = useDispatch();
 
     const [isMonthly, setIsMonthly] = useState(true);
+    const [weekNum, setWeekNum] = useState(0);
     const [isView, setIsView] = useState(true);
 
     const getDateStatus = (date: Date) => {
@@ -139,8 +141,24 @@ function DateStatus(props: {
                 endDate={props.date.end}
                 getDateStatus={getDateStatus}
                 onClick={clickHandler}
+                week={!isMonthly && weekNum}
             />
-            <RadioTab name="date-status-action" values={actionTabs} />
+            {!isMonthly && (
+                <IndexNav
+                    idx={weekNum}
+                    setIdx={setWeekNum}
+                    data={[
+                        '3월 첫째주',
+                        '3월 둘째주',
+                        '3월 셋째주',
+                        '3월 넷째주',
+                        '3월 다섯째주',
+                    ]}
+                />
+            )}
+            {isMonthly && (
+                <RadioTab name="date-status-action" values={actionTabs} />
+            )}
         </>
     );
 }
