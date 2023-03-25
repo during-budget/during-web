@@ -9,6 +9,7 @@ function Calendar(props: {
     startDate: Date;
     endDate: Date;
     width?: string;
+    week?: number | boolean;
     getDateStatus?: (date: Date) => void;
     onClick?: (event: React.MouseEvent) => void;
 }) {
@@ -101,7 +102,13 @@ function Calendar(props: {
                     ))}
                 </tr>
             </thead>
-            <tbody>{getWeekTr()}</tbody>
+            <tbody>
+                {props.week || props.week === 0
+                    ? getWeekTr().filter(
+                          (week) => week.key === `week-${props.week}`
+                      )
+                    : getWeekTr()}
+            </tbody>
         </table>
     );
 }
