@@ -1,6 +1,17 @@
-const WEEK_DAYS = {
-    'ko-KR': ['일', '월', '화', '수', '목', '금', '토'],
-    'en-US': ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+import dayjs, { Dayjs } from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+
+dayjs.extend(weekOfYear);
+
+const WEEK_NAMES: any = {
+    'ko-KR': ['첫째주', '둘째주', '셋째주', '넷째주', '다섯째주'],
+    'en-US': [
+        'First week',
+        'Second week',
+        'Thired week',
+        'Fourth week',
+        'Fifth week',
+    ],
 };
 
 // yyyy. mm. dd.
@@ -25,13 +36,65 @@ export const getLongMonth = (date: Date, locale: string) => {
     return date.toLocaleString(locale, { month: 'long' });
 };
 
-export const getWeekDays = (locale: string) => {
-    switch (locale) {
-        case 'ko-KR':
-            return WEEK_DAYS['ko-KR'];
-        case 'en-US':
-            return WEEK_DAYS['en-US'];
-        default:
-            return WEEK_DAYS['en-US'];
+export const getMonthsOfWeek = (week: (Dayjs | null)[]) => {
+    const weekDays = week.filter((item) => item);
+    const start = weekDays[0];
+    const end = weekDays[weekDays.length - 1];
+    return getMonthsBetweenDate(start, end);
+};
+
+export const getMonthsBetweenDate = (
+    startDate: Dayjs | Date | null,
+    endDate: Dayjs | Date | null
+) => {
+    if (!startDate || !endDate) {
+        return '';
     }
+
+    // set or transfrom start & end
+    let start = startDate;
+    let end = endDate;
+
+    if (!dayjs.isDayjs(start)) {
+        start = dayjs(start);
+    }
+
+    if (!dayjs.isDayjs(end)) {
+        end = dayjs(end);
+    }
+
+    // get month
+    if (start?.month() === end?.month()) {
+        return start?.format('MMM') || '';
+    } else {
+        const startMonth = start?.format('MMM');
+        const endMonth = end?.format('MMM');
+        return `${startMonth}-${endMonth}`;
+    }
+};
+
+export const getWeekNames = (
+    title: string,
+    startDate: Date,
+    endDate: Date,
+    locale: string
+) => {
+    const weekNumbers = getWeekNumbers(startDate, endDate, locale);
+    const weekNames = weekNumbers.map((item: string) => title + ' ' + item);
+
+    return weekNames;
+};
+
+export const getWeekNumbers = (
+    startDate: Date,
+    endDate: Date,
+    locale: string
+) => {
+    const startWeek = dayjs(startDate).week();
+    const endWeek = dayjs(endDate).week();
+    const weekLength = endWeek - startWeek + 1; // NOTE: 단순 차이만 구하면 사이 기간만 포함됨. 1을 더하여 시작 주차도 포함
+
+    const weekNames = WEEK_NAMES[locale] || WEEK_NAMES['en-US'];
+
+    return weekNames.slice(0, weekLength);
 };
