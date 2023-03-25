@@ -60,6 +60,9 @@ function List() {
             stringify: (obj) => `${obj?.icon}/${obj?.title}`,
           },
           {
+            label: "icon",
+          },
+          {
             label: "title",
             type: "array-string",
           },
