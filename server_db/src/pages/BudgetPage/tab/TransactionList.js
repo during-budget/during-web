@@ -73,6 +73,15 @@ function List({ isExpense = false, isIncome = false }) {
                 stringify: (obj) => `${obj.icon}/${obj.title}`,
               },
               {
+                label: "scheduled.icon",
+                onClick: (e) => {
+                  if (e.scheduled?._id) {
+                    setTransaction(e.scheduled);
+                    setIsDialogActive(true);
+                  }
+                },
+              },
+              {
                 label: "scheduled.title",
                 type: "array-string",
                 onClick: (e) => {
@@ -87,6 +96,15 @@ function List({ isExpense = false, isIncome = false }) {
                 onClick: (e) => {
                   if (e.scheduled?._id) {
                     setTransaction(e.scheduled);
+                    setIsDialogActive(true);
+                  }
+                },
+              },
+              {
+                label: "current.icon",
+                onClick: (e) => {
+                  if (e.current?._id) {
+                    setTransaction(e.current);
                     setIsDialogActive(true);
                   }
                 },
