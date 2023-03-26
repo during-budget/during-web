@@ -182,6 +182,33 @@ export const logout = async (req: Request, res: Response) => {
 };
 
 /**
+ * Update fields(birthdate, gender, tel)
+ */
+export const updateFields = async (req: Request, res: Response) => {
+  const user = req.user!;
+  user.birthdate = req.body.birthdate;
+  user.gender = req.body.gender;
+  user.tel = req.body.tel;
+  await user.saveReqUser();
+
+  let message = undefined;
+  const undefinedFields = [];
+  if (!user.birthdate) undefinedFields.push("birthdate");
+  if (!user.gender) undefinedFields.push("gender");
+  if (!user.tel) undefinedFields.push("tel");
+  if (undefinedFields.length !== 0) {
+    message = `field(${_.join(undefinedFields, ", ")}) is undefined`;
+  }
+
+  return res.status(200).send({
+    birthdate: req.user?.birthdate,
+    gender: req.user?.gender,
+    tel: req.user?.tel,
+    message,
+  });
+};
+
+/**
  * Read current user's info
  */
 export const current = (req: Request, res: Response) => {

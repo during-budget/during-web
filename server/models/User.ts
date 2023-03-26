@@ -27,6 +27,9 @@ interface IUser {
   password: string;
   isGuest: boolean;
   categories: ICategory[];
+  birthdate?: Date;
+  gender?: string;
+  tel?: string;
 }
 
 interface IUserProps {
@@ -180,6 +183,9 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
         },
       ],
     },
+    birthdate: Date,
+    gender: String,
+    tel: String,
   },
   { timestamps: true }
 );

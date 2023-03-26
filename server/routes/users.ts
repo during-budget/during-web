@@ -13,6 +13,8 @@ router.post("/login/guest", forceNotLoggedIn, users.loginGuest);
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
 router.get("/logout", isLoggedIn, users.logout);
 
+router.put("/", isLoggedIn, users.updateFields);
+
 router.get("/current", isLoggedIn, users.current);
 router.get("/list", isLoggedIn, users.list);
 
