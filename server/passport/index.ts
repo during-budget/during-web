@@ -2,12 +2,8 @@ import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
 import { local } from "./localStrategy";
 import { register } from "./registerStrategy";
+import { guest } from "./guestStrategy";
 import { User, IUser, IUserProps } from "../models/User";
-
-type TUser = {
-  _id?: Types.ObjectId;
-  isGuest?: boolean;
-};
 
 const config = () => {
   passport.serializeUser((user, done) => {
@@ -26,6 +22,7 @@ const config = () => {
 
   local();
   register();
+  guest();
 };
 
 export { config };
