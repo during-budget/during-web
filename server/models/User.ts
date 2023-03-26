@@ -24,7 +24,6 @@ interface IUser {
   _id: Types.ObjectId;
   userName: string;
   email: string;
-  password: string;
   isGuest: boolean;
   categories: ICategory[];
   birthdate?: Date;
@@ -37,7 +36,6 @@ interface IUserProps {
   categories: Types.DocumentArray<ICategory>;
   /* methods */
   saveReqUser: () => Promise<void>;
-  comparePassword: (password: string) => Promise<boolean | Error>;
   findCategory: (categoryId: string) => HydratedDocument<ICategory> | undefined;
   findCategoryIdx: (categoryId: string) => number;
   findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
@@ -57,10 +55,6 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     email: {
       type: String,
       unique: true,
-    },
-    password: {
-      type: String,
-      select: false, //alwasy exclude password in user document
     },
     isGuest: {
       type: Boolean,
@@ -190,36 +184,9 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   { timestamps: true }
 );
 
-userSchema.pre("save", function (next) {
-  var user = this;
-  if (user.isModified("password")) {
-    //비밀번호가 바뀔때만 암호화
-    bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS!), function (err, salt) {
-      if (err) return next(err);
-      bcrypt.hash(user.password, salt, function (err, hash) {
-        if (err) return next(err);
-        user.password = hash;
-        next();
-      });
-    });
-  } else {
-    next();
-  }
-});
-
 userSchema.methods.saveReqUser = async function () {
   try {
     return await this.save();
-  } catch (err: any) {
-    return err;
-  }
-};
-
-userSchema.methods.comparePassword = async function (plainPassword: string) {
-  var user = this;
-  try {
-    const isMatch = await bcrypt.compare(plainPassword, user.password);
-    return isMatch;
   } catch (err: any) {
     return err;
   }
