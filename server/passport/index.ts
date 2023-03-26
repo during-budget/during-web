@@ -1,6 +1,7 @@
 import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
 import { local } from "./localStrategy";
+import { register } from "./registerStrategy";
 import { User, IUser, IUserProps } from "../models/User";
 
 type TUser = {
@@ -24,6 +25,7 @@ const config = () => {
   });
 
   local();
+  register();
 };
 
 export { config };
