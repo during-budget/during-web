@@ -23,10 +23,7 @@ import { cipher, decipher } from "../utils/crypto";
 export const register = async (req: Request, res: Response) => {
   try {
     const exUser = await User.findOne({ email: req.body.email });
-    if (exUser)
-      return res
-        .status(409)
-        .send({ message: `email ${req.body.email} is already in use` });
+    if (exUser) return res.status(409).send({ message: `Email in use` });
 
     // email 유효성 검사
 
@@ -41,7 +38,7 @@ export const register = async (req: Request, res: Response) => {
       client.v4.hSet(req.body.email, "code", cipher(code)),
       client.expire(req.body.email, 60 * 5),
     ]);
-    return res.status(200).send({});
+    return res.status(200).send({ message: "Verification code is sent" });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
@@ -112,7 +109,7 @@ export const loginGuest = async (req: Request, res: Response) => {
  */
 export const loginLocal = async (req: Request, res: Response) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(404).send({});
+  if (!user) return res.status(404).send({ message: "User not found" });
 
   const code = generateRandomNumber(6);
   sendEmail({
@@ -125,7 +122,7 @@ export const loginLocal = async (req: Request, res: Response) => {
     client.v4.hSet(req.body.email, "code", cipher(code)),
     client.expire(req.body.email, 60 * 5),
   ]);
-  return res.status(200).send({});
+  return res.status(200).send({ message: "Verification code is sent" });
 };
 
 /**
