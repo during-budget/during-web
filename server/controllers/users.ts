@@ -52,28 +52,32 @@ export const register = async (req: Request, res: Response) => {
  *
  * @body {email, code}
  */
-export const verify = async (req: Request, res: Response) => {
-  try {
-    if (!("email" in req.body) || !("code" in req.body))
-      return res.status(400).send({ message: "required field is missing" });
+export const verify = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!("email" in req.body) || !("code" in req.body))
+    return res.status(400).send({ message: "required field is missing" });
 
-    const code = await client.v4.hGet(req.body.email, "code");
-    if (!code)
-      return res.status(404).send({ message: "verification code is expired" });
-
-    if (decipher(code) !== req.body.code)
-      return res.status(409).send({ message: "wrong code" });
-
-    const user = new User({
-      email: req.body.email,
-    });
-    await user.save();
-    await client.del(req.body.email);
-
-    return res.status(200).send({});
-  } catch (err: any) {
-    return res.status(500).send({ message: err.message });
-  }
+  passport.authenticate(
+    "register",
+    (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
+      try {
+        if (authError) throw authError;
+        return req.login(user, (loginError) => {
+          if (loginError) throw loginError;
+          /* set maxAge as 1 year if auto login is requested */
+          if (req.body.persist === "true") {
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
+          }
+          return res.status(200).send({ user });
+        });
+      } catch (err: any) {
+        return res.status(err.status || 500).send({ message: err.message });
+      }
+    }
+  )(req, res, next);
 };
 
 /**
@@ -124,6 +128,9 @@ export const loginGuest = async (req: Request, res: Response) => {
  * @body {email: 'user00001'}
  */
 export const loginLocal = async (req: Request, res: Response) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(404).send({});
+
   const code = generateRandomNumber(6);
   sendEmail({
     to: req.body.email,
