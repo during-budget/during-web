@@ -86,25 +86,8 @@ export const verify = async (
  */
 export const loginGuest = async (req: Request, res: Response) => {
   try {
-    let email = generateRandomString(8);
-    while (true) {
-      const exUser = await User.findOne({ email });
-      if (exUser) email = generateRandomString(8);
-      else break;
-    }
-    const password = generateRandomString(16);
-
-    const user = new User({
-      email,
-      password,
-      isGuest: true,
-    });
-    await user.save();
-
-    req.body.email = user.email;
-    req.body.password = password;
     passport.authenticate(
-      "local",
+      "guest",
       (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
         try {
           if (authError) throw authError;
