@@ -7,11 +7,18 @@ import {
   forceNotLoggedIn,
 } from "../middleware/auth";
 
+/* regiser */
 router.post("/register", isNotLoggedIn, users.register);
-router.post("/verify", isNotLoggedIn, users.verify);
+router.post("/register/verify", isNotLoggedIn, users.verify);
+
+/* login guest */
 router.post("/login/guest", forceNotLoggedIn, users.loginGuest);
+
+/* login local */
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
-router.post("/login/verify", forceNotLoggedIn, users.loginVerify);
+router.post("/login/local/verify", forceNotLoggedIn, users.loginVerify);
+
+/* logout */
 router.get("/logout", isLoggedIn, users.logout);
 
 router.put("/", isLoggedIn, users.updateFields);
