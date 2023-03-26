@@ -11,6 +11,7 @@ router.post("/register", isNotLoggedIn, users.register);
 router.post("/verify", isNotLoggedIn, users.verify);
 router.post("/login/guest", forceNotLoggedIn, users.loginGuest);
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
+router.post("/login/verify", forceNotLoggedIn, users.loginVerify);
 router.get("/logout", isLoggedIn, users.logout);
 
 router.put("/", isLoggedIn, users.updateFields);

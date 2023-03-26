@@ -18,7 +18,7 @@ import { cipher, decipher } from "../utils/crypto";
 /**
  * Register
  *
- * @body {email, password}
+ * @body {email}
  */
 export const register = async (req: Request, res: Response) => {
   try {
@@ -28,8 +28,8 @@ export const register = async (req: Request, res: Response) => {
         .status(409)
         .send({ message: `email ${req.body.email} is already in use` });
 
-    // userId, password 유효성 검사
-    // ...
+    // email 유효성 검사
+
     const code = generateRandomNumber(6);
     sendEmail({
       to: req.body.email,
@@ -39,7 +39,6 @@ export const register = async (req: Request, res: Response) => {
     });
     await Promise.all([
       client.v4.hSet(req.body.email, "code", cipher(code)),
-      client.v4.hSet(req.body.email, "password", cipher(req.body.password)),
       client.expire(req.body.email, 60 * 5),
     ]);
     return res.status(200).send({});
@@ -58,11 +57,8 @@ export const verify = async (req: Request, res: Response) => {
     if (!("email" in req.body) || !("code" in req.body))
       return res.status(400).send({ message: "required field is missing" });
 
-    const [code, password] = await Promise.all([
-      client.v4.hGet(req.body.email, "code"),
-      client.v4.hGet(req.body.email, "password"),
-    ]);
-    if (!code || !password)
+    const code = await client.v4.hGet(req.body.email, "code");
+    if (!code)
       return res.status(404).send({ message: "verification code is expired" });
 
     if (decipher(code) !== req.body.code)
@@ -70,10 +66,10 @@ export const verify = async (req: Request, res: Response) => {
 
     const user = new User({
       email: req.body.email,
-      password: decipher(password),
     });
     await user.save();
     await client.del(req.body.email);
+
     return res.status(200).send({});
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
@@ -125,13 +121,38 @@ export const loginGuest = async (req: Request, res: Response) => {
 /**
  * Login (local)
  *
- * @body {email: 'user00001', password: 'asdfasdf!!'}
+ * @body {email: 'user00001'}
  */
-export const loginLocal = async (
+export const loginLocal = async (req: Request, res: Response) => {
+  const code = generateRandomNumber(6);
+  sendEmail({
+    to: req.body.email,
+    subject: "로그인 인증 메일입니다.",
+    html: `로그인 확인 코드는 [ ${code} ]입니다. <br/>
+    코드는 5분간 유효합니다.`,
+  });
+  await Promise.all([
+    client.v4.hSet(req.body.email, "code", cipher(code)),
+    client.expire(req.body.email, 60 * 5),
+  ]);
+  return res.status(200).send({});
+};
+
+/**
+ * Login Verification (local)
+ *
+ * @body {email: 'user00001', code: '123123'}
+ */
+export const loginVerify = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  if (!("email" in req.body))
+    return res.status(400).send({ message: "field(email) is required" });
+  if (!("code" in req.body))
+    return res.status(400).send({ message: "field(code) is required" });
+
   passport.authenticate(
     "local",
     (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
