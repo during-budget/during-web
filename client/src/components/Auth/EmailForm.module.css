@@ -25,6 +25,16 @@
     margin-bottom: var(--size-10);
 }
 
+.emailField {
+    margin-bottom: var(--size-11);
+}
+
+.emailLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .code {
     margin-bottom: var(--size-4);
 }

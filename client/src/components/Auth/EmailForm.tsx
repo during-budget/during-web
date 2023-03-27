@@ -47,7 +47,6 @@ function EmailForm(props: {
         let data;
         try {
             const code = codeRef.current!.value();
-            console.log(code);
 
             // TODO: 자동로그인(persist) 체크박스 추가
             const persist = true;
@@ -60,8 +59,6 @@ function EmailForm(props: {
 
             // TODO: 로그인 처리 & 카테고리 및 budget 처리
             props.getUserLogin(data.user);
-
-            setEmailVerifyState(false);
         } catch (error) {
             throwError(error);
         }
@@ -78,9 +75,16 @@ function EmailForm(props: {
             <form className={classes.form}>
                 <InputField
                     id="auth-email-field"
-                    className={classes.field}
-                    isFloatLabel={true}
+                    className={`${classes.field} ${classes.emailField}`}
                 >
+                    <p className={classes.emailLabel}>
+                        <label htmlFor="register-email">이메일</label>
+                        {emailVerifyState && (
+                            <Button sizeClass="sm" onClick={sendHandler}>
+                                재전송
+                            </Button>
+                        )}
+                    </p>
                     <input
                         id="auth-email"
                         type="email"
@@ -88,7 +92,6 @@ function EmailForm(props: {
                         onChange={emailHandler}
                         required
                     />
-                    <label htmlFor="auth-email">이메일</label>
                 </InputField>
                 {emailVerifyState ? (
                     <>
@@ -107,7 +110,9 @@ function EmailForm(props: {
                         className={classes.submit}
                         onClick={sendHandler}
                     >
-                        인증코드 전송
+                        {isLogin
+                            ? '로그인 인증코드 전송'
+                            : '회원가입 인증코드 전송'}
                     </Button>
                 )}
             </form>
