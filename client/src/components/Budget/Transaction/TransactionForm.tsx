@@ -96,11 +96,6 @@ function TransactionForm(props: { budgetId: string }) {
         // add or replace
         await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
         dispatchAmount(transaction);
-
-        // scroll to
-        const target = document.getElementById(transaction.id);
-        target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
         clearForm();
     };
 
