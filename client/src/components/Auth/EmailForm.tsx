@@ -3,7 +3,7 @@ import classes from './EmailForm.module.css';
 import logo from '../../assets/png/logo.png';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
-import CodeField from '../Authh/CodeField';
+import CodeField from '../Auth/CodeField';
 import { throwError } from '../../util/error';
 import {
     sendCodeLogin,
@@ -16,6 +16,7 @@ function EmailForm(props: {
     isLogin: boolean;
     toggleIsLogin: () => void;
     changeAuthType: () => void;
+    getUserLogin: (user: any) => void;
 }) {
     const { isLogin, toggleIsLogin } = props;
 
@@ -58,7 +59,7 @@ function EmailForm(props: {
             }
 
             // TODO: 로그인 처리 & 카테고리 및 budget 처리
-            // props.setUserData(data.user);
+            props.getUserLogin(data.user);
 
             setEmailVerifyState(false);
         } catch (error) {
@@ -129,6 +130,3 @@ function EmailForm(props: {
 }
 
 export default EmailForm;
-function verifyRegister(verifyingEmail: string, code: any, arg2: boolean) {
-    throw new Error('Function not implemented.');
-}
