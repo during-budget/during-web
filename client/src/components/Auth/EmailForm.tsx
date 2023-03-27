@@ -5,6 +5,11 @@ import InputField from '../UI/InputField';
 import Button from '../UI/Button';
 import CodeField from '../Authh/CodeField';
 import { throwError } from '../../util/error';
+import {
+    sendCodeLogin,
+    sendCodeRegister,
+    verifyLogin,
+} from '../../util/api/userAPI';
 
 function EmailForm(props: {
     isLogin: boolean;
@@ -24,8 +29,14 @@ function EmailForm(props: {
         event!.preventDefault();
 
         try {
-            // await sendCodeLogin(emailState);
             verifyingEmail = emailState;
+
+            if (isLogin) {
+                await sendCodeLogin(verifyingEmail);
+            } else {
+                await sendCodeRegister(verifyingEmail);
+            }
+
             setEmailVerifyState(true);
         } catch (error) {
             throwError(error);
@@ -41,7 +52,15 @@ function EmailForm(props: {
             console.log(code);
 
             // TODO: 자동로그인(persist) 체크박스 추가
-            // data = await verifyLogin(verifyingEmail, code, true);
+            const persist = true;
+
+            if (isLogin) {
+                data = await verifyLogin(verifyingEmail, code, persist);
+            } else {
+                data= await verifyRegister(verifyingEmail, code, persist);
+            }
+
+            // TODO: 로그인 처리 & 카테고리 및 budget 처리
             // props.setUserData(data.user);
 
             setEmailVerifyState(false);
@@ -73,25 +92,24 @@ function EmailForm(props: {
                     />
                     <label htmlFor="auth-email">이메일</label>
                 </InputField>
-                {!emailVerifyState && (
+                {emailVerifyState ? (
+                    <>
+                        <CodeField className={classes.code} ref={codeRef} />
+                        <Button
+                            type="submit"
+                            className={classes.submit}
+                            onClick={verifyHandler}
+                        >
+                            로그인하기
+                        </Button>
+                    </>
+                ) : (
                     <Button
                         type="submit"
                         className={classes.submit}
                         onClick={sendHandler}
                     >
                         인증코드 전송
-                    </Button>
-                )}
-                {emailVerifyState && (
-                    <CodeField className={classes.code} ref={codeRef} />
-                )}
-                {emailVerifyState && (
-                    <Button
-                        type="submit"
-                        className={classes.submit}
-                        onClick={verifyHandler}
-                    >
-                        로그인하기
                     </Button>
                 )}
             </form>
@@ -114,3 +132,6 @@ function EmailForm(props: {
 }
 
 export default EmailForm;
+function verifyRegister(verifyingEmail: string, code: any, arg2: boolean) {
+    throw new Error('Function not implemented.');
+}
