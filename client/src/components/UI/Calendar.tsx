@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs, months } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
 import 'dayjs/locale/ko';
 import 'dayjs/locale/en';
@@ -45,6 +45,12 @@ function Calendar(props: {
         let week: (Dayjs | null)[] = [];
 
         dates.forEach((date) => {
+            // to next week
+            if (week.length > 0 && date.day() === 0) {
+                weeks.push(week);
+                week = [];
+            }
+
             // set start point of first week
             if (weeks.length === 0 && week.length === 0) {
                 for (let i = 0; i < date.day(); i++) {
@@ -54,12 +60,6 @@ function Calendar(props: {
 
             // collect days for week
             week.push(date);
-
-            // to next week
-            if (week.length > 0 && date.day() === 0) {
-                weeks.push(week);
-                week = [];
-            }
         });
 
         if (week.length > 0) {
@@ -84,7 +84,11 @@ function Calendar(props: {
                 day?.get('date') === 1 ||
                 day?.get('date') === startDate.getDate()
             ) {
-                return <td key={i}>{day?.format('MMM')}</td>;
+                return (
+                    <td key={i} className={classes.month}>
+                        {day?.format('MMM')}
+                    </td>
+                );
             } else {
                 return <td key={i} />;
             }
@@ -99,7 +103,9 @@ function Calendar(props: {
                 {!isMonthTop && getMonthTr(week, i)}
                 <tr key={i}>
                     {week.map((day, i) => (
-                        <td key={i}>{day?.format('D')}</td>
+                        <td key={i} className={classes.date}>
+                            {day?.format('D')}
+                        </td>
                     ))}
                 </tr>
             </Fragment>
@@ -107,7 +113,7 @@ function Calendar(props: {
     });
 
     return (
-        <div>
+        <div className={classes.container}>
             {isMonthTop && <h6>{monthState}</h6>}
             <table>
                 <thead>
