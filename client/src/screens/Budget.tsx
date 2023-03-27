@@ -50,7 +50,11 @@ function Budget() {
                     initialIndex={1}
                     itemClassName={classes.status}
                 >
-                    <DateStatus date={date} transactions={transactions} />
+                    <DateStatus
+                        title={title}
+                        date={date}
+                        transactions={transactions}
+                    />
                     <TotalStatus budgetId={id} total={total} />
                     <CategoryStatus budgetId={id} categories={categories} />
                 </Carousel>
