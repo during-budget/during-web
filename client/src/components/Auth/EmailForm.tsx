@@ -9,6 +9,7 @@ import {
     sendCodeLogin,
     sendCodeRegister,
     verifyLogin,
+    verifyRegister,
 } from '../../util/api/userAPI';
 
 function EmailForm(props: {
@@ -22,19 +23,15 @@ function EmailForm(props: {
     const [emailVerifyState, setEmailVerifyState] = useState(false);
     const codeRef = useRef<any>();
 
-    let verifyingEmail = '';
-
     // Handlers
     const sendHandler = async (event?: React.MouseEvent) => {
         event!.preventDefault();
 
         try {
-            verifyingEmail = emailState;
-
             if (isLogin) {
-                await sendCodeLogin(verifyingEmail);
+                await sendCodeLogin(emailState);
             } else {
-                await sendCodeRegister(verifyingEmail);
+                await sendCodeRegister(emailState);
             }
 
             setEmailVerifyState(true);
@@ -55,9 +52,9 @@ function EmailForm(props: {
             const persist = true;
 
             if (isLogin) {
-                data = await verifyLogin(verifyingEmail, code, persist);
+                data = await verifyLogin(emailState, code, persist);
             } else {
-                data= await verifyRegister(verifyingEmail, code, persist);
+                data = await verifyRegister(emailState, code, persist);
             }
 
             // TODO: 로그인 처리 & 카테고리 및 budget 처리
@@ -100,7 +97,7 @@ function EmailForm(props: {
                             className={classes.submit}
                             onClick={verifyHandler}
                         >
-                            로그인하기
+                            {isLogin ? '로그인' : '회원가입'}
                         </Button>
                     </>
                 ) : (
