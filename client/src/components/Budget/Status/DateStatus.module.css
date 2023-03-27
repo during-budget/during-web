@@ -2,16 +2,6 @@
     margin-bottom: var(--size-10);
 }
 
-.content {
-    padding-top: var(--size-11);
-    font-size: var(--size-8);
-    font-weight: 400;
-}
-
-.expense {
-    color: var(--gray-4);
-}
-
-.income {
-    color: var(--gray-3);
+.weekly {
+    margin-top: 0.5rem;
 }
