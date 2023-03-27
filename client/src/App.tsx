@@ -7,9 +7,7 @@ import {
 import Root from './layout/Root';
 import Nav from './layout/Nav';
 import ErrorBoundary from './layout/ErrorBoundary';
-import BudgetNavigation, {
-    loader as budgetListLoader,
-} from './layout/BudgetNavigation';
+import BudgetNavigation from './layout/BudgetNavigation';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import User from './screens/User';
@@ -37,7 +35,6 @@ const router = createBrowserRouter([
                     {
                         path: '/budget',
                         element: <BudgetNavigation />,
-                        loader: budgetListLoader,
                     },
                     {
                         path: '/budget/:budgetId',
