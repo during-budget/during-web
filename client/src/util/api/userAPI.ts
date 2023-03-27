@@ -24,7 +24,7 @@ export const sendCodeRegister = async (email: string) => {
     return data;
 };
 
-export const verifyRgister = async (
+export const verifyRegister = async (
     email: string,
     code: string,
     persist: boolean
