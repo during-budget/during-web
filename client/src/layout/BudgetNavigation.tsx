@@ -1,37 +1,20 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Navigate, useLoaderData } from 'react-router-dom';
-import { budgetActions } from '../store/budget';
-import { getBudgetList } from '../util/api/budgetAPI';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 function BudgetNavigation() {
-    const dispatch = useDispatch();
-    const loaderData: any = useLoaderData();
-
-    useEffect(() => {
-        dispatch(budgetActions.setBudgets(loaderData.budgets.budgets));
-    }, []);
-
-    return <Navigate to={`/budget/${loaderData.id}`} replace={true} />;
-}
-
-export const loader = async () => {
-    const budgets: any = await getBudgetList();
+    const budgets = useSelector((state: any) => state.budget);
     const id = getCurrentBudgetId(budgets);
 
-    return {
-        budgets,
-        id,
-    };
-};
+    return <Navigate to={`/budget/${id}`} replace={true} />;
+}
 
-const getCurrentBudgetId = (data: any) => {
+const getCurrentBudgetId = (budgets: any) => {
     const now = new Date();
 
     let id = 'new';
-    data.budgets.forEach((budget: any) => {
-        const start = new Date(budget.startDate);
-        const end = new Date(budget.endDate);
+    budgets.forEach((budget: any) => {
+        const start = new Date(budget.date.start);
+        const end = new Date(budget.date.end);
         const isCurrentBudget = start < now && now < end;
         if (isCurrentBudget) {
             id = budget._id;

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLoaderData, useLocation, useNavigate } from 'react-router';
 import EmailForm from '../components/Auth/EmailForm';
 import SNSForm from '../components/Auth/SNSForm';
 import Overlay from '../components/UI/Overlay';
@@ -12,10 +13,36 @@ import classes from './Auth.module.css';
 
 function Auth() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [isEmailAuth, setIsEmailAuth] = useState(true);
     const [isLogin, setIsLogin] = useState(true);
 
+    // Get login
+    const location = useLocation();
+    const loaderData: any = useLoaderData();
+    const from = location.state?.from?.pathname;
+
+    useEffect(() => {
+        if (loaderData) {
+            getUserLogin(loaderData.user);
+        }
+    }, [loaderData]);
+
+    const getUserLogin = async (user: any) => {
+        // set user data
+        dispatch(userActions.login());
+        dispatch(categoryActions.setCategories(user.categories));
+
+        // set budget data
+        const budgetsData = await getBudgetList();
+        const budgets = budgetsData.budgets;
+        dispatch(budgetActions.setBudgets(budgets));
+
+        navigate(from || '/budget', { replace: true });
+    };
+
+    // Set state
     const setEmailAuth = () => {
         setIsEmailAuth(true);
     };
@@ -26,19 +53,6 @@ function Auth() {
 
     const toggleIsLogin = () => {
         setIsLogin((prev) => !prev);
-    };
-
-    const getUserLogin = async (user: any) => {
-        // Set user data
-        dispatch(userActions.login());
-        dispatch(categoryActions.setCategories(user.categories));
-
-        // Set budget data
-        const budgetListData = await getBudgetList();
-        console.log(budgetListData);
-        dispatch(budgetActions.setBudgets(budgetListData.budgets.budgets));
-
-        // TODO: Navigate to service -> New budget || Recent (date or vistied) budget
     };
 
     return (
