@@ -3,7 +3,7 @@ import classes from './Button.module.css';
 function Button(props: {
     type?: 'button' | 'submit' | 'reset';
     className?: string;
-    onClick?: () => void;
+    onClick?: (event?: React.MouseEvent) => void;
     disabled?: boolean;
     styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
     sizeClass?: 'lg' | 'md' | 'sm';
