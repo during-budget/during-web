@@ -1,115 +1,129 @@
+import { Fragment, useEffect, useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
+import localeData from 'dayjs/plugin/localeData';
+import 'dayjs/locale/ko';
+import 'dayjs/locale/en';
 import classes from './Calendar.module.css';
-import {
-    getLongMonth,
-    getNumericHypenDateString,
-    getWeekDays,
-} from '../../util/date';
+import { getMonthsOfWeek } from '../../util/date';
+
+dayjs.extend(localeData);
 
 function Calendar(props: {
     startDate: Date;
     endDate: Date;
-    width?: string;
-    week?: number | boolean;
-    getDateStatus?: (date: Date) => void;
-    onClick?: (event: React.MouseEvent) => void;
+    isMonthTop?: boolean;
+    weekIdx?: number;
+    locale?: string;
 }) {
-    const { startDate, endDate } = props;
-    const locale = navigator.language;
+    const { startDate, endDate, isMonthTop, weekIdx, locale } = props;
+    const [dates, setDates] = useState<Dayjs[]>([]);
+    const [weeks, setWeeks] = useState<(Dayjs | null)[][]>([]);
+    const [monthState, setMonthState] = useState('');
 
-    const getMonthTr = (date: Date, currIdx: number) => {
-        const month = [];
+    const propsCode = locale?.split('-')[0] || '';
+    const code = ['ko', 'en'].includes(propsCode) ? propsCode : 'en';
+    dayjs.locale(code);
 
-        // NOTE: set position to currIdx
-        for (let i = 0; i < currIdx; i++) {
-            month.push(<td key={i} />);
+    // date
+    useEffect(() => {
+        const start = dayjs(startDate);
+        const end = dayjs(endDate);
+        const diff = end.diff(start, 'days');
+
+        const dates = [];
+        for (let i = 0; i <= diff; i++) {
+            const date = dayjs(startDate).add(i, 'days');
+            dates.push(date);
         }
 
-        month.push(
-            <td className={classes.month} key={`month-${date.getMonth()}`}>
-                {getLongMonth(date, locale)}
-            </td>
-        );
+        setDates(dates);
+    }, [startDate, endDate]);
 
-        return month;
-    };
+    // weeks
+    useEffect(() => {
+        const weeks: (Dayjs | null)[][] = [];
+        let week: (Dayjs | null)[] = [];
 
-    const getWeekTr = () => {
-        const weeks = [];
-
-        const date = new Date(startDate);
-        let key = 0;
-
-        while (date < endDate) {
-            const weekTr = [];
-
-            for (let i = 0; i < 7 && date < endDate; i++) {
-                const currDay = date.getDate();
-                const currDayOfWeek = date.getDay();
-
-                // NOTE: 요일에 맞춰 날짜 표시하기 위한 if문
-                if (currDayOfWeek === i) {
-                    // monthTr
-                    if (currDay === 1 || currDay === startDate.getDate()) {
-                        const monthTr = (
-                            <tr key={`month-${key}`}>{getMonthTr(date, i)}</tr>
-                        );
-                        weeks.push(monthTr);
-                    }
-
-                    // weekTr <- dayTd
-                    const dayTd = (
-                        <td
-                            className={classes.date}
-                            key={`date-${i}`}
-                            data-date={getNumericHypenDateString(date)}
-                        >
-                            <div className={classes.center}>
-                                <>
-                                    <span>{currDay}</span>
-                                    {props.getDateStatus &&
-                                        props.getDateStatus(date)}
-                                </>
-                            </div>
-                        </td>
-                    );
-                    weekTr.push(dayTd);
-
-                    date.setDate(currDay + 1);
-                } else {
-                    weekTr.push(<td key={`date-${i}`}></td>);
+        dates.forEach((date) => {
+            // set start point of first week
+            if (weeks.length === 0 && week.length === 0) {
+                for (let i = 0; i < date.day(); i++) {
+                    week.push(null);
                 }
             }
 
-            weeks.push(<tr key={`week-${key}`}>{[...weekTr]}</tr>);
-            key++;
+            // collect days for week
+            week.push(date);
+
+            // to next week
+            if (week.length > 0 && date.day() === 0) {
+                weeks.push(week);
+                week = [];
+            }
+        });
+
+        if (week.length > 0) {
+            weeks.push(week);
         }
 
-        return weeks;
+        setWeeks(weeks);
+    }, [dates]);
+
+    // month
+    useEffect(() => {
+        if (weekIdx !== undefined) {
+            const month = getMonthsOfWeek(weeks[weekIdx]);
+            setMonthState(month);
+        }
+    }, [weeks, weekIdx]);
+
+    // <tr>
+    const getMonthTr = (week: (Dayjs | null)[], i: number) => {
+        const tds = week.map((day, i) => {
+            if (
+                day?.get('date') === 1 ||
+                day?.get('date') === startDate.getDate()
+            ) {
+                return <td key={i}>{day?.format('MMM')}</td>;
+            } else {
+                return <td key={i} />;
+            }
+        });
+
+        return <tr key={i + '-month'}>{tds}</tr>;
     };
 
-    return (
-        <table
-            className={classes.container}
-            style={props.width ? { width: props.width } : {}}
-            onClick={props.onClick}
-        >
-            <thead>
-                <tr>
-                    {getWeekDays(locale).map((day) => (
-                        <th className={classes.day} key={day}>
-                            {day}
-                        </th>
+    const weekTr = weeks.map((week, i) => {
+        return (
+            <Fragment key={i}>
+                {!isMonthTop && getMonthTr(week, i)}
+                <tr key={i}>
+                    {week.map((day, i) => (
+                        <td key={i}>{day?.format('D')}</td>
                     ))}
                 </tr>
-            </thead>
-            <tbody>
-                {props.week || props.week === 0
-                    ? getWeekTr().filter(
-                          (week) => week.key === `week-${props.week}`
-                      )
-                    : getWeekTr()}
-            </tbody>
-        </table>
+            </Fragment>
+        );
+    });
+
+    return (
+        <div>
+            {isMonthTop && <h6>{monthState}</h6>}
+            <table>
+                <thead>
+                    <tr>
+                        {dayjs.weekdaysShort().map((day: string, i) => (
+                            <th key={i} className={classes.day}>
+                                {day?.toUpperCase()}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {weekIdx !== undefined ? weekTr[weekIdx] : weekTr}
+                </tbody>
+            </table>
+        </div>
     );
 }
 
