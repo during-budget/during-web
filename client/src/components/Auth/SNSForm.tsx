@@ -7,6 +7,7 @@ function SNSForm(props: {
     isLogin: boolean;
     toggleIsLogin: () => void;
     changeAuthType: () => void;
+    getUserLogin: (user: any) => void;
 }) {
     const { isLogin, toggleIsLogin } = props;
 
