@@ -50,6 +50,8 @@ interface IBudget {
   incomeCurrent: number;
   incomePlanned: number;
   categories: ICategory[];
+  updatedAt?: Date;
+  createdAt?: Date;
 }
 
 interface IBudgetProps {

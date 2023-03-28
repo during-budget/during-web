@@ -35,6 +35,8 @@ interface ITransaction {
   category: ICategory;
   tags: [string];
   memo: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const transactionSchema = new Schema<ITransaction>(
