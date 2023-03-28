@@ -29,6 +29,7 @@ interface IUser {
   birthdate?: Date;
   gender?: string;
   tel?: string;
+  basicBudgetId: Types.ObjectId;
 }
 
 interface IUserProps {
@@ -180,6 +181,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     birthdate: Date,
     gender: String,
     tel: String,
+    basicBudgetId: Schema.Types.ObjectId,
   },
   { timestamps: true }
 );
