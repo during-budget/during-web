@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
+import { Types } from "mongoose";
 import { Budget } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
@@ -71,6 +72,69 @@ export const create = async (req: Request, res: Response) => {
     await budget.save();
 
     return res.status(200).send({ budget });
+  } catch (err: any) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+/**
+ * Create budget based on basic budget
+ *
+ * @body { startDate,endDate, title, expensePlanned,incomePlanned,categories}
+ * @return budget
+ */
+export const createWithBasic = async (req: Request, res: Response) => {
+  try {
+    if (!("year" in req.body) || !("month" in req.body)) {
+      return res.status(400).send({ message: "body(year, month) is missing" });
+    }
+
+    const startDate = new Date(req.body.year, req.body.month - 1, 1, 9);
+    const lastDate = new Date(req.body.year, req.body.month, 0);
+    const endDate = new Date(
+      req.body.year,
+      req.body.month - 1,
+      lastDate.getDate(),
+      9
+    );
+
+    const user = req.user!;
+
+    const budget = await Budget.findById(user.basicBudgetId);
+    if (!budget) return res.status(404).send();
+
+    const transactions = await Transaction.find({
+      budgetId: budget._id,
+    });
+
+    budget.isNew = true;
+    budget._id = new Types.ObjectId();
+    budget.title = req.body.title ?? budget.title;
+    budget.startDate = startDate;
+    budget.endDate = endDate;
+    budget.createdAt = undefined;
+    budget.updatedAt = undefined;
+
+    const save: Promise<any>[] = [budget.save()];
+
+    for (let transaction of transactions) {
+      transaction.isNew = true;
+      transaction._id = new Types.ObjectId();
+      transaction.budgetId = budget._id;
+      transaction.date = new Date(
+        req.body.year,
+        req.body.month - 1,
+        transaction.date.getDate(),
+        9
+      );
+      transaction.createdAt = undefined;
+      transaction.updatedAt = undefined;
+      save.push(transaction.save());
+    }
+
+    await Promise.all(save);
+
+    return res.status(200).send({ budget, transactions });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }

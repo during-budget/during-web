@@ -4,6 +4,7 @@ import { isLoggedIn } from "../middleware/auth";
 import * as budgets from "../controllers/budgets";
 
 router.post("/", isLoggedIn, budgets.create);
+router.post("/basic", isLoggedIn, budgets.createWithBasic);
 
 router.post("/:_id/category", isLoggedIn, budgets.createCategory);
 router.put(
