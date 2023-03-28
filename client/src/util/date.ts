@@ -36,6 +36,21 @@ export const getLongMonth = (date: Date, locale: string) => {
     return date.toLocaleString(locale, { month: 'long' });
 };
 
+export const isToday = (day: Dayjs | Date | null) => {
+    if (day === null) {
+        return false;
+    }
+
+    let dayjsDay;
+    if (day instanceof Date) {
+        dayjsDay = dayjs(day);
+    } else {
+        dayjsDay = day;
+    }
+
+    return dayjsDay.format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD');
+};
+
 export const getMonthsOfWeek = (week: (Dayjs | null)[]) => {
     const weekDays = week.filter((item) => item);
     const start = weekDays[0];
