@@ -38,3 +38,24 @@
     background-color: #f6f6f6;
     border-radius: 0.5rem;
 }
+
+.today {
+    font-weight: 800;
+    color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.today::after {
+    content: '';
+    display: block;
+    background-color: var(--primary);
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+}
+
+.after {
+    opacity: 0.45;
+}
