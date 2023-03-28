@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Budget } from "../models/Budget";
 import { User } from "../models/User";
 import { client } from "../redis";
 import { decipher } from "../utils/crypto";
@@ -29,6 +30,29 @@ const register = () => {
         const user = new User({
           email,
         });
+
+        const defaultExpenseCategory = user.findDefaultExpenseCategory();
+        const defaultIncomeCategory = user.findDefaultIncomeCategory();
+
+        const budget = new Budget({
+          userId: user._id,
+          title: "기본 예산",
+          categories: [
+            {
+              ...defaultExpenseCategory,
+              categoryId: defaultExpenseCategory._id,
+              amountPlanned: 0,
+            },
+            {
+              ...defaultIncomeCategory,
+              categoryId: defaultIncomeCategory._id,
+              amountPlanned: 0,
+            },
+          ],
+        });
+
+        user.basicBudgetId = budget._id;
+        await budget.save();
         await user.save();
         await client.del(email);
 
