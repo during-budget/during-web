@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import classes from './DateStatus.module.css';
 import Transaction from '../../../models/Transaction';
-import { getWeekNames, getWeekNumbers } from '../../../util/date';
+import { getNumericHypenDateString, getWeekNames, getWeekNumbers } from '../../../util/date';
 import Calendar from '../../UI/Calendar';
 import IndexNav from '../../UI/IndexNav';
 import RadioTab from '../../UI/RadioTab';
 import StatusHeader from './StatusHeader';
+import IncomeExpenseAmount from '../Amount/IncomeExpenseAmount';
 
 function DateStatus(props: {
     title: string;
@@ -61,6 +62,8 @@ function DateStatus(props: {
                 startDate={date.start}
                 endDate={date.end}
                 locale={navigator.language}
+                data={getMonthlyStatus(transactions)}
+                blurAfterToday={true}
             />
             <RadioTab name="date-status-action" values={actionTabs} />
         </>
@@ -81,6 +84,7 @@ function DateStatus(props: {
                 isMonthTop={true}
                 weekIdx={weekNum}
                 locale={navigator.language}
+                blurAfterToday={true}
             />
             <IndexNav idx={weekNum} setIdx={setWeekNum} data={weekNames} />
             <ul>
@@ -105,5 +109,52 @@ function DateStatus(props: {
         </>
     );
 }
+
+const getMonthlyStatus = (transactions: Transaction[]) => {
+    const dailyAmount = getDailyAmount(transactions);
+    const status: any = {};
+
+    for (const date in dailyAmount) {
+        const amount = dailyAmount[date];
+        const { income, expense } = amount;
+        status[date] = (
+            <IncomeExpenseAmount income={income} expense={expense} />
+        );
+    }
+
+    return status;
+};
+
+const getWeeklyStatus = (dailyAmount: any) => {};
+
+const getDailyAmount = (transactions: Transaction[]) => {
+    const amounts: any = {};
+
+    transactions.forEach((item) => {
+        const { date, isCurrent, isExpense, amount, linkId } = item;
+        const dateStr = getNumericHypenDateString(date);
+
+        const key = isExpense ? 'expense' : 'income';
+        const now = new Date();
+
+        // NOTE: 합산 제외
+        const beforeToday = date < now && !isCurrent; // 오늘 이전 날짜의 예정내역
+        const isDone = !isCurrent && linkId; // 완료된 예정 내역
+        if (beforeToday || isDone) {
+            return;
+        }
+
+        if (!amounts[dateStr]) {
+            amounts[dateStr] = {
+                income: 0,
+                expense: 0,
+            };
+        }
+
+        amounts[dateStr][key] += amount;
+    });
+
+    return amounts;
+};
 
 export default DateStatus;
