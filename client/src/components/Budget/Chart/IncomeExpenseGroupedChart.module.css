@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+}
+
+.chart {
+    display: flex;
+    flex-direction: column;
+}
+
+.bars {
+    flex: 1 1 auto;
+}
+
+.label {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: var(--size-7);
+    font-weight: 700;
+    flex-shrink: 0;
+}
