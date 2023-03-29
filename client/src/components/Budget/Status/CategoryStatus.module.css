@@ -1,0 +1,14 @@
+.edit {
+    position: relative;
+    padding: 1rem 0;
+    font-size: var(--size-7);
+}
+
+.edit::after {
+    content: '\f303';
+    font: var(--fa-font-solid);
+    font-size: var(--size-8);
+    position: absolute;
+    top: var(--size-5);
+    right: calc(-1 * var(--size-5));
+}

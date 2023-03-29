@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import classes from './CategoryStatus.module.css';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
 import StatusHeader from './StatusHeader';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import IndexNav from '../../UI/IndexNav';
+import Button from '../../UI/Button';
 import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
@@ -14,6 +16,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
 
     const [isExpense, setIsExpense] = useState(true);
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
+    const [isShowEdit, setIsShowEdit] = useState(false);
 
     const categories = props.categories.filter((item: Category) =>
         isExpense ? item.isExpense : !item.isExpense
@@ -88,6 +91,14 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                 setIdx={setCurrentCategoryIdx}
                 data={categoryNames}
             />
+            <Button
+                styleClass="extra"
+                onClick={() => {
+                    setIsShowEdit(true);
+                }}
+            >
+                <span className={classes.edit}>카테고리 목표 편집</span>
+            </Button>
         </>
     );
 }
