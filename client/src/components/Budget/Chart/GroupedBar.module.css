@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 0.1rem;
+}
+
+.container li {
+    border-radius: 0.25rem;
+    transition: 0.3s ease-in-out;
+}
+
+.container li.sm {
+    width: 1rem;
+}
