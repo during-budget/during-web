@@ -27,7 +27,6 @@
     position: relative;
     padding-top: var(--size-11);
     font-size: var(--size-7);
-    height: 4rem;
     vertical-align: top;
     font-weight: 300;
 }

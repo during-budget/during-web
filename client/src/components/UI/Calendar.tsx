@@ -16,6 +16,7 @@ function Calendar(props: {
     weekIdx?: number;
     locale?: string;
     blurAfterToday?: boolean;
+    cellHeight?: string;
 }) {
     const { startDate, endDate, isMonthTop, weekIdx, locale } = props;
     const [dates, setDates] = useState<Dayjs[]>([]);
@@ -46,6 +47,10 @@ function Calendar(props: {
         const weeks: (Dayjs | null)[][] = [];
         let week: (Dayjs | null)[] = [];
 
+        if (dates.length === 0) {
+            return;
+        }
+
         dates.forEach((date) => {
             // to next week
             if (week.length > 0 && date.day() === 0) {
@@ -73,6 +78,10 @@ function Calendar(props: {
 
     // month
     useEffect(() => {
+        if (weeks.length === 0) {
+            return;
+        }
+
         if (weekIdx !== undefined) {
             const month = getMonthsOfWeek(weeks[weekIdx]);
             setMonthState(month);
@@ -119,6 +128,7 @@ function Calendar(props: {
                         <td
                             key={i}
                             className={`${classes.date} ${getTdClass(day)}`}
+                            style={{ height: props.cellHeight || 'auto' }}
                         >
                             <span className={isToday(day) ? classes.today : ''}>
                                 {day?.format('D')}
