@@ -10,4 +10,5 @@
 
 .date {
     margin-bottom: var(--size-6);
+    scroll-margin: 10vh;
 }

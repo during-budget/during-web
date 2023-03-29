@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import dayjs, { Dayjs, months } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
 import 'dayjs/locale/ko';
@@ -12,6 +12,8 @@ function Calendar(props: {
     startDate: Date;
     endDate: Date;
     data?: any;
+    onClick?: (event: React.MouseEvent) => void;
+    onDateClick?: (event: React.MouseEvent) => void;
     isMonthTop?: boolean;
     weekIdx?: number;
     locale?: string;
@@ -129,6 +131,8 @@ function Calendar(props: {
                             key={i}
                             className={`${classes.date} ${getTdClass(day)}`}
                             style={{ height: props.cellHeight || 'auto' }}
+                            data-date={day?.format('YYYY-MM-DD')}
+                            onClick={props.onDateClick}
                         >
                             <span className={isToday(day) ? classes.today : ''}>
                                 {day?.format('D')}
@@ -146,7 +150,7 @@ function Calendar(props: {
     return (
         <div className={classes.container}>
             {isMonthTop && <h6>{monthState}</h6>}
-            <table>
+            <table onClick={props.onClick}>
                 <thead>
                     <tr>
                         {dayjs.weekdaysShort().map((day: string, i) => (
