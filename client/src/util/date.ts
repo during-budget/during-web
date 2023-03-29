@@ -52,7 +52,7 @@ export const isToday = (day: Dayjs | Date | null) => {
 };
 
 export const getMonthsOfWeek = (week: (Dayjs | null)[]) => {
-    const weekDays = week.filter((item) => item);
+    const weekDays = week?.filter((item) => item);
     const start = weekDays[0];
     const end = weekDays[weekDays.length - 1];
     return getMonthsBetweenDate(start, end);
@@ -112,4 +112,32 @@ export const getWeekNumbers = (
     const weekNames = WEEK_NAMES[locale] || WEEK_NAMES['en-US'];
 
     return weekNames.slice(0, weekLength);
+};
+
+// TODO: 2-3월 같이 걸친 기간에서도 제대로 동작하는지 확인 필요
+export const getWeekIdx = (date: Date, range: { start: Date; end: Date }) => {
+    const startOfWeekDate = dayjs(range.start).startOf('week');
+    const diffWeeks = dayjs(date).diff(startOfWeekDate, 'week');
+
+    return diffWeeks;
+};
+
+export const getWeekDays = (weekIdx: number, startDate: Date) => {
+    const startOfWeek = dayjs(startDate).startOf('week');
+    const startOfRequestedWeek = startOfWeek.add(weekIdx, 'week');
+    const endOfRequestedWeek = startOfWeek
+        .add(weekIdx + 1, 'week')
+        .subtract(1, 'day');
+    const dates = [];
+    let date = startOfRequestedWeek;
+
+    while (
+        date.isBefore(endOfRequestedWeek) ||
+        date.isSame(endOfRequestedWeek, 'day')
+    ) {
+        dates.push(date.format('YYYY-MM-DD'));
+        date = date.add(1, 'day');
+    }
+
+    return dates;
 };
