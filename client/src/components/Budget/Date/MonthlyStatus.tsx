@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { transactionActions } from '../../../store/transaction';
+import { uiActions } from '../../../store/ui';
 import Calendar from '../../UI/Calendar';
 import RadioTab from '../../UI/RadioTab';
 import IncomeExpenseAmount from '../Amount/IncomeExpenseAmount';
@@ -7,6 +10,7 @@ function MonthlyStatus(props: {
     date: { start: Date; end: Date };
     dailyAmountObj: any;
 }) {
+    const dispatch = useDispatch();
     const [isView, setIsView] = useState(true);
 
     const actionTabs = [
@@ -25,6 +29,34 @@ function MonthlyStatus(props: {
         },
     ];
 
+    const clickHandler = async (event: React.MouseEvent) => {
+        const date = getDate(event);
+
+        if (isView) {
+            await dispatch(uiActions.setIsCurrent(true));
+            const dateList = document.getElementById(date);
+            dateList?.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            dispatch(
+                transactionActions.setForm({
+                    mode: { isExpand: true },
+                    default: { date },
+                })
+            );
+        }
+    };
+
+    const getDate = (event: React.MouseEvent) => {
+        let date: string | null;
+        const eventTarget = event.currentTarget as HTMLElement;
+
+        date = (eventTarget as HTMLTableDataCellElement).getAttribute(
+            'data-date'
+        );
+
+        return date!;
+    };
+
     return (
         <>
             <Calendar
@@ -32,6 +64,7 @@ function MonthlyStatus(props: {
                 endDate={props.date.end}
                 locale={navigator.language}
                 data={getMonthlyStatus(props.dailyAmountObj)}
+                onDateClick={clickHandler}
                 blurAfterToday={true}
                 cellHeight="4rem"
             />
