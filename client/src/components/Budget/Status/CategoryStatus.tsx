@@ -4,7 +4,7 @@ import Category from '../../../models/Category';
 import StatusHeader from './StatusHeader';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
-import CategoryStatusNav from './CategoryStatusNav';
+import IndexNav from '../../UI/IndexNav';
 import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
@@ -18,6 +18,9 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     const categories = props.categories.filter((item: Category) =>
         isExpense ? item.isExpense : !item.isExpense
     );
+    const categoryNames = categories.map((item) => {
+        return `${item.icon} ${item.title}`;
+    });
 
     const tabs = [
         {
@@ -80,10 +83,10 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                 amount={categories[currentCategoryIdx].amount!}
                 editPlanHandler={updatePlan}
             />
-            <CategoryStatusNav
+            <IndexNav
                 idx={currentCategoryIdx}
                 setIdx={setCurrentCategoryIdx}
-                categories={categories}
+                data={categoryNames}
             />
         </>
     );
