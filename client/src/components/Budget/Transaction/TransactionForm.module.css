@@ -53,19 +53,6 @@
     width: 0;
 }
 
-.buttons {
-    position: absolute;
-    left: var(--size-5);
-    right: var(--size-5);
-    bottom: 6vh;
-    display: flex;
-    visibility: hidden;
-}
-
-.buttons .cancel {
-    width: 50%;
-}
-
 .note,
 .selects {
     display: flex;
@@ -88,6 +75,10 @@
 
 .emoji input::placeholder {
     opacity: 0.5;
+}
+
+.buttons {
+    visibility: hidden;
 }
 
 .types {
