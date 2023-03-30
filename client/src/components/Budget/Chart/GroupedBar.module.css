@@ -7,7 +7,7 @@
 
 .container li {
     border-radius: 0.25rem;
-    transition: 0.3s ease-in-out;
+    transition: 0.3s var(--fast-in);
 }
 
 .container li.sm {

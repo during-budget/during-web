@@ -50,7 +50,7 @@
     border-radius: 0.5rem;
     z-index: 1;
     opacity: 0;
-    transition: 0.2s ease-in-out;
+    transition: 0.2s var(--fast-in);
 }
 
 .container.expand ul {

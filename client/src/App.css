@@ -21,6 +21,8 @@
     --size-9: 0.625rem;
     --size-10: 0.5rem;
     --size-11: 0.25rem;
+    --fast-in: cubic-bezier(.4,.39,.08,1.02);
+    --slow-in: cubic-bezier(.56,-0.01,.56,.89);
 }
 
 * {

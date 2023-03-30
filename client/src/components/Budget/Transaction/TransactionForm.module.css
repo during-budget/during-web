@@ -38,7 +38,7 @@
 .amount button {
     height: 3.5rem;
     width: 30%;
-    transition: 0.3s ease-out;
+    transition: 0.3s var(--fast-in);
 }
 
 .container.expand .amount {
@@ -100,5 +100,5 @@
     justify-content: center;
     gap: var(--size-6);
     opacity: 0;
-    transition: 0.1s ease-out;
+    transition: 0.1s var(--fast-in);
 }

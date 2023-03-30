@@ -17,7 +17,7 @@ function TransactionDetail() {
         (state: any) => state.transaction.detail
     );
 
-    const closeHandler = () => {
+    const closeHandler = async () => {
         dispatch(transactionActions.closeDetail());
     };
 
