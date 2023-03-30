@@ -64,7 +64,7 @@ function Budget() {
                 {/* Transactions */}
                 <TransactionLayout budgetId={id} transactions={transactions} />
                 {/* Overlays */}
-                <CategoryPlan />
+                <CategoryPlan categories={categories} title={title} />
             </main>
         </>
     );
