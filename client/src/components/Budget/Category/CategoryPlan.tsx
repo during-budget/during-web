@@ -10,6 +10,8 @@ function CategoryPlan() {
     const dispatch = useDispatch();
     const isOpen = useSelector((state: any) => state.ui.category.isOpen);
 
+    const [isExpense, setIsExpense] = useState(true);
+
     const closeHandler = () => {
         dispatch(uiActions.showCategory(false));
     };
@@ -20,6 +22,17 @@ function CategoryPlan() {
             isShowBackdrop={true}
             closeHandler={closeHandler}
         >
+            <StatusHeader
+                id="category-plan-type"
+                title="카테고리별 현황"
+                tab={
+                    <ExpenseTab
+                        id="category-plan-type-tab"
+                        isExpense={isExpense}
+                        setIsExpense={setIsExpense}
+                    />
+                }
+            />
             <CompleteCancelButtons onClose={closeHandler} />
         </Overlay>
     );
