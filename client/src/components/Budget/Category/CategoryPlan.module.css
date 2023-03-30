@@ -1,0 +1,29 @@
+.container {
+    height: 85vh;
+}
+
+.container.open {
+    padding: var(--size-1);
+}
+
+.header {
+    margin-bottom: 2vh;
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}
+
+.list h6 {
+    margin-bottom: 1vh;
+}
+
+.list > div {
+    height: 40vh;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.list > div::-webkit-scrollbar {
+    display: none;
+}
