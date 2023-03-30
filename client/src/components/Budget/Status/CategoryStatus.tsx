@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 import { uiActions } from '../../../store/ui';
+import ExpenseTab from '../UI/ExpenseTab';
 
 function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     const dispatch = useDispatch();
@@ -24,27 +25,6 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     const categoryNames = categories.map((item) => {
         return `${item.icon} ${item.title}`;
     });
-
-    const tabs = [
-        {
-            label: '지출',
-            value: 'expense',
-            onChange: () => {
-                setIsExpense(true);
-                setCurrentCategoryIdx(0);
-            },
-            checked: isExpense,
-        },
-        {
-            label: '수입',
-            value: 'income',
-            onChange: () => {
-                setIsExpense(false);
-                setCurrentCategoryIdx(0);
-            },
-            checked: !isExpense,
-        },
-    ];
 
     const updatePlan = (amount: number) => {
         const categoryId = categories[currentCategoryIdx].id;
@@ -65,7 +45,13 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
             <StatusHeader
                 id="category-status-type"
                 title="카테고리별 현황"
-                values={tabs}
+                tab={
+                    <ExpenseTab
+                        id="category-status-type-tab"
+                        isExpense={isExpense}
+                        setIsExpense={setIsExpense}
+                    />
+                }
             />
             <AmountBars
                 amountData={categories.map((item: Category, i) => {
