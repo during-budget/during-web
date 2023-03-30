@@ -23,6 +23,7 @@ import {
 } from '../../../util/api/transactionAPI';
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
+import CompleteCancelButtons from '../../UI/CompleteCancelButtons';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -273,18 +274,10 @@ function TransactionForm(props: { budgetId: string }) {
                             </div>
                         )}
                         {/* buttons */}
-                        <div className={classes.buttons}>
-                            <Button
-                                className={classes.cancel}
-                                styleClass="extra"
-                                onClick={closeHandler}
-                            >
-                                취소
-                            </Button>
-                            <Button type="submit" styleClass="primary">
-                                완료
-                            </Button>
-                        </div>
+                        <CompleteCancelButtons
+                            className={classes.buttons}
+                            onClose={closeHandler}
+                        />
                     </>
                 )}
             </form>
