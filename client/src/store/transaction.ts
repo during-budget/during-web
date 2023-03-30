@@ -115,7 +115,7 @@ const transactionSlice = createSlice({
             state.detail = { isOpen: true, transaction, category };
         },
         closeDetail(state) {
-            state.detail = initialState.detail;
+            state.detail.isOpen = false;
         },
     },
 });

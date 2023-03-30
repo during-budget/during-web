@@ -8,15 +8,15 @@
 
 .budget {
     stroke: var(--gray-1);
-    transition: 0.5s ease-in-out;
+    transition: 0.5s var(--fast-in);
 }
 
 .scheduled {
     stroke: var(--secondary);
-    transition: 0.5s ease-in-out;
+    transition: 0.5s var(--fast-in);
 }
 
 .current {
     stroke: var(--primary);
-    transition: 0.5s ease-in-out;
+    transition: 0.5s var(--fast-in);
 }

@@ -20,7 +20,7 @@
     left: var(--size-8);
     margin-bottom: 0;
     color: var(--gray-3);
-    transition: top 0.3s ease-in-out;
+    transition: top 0.3s var(--fast-in);
 }
 
 .field.floating input:focus + label,
