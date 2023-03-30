@@ -5,6 +5,9 @@ const initialState = {
         isCurrent: true,
         isExpense: true,
     },
+    category: {
+        isOpen: false,
+    },
 };
 
 const uiSlice = createSlice({
@@ -16,6 +19,9 @@ const uiSlice = createSlice({
         },
         setIsExpense(state, action) {
             state.budget.isExpense = action.payload;
+        },
+        showCategory(state, action) {
+            state.category.isOpen = action.payload;
         },
     },
 });
