@@ -10,13 +10,13 @@ import Button from '../../UI/Button';
 import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
+import { uiActions } from '../../../store/ui';
 
 function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     const dispatch = useDispatch();
 
     const [isExpense, setIsExpense] = useState(true);
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
-    const [isShowEdit, setIsShowEdit] = useState(false);
 
     const categories = props.categories.filter((item: Category) =>
         isExpense ? item.isExpense : !item.isExpense
@@ -94,7 +94,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
             <Button
                 styleClass="extra"
                 onClick={() => {
-                    setIsShowEdit(true);
+                    dispatch(uiActions.showCategory(true));
                 }}
             >
                 <span className={classes.edit}>카테고리 목표 편집</span>

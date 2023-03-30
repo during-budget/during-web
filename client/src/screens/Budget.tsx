@@ -12,6 +12,7 @@ import TransactionLayout from '../components/Budget/Transaction/TransactionLayou
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../store/transaction';
+import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 
 function Budget() {
     const dispatch = useDispatch();
@@ -45,6 +46,7 @@ function Budget() {
                 title={title}
             />
             <main>
+                {/* Status */}
                 <Carousel
                     id="status"
                     initialIndex={1}
@@ -59,7 +61,10 @@ function Budget() {
                     <CategoryStatus budgetId={id} categories={categories} />
                 </Carousel>
                 <hr />
+                {/* Transactions */}
                 <TransactionLayout budgetId={id} transactions={transactions} />
+                {/* Overlays */}
+                <CategoryPlan />
             </main>
         </>
     );
