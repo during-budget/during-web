@@ -1,0 +1,9 @@
+.edit.pencil::before {
+    content: '\f303';
+    font: var(--fa-font-solid);
+}
+
+.edit.check::before {
+    content: '✓';
+    font: var(--fa-font-solid);
+}
