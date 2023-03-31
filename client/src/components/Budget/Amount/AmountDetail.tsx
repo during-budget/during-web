@@ -7,7 +7,7 @@ import AmountDetailItem from './AmountDetailItem';
 function AmountDetail(props: {
     id: string;
     amount: Amount;
-    editPlanHandler?: (amount: number) => void;
+    editPlanHandler?: (amount: string) => void;
 }) {
     const [isLeft, setIsLeft] = useState(false);
 

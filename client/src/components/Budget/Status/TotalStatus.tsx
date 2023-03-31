@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Amount from '../../../models/Amount';
 import { budgetActions } from '../../../store/budget';
+import { uiActions } from '../../../store/ui';
 import { updateBudgetFields } from '../../../util/api/budgetAPI';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
@@ -13,10 +14,11 @@ function TotalStatus(props: {
 }) {
     const dispatch = useDispatch();
 
-    const [isExpense, setIsExpense] = useState(true);
+    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
     const total = isExpense ? props.total.expense : props.total.income;
 
-    const updatePlan = (amount: number) => {
+    const updatePlan = (amountStr: string) => {
+        const amount = +amountStr;
         dispatch(
             budgetActions.updateTotalPlan({
                 budgetId: props.budgetId,
@@ -37,7 +39,9 @@ function TotalStatus(props: {
             <ExpenseTab
                 id="total-nav"
                 isExpense={isExpense}
-                setIsExpense={setIsExpense}
+                setIsExpense={(isExpense: boolean) => {
+                    dispatch(uiActions.setIsExpense(isExpense));
+                }}
             />
             <AmountRing
                 amount={total}
