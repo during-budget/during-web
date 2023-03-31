@@ -26,11 +26,11 @@ export const updateV2 = async (req: Request, res: Response) => {
     ];
     await user.saveReqUser();
 
-    const { updated, added, removed } = compareCategories(
-      _categories,
-      user.categories,
-      (c1, c2) => c1?.title === c2?.title && c1?.icon === c2?.icon
-    );
+    const { updated, added, removed } = compareCategories({
+      prevArr: _categories,
+      newArr: user.categories,
+      compareFunc: (c1, c2) => c1?.title === c2?.title && c1?.icon === c2?.icon,
+    });
 
     for (const category of updated) {
       // update budgets and transactions categories
