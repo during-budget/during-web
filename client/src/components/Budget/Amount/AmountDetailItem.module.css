@@ -26,13 +26,13 @@
 }
 
 /* edit */
-input.edit {
+.edit input {
     width: 30vw;
     height: 2.5rem;
     text-align: right;
 }
 
-button.edit {
+.edit button {
     position: absolute;
     right: -1.25rem;
     top: 0;
@@ -41,12 +41,8 @@ button.edit {
     font-size: 0.8rem;
 }
 
-button.edit.pencil::before {
-    content: '\f303';
-    font: var(--fa-font-solid);
-}
-
-button.edit.check::before {
-    content: '✓';
-    font: var(--fa-font-solid);
+.edit span {
+    font-size: var(--font-size);
+    color: var(--font-color);
+    font-weight: 600;
 }
