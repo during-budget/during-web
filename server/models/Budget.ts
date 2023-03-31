@@ -62,8 +62,17 @@ interface IBudgetProps {
     categoryId: string | Types.ObjectId
   ) => HydratedDocument<ICategory> | undefined;
   findCategoryIdx: (categoryId: string | Types.ObjectId) => number;
+  findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
+  findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
   pushCategory: (category: any) => void;
-  addDefaultCategory: (isExpense: boolean, amount: number) => void;
+  increaseDefaultExpenseCategory: (
+    field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+    amount: number
+  ) => void;
+  increaseDefaultIncomeCategory: (
+    field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+    amount: number
+  ) => void;
 }
 
 interface BudgetModelType extends Model<IBudget, {}, IBudgetProps> {}
@@ -138,17 +147,35 @@ budgetSchema.methods.findCategoryIdx = function (
   });
 };
 
+budgetSchema.methods.findDefaultExpenseCategory = function () {
+  return this.categories[this.categories.length - 2].toObject();
+};
+
+budgetSchema.methods.findDefaultIncomeCategory = function () {
+  return this.categories[this.categories.length - 1].toObject();
+};
+
 budgetSchema.methods.pushCategory = function (category: any) {
   this.categories.splice(this.categories.length - 2, 0, category);
   return;
 };
 
-budgetSchema.methods.addDefaultCategory = function (isExpense, amount) {
-  const idx = this.categories.length - (isExpense ? 2 : 1);
-  this.categories[idx].amountPlanned =
-    (this.categories[idx].amountPlanned ?? 0) + amount;
+budgetSchema.methods.increaseDefaultExpenseCategory = function (
+  field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+  amount: number
+) {
+  const idx = this.categories.length - 2;
+  this.categories[idx][field] = (this.categories[idx][field] ?? 0) + amount;
+  return;
+};
+budgetSchema.methods.increaseDefaultIncomeCategory = function (
+  field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+  amount: number
+) {
+  const idx = this.categories.length - 1;
+  this.categories[idx][field] = (this.categories[idx][field] ?? 0) + amount;
   return;
 };
 
 const Budget = model<IBudget, BudgetModelType>("Budget", budgetSchema);
-export { Budget, IBudget, BudgetModelType };
+export { Budget, IBudget, BudgetModelType, ICategory };

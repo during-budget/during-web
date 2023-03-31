@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { Types } from "mongoose";
-import { Budget } from "../models/Budget";
+import { HydratedDocument, Types } from "mongoose";
+import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
+import { compareCategories } from "../utils/compare";
 
 // budget controller
 
@@ -140,6 +141,140 @@ export const createWithBasic = async (req: Request, res: Response) => {
   }
 };
 
+export const updateCategoriesV2 = async (req: Request, res: Response) => {
+  try {
+    if (!("categories" in req.body))
+      return res
+        .status(409)
+        .send({ message: "field 'categories' is required" });
+    const user = req.user!;
+    const budget = await Budget.findById(req.params._id);
+    if (!budget) return res.status(404).send({});
+    if (!budget.userId.equals(user._id)) return res.status(401).send();
+
+    const _categories = budget.categories;
+
+    const { updated, added, removed } = compareCategories({
+      prevArr: _categories,
+      newArr: req.body.categories,
+      compareFunc: (c1, c2) => false,
+      key: "categoryId",
+    });
+
+    const categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      []
+    );
+
+    // budget.categories = new Types.DocumentArray([]);
+    let sumExpenseAmountPlanned = 0;
+    let sumIncomeAmountPlanned = 0;
+
+    for (let _category of added) {
+      if (!("amountPlanned" in _category))
+        return res
+          .status(400)
+          .send({ message: "field 'amountPlanned' is required" });
+
+      const category = user.findCategory(_category.categoryId);
+      if (!category)
+        return res.status(404).send({
+          message: "category not found in user.categories",
+          category: _category,
+        });
+      if (category.isDefault)
+        return res.status(404).send({
+          message: `you can't set default category`,
+        });
+
+      if (category.isExpense)
+        sumExpenseAmountPlanned += _category.amountPlanned;
+      else sumIncomeAmountPlanned += _category.amountPlanned;
+      categories.push({
+        ...category,
+        categoryId: category._id,
+        amountPlanned: _category.amountPlanned,
+      });
+    }
+
+    for (let _category of updated) {
+      if (!("amountPlanned" in _category))
+        return res
+          .status(400)
+          .send({ message: "field 'amountPlanned' is required" });
+
+      const category = budget.findCategory(_category.categoryId);
+      if (!category)
+        return res.status(404).send({
+          message: "category not found in budget.categories",
+          category: _category,
+        });
+      if (category.isDefault)
+        return res.status(404).send({
+          message: `you can't set default category`,
+        });
+
+      if (category.isExpense)
+        sumExpenseAmountPlanned += _category.amountPlanned;
+      else sumIncomeAmountPlanned += _category.amountPlanned;
+      categories.push({
+        ...category,
+        amountPlanned: _category.amountPlanned,
+      });
+    }
+    const defaultExpenseCategory = budget.findDefaultExpenseCategory();
+    const defaultIncomeCategory = budget.findDefaultIncomeCategory();
+    categories.push({
+      ...defaultExpenseCategory,
+      amountPlanned: budget.expensePlanned - sumExpenseAmountPlanned,
+    });
+    categories.push({
+      ...defaultIncomeCategory,
+      amountPlanned: budget.incomePlanned - sumIncomeAmountPlanned,
+    });
+    budget.categories = categories;
+
+    for (const category of removed) {
+      if (category.isDefault) continue;
+      const transactions = await Transaction.find({
+        userId: user._id,
+        budgetId: budget._id,
+        "category.categoryId": category.categoryId,
+      });
+
+      await Promise.all(
+        transactions.map((transaction) => {
+          if (transaction.category.isExpense) {
+            transaction.category = {
+              ...defaultExpenseCategory,
+              categoryId: defaultExpenseCategory._id,
+            };
+            budget.increaseDefaultExpenseCategory(
+              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
+              transaction.amount
+            );
+          } else {
+            transaction.category = {
+              ...defaultIncomeCategory,
+              categoryId: defaultIncomeCategory._id,
+            };
+            budget.increaseDefaultIncomeCategory(
+              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
+              transaction.amount
+            );
+          }
+
+          return transaction.save();
+        })
+      );
+    }
+
+    await budget.save();
+    return res.status(200).send({ budget, updated, added, removed });
+  } catch (err: any) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 /**
  * create budget category
  *
@@ -172,7 +307,7 @@ export const createCategory = async (req: Request, res: Response) => {
         .status(400)
         .send({ message: "field 'amountPlanned' is required" });
 
-    budget.addDefaultCategory(category.isExpense!, -1 * req.body.amountPlanned);
+    // budget.addDefaultCategory(category.isExpense!, -1 * req.body.amountPlanned);
     budget.pushCategory({
       ...category,
       categoryId: category._id,
@@ -221,10 +356,10 @@ export const updateCategoryAmountPlanned = async (
         message: `amountPlanned of default category cannot be updated`,
       });
 
-    budget.addDefaultCategory(
-      budget.categories[idx].isExpense!,
-      budget.categories[idx].amountPlanned - req.body.amountPlanned
-    );
+    // budget.addDefaultCategory(
+    //   budget.categories[idx].isExpense!,
+    //   budget.categories[idx].amountPlanned - req.body.amountPlanned
+    // );
     budget.categories[idx].amountPlanned = req.body.amountPlanned;
     await budget.save();
 
@@ -268,10 +403,10 @@ export const removeCategory = async (req: Request, res: Response) => {
         transactions,
       });
 
-    budget.addDefaultCategory(
-      budget.categories[idx].isExpense!,
-      budget.categories[idx].amountPlanned
-    );
+    // budget.addDefaultCategory(
+    //   budget.categories[idx].isExpense!,
+    //   budget.categories[idx].amountPlanned
+    // );
     budget.categories.splice(idx, 1);
     await budget.save();
 
@@ -298,15 +433,15 @@ export const updateField = async (req: Request, res: Response) => {
     budget.endDate = req.body.endDate ?? budget.endDate;
     budget.title = req.body.title ?? budget.title;
     if ("expensePlanned" in req.body) {
-      budget.addDefaultCategory(
-        true,
+      budget.increaseDefaultExpenseCategory(
+        "amountPlanned",
         req.body.expensePlanned - budget.expensePlanned
       );
       budget.expensePlanned = req.body.expensePlanned;
     }
     if ("incomePlanned" in req.body) {
-      budget.addDefaultCategory(
-        false,
+      budget.increaseDefaultIncomeCategory(
+        "amountPlanned",
         req.body.incomePlanned - budget.incomePlanned
       );
       budget.incomePlanned = req.body.incomePlanned;
