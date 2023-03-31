@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
+import { HydratedDocument } from "mongoose";
 import { Budget } from "../models/Budget";
-import { Transaction } from "../models/Transaction";
+import { ITransaction, Transaction } from "../models/Transaction";
 
 import { compareCategories } from "../utils/compare";
 
@@ -73,6 +74,50 @@ export const updateV2 = async (req: Request, res: Response) => {
         "category.categoryId": category._id,
       });
 
+      const transactionsDict: {
+        [key: string]: HydratedDocument<ITransaction>[];
+      } = _.groupBy(transactions, "budgetId");
+
+      for (let budget of budgets) {
+        for (let transaction of transactionsDict[budget._id.toString()]) {
+          if (transaction.category.isExpense) {
+            const category = budget.findCategory(
+              transaction.category.categoryId
+            );
+            budget.increaseDefaultExpenseCategory(
+              "amountPlanned",
+              category?.amountPlanned ?? 0
+            );
+            budget.increaseDefaultExpenseCategory(
+              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
+              transaction.amount
+            );
+
+            transaction.category = {
+              ...defaultExpenseCategory,
+              categoryId: defaultExpenseCategory._id,
+            };
+          } else {
+            const category = budget.findCategory(
+              transaction.category.categoryId
+            );
+            budget.increaseDefaultIncomeCategory(
+              "amountPlanned",
+              category?.amountPlanned ?? 0
+            );
+            budget.increaseDefaultIncomeCategory(
+              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
+              transaction.amount
+            );
+
+            transaction.category = {
+              ...defaultIncomeCategory,
+              categoryId: defaultIncomeCategory._id,
+            };
+          }
+        }
+      }
+
       await Promise.all([
         budgets.forEach((budget) => {
           const idx = budget.findCategoryIdx(category._id!);
@@ -80,18 +125,6 @@ export const updateV2 = async (req: Request, res: Response) => {
           budget.save();
         }),
         transactions.forEach((transaction) => {
-          if (transaction.category.isExpense) {
-            transaction.category = {
-              ...defaultExpenseCategory,
-              categoryId: defaultExpenseCategory._id,
-            };
-          } else {
-            transaction.category = {
-              ...defaultIncomeCategory,
-              categoryId: defaultIncomeCategory._id,
-            };
-          }
-
           transaction.save();
         }),
       ]);
