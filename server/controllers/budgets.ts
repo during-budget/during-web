@@ -269,7 +269,7 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
     }
 
     await budget.save();
-    return res.status(200).send({ budget, updated, added, removed });
+    return res.status(200).send({ budget });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
