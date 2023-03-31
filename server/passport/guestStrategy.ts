@@ -20,6 +20,7 @@ const guest = () => {
         email,
         isGuest: true,
       });
+      user.setDefaultCategories();
 
       const defaultExpenseCategory = user.findDefaultExpenseCategory();
       const defaultIncomeCategory = user.findDefaultIncomeCategory();

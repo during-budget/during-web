@@ -30,6 +30,7 @@ const register = () => {
         const user = new User({
           email,
         });
+        user.setDefaultCategories();
 
         const defaultExpenseCategory = user.findDefaultExpenseCategory();
         const defaultIncomeCategory = user.findDefaultIncomeCategory();
