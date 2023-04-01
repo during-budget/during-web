@@ -143,58 +143,40 @@ export const createWithBasic = async (req: Request, res: Response) => {
 
 export const updateCategoriesV2 = async (req: Request, res: Response) => {
   try {
+    /* validate */
+    if (!("isExpense" in req.body) && !("isIncome" in req.body))
+      return res
+        .status(400)
+        .send({ message: "field 'isExpense' or 'isIncome' is required" });
     if (!("categories" in req.body))
       return res
-        .status(409)
+        .status(400)
         .send({ message: "field 'categories' is required" });
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
-    const _categories = budget.categories;
+    const isExpense = req.body.isExpense ?? false;
+
+    const categoriesKept: Types.DocumentArray<ICategory> =
+      new Types.DocumentArray(
+        _.filter(
+          budget.categories,
+          (obj: ICategory) => obj.isExpense === !isExpense && !obj.isDefault
+        )
+      );
+    const categoriesUpdated: Types.DocumentArray<ICategory> =
+      new Types.DocumentArray([]);
 
     const { updated, added, removed } = compareCategories({
-      prevArr: _categories,
+      prevArr: _.filter(budget.categories, { isExpense }),
       newArr: req.body.categories,
       compareFunc: (c1, c2) => false,
       key: "categoryId",
     });
 
-    const categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
-      []
-    );
-
-    // budget.categories = new Types.DocumentArray([]);
-    let sumExpenseAmountPlanned = 0;
-    let sumIncomeAmountPlanned = 0;
-
-    for (let _category of added) {
-      if (!("amountPlanned" in _category))
-        return res
-          .status(400)
-          .send({ message: "field 'amountPlanned' is required" });
-
-      const category = user.findCategory(_category.categoryId);
-      if (!category)
-        return res.status(404).send({
-          message: "category not found in user.categories",
-          category: _category,
-        });
-      if (category.isDefault)
-        return res.status(404).send({
-          message: `you can't set default category`,
-        });
-
-      if (category.isExpense)
-        sumExpenseAmountPlanned += _category.amountPlanned;
-      else sumIncomeAmountPlanned += _category.amountPlanned;
-      categories.push({
-        ...category,
-        categoryId: category._id,
-        amountPlanned: _category.amountPlanned,
-      });
-    }
+    let sumDefaultAmountPlanned = 0;
 
     for (let _category of updated) {
       if (!("amountPlanned" in _category))
@@ -212,25 +194,65 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
         return res.status(404).send({
           message: `you can't set default category`,
         });
+      if (category.isExpense !== isExpense)
+        return res.status(404).send({
+          message: `isExpense not matching with category`,
+        });
 
-      if (category.isExpense)
-        sumExpenseAmountPlanned += _category.amountPlanned;
-      else sumIncomeAmountPlanned += _category.amountPlanned;
-      categories.push({
+      sumDefaultAmountPlanned += _category.amountPlanned;
+      categoriesUpdated.push({
         ...category,
         amountPlanned: _category.amountPlanned,
       });
     }
+
+    for (let _category of added) {
+      if (!("amountPlanned" in _category))
+        return res
+          .status(400)
+          .send({ message: "field 'amountPlanned' is required" });
+
+      const category = user.findCategory(_category.categoryId);
+      if (!category)
+        return res.status(404).send({
+          message: "category not found in user.categories",
+          category: _category,
+        });
+      if (category.isDefault)
+        return res.status(404).send({
+          message: `you can't set default category`,
+        });
+      if (category.isExpense !== isExpense)
+        return res.status(404).send({
+          message: `isExpense not matching with category`,
+        });
+
+      sumDefaultAmountPlanned += _category.amountPlanned;
+      categoriesUpdated.push({
+        ...category,
+        categoryId: category._id,
+        amountPlanned: _category.amountPlanned,
+      });
+    }
+
+    const categories = categoriesUpdated;
+    for (let _category of categoriesKept) categories.push(_category);
+
     const defaultExpenseCategory = budget.findDefaultExpenseCategory();
     const defaultIncomeCategory = budget.findDefaultIncomeCategory();
-    categories.push({
-      ...defaultExpenseCategory,
-      amountPlanned: budget.expensePlanned - sumExpenseAmountPlanned,
-    });
-    categories.push({
-      ...defaultIncomeCategory,
-      amountPlanned: budget.incomePlanned - sumIncomeAmountPlanned,
-    });
+    if (isExpense) {
+      categories.push({
+        ...defaultExpenseCategory,
+        amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
+      });
+      categories.push(defaultIncomeCategory);
+    } else {
+      categories.push(defaultExpenseCategory);
+      categories.push({
+        ...defaultIncomeCategory,
+        amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
+      });
+    }
     budget.categories = categories;
 
     for (const category of removed) {
@@ -243,20 +265,14 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
 
       await Promise.all(
         transactions.map((transaction) => {
-          if (transaction.category.isExpense) {
-            transaction.category = {
-              ...defaultExpenseCategory,
-              categoryId: defaultExpenseCategory._id,
-            };
+          if (isExpense) {
+            transaction.category = defaultExpenseCategory;
             budget.increaseDefaultExpenseCategory(
               transaction.isCurrent ? "amountCurrent" : "amountScheduled",
               transaction.amount
             );
           } else {
-            transaction.category = {
-              ...defaultIncomeCategory,
-              categoryId: defaultIncomeCategory._id,
-            };
+            transaction.category = defaultIncomeCategory;
             budget.increaseDefaultIncomeCategory(
               transaction.isCurrent ? "amountCurrent" : "amountScheduled",
               transaction.amount
