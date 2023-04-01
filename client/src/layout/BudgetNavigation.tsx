@@ -15,7 +15,9 @@ const getCurrentBudgetId = (budgets: any) => {
     budgets.forEach((budget: any) => {
         const start = new Date(budget.date.start);
         const end = new Date(budget.date.end);
-        const isCurrentBudget = start < now && now < end;
+        const nextStart = new Date(end.setDate(end.getDate() + 1)); // end + 1
+
+        const isCurrentBudget = start < now && now < nextStart;
         if (isCurrentBudget) {
             id = budget._id;
             return false;

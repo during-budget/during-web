@@ -8,22 +8,29 @@ const getLabel = (label: string, width: string) => (
 
 function AmountBars(props: {
     amountData: {
-        amount: Amount;
+        amount: Amount | number;
         label: string;
         isOver?: boolean;
         onClick?: (i: number) => void;
     }[];
+    borderRadius?: string;
     isTop?: boolean;
     isExpense?: boolean;
     className?: string;
 }) {
-    const plans = props.amountData.map((data) => data.amount.planned);
-    const planTotal = plans.reduce((curr, next) => curr + next, 0);
-    const widths = plans.map((plan) => {
-        if (!planTotal) {
+    const containerAmount = props.amountData.map((data) => {
+        if (typeof data.amount === 'number') {
+            return data.amount;
+        } else {
+            return data.amount.planned;
+        }
+    });
+    const total = containerAmount.reduce((curr, next) => curr + next, 0);
+    const widths = containerAmount.map((data) => {
+        if (!total) {
             return '0';
         } else {
-            return (plan / planTotal) * 90 + '%';
+            return (data / total) * 90 + '%';
         }
     });
 
@@ -31,6 +38,13 @@ function AmountBars(props: {
         <ul className={`${classes.container} ${props.className}`}>
             {props.amountData.map((data, i) => {
                 const width = widths[i];
+
+                const amountData = data.amount;
+                const amount =
+                    typeof amountData === 'number'
+                        ? new Amount(amountData, amountData, amountData)
+                        : amountData;
+
                 return (
                     <li
                         key={i}
@@ -49,7 +63,7 @@ function AmountBars(props: {
 
                         {/* bar */}
                         {props.isTop && getLabel(data.label, width)}
-                        <AmountBar amount={data.amount} />
+                        <AmountBar amount={amount} borderRadius={props.borderRadius} />
                         {!props.isTop && getLabel(data.label, width)}
                     </li>
                 );

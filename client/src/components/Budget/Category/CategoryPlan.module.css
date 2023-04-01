@@ -1,10 +1,19 @@
 .container {
     position: relative;
-    height: 90vh;
+    height: 95vh;
 }
 
 .container.open {
     padding: 2rem;
+}
+
+.container form {
+    scrollbar-width: 0;
+    -ms-overflow-style: none;
+}
+
+.container form::-webkit-scrollbar {
+    display: none;
 }
 
 .container > form > h5 {
@@ -12,8 +21,9 @@
 }
 
 .content {
-    height: 70vh;
+    height: 80vh;
     overflow: scroll;
+    overflow-x: hidden;
 }
 
 .total {
@@ -23,7 +33,7 @@
     justify-self: center;
     width: 100%;
     height: 8vh;
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
     border-radius: 1rem;
     background-color: var(--gray-1);
 }
@@ -46,8 +56,13 @@
     transform: translateY(-50%);
 }
 
+.bars {
+    height: 6vh;
+    margin-bottom: 3vh;
+}
+
 .list {
-    height: 35vh;
+    height: 40vh;
     margin-bottom: 1vh;
     overflow: hidden;
 }
@@ -57,7 +72,7 @@
 }
 
 .list > div {
-    height: 30vh;
+    height: 35vh;
     overflow: scroll;
 }
 
@@ -88,8 +103,6 @@
     font-weight: 800;
 }
 
-.left button {
-    flex-shrink: 1;
-    width: 6.5rem;
-    height: 2.5rem;
+.container > form > button {
+    margin-bottom: 5vh;
 }
