@@ -14,6 +14,7 @@ import {
     updateBudgetFields,
     updateCategories,
 } from '../../../util/api/budgetAPI';
+import AmountBars from '../Amount/AmountBars';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -44,11 +45,13 @@ function CategoryPlan(props: {
     // Set state - categoryPlan
     useEffect(() => {
         // category plan
+        setCategoryPlans([]);
+
         props.categories.forEach((item: Category) => {
-            const isExpenseItem = item.isExpense === isExpense;
+            const isSameType = item.isExpense === isExpense;
             const isDefault = item.isDefault;
 
-            if (isExpenseItem) {
+            if (isSameType) {
                 if (isDefault) {
                     setDefaultCategory(item);
                 } else {
@@ -183,6 +186,13 @@ function CategoryPlan(props: {
                     value={Amount.getAmountStr(+totalPlan)}
                     onFocus={focusTotalHandler}
                     confirmHandler={confirmTotalHandler}
+                />
+                <AmountBars
+                    className={classes.bars}
+                    borderRadius="0.4rem"
+                    amountData={categoryPlans.map((item) => {
+                        return { label: item.icon, amount: item.plan };
+                    })}
                 />
                 {/* categories */}
                 <ul className={classes.list}>
