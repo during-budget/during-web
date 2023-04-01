@@ -10,7 +10,10 @@ import Amount from '../../../models/Amount';
 import Button from '../../UI/Button';
 import EditInput from '../Input/EditInput';
 import { budgetActions } from '../../../store/budget';
-import { updateBudgetFields } from '../../../util/api/budgetAPI';
+import {
+    updateBudgetFields,
+    updateCategories,
+} from '../../../util/api/budgetAPI';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -31,14 +34,14 @@ function CategoryPlan(props: {
         props.total[isExpense ? 'expense' : 'income']
     );
     const [categoryPlans, setCategoryPlans] = useState<
-        { icon: string; title: string; plan: number }[]
+        { id: string; icon: string; title: string; plan: number }[]
     >([]);
     const [leftAmount, setLeftAmountState] = useState(0);
     const [defaultCategory, setDefaultCategory] = useState<Category | null>(
         null
     );
 
-    // Set state - categoryPlan, leftAmount
+    // Set state - categoryPlan
     useEffect(() => {
         // category plan
         props.categories.forEach((item: Category) => {
@@ -50,9 +53,10 @@ function CategoryPlan(props: {
                     setDefaultCategory(item);
                 } else {
                     setCategoryPlans((prev: any) => {
-                        const { icon, title, amount } = item;
+                        const { id, icon, title, amount } = item;
 
                         const newItem = {
+                            id,
                             icon,
                             title,
                             plan: amount?.planned || 0,
@@ -68,6 +72,7 @@ function CategoryPlan(props: {
         setLeftAmount();
     }, [props.categories, isExpense]);
 
+    // Set state - leftAmount
     useEffect(() => {
         setLeftAmount();
     }, [totalPlan, categoryPlans]);
@@ -85,7 +90,7 @@ function CategoryPlan(props: {
         dispatch(uiActions.showCategoryPlanEditor(false));
     };
 
-    const submitHandler = (event: React.FormEvent) => {
+    const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
 
         dispatch(
@@ -96,11 +101,30 @@ function CategoryPlan(props: {
             })
         );
 
-        // request
+        // request - total
         const key = isExpense ? 'expensePlanned' : 'incomePlanned';
+
         updateBudgetFields(props.budgetId, {
             [key]: +totalPlan,
         });
+
+        // request - category
+        const categoryData = categoryPlans.map((item) => {
+            const { id, plan } = item;
+            return { categoryId: id, amountPlanned: plan };
+        });
+
+        const updatedData = await updateCategories(
+            props.budgetId,
+            categoryData
+        );
+
+        dispatch(
+            budgetActions.updateBudget({
+                budgetId: props.budgetId,
+                budget: updatedData.budget,
+            })
+        );
 
         // close
         dispatch(uiActions.showCategoryPlanEditor(false));
@@ -120,7 +144,14 @@ function CategoryPlan(props: {
     const changeCategoryPlanHandler = (i: number, value: number) => {
         const newPlan = { ...categoryPlans[i], plan: value };
         setCategoryPlans(
-            (prev: { icon: string; title: string; plan: number }[]) => {
+            (
+                prev: {
+                    id: string;
+                    icon: string;
+                    title: string;
+                    plan: number;
+                }[]
+            ) => {
                 if (i === 0) {
                     return [newPlan, ...prev.slice(1, prev.length)];
                 } else {
@@ -159,7 +190,7 @@ function CategoryPlan(props: {
                     <div>
                         {categoryPlans.map((item, i) => (
                             <CategoryPlanItem
-                                key={i}
+                                key={item.id}
                                 idx={i}
                                 icon={item.icon}
                                 title={item.title}

@@ -87,3 +87,30 @@ export const updateCategoryPlan = async (
 
     return response.json();
 };
+
+export const updateCategories = async (
+    budgetId: string,
+    categories: { categoryId: string; amountPlanned: number }[]
+) => {
+    const url = `${BASE_URL}/${budgetId}/categories`;
+    const response = await fetch(url, {
+        method: 'PUT',
+        credentials: 'include',
+        body: JSON.stringify({ categories }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Response(
+            `Failed to patch category plan.\n${
+                data.message ? data.message : ''
+            }`,
+            { status: response.status }
+        );
+    }
+
+    return response.json();
+};
