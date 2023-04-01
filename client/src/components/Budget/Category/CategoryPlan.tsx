@@ -15,6 +15,7 @@ import {
     updateCategories,
 } from '../../../util/api/budgetAPI';
 import AmountBars from '../Amount/AmountBars';
+import CategorySetting from './CategorySetting';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -28,6 +29,7 @@ function CategoryPlan(props: {
     const isOpen = useSelector(
         (state: any) => state.ui.budget.category.isEditPlan
     );
+    const [isSettingOpen, setIsSettingOpen] = useState(false);
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
     // Amount state
@@ -169,58 +171,73 @@ function CategoryPlan(props: {
     };
 
     return (
-        <Overlay
-            className={`${classes.container} ${isOpen ? classes.open : ''}`}
-            isOpen={isOpen}
-            isShowBackdrop={true}
-            closeHandler={closeHandler}
-        >
-            <form className={classes.content} onSubmit={submitHandler}>
-                {/* header */}
-                <h5>{`${props.title} 카테고리별 ${
-                    isExpense ? '지출' : '수입'
-                } 목표`}</h5>
-                {/* total */}
-                <EditInput
-                    className={classes.total}
-                    value={Amount.getAmountStr(+totalPlan)}
-                    onFocus={focusTotalHandler}
-                    confirmHandler={confirmTotalHandler}
-                />
-                <AmountBars
-                    className={classes.bars}
-                    borderRadius="0.4rem"
-                    amountData={categoryPlans.map((item) => {
-                        return { label: item.icon, amount: item.plan };
-                    })}
-                />
-                {/* categories */}
-                <ul className={classes.list}>
-                    <h5>목표 예산</h5>
-                    <div>
-                        {categoryPlans.map((item, i) => (
-                            <CategoryPlanItem
-                                key={item.id}
-                                idx={i}
-                                icon={item.icon}
-                                title={item.title}
-                                plan={Amount.getAmountStr(item.plan)}
-                                onChange={changeCategoryPlanHandler}
-                            />
-                        ))}
+        <>
+            <Overlay
+                className={`${classes.container} ${isOpen ? classes.open : ''}`}
+                isOpen={isOpen}
+                isShowBackdrop={true}
+                closeHandler={closeHandler}
+            >
+                <form className={classes.content} onSubmit={submitHandler}>
+                    {/* header */}
+                    <h5>{`${props.title} 카테고리별 ${
+                        isExpense ? '지출' : '수입'
+                    } 목표`}</h5>
+                    {/* total */}
+                    <EditInput
+                        className={classes.total}
+                        value={Amount.getAmountStr(+totalPlan)}
+                        onFocus={focusTotalHandler}
+                        confirmHandler={confirmTotalHandler}
+                    />
+                    <AmountBars
+                        className={classes.bars}
+                        borderRadius="0.4rem"
+                        amountData={categoryPlans.map((item) => {
+                            return { label: item.icon, amount: item.plan };
+                        })}
+                    />
+                    {/* categories */}
+                    <ul className={classes.list}>
+                        <h5>목표 예산</h5>
+                        <div>
+                            {categoryPlans.map((item, i) => (
+                                <CategoryPlanItem
+                                    key={item.id}
+                                    idx={i}
+                                    icon={item.icon}
+                                    title={item.title}
+                                    plan={Amount.getAmountStr(item.plan)}
+                                    onChange={changeCategoryPlanHandler}
+                                />
+                            ))}
+                        </div>
+                    </ul>
+                    {/* left */}
+                    <div className={classes.left}>
+                        <h6>{`${defaultCategory?.icon} ${defaultCategory?.title} (남은 금액)`}</h6>
+                        <p>{Amount.getAmountStr(leftAmount)}</p>
                     </div>
-                </ul>
-                {/* left */}
-                <div className={classes.left}>
-                    <h6>{`${defaultCategory?.icon} ${defaultCategory?.title} (남은 금액)`}</h6>
-                    <p>{Amount.getAmountStr(leftAmount)}</p>
-                </div>
-                <Button className={classes.edit} styleClass="extra">
-                    카테고리 목록 편집
-                </Button>
-                <ConfirmCancelButtons onClose={closeHandler} />
-            </form>
-        </Overlay>
+                    <Button
+                        className={classes.edit}
+                        styleClass="extra"
+                        onClick={() => {
+                            setIsSettingOpen(true);
+                        }}
+                    >
+                        카테고리 목록 편집
+                    </Button>
+                    <ConfirmCancelButtons
+                        onClose={closeHandler}
+                        confirmMsg="목표 설정 완료"
+                    />
+                </form>
+            </Overlay>
+            <CategorySetting
+                isOpen={isSettingOpen}
+                setIsOpen={setIsSettingOpen}
+            />
+        </>
     );
 }
 
