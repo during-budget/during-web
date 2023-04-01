@@ -276,6 +276,63 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
 };
 
 /**
+ * Update budget category amountPlanned
+ *
+ * @param {_id, categoryId}
+ * @body {  amount }
+ * @return budget
+ */
+export const updateCategoryAmountPlanned = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    if (!("amountPlanned" in req.body))
+      return res
+        .status(400)
+        .send({ message: "field 'amountPlanned' is required" });
+
+    const user = req.user!;
+    const budget = await Budget.findById(req.params._id);
+    if (!budget) return res.status(404).send({ message: "budget not found" });
+    if (!budget.userId.equals(user._id)) return res.status(401).send();
+
+    const categoryIdx = budget.findCategoryIdx(
+      req.params.categoryId.toString()
+    );
+    const category = budget.categories[categoryIdx];
+    if (!category)
+      return res.status(404).send({
+        message: `budget category not found`,
+      });
+
+    if (category.isDefault)
+      return res.status(409).send({
+        message: `amountPlanned of default category cannot be updated`,
+      });
+
+    if (category.isExpense) {
+      budget.increaseDefaultExpenseCategory(
+        "amountPlanned",
+        category.amountPlanned - req.body.amountPlanned
+      );
+    } else {
+      budget.increaseDefaultIncomeCategory(
+        "amountPlanned",
+        category.amountPlanned - req.body.amountPlanned
+      );
+    }
+
+    budget.categories[categoryIdx].amountPlanned = req.body.amountPlanned;
+    await budget.save();
+
+    return res.status(200).send({ budget });
+  } catch (err: any) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+/**
  * Update budget fields
  *
  * @body { startDate?, endDate? title?, expensePlanned?, incomePlanned?}
