@@ -4,6 +4,8 @@ import classes from './ConfirmCancelButtons.module.css';
 function ConfirmCancelButtons(props: {
     onClose?: () => void;
     onConfirm?: () => {};
+    closeMsg?: string;
+    confirmMsg?: string;
     className?: string;
 }) {
     return (
@@ -13,14 +15,14 @@ function ConfirmCancelButtons(props: {
                 styleClass="extra"
                 onClick={props.onClose}
             >
-                취소
+                {props.closeMsg || '취소'}
             </Button>
             <Button
                 type="submit"
                 styleClass="primary"
                 onClick={props.onConfirm}
             >
-                완료
+                {props.confirmMsg || '완료'}
             </Button>
         </div>
     );
