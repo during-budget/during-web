@@ -7,7 +7,7 @@ import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import IndexNav from '../../UI/IndexNav';
 import Button from '../../UI/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 import { uiActions } from '../../../store/ui';
@@ -16,7 +16,8 @@ import ExpenseTab from '../UI/ExpenseTab';
 function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     const dispatch = useDispatch();
 
-    const [isExpense, setIsExpense] = useState(true);
+    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
+
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
 
     const categories = props.categories.filter((item: Category) =>
@@ -26,7 +27,8 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
         return `${item.icon} ${item.title}`;
     });
 
-    const updatePlan = (amount: number) => {
+    const updatePlan = (amountStr: string) => {
+        const amount = +amountStr;
         const categoryId = categories[currentCategoryIdx].id;
 
         dispatch(
@@ -49,7 +51,9 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                     <ExpenseTab
                         id="category-status-type-tab"
                         isExpense={isExpense}
-                        setIsExpense={setIsExpense}
+                        setIsExpense={(isExpense: boolean) => {
+                            dispatch(uiActions.setIsExpense(isExpense));
+                        }}
                     />
                 }
             />
@@ -80,7 +84,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
             <Button
                 styleClass="extra"
                 onClick={() => {
-                    dispatch(uiActions.showCategory(true));
+                    dispatch(uiActions.showCategoryPlanEditor(true));
                 }}
             >
                 <span className={classes.edit}>카테고리 목표 편집</span>
