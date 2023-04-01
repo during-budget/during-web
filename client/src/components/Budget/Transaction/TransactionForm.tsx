@@ -23,7 +23,7 @@ import {
 } from '../../../util/api/transactionAPI';
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
-import CompleteCancelButtons from '../../UI/CompleteCancelButtons';
+import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -274,7 +274,7 @@ function TransactionForm(props: { budgetId: string }) {
                             </div>
                         )}
                         {/* buttons */}
-                        <CompleteCancelButtons
+                        <ConfirmCancelButtons
                             className={classes.buttons}
                             onClose={closeHandler}
                         />

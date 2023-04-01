@@ -6,6 +6,7 @@ const EditInput = (props: {
     value: string;
     confirmHandler?: (value: string) => void;
     convertDefaultValue?: (value: string) => void;
+    onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }) => {
     const [isEdit, setIsEdit] = useState(false);
     const editRef = useRef<HTMLInputElement>(null);
@@ -14,21 +15,24 @@ const EditInput = (props: {
         ? props.convertDefaultValue(props.value)
         : props.value;
 
-    const editHandler = () => {
-        if (isEdit) {
-            const value = editRef.current!.value;
-            props.confirmHandler && props.confirmHandler(value);
-        }
+    const editHandler = async () => {
+        await setIsEdit(true);
+        editRef.current?.focus();
+    };
 
-        setIsEdit((prev) => !prev);
+    const confirmHandler = () => {
+        const value = editRef.current!.value;
+        props.confirmHandler && props.confirmHandler(value);
+        setIsEdit(false);
     };
 
     const amountInput = (
         <input
             ref={editRef}
             className={classes.edit}
-            type="number"
+            type="string"
             defaultValue={defaultValue || ''}
+            onFocus={props.onFocus}
         />
     );
 
@@ -42,7 +46,7 @@ const EditInput = (props: {
                 className={`${classes.edit} ${
                     isEdit ? classes.check : classes.pencil
                 }`}
-                onClick={editHandler}
+                onClick={isEdit ? confirmHandler : editHandler}
             ></button>
         </div>
     );

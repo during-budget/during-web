@@ -1,29 +1,95 @@
 .container {
-    height: 85vh;
+    position: relative;
+    height: 90vh;
 }
 
 .container.open {
-    padding: var(--size-1);
+    padding: 2rem;
 }
 
-.header {
+.container > form > h5 {
     margin-bottom: 2vh;
 }
 
-.list::-webkit-scrollbar {
-    display: none;
+.content {
+    height: 70vh;
+    overflow: scroll;
 }
 
-.list h6 {
+.total {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    width: 100%;
+    height: 8vh;
+    margin-bottom: 3vh;
+    border-radius: 1rem;
+    background-color: var(--gray-1);
+}
+
+.total input,
+.total span {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: var(--size-2);
+}
+
+.total span {
+    font-weight: 800;
+}
+
+.total button::before {
+    position: absolute;
+    right: 6vw;
+    transform: translateY(-50%);
+}
+
+.list {
+    height: 35vh;
+    margin-bottom: 1vh;
+    overflow: hidden;
+}
+
+.list h5 {
     margin-bottom: 1vh;
 }
 
 .list > div {
-    height: 40vh;
+    height: 30vh;
     overflow: scroll;
-    scrollbar-width: none;
 }
 
 .list > div::-webkit-scrollbar {
     display: none;
+}
+
+.left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2vh;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background-color: var(--gray-1);
+}
+
+.left .info {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.left > p {
+    font-size: var(--size-3);
+    font-weight: 800;
+}
+
+.left button {
+    flex-shrink: 1;
+    width: 6.5rem;
+    height: 2.5rem;
 }

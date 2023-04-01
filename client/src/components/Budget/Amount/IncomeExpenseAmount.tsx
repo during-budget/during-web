@@ -11,7 +11,10 @@ function IncomeExpenseAmount(props: {
     const show = props.showEmpty || expense || income || null;
 
     return (
-        <div className={classes.container} style={{ opacity: show ? 1 : 0 }}>
+        <div
+            className={classes.container}
+            style={{ visibility: show ? 'visible' : 'hidden' }}
+        >
             {expense || props.showZero ? (
                 <p className={classes.expense}>
                     {'-' + expense.toLocaleString()}

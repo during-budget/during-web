@@ -3,30 +3,135 @@ import { useDispatch, useSelector } from 'react-redux';
 import classes from './CategoryPlan.module.css';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
-import CompleteCancelButtons from '../../UI/CompleteCancelButtons';
+import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
-import StatusHeader from '../Status/StatusHeader';
-import ExpenseTab from '../UI/ExpenseTab';
 import CategoryPlanItem from './CategoryPlanItem';
+import Amount from '../../../models/Amount';
+import Button from '../../UI/Button';
+import EditInput from '../Input/EditInput';
+import { budgetActions } from '../../../store/budget';
+import { updateBudgetFields } from '../../../util/api/budgetAPI';
 
-function CategoryPlan(props: { title: string; categories: Category[] }) {
+function CategoryPlan(props: {
+    budgetId: string;
+    title: string;
+    total: any;
+    categories: Category[];
+}) {
     const dispatch = useDispatch();
 
-    const isOpen = useSelector((state: any) => state.ui.category.isOpen);
+    // Boolean state
+    const isOpen = useSelector(
+        (state: any) => state.ui.budget.category.isEditPlan
+    );
+    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
-    const [isExpense, setIsExpense] = useState(true);
-    const [categories, setCategories] = useState<Category[]>([]);
+    // Amount state
+    const [totalPlan, setTotalPlan] = useState(
+        props.total[isExpense ? 'expense' : 'income']
+    );
+    const [categoryPlans, setCategoryPlans] = useState<
+        { icon: string; title: string; plan: number }[]
+    >([]);
+    const [leftAmount, setLeftAmountState] = useState(0);
+    const [defaultCategory, setDefaultCategory] = useState<Category | null>(
+        null
+    );
 
+    // Set state - categoryPlan, leftAmount
     useEffect(() => {
-        setCategories(
-            props.categories.filter(
-                (item: Category) => item.isExpense === isExpense
-            )
-        );
+        // category plan
+        props.categories.forEach((item: Category) => {
+            const isExpenseItem = item.isExpense === isExpense;
+            const isDefault = item.isDefault;
+
+            if (isExpenseItem) {
+                if (isDefault) {
+                    setDefaultCategory(item);
+                } else {
+                    setCategoryPlans((prev: any) => {
+                        const { icon, title, amount } = item;
+
+                        const newItem = {
+                            icon,
+                            title,
+                            plan: amount?.planned || 0,
+                        };
+
+                        return [...prev, newItem];
+                    });
+                }
+            }
+        });
+
+        // left
+        setLeftAmount();
     }, [props.categories, isExpense]);
 
+    useEffect(() => {
+        setLeftAmount();
+    }, [totalPlan, categoryPlans]);
+
+    const setLeftAmount = () => {
+        const totalCategoryPlan = categoryPlans.reduce(
+            (prev, curr) => prev + curr.plan,
+            0
+        );
+        setLeftAmountState(totalPlan - totalCategoryPlan);
+    };
+
+    // Handlers for Overlay
     const closeHandler = () => {
-        dispatch(uiActions.showCategory(false));
+        dispatch(uiActions.showCategoryPlanEditor(false));
+    };
+
+    const submitHandler = (event: React.FormEvent) => {
+        event.preventDefault();
+
+        dispatch(
+            budgetActions.updateTotalPlan({
+                budgetId: props.budgetId,
+                isExpense,
+                amount: +totalPlan,
+            })
+        );
+
+        // request
+        const key = isExpense ? 'expensePlanned' : 'incomePlanned';
+        updateBudgetFields(props.budgetId, {
+            [key]: +totalPlan,
+        });
+
+        // close
+        dispatch(uiActions.showCategoryPlanEditor(false));
+    };
+
+    // Handlers for total plan
+    const confirmTotalHandler = (total: string) => {
+        setTotalPlan(total.replace(/[^0-9]+/g, ''));
+    };
+
+    const focusTotalHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+        const value = event.target.value.replace(/[^0-9]+/g, '');
+        event.target.value = value;
+    };
+
+    // Handlers for category plan
+    const changeCategoryPlanHandler = (i: number, value: number) => {
+        const newPlan = { ...categoryPlans[i], plan: value };
+        setCategoryPlans(
+            (prev: { icon: string; title: string; plan: number }[]) => {
+                if (i === 0) {
+                    return [newPlan, ...prev.slice(1, prev.length)];
+                } else {
+                    return [
+                        ...prev.slice(0, i),
+                        newPlan,
+                        ...prev.slice(i + 1, prev.length),
+                    ];
+                }
+            }
+        );
     };
 
     return (
@@ -36,33 +141,44 @@ function CategoryPlan(props: { title: string; categories: Category[] }) {
             isShowBackdrop={true}
             closeHandler={closeHandler}
         >
-            <StatusHeader
-                id="category-plan-type"
-                className={classes.header}
-                title={`${props.title} 카테고리별 목표`}
-                tab={
-                    <ExpenseTab
-                        id="category-plan-type-tab"
-                        isExpense={isExpense}
-                        setIsExpense={setIsExpense}
-                    />
-                }
-            />
-            <ul className={classes.list}>
-                <h6>목표 예산</h6>
-                <div>
-                    {categories.map((item, i) => (
-                        <CategoryPlanItem
-                            item={item}
-                            key={i}
-                            icon={item.icon}
-                            title={item.title}
-                            plan={item.amount?.planned}
-                        />
-                    ))}
+            <form className={classes.content} onSubmit={submitHandler}>
+                {/* header */}
+                <h5>{`${props.title} 카테고리별 ${
+                    isExpense ? '지출' : '수입'
+                } 목표`}</h5>
+                {/* total */}
+                <EditInput
+                    className={classes.total}
+                    value={Amount.getAmountStr(+totalPlan)}
+                    onFocus={focusTotalHandler}
+                    confirmHandler={confirmTotalHandler}
+                />
+                {/* categories */}
+                <ul className={classes.list}>
+                    <h5>목표 예산</h5>
+                    <div>
+                        {categoryPlans.map((item, i) => (
+                            <CategoryPlanItem
+                                key={i}
+                                idx={i}
+                                icon={item.icon}
+                                title={item.title}
+                                plan={Amount.getAmountStr(item.plan)}
+                                onChange={changeCategoryPlanHandler}
+                            />
+                        ))}
+                    </div>
+                </ul>
+                {/* left */}
+                <div className={classes.left}>
+                    <h6>{`${defaultCategory?.icon} ${defaultCategory?.title} (남은 금액)`}</h6>
+                    <p>{Amount.getAmountStr(leftAmount)}</p>
                 </div>
-            </ul>
-            <CompleteCancelButtons onClose={closeHandler} />
+                <Button className={classes.edit} styleClass="extra">
+                    카테고리 목록 편집
+                </Button>
+                <ConfirmCancelButtons onClose={closeHandler} />
+            </form>
         </Overlay>
     );
 }
