@@ -1,0 +1,27 @@
+.container {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container form {
+    width: calc(100% - 4rem);
+    height: calc(100% - 4rem);
+}
+
+.container h5 {
+    margin-bottom: 2vh;
+}
+
+.list {
+    height: 55vh;
+    margin-bottom: 1vh;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: 0;
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}

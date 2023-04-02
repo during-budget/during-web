@@ -92,6 +92,10 @@ textarea::placeholder {
     color: var(--gray-3);
 }
 
+input[type='checkbox'] {
+    accent-color: var(--primary);
+}
+
 textarea {
     font-family: inherit;
 }
