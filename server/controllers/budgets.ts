@@ -3,7 +3,6 @@ import _ from "lodash";
 import { HydratedDocument, Types } from "mongoose";
 import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
-import { compareCategories } from "../utils/compare";
 
 // budget controller
 
@@ -152,111 +151,137 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
       return res
         .status(400)
         .send({ message: "field 'categories' is required" });
+
+    const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
+    const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
+    if (isExpense === isIncome) {
+      return res
+        .status(400)
+        .send({ message: "set isExpense=true or isIncome=true" });
+    }
+
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
-    const isExpense = req.body.isExpense ?? false;
+    const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
+      budget.categories.map((category) => [category.categoryId, category])
+    );
 
-    const categoriesKept: Types.DocumentArray<ICategory> =
-      new Types.DocumentArray(
-        _.filter(
-          budget.categories,
-          (obj: ICategory) => obj.isExpense === !isExpense && !obj.isDefault
-        )
-      );
-    const categoriesUpdated: Types.DocumentArray<ICategory> =
-      new Types.DocumentArray([]);
-
-    const { updated, added, removed } = compareCategories({
-      prevArr: _.filter(budget.categories, { isExpense }),
-      newArr: req.body.categories,
-      compareFunc: (c1, c2) => false,
-      key: "categoryId",
-    });
+    const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      []
+    );
+    const included: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      []
+    );
+    const updated: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
+    const excluded: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      []
+    );
 
     let sumDefaultAmountPlanned = 0;
 
-    for (let _category of updated) {
+    for (let _category of req.body.categories) {
       if (!("amountPlanned" in _category))
         return res
           .status(400)
           .send({ message: "field 'amountPlanned' is required" });
-
-      const category = budget.findCategory(_category.categoryId);
-      if (!category)
-        return res.status(404).send({
-          message: "category not found in budget.categories",
-          category: _category,
-        });
-      if (category.isDefault)
-        return res.status(404).send({
-          message: `you can't set default category`,
-        });
-      if (category.isExpense !== isExpense)
-        return res.status(404).send({
-          message: `isExpense not matching with category`,
-        });
-
-      sumDefaultAmountPlanned += _category.amountPlanned;
-      categoriesUpdated.push({
-        ...category,
-        amountPlanned: _category.amountPlanned,
-      });
-    }
-
-    for (let _category of added) {
-      if (!("amountPlanned" in _category))
+      if (!("categoryId" in _category))
         return res
           .status(400)
-          .send({ message: "field 'amountPlanned' is required" });
+          .send({ message: "field 'categoryId' is required" });
 
-      const category = user.findCategory(_category.categoryId);
-      if (!category)
-        return res.status(404).send({
-          message: "category not found in user.categories",
-          category: _category,
-        });
-      if (category.isDefault)
-        return res.status(404).send({
-          message: `you can't set default category`,
-        });
-      if (category.isExpense !== isExpense)
-        return res.status(404).send({
-          message: `isExpense not matching with category`,
-        });
+      /* include category */
+      if (!categoryDict[_category.categoryId]) {
+        const category = user.findCategory(_category.categoryId);
+        if (!category)
+          return res.status(404).send({
+            message: "category not found in user.categories",
+            category: _category,
+          });
+        if (category.isDefault)
+          return res.status(409).send({
+            message: `you can't set default category`,
+          });
+        if (category.isExpense !== isExpense)
+          return res.status(409).send({
+            message: `isExpense not matching with category`,
+            isExpense,
+            category,
+          });
 
-      sumDefaultAmountPlanned += _category.amountPlanned;
-      categoriesUpdated.push({
-        ...category,
-        categoryId: category._id,
-        amountPlanned: _category.amountPlanned,
-      });
+        sumDefaultAmountPlanned += _category.amountPlanned;
+
+        const newCategory = {
+          ...category,
+          categoryId: category._id,
+          amountPlanned: _category.amountPlanned,
+        };
+        _categories.push(newCategory);
+        included.push(newCategory);
+      } /* update category */ else {
+        const key = _category.categoryId;
+        const exCategory = categoryDict[key];
+        if (!exCategory)
+          return res.status(404).send({
+            message: "category not found in budget.categories",
+            category: _category,
+          });
+        if (exCategory.isDefault)
+          return res.status(409).send({
+            message: `you can't set default category`,
+          });
+        if (exCategory.isExpense !== isExpense)
+          return res.status(409).send({
+            message: `isExpense not matching with category`,
+            isExpense,
+            exCategory,
+          });
+
+        sumDefaultAmountPlanned += _category.amountPlanned;
+
+        const category = {
+          ...exCategory,
+          amountPlanned: _category.amountPlanned,
+        };
+        _categories.push(category);
+        delete categoryDict[key];
+
+        if (category.amountPlanned !== exCategory.amountPlanned) {
+          updated.push(category);
+        }
+      }
     }
-
-    const categories = categoriesUpdated;
-    for (let _category of categoriesKept) categories.push(_category);
+    /* exclude category */
+    for (const category of Object.values(categoryDict)) {
+      if (!category.isDefault) {
+        if (category.isExpense === isExpense) {
+          excluded.push(category);
+        } else {
+          _categories.push(category);
+        }
+      }
+    }
 
     const defaultExpenseCategory = budget.findDefaultExpenseCategory();
     const defaultIncomeCategory = budget.findDefaultIncomeCategory();
     if (isExpense) {
-      categories.push({
+      _categories.push({
         ...defaultExpenseCategory,
         amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
       });
-      categories.push(defaultIncomeCategory);
+      _categories.push(defaultIncomeCategory);
     } else {
-      categories.push(defaultExpenseCategory);
-      categories.push({
+      _categories.push(defaultExpenseCategory);
+      _categories.push({
         ...defaultIncomeCategory,
         amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
       });
     }
-    budget.categories = categories;
+    budget.categories = _categories;
 
-    for (const category of removed) {
-      if (category.isDefault) continue;
+    for (const category of excluded) {
       const transactions = await Transaction.find({
         userId: user._id,
         budgetId: budget._id,
@@ -285,7 +310,23 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
     }
 
     await budget.save();
-    return res.status(200).send({ budget });
+    return res.status(200).send({
+      categories: _.filter(budget.categories, { isDefault: false }).map(
+        (category) => {
+          return {
+            categoryId: category.categoryId,
+            title: category.title,
+            icon: category.icon,
+            amountPlanned: category.amountPlanned,
+            amountScheduled: category.amountScheduled,
+            amountCurrent: category.amountCurrent,
+          };
+        }
+      ),
+      included,
+      updated,
+      excluded,
+    });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
   }
