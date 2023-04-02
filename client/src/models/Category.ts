@@ -6,7 +6,7 @@ class Category {
     private _icon: string;
     private _isExpense: boolean;
     private _isDefault: boolean;
-    private _amount: Amount | undefined;
+    private _amount: Amount;
 
     constructor(category: {
         id: string;
@@ -22,7 +22,7 @@ class Category {
         this._icon = icon;
         this._isExpense = isExpense;
         this._isDefault = isDefault;
-        this._amount = amount ? amount : undefined;
+        this._amount = amount ? amount : new Amount(0, 0, 0);
     }
 
     get id() {

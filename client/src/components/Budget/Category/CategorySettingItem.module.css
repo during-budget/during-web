@@ -1,0 +1,61 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.check {
+    width: auto;
+    height: var(--size-8);
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info span {
+    font-size: var(--size-5);
+}
+
+.buttons {
+    display: flex;
+    width: 35%;
+    justify-content: space-between;
+}
+
+.buttons > * {
+    font-size: var(--size-8);
+}
+
+.pencil::before {
+    content: '\f303';
+    font: var(--fa-font-solid);
+}
+
+.trash::before {
+    content: '\f2ed';
+    font: var(--fa-font-solid);
+}
+
+.bars::before {
+    content: '\f0c9';
+    font: var(--fa-font-solid);
+}
+
+.default::before {
+    content: '기본';
+    font-size: 0.875rem;
+    padding: 0.1rem;
+    width: 2rem;
+    color: #fff;
+    background-color: var(--primary);
+    border-radius: 0.25rem;
+}

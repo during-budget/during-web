@@ -153,6 +153,14 @@ class Budget {
         return new Budget({ id, title, date, total, categories });
     };
 
+    static getBudgetUpdatedCategory = (
+        prevBudget: Budget,
+        categories: Category[]
+    ) => {
+        const { id, title, date, total } = prevBudget;
+        return new Budget({ id, title, date, total, categories });
+    };
+
     static getBudgetUpdatedPlan = (
         prevBudget: Budget | any,
         isExpense: boolean,

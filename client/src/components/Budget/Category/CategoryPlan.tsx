@@ -15,7 +15,7 @@ import {
     updateCategories,
 } from '../../../util/api/budgetAPI';
 import AmountBars from '../Amount/AmountBars';
-import CategorySetting from './CategorySetting';
+import BudgetCategorySetting from './BudgetCategorySetting';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -145,7 +145,7 @@ function CategoryPlan(props: {
         event.target.value = value;
     };
 
-    // Handlers for category plan
+    // Handler for category plan
     const changeCategoryPlanHandler = (i: number, value: number) => {
         const newPlan = { ...categoryPlans[i], plan: value };
         setCategoryPlans(
@@ -167,6 +167,29 @@ function CategoryPlan(props: {
                     ];
                 }
             }
+        );
+    };
+
+    // Handler for checked category
+    const checkedCategoryHandler = (checkedCategories: Category[]) => {
+        const categories: Category[] = [];
+        checkedCategories.forEach((checkedItem: Category) => {
+            const existingItem = props.categories.find(
+                (item: Category) => item.id === checkedItem.id
+            );
+            if (existingItem) {
+                categories.push(existingItem);
+            } else {
+                categories.push(checkedItem);
+            }
+        });
+
+        dispatch(
+            budgetActions.updateCategory({
+                isExpense,
+                budgetId: props.budgetId,
+                categories,
+            })
         );
     };
 
@@ -233,9 +256,12 @@ function CategoryPlan(props: {
                     />
                 </form>
             </Overlay>
-            <CategorySetting
+            <BudgetCategorySetting
+                isExpense={isExpense}
                 isOpen={isSettingOpen}
                 setIsOpen={setIsSettingOpen}
+                setCheckedCategories={checkedCategoryHandler}
+                checkedIds={props.categories.map((item) => item.id)}
             />
         </>
     );
