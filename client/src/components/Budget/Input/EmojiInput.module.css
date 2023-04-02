@@ -2,6 +2,10 @@ input.icon {
     flex: 0 0 auto;
     text-align: center;
     border-radius: 50%;
+    width: inherit;
+    height: inherit;
+    font-size: inherit;
+    padding: 0;
 }
 
 .overlay {

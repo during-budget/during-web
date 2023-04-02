@@ -90,6 +90,7 @@ function BudgetCategorySetting(props: {
                     {categories.map((category, i) => (
                         <CategorySettingItem
                             key={i}
+                            idx={i}
                             id={category.id}
                             icon={category.icon}
                             title={category.title}
