@@ -48,6 +48,14 @@ class Category {
     get amount() {
         return this._amount;
     }
+
+    set icon(icon: string) {
+        this._icon = icon;
+    }
+
+    set title(title: string) {
+        this._title = title;
+    }
 }
 
 export default Category;

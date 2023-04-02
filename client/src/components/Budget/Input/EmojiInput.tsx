@@ -7,7 +7,17 @@ import { MdOutlineCancel } from 'react-icons/md';
 import Overlay from '../../UI/Overlay';
 
 const EmojiInput = React.forwardRef(
-    (props: { className?: string; defaultValue?: string; placeholder?: string}, ref) => {
+    (
+        props: {
+            className?: string;
+            value?: string;
+            defaultValue?: string;
+            onChange?: (value: string) => void;
+            placeholder?: string;
+            required?: boolean;
+        },
+        ref
+    ) => {
         useImperativeHandle(ref, () => {
             return {
                 value: () => iconRef.current!.value,
@@ -31,6 +41,7 @@ const EmojiInput = React.forwardRef(
         // NOTE: 이모티콘 클릭 시 동작하는 함수
         const onEmojiClick = (value: any) => {
             iconRef.current!.value = value.native;
+            props.onChange && props.onChange(value.native);
             cancelHandler();
         };
 
@@ -48,7 +59,10 @@ const EmojiInput = React.forwardRef(
                     placeholder={props.placeholder}
                     maxLength={2}
                     onClick={handleEmojiPopup}
+                    onChange={() => {}} // NOTE: for remove warning
+                    value={props.value}
                     defaultValue={props.defaultValue}
+                    required={props.required}
                 />
                 <Overlay
                     className={classes.overlay}

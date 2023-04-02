@@ -10,7 +10,10 @@ function CategorySettingItem(props: {
     title: string;
     isDefault?: boolean;
     isChecked?: boolean;
+    setIcon: (idx: number, icon: string) => void;
+    setTitle: (idx: number, title: string) => void;
     setIsChecked?: (id: string, checked: boolean) => void;
+    onRemove: (idx: number) => void;
 }) {
     const isCheckItem = props.isChecked !== undefined;
     const checkedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,12 +21,22 @@ function CategorySettingItem(props: {
             props.setIsChecked(event.target.value, event.target.checked);
     };
 
-    const removeHandler = () => {};
+    const editIconHandler = (icon: string) => {
+        props.setIcon(props.idx, icon);
+    };
+
+    const editTitleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        props.setTitle(props.idx, event.target.value);
+    };
+
+    const removeHandler = () => {
+        props.onRemove(props.idx);
+    };
 
     const removeClass = props.isDefault ? classes.default : classes.trash;
 
     return (
-        <li className={classes.container}>
+        <li id={props.id} className={classes.container}>
             {isCheckItem && (
                 <input
                     className={classes.check}
@@ -44,12 +57,16 @@ function CategorySettingItem(props: {
                 <div className={classes.info}>
                     <EmojiInput
                         className={classes.icon}
-                        defaultValue={props.icon}
+                        value={props.icon}
+                        onChange={editIconHandler}
+                        required={true}
                     ></EmojiInput>
                     <input
                         className={classes.title}
                         type="text"
-                        defaultValue={props.title}
+                        value={props.title}
+                        onChange={editTitleHandler}
+                        required
                     />
                 </div>
                 <div className={classes.buttons}>
