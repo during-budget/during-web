@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classes from './BudgetCategorySetting.module.css';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import Category from '../../../models/Category';
 import CategorySettingItem from './CategorySettingItem';
 import Button from '../../UI/Button';
+import { categoryActions } from '../../../store/category';
 
 function BudgetCategorySetting(props: {
     isOpen: boolean;
@@ -15,6 +16,8 @@ function BudgetCategorySetting(props: {
     checkedIds?: string[];
     isExpense?: boolean;
 }) {
+    const dispatch = useDispatch();
+
     const allCategories = useSelector((state: any) => state.category);
 
     const [categories, setCategories] = useState<Category[]>([]);
@@ -39,24 +42,32 @@ function BudgetCategorySetting(props: {
                 ])
             )
         );
-    }, [allCategories, props.isExpense]);
+    }, [allCategories, props.isExpense, props.isOpen]);
 
     // Set checked from setting items
-    const setCheckedId = async (id: string, checked: boolean) => {
-        await setCheckedCategoryIds((prev) => {
+    const setCheckedId = (id: string, checked: boolean) => {
+        setCheckedCategoryIds((prev) => {
             const next = new Map(prev);
 
             next.set(id, checked);
 
             return next;
         });
-        console.log(checkedCategoryIds);
     };
 
-    // Handlers
+    // Handlers - form
     const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
 
+        // edited
+        dispatch(
+            categoryActions.updateCategories({
+                isExpense: props.isExpense,
+                categories,
+            })
+        );
+
+        // checked
         const checkedCategories: Category[] = [];
 
         checkedCategoryIds.forEach((value, key) => {
@@ -77,6 +88,66 @@ function BudgetCategorySetting(props: {
         props.setIsOpen(false);
     };
 
+    // Hanlders - item
+    const editIconHandler = (idx: number, icon: string) => {
+        setCategories((prev) => {
+            const next = [...prev];
+            next[idx].icon = icon;
+            return next;
+        });
+    };
+
+    const editTitleHandler = (idx: number, title: string) => {
+        setCategories((prev) => {
+            const next = [...prev];
+            next[idx].title = title;
+            return next;
+        });
+    };
+
+    const addHandler = async () => {
+        const id = (+new Date()).toString();
+        await setCategories((prev) => {
+            const newCategory = new Category({
+                id,
+                title: '',
+                icon: props.isExpense ? '💸' : '💰',
+                isExpense:
+                    props.isExpense === undefined || props.isExpense
+                        ? true
+                        : false,
+                isDefault: false,
+            });
+
+            setCheckedCategoryIds((prev) => {
+                const nextMap = new Map(prev);
+                nextMap.set(newCategory.id, true); // id 개선.. uuid 같은 거 써야할듯..?
+                return nextMap;
+            });
+
+            return [...prev, newCategory];
+        });
+
+        const newCategory = document.getElementById(id);
+        newCategory?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const removeHandler = (idx: number) => {
+        setCategories((prev) => {
+            const removedId = prev[idx].id;
+
+            setCheckedCategoryIds((prev) => {
+                const next = new Map(prev);
+
+                next.set(removedId, false);
+
+                return next;
+            });
+
+            return [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)];
+        });
+    };
+
     return (
         <Overlay
             className={classes.container}
@@ -95,14 +166,21 @@ function BudgetCategorySetting(props: {
                             icon={category.icon}
                             title={category.title}
                             isDefault={category.isDefault}
+                            setIcon={editIconHandler}
+                            setTitle={editTitleHandler}
                             isChecked={checkedCategoryIds.get(category.id)}
+                            onRemove={removeHandler}
                             setIsChecked={
                                 props.setCheckedCategories && setCheckedId
                             }
                         />
                     ))}
                 </ul>
-                <Button className={classes.add} styleClass="extra">
+                <Button
+                    className={classes.add}
+                    styleClass="extra"
+                    onClick={addHandler}
+                >
                     카테고리 추가
                 </Button>
                 <ConfirmCancelButtons

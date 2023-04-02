@@ -43,7 +43,6 @@ const budgetSlice = createSlice({
                     state[idx] as Budget,
                     [...categories, ...otherTypeCategories]
                 );
-                console.log(state[idx].categories);
             }
         },
         updateTotalAmount(state, action) {
