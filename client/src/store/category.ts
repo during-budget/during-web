@@ -16,6 +16,10 @@ const categorySlice = createSlice({
                 );
             });
         },
+        updateCategories(state, action) {
+            const categories = action.payload;
+            state = categories;
+        },
     },
 });
 
