@@ -1,9 +1,10 @@
 import classes from './CategorySettingItem.module.css';
-import Icon from '../../UI/Icon';
 import Button from '../../UI/Button';
+import EmojiInput from '../Input/EmojiInput';
 
 // NOTE: UserCategorySetting에도 본 컴포넌트 사용 (isChecked === undefined)
 function CategorySettingItem(props: {
+    idx: number;
     id: string;
     icon: string;
     title: string;
@@ -11,17 +12,15 @@ function CategorySettingItem(props: {
     isChecked?: boolean;
     setIsChecked?: (id: string, checked: boolean) => void;
 }) {
-    const removeClass = props.isDefault ? classes.default : classes.trash;
     const isCheckItem = props.isChecked !== undefined;
-
     const checkedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         props.setIsChecked &&
             props.setIsChecked(event.target.value, event.target.checked);
     };
 
-    const editHandler = () => {};
-
     const removeHandler = () => {};
+
+    const removeClass = props.isDefault ? classes.default : classes.trash;
 
     return (
         <li className={classes.container}>
@@ -43,15 +42,17 @@ function CategorySettingItem(props: {
                 }}
             >
                 <div className={classes.info}>
-                    <Icon>{props.icon}</Icon>
-                    <span>{props.title}</span>
+                    <EmojiInput
+                        className={classes.icon}
+                        defaultValue={props.icon}
+                    ></EmojiInput>
+                    <input
+                        className={classes.title}
+                        type="text"
+                        defaultValue={props.title}
+                    />
                 </div>
                 <div className={classes.buttons}>
-                    <Button
-                        className={classes.pencil}
-                        styleClass="extra"
-                        onClick={editHandler}
-                    ></Button>
                     <Button
                         className={removeClass}
                         styleClass="extra"

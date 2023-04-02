@@ -17,17 +17,31 @@
 
 .info {
     display: flex;
+    width: 70%;
     align-items: center;
     gap: 1rem;
 }
 
-.info span {
+.info .icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.75rem;
+}
+
+.info span.title {
     font-size: var(--size-5);
+    overflow-x: scroll;
+}
+
+.info input.title {
+    width: 60%;
+    height: 3rem;
 }
 
 .buttons {
+    flex-shrink: 0;
     display: flex;
-    width: 35%;
+    width: 30%;
     justify-content: space-between;
 }
 
@@ -35,17 +49,22 @@
     font-size: var(--size-8);
 }
 
-.pencil::before {
+.buttons .pencil::before {
     content: '\f303';
     font: var(--fa-font-solid);
 }
 
-.trash::before {
+.buttons .confirm::before {
+    content: '\f00c';
+    font: var(--fa-font-solid);
+}
+
+.buttons .trash::before {
     content: '\f2ed';
     font: var(--fa-font-solid);
 }
 
-.bars::before {
+.buttons .bars::before {
     content: '\f0c9';
     font: var(--fa-font-solid);
 }
