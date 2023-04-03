@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Budget from '../models/Budget';
+import Category from '../models/Category';
 
 const initialState: Budget[] = [];
 
@@ -42,6 +43,31 @@ const budgetSlice = createSlice({
                 state[idx] = Budget.getBudgetUpdatedCategory(
                     state[idx] as Budget,
                     [...categories, ...otherTypeCategories]
+                );
+            }
+        },
+        updateCategoryFromSetting(state, action) {
+            const { budgetId, categories: settings } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                const categories = state[idx].categories.map((item) => {
+                    const settingData = settings.find(
+                        (setting: Category) => setting.id === item.id
+                    );
+
+                    if (settingData) {
+                        const { icon, title } = settingData;
+                        item.icon = icon;
+                        item.title = title;
+                    }
+
+                    return item;
+                });
+
+                state[idx] = Budget.getBudgetUpdatedCategory(
+                    state[idx] as Budget,
+                    categories as Category[]
                 );
             }
         },
