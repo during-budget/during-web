@@ -9,8 +9,10 @@ import CategorySettingItem from './CategorySettingItem';
 import Button from '../../UI/Button';
 import { categoryActions } from '../../../store/category';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { budgetActions } from '../../../store/budget';
 
 function BudgetCategorySetting(props: {
+    budgetId: string;
     isOpen: boolean;
     setIsOpen: (value: boolean) => void;
     setCheckedCategories?: (checked: Category[]) => void;
@@ -64,6 +66,12 @@ function BudgetCategorySetting(props: {
         dispatch(
             categoryActions.updateCategories({
                 isExpense: props.isExpense,
+                categories,
+            })
+        );
+        dispatch(
+            budgetActions.updateCategoryFromSetting({
+                budgetId: props.budgetId,
                 categories,
             })
         );

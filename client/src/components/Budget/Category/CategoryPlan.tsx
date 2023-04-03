@@ -324,6 +324,7 @@ function CategoryPlan(props: {
                 </form>
             </Overlay>
             <BudgetCategorySetting
+                budgetId={props.budgetId}
                 isExpense={isExpense}
                 isOpen={isSettingOpen}
                 setIsOpen={setIsSettingOpen}
