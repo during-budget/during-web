@@ -16,6 +16,7 @@ import {
 } from '../../../util/api/budgetAPI';
 import AmountBars from '../Amount/AmountBars';
 import BudgetCategorySetting from './BudgetCategorySetting';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -193,6 +194,14 @@ function CategoryPlan(props: {
         );
     };
 
+    const sortHandler = (result: any) => {
+        if (!result.destination) return;
+        const items = [...categoryPlans];
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        setCategoryPlans(items);
+    };
+
     return (
         <>
             <Overlay
@@ -223,8 +232,15 @@ function CategoryPlan(props: {
                     {/* categories */}
                     <ul className={classes.list}>
                         <h5>목표 예산</h5>
-                        <div>
-                            {categoryPlans.map((item, i) => (
+                        <DragDropContext onDragEnd={sortHandler}>
+                            <Droppable droppableId="category-plan-droppable">
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        className="category-plan-droppable"
+                                        {...provided.droppableProps}
+                                    >
+                                        {categoryPlans.map((item, i) => (
                                 <CategoryPlanItem
                                     key={item.id}
                                     idx={i}
@@ -233,8 +249,12 @@ function CategoryPlan(props: {
                                     plan={Amount.getAmountStr(item.plan)}
                                     onChange={changeCategoryPlanHandler}
                                 />
-                            ))}
-                        </div>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
                     </ul>
                     {/* left */}
                     <div className={classes.left}>

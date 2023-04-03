@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Amount from '../../../models/Amount';
 
 function CategoryPlanItem(props: {
+    handleProps?: any;
+    isDragging?: boolean;
     idx: number;
     icon: string;
     title: string;
@@ -49,19 +51,26 @@ function CategoryPlanItem(props: {
     };
 
     return (
-        <li className={classes.container}>
-            <div className={classes.info}>
-                <Icon>{props.icon}</Icon>
-                <p>{props.title}</p>
+        <li
+            className={`${classes.container} ${
+                props.isDragging ? classes.dragging : ''
+            }`}
+        >
+            <div className={classes.content}>
+                <div className={classes.info}>
+                    <Icon>{props.icon}</Icon>
+                    <p>{props.title}</p>
+                </div>
+                {/* TODO: number input으로 대체 */}
+                <input
+                    type="text"
+                    value={plan}
+                    onChange={changeHandler}
+                    onFocus={focusHandler}
+                    onBlur={blurHandler}
+                ></input>
             </div>
-            {/* TODO: number input으로 대체 */}
-            <input
-                type="text"
-                value={plan}
-                onChange={changeHandler}
-                onFocus={focusHandler}
-                onBlur={blurHandler}
-            ></input>
+            <div {...props.handleProps} className={classes.handle} />
         </li>
     );
 }
