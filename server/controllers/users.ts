@@ -65,7 +65,7 @@ export const verify = async (
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
           /* set maxAge as 1 year if auto login is requested */
-          if (req.body.persist === "true") {
+          if (req.body.persist === true) {
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
           }
           return res.status(200).send({ user });
@@ -150,7 +150,7 @@ export const loginVerify = async (
           if (loginError) throw loginError;
           console.log("DEBUG: login is over");
           /* set maxAge as 1 year if auto login is requested */
-          if (req.body.persist === "true") {
+          if (req.body.persist === true) {
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
           }
           console.log("DEBUG: sending response");
