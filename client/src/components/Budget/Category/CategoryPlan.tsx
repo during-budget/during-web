@@ -225,9 +225,15 @@ function CategoryPlan(props: {
                     <AmountBars
                         className={classes.bars}
                         borderRadius="0.4rem"
-                        amountData={categoryPlans.map((item) => {
-                            return { label: item.icon, amount: item.plan };
-                        })}
+                        amountData={[
+                            ...categoryPlans.map((item) => {
+                                return { label: item.icon, amount: item.plan };
+                            }),
+                            {
+                                label: defaultCategory?.icon || '',
+                                amount: leftAmount,
+                            },
+                        ]}
                     />
                     {/* categories */}
                     <ul className={classes.list}>
@@ -241,14 +247,55 @@ function CategoryPlan(props: {
                                         {...provided.droppableProps}
                                     >
                                         {categoryPlans.map((item, i) => (
-                                <CategoryPlanItem
-                                    key={item.id}
-                                    idx={i}
-                                    icon={item.icon}
-                                    title={item.title}
-                                    plan={Amount.getAmountStr(item.plan)}
-                                    onChange={changeCategoryPlanHandler}
-                                />
+                                            <Draggable
+                                                draggableId={item.id}
+                                                key={item.id}
+                                                index={i}
+                                            >
+                                                {(provided, snapshot) => {
+                                                    var transform =
+                                                        provided.draggableProps!
+                                                            .style!.transform;
+                                                    if (transform) {
+                                                        var t =
+                                                            transform.split(
+                                                                ','
+                                                            )[1];
+                                                        provided.draggableProps!.style!.transform =
+                                                            'translate(0px,' +
+                                                            t;
+                                                    }
+
+                                                    return (
+                                                        <div
+                                                            {...provided.draggableProps}
+                                                            ref={
+                                                                provided.innerRef
+                                                            }
+                                                        >
+                                                            <CategoryPlanItem
+                                                                handleProps={
+                                                                    provided.dragHandleProps
+                                                                }
+                                                                isDragging={
+                                                                    snapshot.isDragging
+                                                                }
+                                                                idx={i}
+                                                                icon={item.icon}
+                                                                title={
+                                                                    item.title
+                                                                }
+                                                                plan={Amount.getAmountStr(
+                                                                    item.plan
+                                                                )}
+                                                                onChange={
+                                                                    changeCategoryPlanHandler
+                                                                }
+                                                            />
+                                                        </div>
+                                                    );
+                                                }}
+                                            </Draggable>
                                         ))}
                                         {provided.placeholder}
                                     </div>
