@@ -8,6 +8,7 @@ import Category from '../../../models/Category';
 import CategorySettingItem from './CategorySettingItem';
 import Button from '../../UI/Button';
 import { categoryActions } from '../../../store/category';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 function BudgetCategorySetting(props: {
     isOpen: boolean;
@@ -148,6 +149,14 @@ function BudgetCategorySetting(props: {
         });
     };
 
+    const sortHandler = (result: any) => {
+        if (!result.destination) return;
+        const items = [...categories];
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        setCategories(items);
+    };
+
     return (
         <Overlay
             className={classes.container}
@@ -157,25 +166,81 @@ function BudgetCategorySetting(props: {
         >
             <form onSubmit={submitHandler}>
                 <StatusHeader id="category-setting" title="카테고리 설정" />
-                <ul className={classes.list}>
-                    {categories.map((category, i) => (
-                        <CategorySettingItem
-                            key={i}
-                            idx={i}
-                            id={category.id}
-                            icon={category.icon}
-                            title={category.title}
-                            isDefault={category.isDefault}
-                            setIcon={editIconHandler}
-                            setTitle={editTitleHandler}
-                            isChecked={checkedCategoryIds.get(category.id)}
-                            onRemove={removeHandler}
-                            setIsChecked={
-                                props.setCheckedCategories && setCheckedId
-                            }
-                        />
-                    ))}
-                </ul>
+                <DragDropContext onDragEnd={sortHandler}>
+                    <Droppable droppableId="budget-category-setting-droppable">
+                        {(provided) => {
+                            return (
+                                <ul
+                                    ref={provided.innerRef}
+                                    className={`${classes.list} budget-category-setting-droppable`}
+                                    {...provided.droppableProps}
+                                >
+                                    {categories.map((category, i) => (
+                                        <Draggable
+                                            draggableId={`draggable-${i}`}
+                                            index={i}
+                                            key={`draggable-${i}`}
+                                        >
+                                            {(provided, snapshot) => {
+                                                var transform =
+                                                    provided.draggableProps!
+                                                        .style!.transform;
+                                                if (transform) {
+                                                    var t =
+                                                        transform.split(',')[1];
+                                                    provided.draggableProps!.style!.transform =
+                                                        'translate(0px,' + t;
+                                                }
+                                                return (
+                                                    <div
+                                                        {...provided.draggableProps}
+                                                        ref={provided.innerRef}
+                                                    >
+                                                        <CategorySettingItem
+                                                            handleProps={
+                                                                provided.dragHandleProps
+                                                            }
+                                                            isDragging={
+                                                                snapshot.isDragging
+                                                            }
+                                                            key={i}
+                                                            idx={i}
+                                                            id={category.id}
+                                                            icon={category.icon}
+                                                            title={
+                                                                category.title
+                                                            }
+                                                            isDefault={
+                                                                category.isDefault
+                                                            }
+                                                            setIcon={
+                                                                editIconHandler
+                                                            }
+                                                            setTitle={
+                                                                editTitleHandler
+                                                            }
+                                                            isChecked={checkedCategoryIds.get(
+                                                                category.id
+                                                            )}
+                                                            onRemove={
+                                                                removeHandler
+                                                            }
+                                                            setIsChecked={
+                                                                props.setCheckedCategories &&
+                                                                setCheckedId
+                                                            }
+                                                        />
+                                                    </div>
+                                                );
+                                            }}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </ul>
+                            );
+                        }}
+                    </Droppable>
+                </DragDropContext>
                 <Button
                     className={classes.add}
                     styleClass="extra"
