@@ -4,6 +4,8 @@ import EmojiInput from '../Input/EmojiInput';
 
 // NOTE: UserCategorySetting에도 본 컴포넌트 사용 (isChecked === undefined)
 function CategorySettingItem(props: {
+    handleProps?: any;
+    isDragging?: boolean;
     idx: number;
     id: string;
     icon: string;
@@ -36,7 +38,12 @@ function CategorySettingItem(props: {
     const removeClass = props.isDefault ? classes.default : classes.trash;
 
     return (
-        <li id={props.id} className={classes.container}>
+        <li
+            id={props.id}
+            className={`${classes.container} ${
+                props.isDragging ? classes.dragging : ''
+            }`}
+        >
             {isCheckItem && (
                 <input
                     className={classes.check}
@@ -74,11 +81,8 @@ function CategorySettingItem(props: {
                         className={removeClass}
                         styleClass="extra"
                         onClick={removeHandler}
-                    ></Button>
-                    <Button
-                        className={classes.bars}
-                        styleClass="extra"
-                    ></Button>
+                    />
+                    <div {...props.handleProps} className={classes.handle} />
                 </div>
             </div>
         </li>

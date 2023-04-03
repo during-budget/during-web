@@ -4,6 +4,13 @@
     align-items: center;
 }
 
+.container.dragging {
+    background-color: #fff;
+    padding-left: 0.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
+}
+
 .check {
     width: auto;
     height: var(--size-8);
@@ -64,9 +71,19 @@
     font: var(--fa-font-solid);
 }
 
-.buttons .bars::before {
+.buttons .handle::before {
     content: '\f0c9';
     font: var(--fa-font-solid);
+}
+
+/* NOTE: Button 컴포넌트 스타일과 동일 */
+.buttons .handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-weight: 600;
+    border-radius: var(--size-10);
 }
 
 .default::before {
