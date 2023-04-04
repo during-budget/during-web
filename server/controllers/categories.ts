@@ -17,10 +17,12 @@ export const updateV2 = async (req: Request, res: Response) => {
         .send({ message: "field 'categories' is required" });
 
     const user = req.user!;
-    const isExpense = req.body.isExpense ?? false;
 
     const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
-      user.categories.map((category) => [category._id, category])
+      user.categories.map((category: any) => [
+        category._id,
+        category.toObject(),
+      ])
     );
 
     const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
@@ -30,6 +32,9 @@ export const updateV2 = async (req: Request, res: Response) => {
     const added: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
     const updated: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
     const removed: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
+
+    let defaultExpenseCategory: any = user.findDefaultExpenseCategory();
+    let defaultIncomeCategory: any = user.findDefaultIncomeCategory();
 
     for (let _category of req.body.categories) {
       if (!("title" in _category) || !("icon" in _category)) {
@@ -61,10 +66,6 @@ export const updateV2 = async (req: Request, res: Response) => {
         const exCategory = categoryDict[key];
         if (!exCategory)
           return res.status(404).send({ message: "category not found" });
-        if (exCategory.isDefault)
-          return res
-            .status(409)
-            .send({ message: "default category cannot be updated" });
 
         const category = {
           ...exCategory,
@@ -72,7 +73,16 @@ export const updateV2 = async (req: Request, res: Response) => {
           icon: _category.icon,
         };
 
-        _categories.push(category);
+        if (!exCategory.isDefault) {
+          _categories.push(category);
+        } else {
+          if (exCategory.isExpense) {
+            defaultExpenseCategory = category;
+          } else {
+            defaultIncomeCategory = category;
+          }
+        }
+
         delete categoryDict[key];
 
         if (
@@ -88,8 +98,6 @@ export const updateV2 = async (req: Request, res: Response) => {
       if (!category.isDefault) removed.push(category);
     }
 
-    const defaultExpenseCategory = user.findDefaultExpenseCategory();
-    const defaultIncomeCategory = user.findDefaultIncomeCategory();
     user.categories = [
       ..._categories,
       defaultExpenseCategory,
@@ -196,7 +204,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     }
 
     return res.status(200).send({
-      categories: _.filter(user.categories, { isDefault: false }),
+      categories: user.categories,
       added,
       updated,
       removed,
@@ -216,20 +224,7 @@ export const find = async (req: Request, res: Response) => {
     const user = req.user!;
 
     return res.status(200).send({
-      categories: _.filter(user.categories, {
-        isDefault: false,
-        isExpense: true,
-      })
-        .map((category) => {
-          return {
-            _id: category._id,
-            title: category.title,
-            icon: category.icon,
-            isExpense: category.isExpense,
-            isIncome: category.isIncome,
-          };
-        })
-        .splice(0, 5),
+      categories: user.categories,
     });
 
     // return res.status(200).send({ categories: user.categories });
