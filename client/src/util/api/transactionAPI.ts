@@ -1,6 +1,7 @@
+const { DURING_SERVER } = import.meta.env;
 import Transaction from '../../models/Transaction';
 
-const BASE_URL = 'http://localhost:5555/api/transactions';
+const BASE_URL = `${DURING_SERVER}/api/transactions`;
 
 export const getTransactions = async (budgetId: string) => {
     const url = `${BASE_URL}?budgetId=${encodeURIComponent(budgetId)}`;
