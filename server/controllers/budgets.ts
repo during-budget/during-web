@@ -166,7 +166,10 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
     if (!budget.userId.equals(user._id)) return res.status(401).send();
 
     const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
-      budget.categories.map((category) => [category.categoryId, category])
+      budget.categories.map((category) => [
+        category.categoryId,
+        category.toObject(),
+      ])
     );
 
     const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
