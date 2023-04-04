@@ -311,18 +311,7 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
 
     await budget.save();
     return res.status(200).send({
-      categories: _.filter(budget.categories, { isDefault: false }).map(
-        (category) => {
-          return {
-            categoryId: category.categoryId,
-            title: category.title,
-            icon: category.icon,
-            amountPlanned: category.amountPlanned,
-            amountScheduled: category.amountScheduled,
-            amountCurrent: category.amountCurrent,
-          };
-        }
-      ),
+      categories: budget.categories,
       included,
       updated,
       excluded,
