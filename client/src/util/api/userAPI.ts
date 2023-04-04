@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:5555/api/users';
+const { DURING_SERVER } = import.meta.env;
+
+const BASE_URL = `${DURING_SERVER}/api/users`;
 
 export const sendCodeRegister = async (email: string) => {
     const url = `${BASE_URL}/register`;

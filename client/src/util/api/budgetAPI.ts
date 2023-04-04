@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:5555/api/budgets';
+const { DURING_SERVER } = import.meta.env;
+
+const BASE_URL = `${DURING_SERVER}/api/budgets`;
 
 export const getBudgetList = async () => {
     const url = BASE_URL;
@@ -90,13 +92,25 @@ export const updateCategoryPlan = async (
 
 export const updateCategories = async (
     budgetId: string,
-    categories: { categoryId: string; amountPlanned: number }[]
+    isExpense: boolean,
+    categories: {
+        categoryId: string;
+        amountPlanned: number;
+    }[]
 ) => {
+    const body: { isExpense?: boolean; isIncome?: boolean; categories: any } = {
+        categories,
+    };
+
+    // NOTE: isEpense=true or isIncom=true
+    body.isExpense = isExpense;
+    body.isIncome = !isExpense;
+
     const url = `${BASE_URL}/${budgetId}/categories`;
     const response = await fetch(url, {
         method: 'PUT',
         credentials: 'include',
-        body: JSON.stringify({ categories }),
+        body: JSON.stringify({ isExpense, categories }),
         headers: {
             'Content-Type': 'application/json',
         },
