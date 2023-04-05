@@ -56,6 +56,35 @@ class Category {
     set title(title: string) {
         this._title = title;
     }
+
+    static getCategoryFromData = (category: any) => {
+        const {
+            categoryId,
+            _id,
+            icon,
+            isExpense,
+            isDefault,
+            title,
+            amountCurrent,
+            amountPlanned,
+            amountScheduled,
+        } = category;
+
+        const amount = new Amount(
+            amountCurrent,
+            amountScheduled,
+            amountPlanned
+        );
+
+        return new Category({
+            id: categoryId || _id,
+            title,
+            icon,
+            isExpense,
+            isDefault,
+            amount,
+        });
+    };
 }
 
 export default Category;
