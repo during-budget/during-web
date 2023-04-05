@@ -110,6 +110,42 @@ const budgetSlice = createSlice({
                 );
             }
         },
+        // TODO: array를 map으로 변경한 뒤 업데이트 필요.. 너무 복잡시럽다
+        updateTransactionAmount(state, action) {
+            const { budgetId, prev, next } = action.payload;
+
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            const prevState = prev.isCurrent ? 'current' : 'scheduled';
+            const nextState = next.isCurrent ? 'current' : 'scheduled';
+
+            const prevType = prev.isExpense ? 'expense' : 'income';
+            const nextType = next.isExpense ? 'expense' : 'income';
+
+            if (state[idx]) {
+                const amount = next.amount;
+                const nextBudget = state[idx];
+
+                if (prev.categoryId !== next.categoryId) {
+                    const prevIdx = nextBudget.categories.findIndex(
+                        (item) => item.id === prev.categoryId
+                    );
+                    const nextIdx = nextBudget.categories.findIndex(
+                        (item) => item.id === next.categoryId
+                    );
+
+                    nextBudget.categories[prevIdx].amount[prevState] -= amount;
+                    nextBudget.categories[nextIdx].amount[nextState] += amount;
+                }
+
+                if (prevState !== nextState || prevType !== nextType) {
+                    nextBudget.total[prevType][prevState] -= amount;
+                    nextBudget.total[nextType][nextState] += amount;
+                }
+
+                state[idx] = nextBudget;
+            }
+        },
         updateTotalPlan(state, action) {
             const { budgetId, isExpense, amount } = action.payload;
             const idx = state.findIndex((item) => item.id === budgetId);

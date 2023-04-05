@@ -77,6 +77,14 @@ function TransactionForm(props: { budgetId: string }) {
             updateTransactionFields(transaction);
             updateTransactionAmount(transaction);
             updateTransactionCategory(transaction);
+
+            dispatch(
+                budgetActions.updateTransactionAmount({
+                    budgetId,
+                    prev: defaultValue,
+                    next: transaction,
+                })
+            );
         } else {
             const { createdId, createdLinkId } = await createTransaction(
                 transaction
