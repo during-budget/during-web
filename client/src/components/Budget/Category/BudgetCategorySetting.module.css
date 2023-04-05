@@ -1,5 +1,5 @@
 .container {
-    height: 90vh;
+    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,12 +10,32 @@
     height: calc(100% - 4rem);
 }
 
-.container h5 {
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2vh;
 }
 
+.pencil,
+.confirm {
+    width: auto;
+    height: auto;
+}
+
+.pencil::before {
+    content: '\f303';
+    font: var(--fa-font-solid);
+    font-size: var(--size-8);
+}
+
+.confirm::before {
+    content: '\f00c';
+    font: var(--fa-font-solid);
+}
+
 .list {
-    height: 55vh;
+    height: 50vh;
     margin-bottom: 1vh;
     overflow: scroll;
     -ms-overflow-style: none;
@@ -24,4 +44,58 @@
 
 .list::-webkit-scrollbar {
     display: none;
+}
+
+.check {
+    width: auto;
+    height: var(--size-8);
+}
+
+.item {
+    display: flex;
+    justify-content: start;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.item.edit {
+    justify-content: space-between;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info .icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.75rem;
+}
+
+.info span.title {
+    font-size: var(--size-5);
+    overflow-x: scroll;
+}
+
+.info input.title {
+    width: 100%;
+    height: 3rem;
+}
+
+.trash {
+    width: auto;
+    padding: 0 1.5rem;
+}
+
+.trash::before {
+    content: '\f2ed';
+    font: var(--fa-font-solid);
+    font-size: var(--size-7);
+}
+
+.container button:disabled {
+    opacity: 0.2;
 }
