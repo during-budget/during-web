@@ -2,10 +2,10 @@ import classes from './CategoryPlanItem.module.css';
 import Icon from '../../UI/Icon';
 import { useEffect, useState } from 'react';
 import Amount from '../../../models/Amount';
+import { Draggable } from 'react-beautiful-dnd';
 
 function CategoryPlanItem(props: {
-    handleProps?: any;
-    isDragging?: boolean;
+    id: string;
     idx: number;
     icon: string;
     title: string;
@@ -51,28 +51,50 @@ function CategoryPlanItem(props: {
     };
 
     return (
-        <li
-            className={`${classes.container} ${
-                props.isDragging ? classes.dragging : ''
-            }`}
-        >
-            <div className={classes.content}>
-                <div className={classes.info}>
-                    <Icon>{props.icon}</Icon>
-                    <p>{props.title}</p>
-                </div>
-                {/* TODO: number input으로 대체 */}
-                <input
-                    type="text"
-                    value={plan}
-                    onChange={changeHandler}
-                    onFocus={focusHandler}
-                    onBlur={blurHandler}
-                ></input>
-            </div>
-            <div {...props.handleProps} className={classes.handle} />
-        </li>
+        <Draggable draggableId={props.id} key={props.id} index={props.idx}>
+            {(provided, snapshot) => {
+                const lockedProvided = lockXAxis(provided);
+                return (
+                    <li
+                        key={props.idx}
+                        {...lockedProvided.draggableProps}
+                        ref={lockedProvided.innerRef}
+                        className={`${classes.container} ${
+                            snapshot.isDragging ? classes.dragging : ''
+                        }`}
+                    >
+                        <div className={classes.content}>
+                            <div className={classes.info}>
+                                <Icon>{props.icon}</Icon>
+                                <p>{props.title}</p>
+                            </div>
+                            {/* TODO: number input으로 대체 */}
+                            <input
+                                type="text"
+                                value={plan}
+                                onChange={changeHandler}
+                                onFocus={focusHandler}
+                                onBlur={blurHandler}
+                            ></input>
+                        </div>
+                        <div
+                            {...lockedProvided.dragHandleProps}
+                            className={classes.handle}
+                        />
+                    </li>
+                );
+            }}
+        </Draggable>
     );
 }
+
+const lockXAxis = (provided: any) => {
+    const transform = provided.draggableProps!.style!.transform;
+    if (transform) {
+        var t = transform.split(',')[1];
+        provided.draggableProps!.style!.transform = 'translate(0px,' + t;
+    }
+    return provided;
+};
 
 export default CategoryPlanItem;

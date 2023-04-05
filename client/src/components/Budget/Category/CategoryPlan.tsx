@@ -5,18 +5,20 @@ import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
-import CategoryPlanItem from './CategoryPlanItem';
 import Amount from '../../../models/Amount';
 import Button from '../../UI/Button';
 import EditInput from '../Input/EditInput';
 import { budgetActions } from '../../../store/budget';
 import {
     updateBudgetFields,
-    updateCategories,
+    updateBudgetCategories,
 } from '../../../util/api/budgetAPI';
 import AmountBars from '../Amount/AmountBars';
 import BudgetCategorySetting from './BudgetCategorySetting';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { getTransactions } from '../../../util/api/transactionAPI';
+import { transactionActions } from '../../../store/transaction';
+import CategoryPlanList from './CategoryPlanList';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -99,6 +101,14 @@ function CategoryPlan(props: {
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        // total - request
+        const key = isExpense ? 'expensePlanned' : 'incomePlanned';
+
+        updateBudgetFields(props.budgetId, {
+            [key]: +totalPlan,
+        });
+
+        // total - set
         dispatch(
             budgetActions.updateTotalPlan({
                 budgetId: props.budgetId,
@@ -107,30 +117,39 @@ function CategoryPlan(props: {
             })
         );
 
-        // request - total
-        const key = isExpense ? 'expensePlanned' : 'incomePlanned';
-
-        updateBudgetFields(props.budgetId, {
-            [key]: +totalPlan,
-        });
-
-        // request - category
-        const categoryData = categoryPlans.map((item) => {
+        // category - request
+        const categoryReqData = categoryPlans.map((item) => {
             const { id, plan } = item;
-            return { categoryId: id, amountPlanned: plan };
+            return {
+                categoryId: id,
+                amountPlanned: plan,
+            };
         });
 
-        const updatedData = await updateCategories(
+        const { categories, excluded } = await updateBudgetCategories(
             props.budgetId,
-            categoryData
+            isExpense,
+            categoryReqData
         );
 
+        // category - set category
         dispatch(
-            budgetActions.updateBudget({
+            budgetActions.setCategories({
                 budgetId: props.budgetId,
-                budget: updatedData.budget,
+                categories,
             })
         );
+
+        // category - set transactions updated category
+        if (excluded.length > 0) {
+            const { transactions } = await getTransactions(props.budgetId);
+            dispatch(
+                transactionActions.setBudgetTransactions({
+                    budgetId: props.budgetId,
+                    transactions,
+                })
+            );
+        }
 
         // close
         dispatch(uiActions.showCategoryPlanEditor(false));
@@ -239,68 +258,12 @@ function CategoryPlan(props: {
                     <ul className={classes.list}>
                         <h5>목표 예산</h5>
                         <DragDropContext onDragEnd={sortHandler}>
-                            <Droppable droppableId="category-plan-droppable">
-                                {(provided) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        className="category-plan-droppable"
-                                        {...provided.droppableProps}
-                                    >
-                                        {categoryPlans.map((item, i) => (
-                                            <Draggable
-                                                draggableId={item.id}
-                                                key={item.id}
-                                                index={i}
-                                            >
-                                                {(provided, snapshot) => {
-                                                    var transform =
-                                                        provided.draggableProps!
-                                                            .style!.transform;
-                                                    if (transform) {
-                                                        var t =
-                                                            transform.split(
-                                                                ','
-                                                            )[1];
-                                                        provided.draggableProps!.style!.transform =
-                                                            'translate(0px,' +
-                                                            t;
-                                                    }
-
-                                                    return (
-                                                        <div
-                                                            {...provided.draggableProps}
-                                                            ref={
-                                                                provided.innerRef
-                                                            }
-                                                        >
-                                                            <CategoryPlanItem
-                                                                handleProps={
-                                                                    provided.dragHandleProps
-                                                                }
-                                                                isDragging={
-                                                                    snapshot.isDragging
-                                                                }
-                                                                idx={i}
-                                                                icon={item.icon}
-                                                                title={
-                                                                    item.title
-                                                                }
-                                                                plan={Amount.getAmountStr(
-                                                                    item.plan
-                                                                )}
-                                                                onChange={
-                                                                    changeCategoryPlanHandler
-                                                                }
-                                                            />
-                                                        </div>
-                                                    );
-                                                }}
-                                            </Draggable>
-                                        ))}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
+                            <CategoryPlanList
+                                categoryPlans={categoryPlans}
+                                changeCategoryPlanHandler={
+                                    changeCategoryPlanHandler
+                                }
+                            />
                         </DragDropContext>
                     </ul>
                     {/* left */}
