@@ -7,6 +7,7 @@ function ConfirmCancelButtons(props: {
     closeMsg?: string;
     confirmMsg?: string;
     className?: string;
+    disabled?: boolean;
 }) {
     return (
         <div className={`${classes.container} ${props.className}`}>
@@ -21,6 +22,7 @@ function ConfirmCancelButtons(props: {
                 type="submit"
                 styleClass="primary"
                 onClick={props.onConfirm}
+                disabled={props.disabled}
             >
                 {props.confirmMsg || '완료'}
             </Button>
