@@ -1,5 +1,6 @@
-.container a {
+.container button {
     display: flex;
+    justify-content: start;
     align-items: center;
     font-size: var(--size-5);
     gap: 1rem;

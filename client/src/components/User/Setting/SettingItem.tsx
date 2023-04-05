@@ -1,14 +1,23 @@
-import { Link } from 'react-router-dom';
 import classes from './SettingItem.module.css';
 import Icon from '../../UI/Icon';
+import Button from '../../UI/Button';
 
-function SettingItem(props: { icon: string; label: string; to: string }) {
+function SettingItem(props: {
+    icon: string;
+    label: string;
+    show: (isShow: boolean) => void;
+}) {
     return (
         <li className={classes.container}>
-            <Link to={props.to}>
+            <Button
+                styleClass="extra"
+                onClick={() => {
+                    props.show(true);
+                }}
+            >
                 <Icon>{props.icon}</Icon>
                 <p>{props.label}</p>
-            </Link>
+            </Button>
         </li>
     );
 }
