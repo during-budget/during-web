@@ -27,19 +27,21 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
         return `${item.icon} ${item.title}`;
     });
 
-    const updatePlan = (amountStr: string) => {
+    const updatePlan = async (amountStr: string) => {
         const amount = +amountStr;
         const categoryId = categories[currentCategoryIdx].id;
 
-        dispatch(
-            budgetActions.updateCategoryPlan({
-                budgetId: props.budgetId,
-                categoryId,
-                amount,
-            })
+        // Send request
+        const { budget } = await updateCategoryPlan(
+            props.budgetId,
+            categoryId,
+            amount
         );
 
-        updateCategoryPlan(props.budgetId, categoryId, amount);
+        // Update budget state (for plan update)
+        dispatch(
+            budgetActions.updateBudget({ budgetId: props.budgetId, budget })
+        );
     };
 
     return (

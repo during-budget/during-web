@@ -17,21 +17,19 @@ function TotalStatus(props: {
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
     const total = isExpense ? props.total.expense : props.total.income;
 
-    const updatePlan = (amountStr: string) => {
-        const amount = +amountStr;
-        dispatch(
-            budgetActions.updateTotalPlan({
-                budgetId: props.budgetId,
-                isExpense,
-                amount,
-            })
-        );
-
+    const updatePlan = async (amountStr: string) => {
+        // send Request
         const key = isExpense ? 'expensePlanned' : 'incomePlanned';
+        const amount = +amountStr;
 
-        updateBudgetFields(props.budgetId, {
+        const { budget } = await updateBudgetFields(props.budgetId, {
             [key]: amount,
         });
+
+        // Update budget state (for plan update)
+        dispatch(
+            budgetActions.updateBudget({ budgetId: props.budgetId, budget })
+        );
     };
 
     return (
