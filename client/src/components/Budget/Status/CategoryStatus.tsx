@@ -52,6 +52,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                         id="category-status-type-tab"
                         isExpense={isExpense}
                         setIsExpense={(isExpense: boolean) => {
+                            setCurrentCategoryIdx(0);
                             dispatch(uiActions.setIsExpense(isExpense));
                         }}
                     />
