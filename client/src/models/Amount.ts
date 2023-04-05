@@ -35,12 +35,14 @@ class Amount {
         isOver: boolean;
         amount: number;
     }[];
+    private _overPlanned: boolean;
 
     constructor(current: number, scheduled: number, planned: number) {
         this._current = current;
         this._scheduled = scheduled;
         this._planned = planned;
         this._state = this.getState();
+        this._overPlanned = this.getOverPlanned();
     }
 
     get current() {
@@ -57,6 +59,10 @@ class Amount {
 
     get state() {
         return this._state;
+    }
+
+    get overPlanned() {
+        return this._overPlanned;
     }
 
     set planned(amount: number) {
@@ -159,6 +165,14 @@ class Amount {
         );
 
         return [currentOverSchedule, currentOverPlanned, scheduledOverplanned];
+    };
+
+    private getOverPlanned = () => {
+        // overPlanned
+        return (
+            this._planned - this._current < 0 ||
+            this._planned - this.scheduled < 0
+        );
     };
 }
 
