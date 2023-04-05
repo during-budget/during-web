@@ -102,7 +102,7 @@ export const updateBudgetCategories = async (
         categories,
     };
 
-    // NOTE: isEpense=true or isIncom=true
+    // NOTE: isExpense=true or isIncom=true
     body.isExpense = isExpense;
     body.isIncome = !isExpense;
 
@@ -110,7 +110,7 @@ export const updateBudgetCategories = async (
     const response = await fetch(url, {
         method: 'PUT',
         credentials: 'include',
-        body: JSON.stringify({ isExpense, categories }),
+        body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json',
         },
