@@ -1,6 +1,5 @@
 .container {
     height: 48vh;
-    margin-bottom: 1vh;
     overflow: scroll;
     -ms-overflow-style: none;
     scrollbar-width: 0;
@@ -8,6 +7,10 @@
 
 .container::-webkit-scrollbar {
     display: none;
+}
+
+.add {
+    height: 4rem;
 }
 
 .default {

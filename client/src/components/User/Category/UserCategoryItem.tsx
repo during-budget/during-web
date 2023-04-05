@@ -5,6 +5,7 @@ import EmojiInput from '../../Budget/Input/EmojiInput';
 
 function UserCategoryItem(props: {
     index: number;
+    id: string;
     icon: string;
     title: string;
     onRemove: (idx: number) => void;
@@ -34,6 +35,7 @@ function UserCategoryItem(props: {
                 return (
                     <li
                         key={props.index}
+                        id={props.id}
                         {...lockedProvided.draggableProps}
                         ref={lockedProvided.innerRef}
                         className={`${classes.container} ${

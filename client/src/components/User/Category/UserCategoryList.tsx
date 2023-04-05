@@ -31,7 +31,7 @@ function UserCategoryList(props: {
 
     const addHandler = async () => {
         const id = uuid();
-        props.setCategories((prev: Category[]) => {
+        await props.setCategories((prev: Category[]) => {
             const newCategory = new Category({
                 id,
                 title: '',
@@ -86,6 +86,7 @@ function UserCategoryList(props: {
                                 <UserCategoryItem
                                     key={i}
                                     index={i}
+                                    id={item.id}
                                     icon={item.icon}
                                     title={item.title}
                                     onRemove={removeHandler}
@@ -95,6 +96,14 @@ function UserCategoryList(props: {
                             ))}
                             {provided.placeholder}
                         </ul>
+                        {/* add category button */}
+                        <Button
+                            styleClass="extra"
+                            className={classes.add}
+                            onClick={addHandler}
+                        >
+                            카테고리 추가
+                        </Button>
                         {/* default category input */}
                         <div className={classes.default}>
                             <div className={classes.inputs}>
@@ -115,10 +124,6 @@ function UserCategoryList(props: {
                             </div>
                             <span className={classes.label}>기본</span>
                         </div>
-                        {/* add category button */}
-                        <Button styleClass="extra" onClick={addHandler}>
-                            카테고리 추가
-                        </Button>
                     </>
                 );
             }}
