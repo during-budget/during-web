@@ -16,7 +16,7 @@ function CategoryPlanList(props: {
                 >
                     {props.categoryPlans.map((item: any, i: number) => (
                         <CategoryPlanItem
-                            key={i}
+                            key={item.id}
                             idx={i}
                             id={item.id}
                             icon={item.icon}
