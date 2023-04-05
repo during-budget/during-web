@@ -1,4 +1,5 @@
 import Category from '../../../models/Category';
+import EmojiInput from '../../Budget/Input/EmojiInput';
 import Button from '../../UI/Button';
 import UserCategoryItem from './UserCategoryItem';
 import classes from './UserCategoryList.module.css';
@@ -8,7 +9,9 @@ import { v4 as uuid } from 'uuid';
 function UserCategoryList(props: {
     isExpense: boolean;
     categories: Category[];
+    defaultCategory?: Category;
     setCategories: (func: any) => void;
+    setDefaultCategory: (func: any) => void;
 }) {
     const editIconHandler = (idx: number, icon: string) => {
         props.setCategories((prev: Category[]) => {
@@ -50,11 +53,30 @@ function UserCategoryList(props: {
         });
     };
 
+    const defaultIconHandler = (icon: string) => {
+        props.setDefaultCategory((prev: Category) => {
+            const { id, title, isExpense, isDefault } = prev;
+            return new Category({ id, icon, title, isExpense, isDefault });
+        });
+    };
+
+    const defaultTitleHandler = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const title = event.target.value;
+
+        props.setDefaultCategory((prev: Category) => {
+            const { id, icon, isExpense, isDefault } = prev;
+            return new Category({ id, icon, title, isExpense, isDefault });
+        });
+    };
+
     return (
         <Droppable droppableId="user-category-setting-droppable">
             {(provided) => {
                 return (
                     <>
+                        {/* current category list */}
                         <ul
                             ref={provided.innerRef}
                             className={`${classes.container} budget-category-setting-droppable`}
@@ -73,6 +95,27 @@ function UserCategoryList(props: {
                             ))}
                             {provided.placeholder}
                         </ul>
+                        {/* default category input */}
+                        <div className={classes.default}>
+                            <div className={classes.inputs}>
+                                <EmojiInput
+                                    className={classes.icon}
+                                    value={props.defaultCategory?.icon}
+                                    onChange={defaultIconHandler}
+                                    isDark={true}
+                                    required={true}
+                                ></EmojiInput>
+                                <input
+                                    className={classes.title}
+                                    type="text"
+                                    value={props.defaultCategory?.title}
+                                    onChange={defaultTitleHandler}
+                                    required
+                                />
+                            </div>
+                            <span className={classes.label}>기본</span>
+                        </div>
+                        {/* add category button */}
                         <Button styleClass="extra" onClick={addHandler}>
                             카테고리 추가
                         </Button>

@@ -21,6 +21,9 @@ function UserCategorySetting(props: {
     const [isExpense, setIsExpense] = useState(true);
     const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);
     const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
+    const [defaultCategory, setDefaultCategory] = useState<
+        Category | undefined
+    >(undefined);
 
     // Set categories
     useEffect(() => {
@@ -40,17 +43,30 @@ function UserCategorySetting(props: {
         });
     }, [allCategories, props.isOpen]);
 
+    useEffect(() => {
+        const currentDefault = allCategories.find(
+            (item: Category) => item.isDefault && item.isExpense === isExpense
+        );
+        setDefaultCategory(currentDefault);
+    }, [isExpense]);
+
     // Form handlers
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const { categories } = await updateCategories([
-            ...expenseCategories,
-            ...incomeCategories,
-        ]);
+        // request data
+        const updatingCategories = [...expenseCategories, ...incomeCategories];
+        if (defaultCategory) {
+            updatingCategories.push(defaultCategory);
+        }
 
+        // get response
+        const { categories } = await updateCategories(updatingCategories);
+
+        // dispatch
         dispatch(categoryActions.setCategories(categories));
 
+        // close overlay
         props.setIsOpen(false);
     };
 
@@ -107,6 +123,8 @@ function UserCategorySetting(props: {
                                 ? setExpenseCategories
                                 : setIncomeCategories
                         }
+                        defaultCategory={defaultCategory}
+                        setDefaultCategory={setDefaultCategory}
                     />
                 </DragDropContext>
                 <ConfirmCancelButtons

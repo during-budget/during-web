@@ -26,6 +26,9 @@ function BudgetCategorySetting(props: {
 
     const [isEdit, setIsEdit] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [defaultCategory, setDefaultCategory] = useState<
+        Category | undefined
+    >(undefined);
     const [checkedCategoryIds, setCheckedCategoryIds] = useState<
         Map<string, boolean>
     >(new Map());
@@ -38,6 +41,13 @@ function BudgetCategorySetting(props: {
                 item.isExpense === props.isExpense && !item.isDefault
         );
         setCategories(categories);
+
+        // default category
+        const currentDefault = allCategories.find(
+            (item: Category) =>
+                item.isDefault && item.isExpense === props.isExpense
+        );
+        setDefaultCategory(currentDefault);
 
         // checked categories
         setCheckedCategoryIds(
@@ -66,10 +76,14 @@ function BudgetCategorySetting(props: {
                     item.isExpense === !props.isExpense && !item.isDefault
             );
 
-            const { categories: updatedCategories } = await updateCategories([
-                ...categories,
-                ...otherCategories,
-            ]);
+            const updatingCategories = [...categories, ...otherCategories];
+            if (defaultCategory) {
+                updatingCategories.push(defaultCategory);
+            }
+
+            const { categories: updatedCategories } = await updateCategories(
+                updatingCategories
+            );
 
             dispatch(categoryActions.setCategories(updatedCategories));
         } else {
@@ -169,6 +183,29 @@ function BudgetCategorySetting(props: {
         });
     };
 
+    // Default Handlers
+    const defaultIconHandler = (icon: string) => {
+        setDefaultCategory((prev: Category | undefined) => {
+            if (prev) {
+                const { id, title, isExpense, isDefault } = prev;
+                return new Category({ id, icon, title, isExpense, isDefault });
+            }
+        });
+    };
+
+    const defaultTitleHandler = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const title = event.target.value;
+
+        setDefaultCategory((prev: Category | undefined) => {
+            if (prev) {
+                const { id, icon, isExpense, isDefault } = prev;
+                return new Category({ id, icon, title, isExpense, isDefault });
+            }
+        });
+    };
+
     return (
         <Overlay
             className={`${classes.container} ${isEdit ? classes.edit : ''}`}
@@ -177,6 +214,7 @@ function BudgetCategorySetting(props: {
             closeHandler={closeHandler}
         >
             <form id="budget-category-setting-form" onSubmit={submitHandler}>
+                {/* Header */}
                 <div className={classes.header}>
                     <h5>카테고리 목록 편집</h5>
                     <Button
@@ -185,6 +223,7 @@ function BudgetCategorySetting(props: {
                         onClick={editHandler}
                     ></Button>
                 </div>
+                {/* List */}
                 <ul className={classes.list}>
                     {categories.map((item, i) => (
                         <li
@@ -252,10 +291,34 @@ function BudgetCategorySetting(props: {
                     ))}
                 </ul>
                 {isEdit && (
-                    <Button styleClass="extra" onClick={addHandler}>
-                        카테고리 추가
-                    </Button>
+                    <>
+                        {/* Default category input */}
+                        <div className={classes.default}>
+                            <div className={classes.inputs}>
+                                <EmojiInput
+                                    className={classes.icon}
+                                    value={defaultCategory?.icon}
+                                    onChange={defaultIconHandler}
+                                    isDark={true}
+                                    required={true}
+                                ></EmojiInput>
+                                <input
+                                    className={classes.title}
+                                    type="text"
+                                    value={defaultCategory?.title}
+                                    onChange={defaultTitleHandler}
+                                    required
+                                />
+                            </div>
+                            <span className={classes.label}>기본</span>
+                        </div>
+                        {/* Add Category Button */}
+                        <Button styleClass="extra" onClick={addHandler}>
+                            카테고리 추가
+                        </Button>
+                    </>
                 )}
+                {/* Confirm & Cancel */}
                 <ConfirmCancelButtons
                     onClose={closeHandler}
                     confirmMsg={isEdit ? '수정 완료' : '카테고리 설정 완료'}

@@ -8,6 +8,10 @@ input.icon {
     padding: 0;
 }
 
+input.icon.dark {
+    background-color: #fff;
+}
+
 .overlay {
     width: 100%;
     background-color: #fff;

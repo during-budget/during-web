@@ -1,8 +1,12 @@
 .container {
-    height: 80vh;
+    height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.container.edit .item {
+    margin-bottom: 0.1rem;
 }
 
 .container form {
@@ -98,4 +102,40 @@
 
 .container button:disabled {
     opacity: 0.2;
+}
+
+.default {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: var(--gray-1);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.default .icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.75rem;
+}
+
+.default .inputs {
+    display: flex;
+    gap: 1rem;
+    width: 80%;
+}
+
+.default .title {
+    background-color: #fff;
+}
+
+.default .label {
+    display: inline-block;
+    width: 1.875rem;
+    text-align: center;
+    padding: 0.2rem 0.5rem;
+    background-color: var(--primary);
+    color: #fff;
+    border-radius: 0.2rem;
 }
