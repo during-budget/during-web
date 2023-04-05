@@ -24,6 +24,7 @@ import {
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
+import { v4 as uuid } from 'uuid';
 
 function TransactionForm(props: { budgetId: string }) {
     const dispatch = useDispatch();
@@ -52,7 +53,7 @@ function TransactionForm(props: { budgetId: string }) {
 
         // set transaction
         const transaction = new Transaction({
-            id: defaultValue.id || (+new Date()).toString(),
+            id: defaultValue.id || uuid(),
             budgetId,
             isCurrent,
             isExpense,
@@ -194,6 +195,7 @@ function TransactionForm(props: { budgetId: string }) {
         <div className={classes.selects}>
             <CategoryInput
                 ref={categoryRef}
+                budgetId={budgetId}
                 isExpense={isExpense}
                 className={`${classes.field} ${classes.select}`}
                 defaultValue={defaultValue.categoryId}
