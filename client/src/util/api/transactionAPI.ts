@@ -88,7 +88,7 @@ export const deleteTransaction = async (transactionId: string) => {
 export const updateTransactionFields = async (transaction: Transaction) => {
     const url = `${BASE_URL}/${transaction.id}`;
 
-    const { date, titles, linkId, tags, memo } = transaction;
+    const { date, icon, titles, linkId, tags, memo } = transaction;
 
     const response = await fetch(url, {
         method: 'PATCH',
@@ -96,6 +96,7 @@ export const updateTransactionFields = async (transaction: Transaction) => {
         body: JSON.stringify({
             date,
             linkId,
+            icon,
             title: titles,
             tags,
             memo,
