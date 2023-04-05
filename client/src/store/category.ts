@@ -19,19 +19,6 @@ const categorySlice = createSlice({
                 );
             });
         },
-        updateCategories(state, action) {
-            const { isExpense, categories } = action.payload;
-            if (isExpense === undefined) {
-                state.splice(0); // init
-                state.push(...categories);
-            } else {
-                const otherCategories = state.filter(
-                    (item) => item.isExpense !== isExpense
-                );
-                state.splice(0); // init
-                state.push(...categories, ...otherCategories);
-            }
-        },
     },
 });
 

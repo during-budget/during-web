@@ -89,29 +89,7 @@ class Budget {
                 ),
             },
             categories: categories.map((category: any) => {
-                const {
-                    categoryId: id,
-                    icon,
-                    isExpense,
-                    isDefault,
-                    title,
-                    amountCurrent,
-                    amountPlanned,
-                    amountScheduled,
-                } = category;
-                const amount = new Amount(
-                    amountCurrent,
-                    amountScheduled,
-                    amountPlanned
-                );
-                return new Category({
-                    id,
-                    title,
-                    icon,
-                    isExpense,
-                    isDefault,
-                    amount,
-                });
+                return Category.getCategoryFromData(category);
             }),
         });
     };
@@ -155,9 +133,27 @@ class Budget {
 
     static getBudgetUpdatedCategory = (
         prevBudget: Budget,
-        categories: Category[]
+        updatedCategories: {
+            categoryId: string;
+            icon: string;
+            title: string;
+            isExpense: boolean;
+            isDefault: boolean;
+            amountPlanned: number;
+            amountScheduled: number;
+            amountCurrent: number;
+        }[] | Category[]
     ) => {
         const { id, title, date, total } = prevBudget;
+
+        const categories = updatedCategories.map((category) => {
+            if (category instanceof Category) {
+                return category;
+            } else {
+                return Category.getCategoryFromData(category);
+            }
+        });
+
         return new Budget({ id, title, date, total, categories });
     };
 
