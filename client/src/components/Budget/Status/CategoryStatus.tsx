@@ -75,7 +75,11 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
             <AmountDetail
                 id="category"
                 amount={categories[currentCategoryIdx].amount!}
-                editPlanHandler={updatePlan}
+                editPlanHandler={
+                    !categories[currentCategoryIdx].isDefault
+                        ? updatePlan
+                        : undefined
+                }
             />
             <IndexNav
                 idx={currentCategoryIdx}
