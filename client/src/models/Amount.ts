@@ -65,6 +65,14 @@ class Amount {
         return this._overPlanned;
     }
 
+    set current(amount: number) {
+        this._current = amount;
+    }
+
+    set scheduled(amount: number) {
+        this._scheduled = amount;
+    }
+
     set planned(amount: number) {
         this._planned = amount;
     }
