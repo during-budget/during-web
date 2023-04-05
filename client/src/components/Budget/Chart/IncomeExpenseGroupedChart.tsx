@@ -26,8 +26,8 @@ function IncomeExpenseGroupedChart(props: {
             style={{ height: props.height }}
         >
             {props.amount.map((item, i) => {
-                const expense = (item.expense / max) * 100 + '%';
-                const income = (item.income / max) * 100 + '%';
+                const expense = max ? (item.expense / max) * 100 + '%' : '0%';
+                const income = max ? (item.income / max) * 100 + '%' : '0%';
 
                 return (
                     <li key={i} className={classes.chart}>
