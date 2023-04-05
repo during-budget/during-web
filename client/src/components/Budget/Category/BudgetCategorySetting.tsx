@@ -11,6 +11,7 @@ import EmojiInput from '../Input/EmojiInput';
 import { updateCategories } from '../../../util/api/categoryAPI';
 import { categoryActions } from '../../../store/category';
 import { useDispatch } from 'react-redux';
+import { budgetActions } from '../../../store/budget';
 
 function BudgetCategorySetting(props: {
     isOpen: boolean;
@@ -86,6 +87,12 @@ function BudgetCategorySetting(props: {
             );
 
             dispatch(categoryActions.setCategories(updatedCategories));
+            dispatch(
+                budgetActions.updateCategoryFromSetting({
+                    budgetId: props.budgetId,
+                    categories: updatedCategories,
+                })
+            );
         } else {
             // fetch request - update categories
             const checkedCategories: Category[] = [];

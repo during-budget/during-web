@@ -66,7 +66,7 @@ const budgetSlice = createSlice({
             if (state[idx]) {
                 const categories = state[idx].categories.map((item) => {
                     const settingData = settings.find(
-                        (setting: Category) => setting.id === item.id
+                        (setting: any) => setting._id === item.id
                     );
 
                     if (settingData) {
