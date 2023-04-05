@@ -9,6 +9,9 @@ const categorySlice = createSlice({
     reducers: {
         setCategories(state, action) {
             const categories = action.payload;
+
+            state.splice(0); // init;
+
             categories.forEach((category: any) => {
                 const { _id: id, title, icon, isExpense, isDefault } = category;
                 state.push(

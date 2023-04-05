@@ -1,0 +1,17 @@
+.container {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container form {
+    width: calc(100% - 4rem);
+    height: calc(100% - 4rem);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2vh;
+}
