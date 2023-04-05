@@ -65,7 +65,7 @@ export const updateCategoryPlan = async (
     categoryId: string,
     amount: number
 ) => {
-    const url = `${BASE_URL}/${budgetId}/category/amountPlanned?categoryId=${categoryId}`;
+    const url = `${BASE_URL}/${budgetId}/categories/${categoryId}/amountPlanned`;
     const response = await fetch(url, {
         method: 'PUT',
         credentials: 'include',
@@ -90,7 +90,7 @@ export const updateCategoryPlan = async (
     return response.json();
 };
 
-export const updateCategories = async (
+export const updateBudgetCategories = async (
     budgetId: string,
     isExpense: boolean,
     categories: {

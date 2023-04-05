@@ -59,7 +59,6 @@ export const createTransaction = async (transaction: Transaction) => {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log('create transaction fail');
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
@@ -109,7 +108,6 @@ export const updateTransactionFields = async (transaction: Transaction) => {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log('create transaction fail');
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
@@ -133,7 +131,6 @@ export const updateTransactionAmount = async (transaction: Transaction) => {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log('create transaction fail');
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
@@ -157,7 +154,6 @@ export const updateTransactionCategory = async (transaction: Transaction) => {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log('create transaction fail');
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
