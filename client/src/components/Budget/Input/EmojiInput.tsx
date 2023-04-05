@@ -15,6 +15,7 @@ const EmojiInput = React.forwardRef(
             onChange?: (value: string) => void;
             placeholder?: string;
             required?: boolean;
+            isDark?: boolean;
         },
         ref
     ) => {
@@ -54,7 +55,9 @@ const EmojiInput = React.forwardRef(
             <div className={props.className}>
                 <input
                     ref={iconRef}
-                    className={classes.icon}
+                    className={`${classes.icon} ${
+                        props.isDark ? classes.dark : ''
+                    }`}
                     type="text"
                     placeholder={props.placeholder}
                     maxLength={2}
