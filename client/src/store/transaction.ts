@@ -52,6 +52,20 @@ const transactionSlice = createSlice({
 
             state.data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
         },
+        setBudgetTransactions(state, action) {
+            const { budgetId, transactions: transactionData } = action.payload;
+            const otherTransactions = state.data.filter(
+                (item) => item.budgetId !== budgetId
+            );
+            const transactions = transactionData.map((item: any) => {
+                if (item instanceof Transaction) {
+                    return item;
+                } else {
+                    return Transaction.getTransactionFromData(item);
+                }
+            });
+            state.data = [...transactions, ...otherTransactions];
+        },
         addTransaction(state, action) {
             const data = state.data;
             const transaction = action.payload;

@@ -23,6 +23,7 @@ const budgetSlice = createSlice({
         updateBudget(state, action) {
             const { budgetId, budget } = action.payload;
             const idx = state.findIndex((item) => item.id === budgetId);
+
             if (state[idx]) {
                 if (budget instanceof Budget) {
                     state[idx] = budget;
@@ -31,13 +32,25 @@ const budgetSlice = createSlice({
                 }
             }
         },
+        setCategories(state, action) {
+            const { budgetId, categories } = action.payload;
+            const idx = state.findIndex((item) => item.id === budgetId);
+
+            if (state[idx]) {
+                state[idx] = Budget.getBudgetUpdatedCategory(
+                    state[idx] as Budget,
+                    categories
+                );
+            }
+        },
         updateCategory(state, action) {
             const { budgetId, isExpense, categories } = action.payload;
             const idx = state.findIndex((item) => item.id === budgetId);
 
             if (state[idx]) {
                 const otherTypeCategories = state[idx].categories.filter(
-                    (item) => item.isExpense !== isExpense
+                    (item) =>
+                        item.isExpense !== isExpense || item.isDefault === true
                 );
 
                 state[idx] = Budget.getBudgetUpdatedCategory(
