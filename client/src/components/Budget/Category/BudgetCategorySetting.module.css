@@ -39,11 +39,14 @@
 }
 
 .list {
-    height: 50vh;
-    margin-bottom: 1vh;
+    height: 65vh;
     overflow: scroll;
     -ms-overflow-style: none;
     scrollbar-width: 0;
+}
+
+.edit .list {
+    height: 50vh;
 }
 
 .list::-webkit-scrollbar {
@@ -102,6 +105,10 @@
 
 .container button:disabled {
     opacity: 0.2;
+}
+
+.add {
+    height: 4rem;
 }
 
 .default {

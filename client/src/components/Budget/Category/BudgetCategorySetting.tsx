@@ -299,6 +299,10 @@ function BudgetCategorySetting(props: {
                 </ul>
                 {isEdit && (
                     <>
+                        {/* Add Category Button */}
+                        <Button styleClass="extra" className={classes.add} onClick={addHandler}>
+                            카테고리 추가
+                        </Button>
                         {/* Default category input */}
                         <div className={classes.default}>
                             <div className={classes.inputs}>
@@ -319,10 +323,6 @@ function BudgetCategorySetting(props: {
                             </div>
                             <span className={classes.label}>기본</span>
                         </div>
-                        {/* Add Category Button */}
-                        <Button styleClass="extra" onClick={addHandler}>
-                            카테고리 추가
-                        </Button>
                     </>
                 )}
                 {/* Confirm & Cancel */}
