@@ -36,9 +36,7 @@ function CategoryPlan(props: {
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
     // Amount state
-    const [totalPlan, setTotalPlan] = useState(
-        props.total[isExpense ? 'expense' : 'income']
-    );
+    const [totalPlan, setTotalPlan] = useState(0);
     const [categoryPlans, setCategoryPlans] = useState<
         { id: string; icon: string; title: string; plan: number }[]
     >([]);
@@ -49,6 +47,9 @@ function CategoryPlan(props: {
 
     // Set state - categoryPlan
     useEffect(() => {
+        // total plan
+        setTotalPlan(props.total[isExpense ? 'expense' : 'income']);
+
         // category plan
         setCategoryPlans([]);
 
@@ -157,7 +158,7 @@ function CategoryPlan(props: {
 
     // Handlers for total plan
     const confirmTotalHandler = (total: string) => {
-        setTotalPlan(total.replace(/[^0-9]+/g, ''));
+        setTotalPlan(+total.replace(/[^0-9]+/g, ''));
     };
 
     const focusTotalHandler = (event: React.FocusEvent<HTMLInputElement>) => {
