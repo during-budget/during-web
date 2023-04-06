@@ -107,6 +107,12 @@ function TransactionForm(props: {
         // add or replace
         await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
         dispatchAmount(transaction);
+
+        // scroll
+        document
+            .getElementById(transaction.id)
+            ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
         clearForm();
     };
 
