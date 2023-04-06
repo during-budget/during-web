@@ -86,14 +86,34 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                 setIdx={setCurrentCategoryIdx}
                 data={categoryNames}
             />
-            <Button
-                styleClass="extra"
-                onClick={() => {
-                    dispatch(uiActions.showCategoryPlanEditor(true));
-                }}
-            >
-                <span className={classes.edit}>카테고리 목표 편집</span>
-            </Button>
+            <div className={classes.buttons}>
+                <Button
+                    styleClass="extra"
+                    onClick={() => {
+                        dispatch(
+                            uiActions.showCategoryPlanEditor({
+                                isExpense: true,
+                                isEditPlan: true,
+                            })
+                        );
+                    }}
+                >
+                    <span className={classes.edit}>지출 목표 편집</span>
+                </Button>
+                <Button
+                    styleClass="extra"
+                    onClick={() => {
+                        dispatch(
+                            uiActions.showCategoryPlanEditor({
+                                isExpense: false,
+                                isEditPlan: true,
+                            })
+                        );
+                    }}
+                >
+                    <span className={classes.edit}>수입 목표 편집</span>
+                </Button>
+            </div>
         </>
     );
 }
