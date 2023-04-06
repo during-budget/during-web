@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classes from './CategoryStatus.module.css';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
@@ -18,11 +18,13 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
 
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
-    const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
-
-    const categories = props.categories.filter((item: Category) =>
+    const filteredCategories = props.categories.filter((item: Category) =>
         isExpense ? item.isExpense : !item.isExpense
     );
+
+    const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
+    const [categories, setCategories] = useState(filteredCategories);
+
     const categoryNames = categories.map((item) => {
         return `${item.icon} ${item.title}`;
     });
@@ -44,6 +46,19 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
         );
     };
 
+    useEffect(() => {
+        // init index
+        setCurrentCategoryIdx(0);
+
+        // filter category
+        const filteredCategories = props.categories.filter((item: Category) =>
+            isExpense ? item.isExpense : !item.isExpense
+        );
+
+        // set category
+        setCategories(filteredCategories);
+    }, [props.categories, isExpense]);
+
     return (
         <>
             <StatusHeader
@@ -54,7 +69,6 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
                         id="category-status-type-tab"
                         isExpense={isExpense}
                         setIsExpense={(isExpense: boolean) => {
-                            setCurrentCategoryIdx(0);
                             dispatch(uiActions.setIsExpense(isExpense));
                         }}
                     />
@@ -74,7 +88,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
             />
             <AmountDetail
                 id="category"
-                amount={categories[currentCategoryIdx].amount!}
+                amount={categories[currentCategoryIdx].amount}
                 editPlanHandler={
                     !categories[currentCategoryIdx].isDefault
                         ? updatePlan
