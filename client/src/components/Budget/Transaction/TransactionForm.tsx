@@ -164,6 +164,7 @@ function TransactionForm(props: {
     const getDefaultDate = () => {
         const { start, end } = props.date;
         const now = new Date();
+
         if ((!start && !end) || (start <= now && now <= end)) {
             return getNumericHypenDateString(now);
         } else {

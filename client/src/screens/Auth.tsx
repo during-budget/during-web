@@ -30,8 +30,12 @@ function Auth() {
     }, [loaderData]);
 
     const getUserLogin = async (user: any) => {
+        // get user data
+        const { userName, email } = user;
+
         // set user data
         dispatch(userActions.login());
+        dispatch(userActions.setUserInfo({ userName, email }));
         dispatch(categoryActions.setCategories(user.categories));
 
         // set budget data
