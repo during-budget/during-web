@@ -33,6 +33,7 @@ const EditInput = (props: {
             type="string"
             defaultValue={defaultValue || ''}
             onFocus={props.onFocus}
+            onBlur={confirmHandler}
         />
     );
 
@@ -40,14 +41,21 @@ const EditInput = (props: {
 
     return (
         <div className={props.className}>
+            {!isEdit && (
+                <button
+                    type="button"
+                    className={`${classes.edit} ${classes.pencil}`}
+                    onClick={editHandler}
+                ></button>
+            )}
             {isEdit ? amountInput : amountSpan}
-            <button
-                type="button"
-                className={`${classes.edit} ${
-                    isEdit ? classes.check : classes.pencil
-                }`}
-                onClick={isEdit ? confirmHandler : editHandler}
-            ></button>
+            {isEdit && (
+                <button
+                    type="button"
+                    className={`${classes.edit} ${classes.check}`}
+                    onClick={confirmHandler}
+                ></button>
+            )}
         </div>
     );
 };
