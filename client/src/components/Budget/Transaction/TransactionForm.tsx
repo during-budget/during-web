@@ -17,9 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../../../store/transaction';
 import {
     createTransaction,
-    updateTransactionAmount,
-    updateTransactionCategory,
-    updateTransactionFields,
+    updateTransaction,
 } from '../../../util/api/transactionAPI';
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
@@ -78,10 +76,7 @@ function TransactionForm(props: {
 
         // send request
         if (mode.isEdit) {
-            updateTransactionFields(transaction);
-            updateTransactionAmount(transaction);
-            updateTransactionCategory(transaction);
-
+            updateTransaction(transaction);
             dispatch(
                 budgetActions.updateTransactionAmount({
                     budgetId,

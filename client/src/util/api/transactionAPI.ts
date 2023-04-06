@@ -85,19 +85,32 @@ export const deleteTransaction = async (transactionId: string) => {
     }
 };
 
-export const updateTransactionFields = async (transaction: Transaction) => {
+export const updateTransaction = async (transaction: Transaction) => {
     const url = `${BASE_URL}/${transaction.id}`;
 
-    const { date, icon, titles, linkId, tags, memo } = transaction;
+    const {
+        isCurrent,
+        linkId,
+        amount,
+        date,
+        icon,
+        titles,
+        categoryId,
+        tags,
+        memo,
+    } = transaction;
 
     const response = await fetch(url, {
-        method: 'PATCH',
+        method: 'PUT',
         credentials: 'include',
         body: JSON.stringify({
-            date,
+            isCurrent,
             linkId,
+            amount,
+            date,
             icon,
             title: titles,
+            categoryId,
             tags,
             memo,
         }),
@@ -115,48 +128,48 @@ export const updateTransactionFields = async (transaction: Transaction) => {
     }
 };
 
-export const updateTransactionAmount = async (transaction: Transaction) => {
-    const url = `${BASE_URL}/${transaction.id}/amount`;
+// export const updateTransactionAmount = async (transaction: Transaction) => {
+//     const url = `${BASE_URL}/${transaction.id}/amount`;
 
-    const response = await fetch(url, {
-        method: 'PUT',
-        credentials: 'include',
-        body: JSON.stringify({
-            amount: transaction.amount,
-        }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+//     const response = await fetch(url, {
+//         method: 'PUT',
+//         credentials: 'include',
+//         body: JSON.stringify({
+//             amount: transaction.amount,
+//         }),
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//     });
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(
-            `Failed to create transaction.\n${data.message ? data.message : ''}`
-        );
-    }
-};
+//     if (!response.ok) {
+//         throw new Error(
+//             `Failed to create transaction.\n${data.message ? data.message : ''}`
+//         );
+//     }
+// };
 
-export const updateTransactionCategory = async (transaction: Transaction) => {
-    const url = `${BASE_URL}/${transaction.id}/category`;
+// export const updateTransactionCategory = async (transaction: Transaction) => {
+//     const url = `${BASE_URL}/${transaction.id}/category`;
 
-    const response = await fetch(url, {
-        method: 'PUT',
-        credentials: 'include',
-        body: JSON.stringify({
-            categoryId: transaction.categoryId,
-        }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+//     const response = await fetch(url, {
+//         method: 'PUT',
+//         credentials: 'include',
+//         body: JSON.stringify({
+//             categoryId: transaction.categoryId,
+//         }),
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//     });
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(
-            `Failed to create transaction.\n${data.message ? data.message : ''}`
-        );
-    }
-};
+//     if (!response.ok) {
+//         throw new Error(
+//             `Failed to create transaction.\n${data.message ? data.message : ''}`
+//         );
+//     }
+// };
