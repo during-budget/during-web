@@ -69,7 +69,7 @@ const CategoryInput = React.forwardRef(
             setDefaultValue(defaultValue);
             setCategories(filteredCategories);
             setCategoryList(getCategoryList(filteredCategories));
-        }, [isExpense]);
+        }, [isExpense, budgetCategories]);
 
         // NOTE: TransactionForm의 수입/지출 변경 반영
         useEffect(() => {
