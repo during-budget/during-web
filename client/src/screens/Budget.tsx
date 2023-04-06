@@ -62,7 +62,11 @@ function Budget() {
                 </Carousel>
                 <hr />
                 {/* Transactions */}
-                <TransactionLayout budgetId={id} transactions={transactions} />
+                <TransactionLayout
+                    budgetId={id}
+                    transactions={transactions}
+                    date={date}
+                />
                 {/* Overlays */}
                 <CategoryPlan
                     budgetId={id}

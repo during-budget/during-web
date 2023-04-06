@@ -25,8 +25,12 @@ import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { v4 as uuid } from 'uuid';
+import { getNumericHypenDateString } from '../../../util/date';
 
-function TransactionForm(props: { budgetId: string }) {
+function TransactionForm(props: {
+    budgetId: string;
+    date: { start: Date; end: Date };
+}) {
     const dispatch = useDispatch();
 
     const { mode, default: defaultValue } = useSelector(
@@ -147,7 +151,24 @@ function TransactionForm(props: { budgetId: string }) {
     };
 
     const expandHandler = () => {
-        dispatch(transactionActions.setForm({ mode: { isExpand: true } }));
+        dispatch(
+            transactionActions.setForm({
+                mode: { isExpand: true },
+                default: {
+                    date: getDefaultDate(),
+                },
+            })
+        );
+    };
+
+    const getDefaultDate = () => {
+        const { start, end } = props.date;
+        const now = new Date();
+        if ((!start && !end) || (start <= now && now <= end)) {
+            return getNumericHypenDateString(now);
+        } else {
+            return getNumericHypenDateString(start);
+        }
     };
 
     const closeHandler = () => {
