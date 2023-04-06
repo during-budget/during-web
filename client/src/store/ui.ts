@@ -22,7 +22,9 @@ const uiSlice = createSlice({
             state.budget.isExpense = action.payload;
         },
         showCategoryPlanEditor(state, action) {
-            state.budget.category.isEditPlan = action.payload;
+            const { isExpense, isEditPlan } = action.payload;
+            state.budget.isExpense = isExpense;
+            state.budget.category.isEditPlan = isEditPlan;
         },
         showCategoryListEditor(state, action) {
             state.budget.category.isEditList = action.payload;
