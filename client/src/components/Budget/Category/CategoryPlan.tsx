@@ -36,7 +36,7 @@ function CategoryPlan(props: {
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
     // Amount state
-    const [totalPlan, setTotalPlan] = useState(0);
+    const [totalPlan, setTotalPlan] = useState<number>(-1);
     const [categoryPlans, setCategoryPlans] = useState<
         { id: string; icon: string; title: string; plan: number }[]
     >([]);
@@ -48,7 +48,9 @@ function CategoryPlan(props: {
     // Set state - categoryPlan
     useEffect(() => {
         // total plan
-        setTotalPlan(props.total[isExpense ? 'expense' : 'income']);
+        if (totalPlan < 0 || !isOpen) {
+            setTotalPlan(props.total[isExpense ? 'expense' : 'income']);
+        }
 
         // category plan
         setCategoryPlans([]);
@@ -71,6 +73,15 @@ function CategoryPlan(props: {
                             plan: amount?.planned || 0,
                         };
 
+                        // NOTE: 이미 존재하는 경우(편집중인 경우) 기존 값 사용
+                        const isExist = categoryPlans.find(
+                            (plan) => plan.id === id
+                        );
+
+                        if (isExist && !isOpen) {
+                            newItem.plan = isExist.plan;
+                        }
+
                         return [...prev, newItem];
                     });
                 }
@@ -79,7 +90,7 @@ function CategoryPlan(props: {
 
         // left
         setLeftAmount();
-    }, [props.categories, isExpense]);
+    }, [props.categories, isExpense, isOpen]);
 
     // Set state - leftAmount
     useEffect(() => {
