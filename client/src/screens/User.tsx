@@ -4,9 +4,11 @@ import SettingList from '../components/User/Setting/SettingList';
 import { ScrollRestoration } from 'react-router-dom';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function User() {
     const [showCategory, setShowCategory] = useState(false);
+    const { email, userName } = useSelector((state: any) => state.user.info);
 
     const settings = [
         {
@@ -64,7 +66,7 @@ function User() {
     return (
         <>
             <ScrollRestoration />
-            <UserHeader userName="이름" email="username@gmail.com" />
+            <UserHeader userName={userName} email={email} />
             <main className={classes.container}>
                 <section>
                     {settings.map((data, i) => (
