@@ -33,6 +33,7 @@ function CategoryPlan(props: {
         (state: any) => state.ui.budget.category.isEditPlan
     );
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
+    const [isEditSetting, setIsEditSetting] = useState(false);
 
     // Amount state
     const [totalPlan, setTotalPlan] = useState<number>(-1);
@@ -204,29 +205,6 @@ function CategoryPlan(props: {
         );
     };
 
-    // Handler for checked category
-    const checkedCategoryHandler = (checkedCategories: Category[]) => {
-        const categories: Category[] = [];
-        checkedCategories.forEach((checkedItem: Category) => {
-            const existingItem = props.categories.find(
-                (item: Category) => item.id === checkedItem.id
-            );
-            if (existingItem) {
-                categories.push(existingItem);
-            } else {
-                categories.push(checkedItem);
-            }
-        });
-
-        dispatch(
-            budgetActions.updateCategory({
-                isExpense,
-                budgetId: props.budgetId,
-                categories,
-            })
-        );
-    };
-
     const sortHandler = (result: any) => {
         if (!result.destination) return;
         const items = [...categoryPlans];
@@ -291,7 +269,7 @@ function CategoryPlan(props: {
                         className={classes.edit}
                         styleClass="extra"
                         onClick={() => {
-                            dispatch(uiActions.showCategoryListEditor(true));
+                            setIsEditSetting(true);
                         }}
                     >
                         카테고리 목록 편집
@@ -305,8 +283,9 @@ function CategoryPlan(props: {
             <BudgetCategorySetting
                 budgetId={props.budgetId}
                 isExpense={isExpense}
-                setCheckedCategories={checkedCategoryHandler}
-                checkedIds={props.categories.map((item) => item.id)}
+                isOpen={isEditSetting}
+                setIsOpen={setIsEditSetting}
+                setCategoryPlans={setCategoryPlans}
             />
         </>
     );

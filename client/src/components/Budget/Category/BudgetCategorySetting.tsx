@@ -9,24 +9,30 @@ import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Button from '../../UI/Button';
 import EmojiInput from '../Input/EmojiInput';
 import { updateCategories } from '../../../util/api/categoryAPI';
-import { categoryActions } from '../../../store/category';
+import category, { categoryActions } from '../../../store/category';
 import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
-import { uiActions } from '../../../store/ui';
+import Budget from '../../../models/Budget';
+import { updateBudgetCategories } from '../../../util/api/budgetAPI';
+import { transactionActions } from '../../../store/transaction';
+import { getTransactions } from '../../../util/api/transactionAPI';
 
 function BudgetCategorySetting(props: {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
     budgetId: string;
     isExpense: boolean;
-    setCheckedCategories?: (checked: Category[]) => void;
-    checkedIds?: string[];
+    sendRequest?: boolean;
+    setCategoryPlans?: (plans: any[]) => void;
 }) {
     const dispatch = useDispatch();
 
-    const isOpen = useSelector(
-        (state: any) => state.ui.budget.category.isEditList
-    );
-
+    // Set category data
     const allCategories = useSelector((state: any) => state.category);
+
+    const budgets = useSelector((state: any) => state.budget);
+    const budget = budgets.find((item: Budget) => item.id === props.budgetId);
+    const budgetCategories = budget?.categories || [];
 
     const [isEdit, setIsEdit] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -54,27 +60,28 @@ function BudgetCategorySetting(props: {
         setDefaultCategory(currentDefault);
 
         // checked categories
+        const checkedIds = budgetCategories.map((item: Category) => item.id);
         setCheckedCategoryIds(
             new Map(
                 categories.map((item: Category) => [
                     item.id,
-                    props.checkedIds?.includes(item.id),
+                    checkedIds?.includes(item.id),
                 ])
             )
         );
 
         // init edit mode
-        if (isOpen) {
+        if (props.isOpen) {
             setIsEdit(false);
         }
-    }, [allCategories, props.isExpense, isOpen]);
+    }, [allCategories, props.isExpense, props.isOpen]);
 
     // Form handlers (checked)
     const submitHandler = async (event?: React.FormEvent) => {
         event?.preventDefault();
 
         if (isEdit) {
-            // fetch request - update categories
+            // gather category data
             const otherCategories = allCategories.filter(
                 (item: Category) =>
                     item.isExpense === !props.isExpense && !item.isDefault
@@ -85,10 +92,25 @@ function BudgetCategorySetting(props: {
                 updatingCategories.push(defaultCategory);
             }
 
-            const { categories: updatedCategories } = await updateCategories(
-                updatingCategories
-            );
+            // send requeset
+            const {
+                categories: updatedCategories,
+                removed: removedCategories,
+            } = await updateCategories(updatingCategories);
 
+            // update transaction state (removed category -> default category)
+            if (removedCategories.length > 0) {
+                const { transactions } = await getTransactions(props.budgetId);
+
+                dispatch(
+                    transactionActions.setBudgetTransactions({
+                        budgetId: props.budgetId,
+                        transactions,
+                    })
+                );
+            }
+
+            // update state
             dispatch(categoryActions.setCategories(updatedCategories));
             dispatch(
                 budgetActions.updateCategoryFromSetting({
@@ -97,7 +119,7 @@ function BudgetCategorySetting(props: {
                 })
             );
         } else {
-            // fetch request - update categories
+            // checkedId -> checkedCategories
             const checkedCategories: Category[] = [];
 
             checkedCategoryIds.forEach((isChecked, key) => {
@@ -109,14 +131,86 @@ function BudgetCategorySetting(props: {
                 }
             });
 
-            props.setCheckedCategories &&
-                props.setCheckedCategories(checkedCategories);
-            dispatch(uiActions.showCategoryListEditor(false));
+            // checkedCategories -> update budget categories (include / exclude)
+            const updatingCategories: Category[] = [];
+            checkedCategories.forEach((checkedItem: Category) => {
+                const existingItem = budgetCategories.find(
+                    (item: Category) => item.id === checkedItem.id
+                );
+                if (existingItem) {
+                    updatingCategories.push(existingItem);
+                } else {
+                    updatingCategories.push(checkedItem);
+                }
+            });
+
+            // update budgetCategory state
+            if (props.setCategoryPlans) {
+                const updatingPlans = updatingCategories.map((category) => {
+                    const { id, icon, title, amount } = category;
+                    return { id, icon, title, plan: amount.planned };
+                });
+                props.setCategoryPlans(updatingPlans);
+            } else {
+                dispatch(
+                    budgetActions.updateCategory({
+                        isExpense: props.isExpense,
+                        budgetId: props.budgetId,
+                        categories: updatingCategories,
+                    })
+                );
+            }
+
+            if (props.sendRequest) {
+                // consist request data - {categoryId, amountPlanned}[]
+                const categoryReqData = updatingCategories.map((item) => {
+                    const { id, amount } = item;
+                    return {
+                        categoryId: id,
+                        amountPlanned: amount.planned,
+                    };
+                });
+
+                // send request
+                const {
+                    categories: updatedCategories,
+                    excluded: excludedCategories,
+                } = await updateBudgetCategories(
+                    props.budgetId,
+                    props.isExpense,
+                    categoryReqData
+                );
+
+                // set state - updated category
+                dispatch(
+                    budgetActions.setCategories({
+                        budgetId: props.budgetId,
+                        categories: updatedCategories,
+                    })
+                );
+
+                // set state - transactions updated category (excluded -> default)
+                if (excludedCategories.length > 0) {
+                    const { transactions } = await getTransactions(
+                        props.budgetId
+                    );
+
+                    dispatch(
+                        transactionActions.setBudgetTransactions({
+                            budgetId: props.budgetId,
+                            transactions,
+                        })
+                    );
+                }
+            }
+
+            // close overlay
+            closeHandler();
         }
     };
 
     const closeHandler = () => {
-        dispatch(uiActions.showCategoryListEditor(false));
+        props.setIsOpen(false);
     };
 
     // Checked handler
@@ -219,7 +313,7 @@ function BudgetCategorySetting(props: {
     return (
         <Overlay
             className={`${classes.container} ${isEdit ? classes.edit : ''}`}
-            isOpen={isOpen}
+            isOpen={props.isOpen}
             isShowBackdrop={true}
             closeHandler={closeHandler}
         >

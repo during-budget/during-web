@@ -134,8 +134,14 @@ const budgetSlice = createSlice({
                         (item) => item.id === next.categoryId
                     );
 
-                    nextBudget.categories[prevIdx].amount[prevState] -= amount;
-                    nextBudget.categories[nextIdx].amount[nextState] += amount;
+                    if (0 <= prevIdx) {
+                        nextBudget.categories[prevIdx].amount[prevState] -=
+                            amount;
+                    }
+                    if (0 <= nextIdx) {
+                        nextBudget.categories[nextIdx].amount[nextState] +=
+                            amount;
+                    }
                 }
 
                 if (prevState !== nextState || prevType !== nextType) {

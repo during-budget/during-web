@@ -18,6 +18,7 @@ const CategoryInput = React.forwardRef(
             className?: string;
             onChange?: (event?: React.ChangeEvent) => void;
             disabled?: boolean;
+            setIsEditSetting: (isEdit: boolean) => void;
         },
         ref
     ) => {
@@ -132,7 +133,7 @@ const CategoryInput = React.forwardRef(
                     onChange={props.onChange}
                     showEdit={() => {
                         dispatch(uiActions.setIsExpense(isExpense));
-                        dispatch(uiActions.showCategoryListEditor(true));
+                        props.setIsEditSetting(true);
                     }}
                     disabled={props.disabled}
                 />

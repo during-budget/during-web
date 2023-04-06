@@ -53,8 +53,8 @@ const Select = React.forwardRef(
                 {isExpand && (
                     <div className={classes.backdrop} onClick={closeList} />
                 )}
-                <div className={classes.wrapper} onClick={toggleList}>
-                    <div className={classes.clickable} />
+                <div className={classes.wrapper}>
+                    <div className={classes.clickable} onClick={toggleList} />
                     <select
                         ref={selectRef}
                         value={selectState}
@@ -79,6 +79,7 @@ const Select = React.forwardRef(
                                             key={i}
                                             onClick={() => {
                                                 changeHandler(item.value);
+                                                toggleList();
                                             }}
                                         >
                                             {item.label}

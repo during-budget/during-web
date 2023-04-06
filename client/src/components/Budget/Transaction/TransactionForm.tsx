@@ -24,6 +24,7 @@ import { uiActions } from '../../../store/ui';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { v4 as uuid } from 'uuid';
 import { getNumericHypenDateString } from '../../../util/date';
+import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 
 function TransactionForm(props: {
     budgetId: string;
@@ -38,6 +39,7 @@ function TransactionForm(props: {
 
     const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
     const [iconState, setIconState] = useState('');
+    const [isEditSetting, setIsEditSetting] = useState(false);
 
     const titlesRef = useRef<any>(null);
     const dateRef = useRef<any>(null);
@@ -223,6 +225,7 @@ function TransactionForm(props: {
                 budgetId={budgetId}
                 isExpense={isExpense}
                 setIsExpense={setIsExpense}
+                setIsEditSetting={setIsEditSetting}
                 className={`${classes.field} ${classes.select}`}
                 defaultValue={defaultValue.categoryId}
                 onChange={() => {
@@ -309,6 +312,13 @@ function TransactionForm(props: {
                     </>
                 )}
             </form>
+            <BudgetCategorySetting
+                budgetId={props.budgetId}
+                isExpense={isExpense}
+                isOpen={isEditSetting}
+                setIsOpen={setIsEditSetting}
+                sendRequest={true}
+            />
         </Overlay>
     );
 }
