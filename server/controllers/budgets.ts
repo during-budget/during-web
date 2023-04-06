@@ -46,7 +46,7 @@ export const validate = async (req: Request, res: Response) => {
 
     for (let transaction of transactions) {
       if (!transaction.isCurrent) {
-        if (transaction.isExpense) {
+        if (transaction.category.isExpense) {
           b.expenseScheduled += transaction.amount;
         } else {
           b.incomeScheduled += transaction.amount;
@@ -54,7 +54,7 @@ export const validate = async (req: Request, res: Response) => {
         amountScheduled[transaction.category.categoryId.toString()] +=
           transaction.amount;
       } else {
-        if (transaction.isExpense) {
+        if (transaction.category.isExpense) {
           b.expenseCurrent += transaction.amount;
         } else {
           b.incomeCurrent += transaction.amount;
