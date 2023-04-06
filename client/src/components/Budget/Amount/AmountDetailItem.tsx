@@ -29,6 +29,8 @@ function AmountDetailItem(props: {
             {props.editHandler ? (
                 <EditInput
                     className={classes.edit}
+                    editClass={classes.editButton}
+                    cancelClass={classes.cancelButton}
                     value={props.amountStr}
                     confirmHandler={props.editHandler}
                     convertDefaultValue={convertToAmountNum}

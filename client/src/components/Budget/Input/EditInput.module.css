@@ -7,3 +7,8 @@
     content: '✓';
     font: var(--fa-font-solid);
 }
+
+.edit.cancel::before {
+    content: '\f00d';
+    font: var(--fa-font-solid);
+}

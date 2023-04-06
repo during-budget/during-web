@@ -249,6 +249,8 @@ function CategoryPlan(props: {
                     {/* total */}
                     <EditInput
                         className={classes.total}
+                        editClass={classes.totalEdit}
+                        cancelClass={classes.totalCancel}
                         value={Amount.getAmountStr(+totalPlan)}
                         onFocus={focusTotalHandler}
                         confirmHandler={confirmTotalHandler}
