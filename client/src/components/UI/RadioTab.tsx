@@ -19,26 +19,23 @@ function RadioTab(props: {
 
     return (
         <ul className={`${classes.tab} ${lineClass} ${className}`}>
-            {values.map((item) => {
-                return (
-                    <li key={item.value}>
-                        <input
-                            id={`${name}-${item.value}`}
-                            type="radio"
-                            name={name}
-                            checked={item.checked}
-                            onChange={item.onChange}
-                            disabled={item.disabled}
-                        ></input>
-                        <label
-                            htmlFor={`${name}-${item.value}`}
-                            style={boldStyle}
-                        >
-                            {item.label}
-                        </label>
-                    </li>
-                );
-            })}
+            {values.map((item) => (
+                <li key={item.value}>
+                    <input
+                        id={`${name}-${item.value}`}
+                        type="radio"
+                        name={name}
+                        checked={
+                            item.checked === undefined ? false : item.checked
+                        }
+                        onChange={item.onChange}
+                        disabled={item.disabled}
+                    ></input>
+                    <label htmlFor={`${name}-${item.value}`} style={boldStyle}>
+                        {item.label}
+                    </label>
+                </li>
+            ))}
         </ul>
     );
 }

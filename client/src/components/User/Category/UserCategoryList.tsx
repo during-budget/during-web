@@ -109,7 +109,7 @@ function UserCategoryList(props: {
                             <div className={classes.inputs}>
                                 <EmojiInput
                                     className={classes.icon}
-                                    value={props.defaultCategory?.icon}
+                                    value={props.defaultCategory?.icon || ''}
                                     onChange={defaultIconHandler}
                                     isDark={true}
                                     required={true}
@@ -117,7 +117,7 @@ function UserCategoryList(props: {
                                 <input
                                     className={classes.title}
                                     type="text"
-                                    value={props.defaultCategory?.title}
+                                    value={props.defaultCategory?.title || ''}
                                     onChange={defaultTitleHandler}
                                     required
                                 />
