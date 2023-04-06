@@ -66,12 +66,9 @@ const CategoryInput = React.forwardRef(
             const defaultValue =
                 filteredCategories[filteredCategories.length - 1]?.id;
 
-            const a = async () => {
-                await setDefaultValue(defaultValue);
-                await setCategories(filteredCategories);
-                await setCategoryList(getCategoryList(filteredCategories));
-            };
-            a();
+            setDefaultValue(defaultValue);
+            setCategories(filteredCategories);
+            setCategoryList(getCategoryList(filteredCategories));
         }, [isExpense]);
 
         // NOTE: TransactionForm의 수입/지출 변경 반영
@@ -134,6 +131,7 @@ const CategoryInput = React.forwardRef(
                     defaultValue={defaultValue}
                     onChange={props.onChange}
                     showEdit={() => {
+                        dispatch(uiActions.setIsExpense(isExpense));
                         dispatch(uiActions.showCategoryListEditor(true));
                     }}
                     disabled={props.disabled}
