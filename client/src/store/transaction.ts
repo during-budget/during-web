@@ -46,6 +46,9 @@ const transactionSlice = createSlice({
         },
         setTransaction(state, action) {
             const transactions = action.payload;
+            transactions.sort((prev: any, next: any) =>
+                new Date(prev.createdAt) < new Date(next.createdAt) ? 1 : -1
+            );
             state.data = transactions.map((item: any) =>
                 Transaction.getTransactionFromData(item)
             );
