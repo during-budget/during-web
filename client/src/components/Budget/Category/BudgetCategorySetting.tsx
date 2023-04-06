@@ -12,16 +12,19 @@ import { updateCategories } from '../../../util/api/categoryAPI';
 import { categoryActions } from '../../../store/category';
 import { useDispatch } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
+import { uiActions } from '../../../store/ui';
 
 function BudgetCategorySetting(props: {
-    isOpen: boolean;
     budgetId: string;
     isExpense: boolean;
-    setIsOpen: (value: boolean) => void;
     setCheckedCategories?: (checked: Category[]) => void;
     checkedIds?: string[];
 }) {
     const dispatch = useDispatch();
+
+    const isOpen = useSelector(
+        (state: any) => state.ui.budget.category.isEditList
+    );
 
     const allCategories = useSelector((state: any) => state.category);
 
@@ -61,10 +64,10 @@ function BudgetCategorySetting(props: {
         );
 
         // init edit mode
-        if (props.isOpen) {
+        if (isOpen) {
             setIsEdit(false);
         }
-    }, [allCategories, props.isExpense, props.isOpen]);
+    }, [allCategories, props.isExpense, isOpen]);
 
     // Form handlers (checked)
     const submitHandler = async (event?: React.FormEvent) => {
@@ -108,12 +111,12 @@ function BudgetCategorySetting(props: {
 
             props.setCheckedCategories &&
                 props.setCheckedCategories(checkedCategories);
-            props.setIsOpen(false);
+            dispatch(uiActions.showCategoryListEditor(false));
         }
     };
 
     const closeHandler = () => {
-        props.setIsOpen(false);
+        dispatch(uiActions.showCategoryListEditor(false));
     };
 
     // Checked handler
@@ -216,7 +219,7 @@ function BudgetCategorySetting(props: {
     return (
         <Overlay
             className={`${classes.container} ${isEdit ? classes.edit : ''}`}
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             isShowBackdrop={true}
             closeHandler={closeHandler}
         >
@@ -300,7 +303,11 @@ function BudgetCategorySetting(props: {
                 {isEdit && (
                     <>
                         {/* Add Category Button */}
-                        <Button styleClass="extra" className={classes.add} onClick={addHandler}>
+                        <Button
+                            styleClass="extra"
+                            className={classes.add}
+                            onClick={addHandler}
+                        >
                             카테고리 추가
                         </Button>
                         {/* Default category input */}

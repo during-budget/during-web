@@ -227,6 +227,7 @@ function TransactionForm(props: {
                 ref={categoryRef}
                 budgetId={budgetId}
                 isExpense={isExpense}
+                setIsExpense={setIsExpense}
                 className={`${classes.field} ${classes.select}`}
                 defaultValue={defaultValue.categoryId}
                 onChange={() => {

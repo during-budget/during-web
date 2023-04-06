@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Button from './Button';
 import classes from './Select.module.css';
 
@@ -6,7 +6,7 @@ const Select = React.forwardRef(
     (
         props: {
             className?: string;
-            data: { value: string; label: string }[];
+            data: { element?: React.ReactNode; value: string; label: string }[];
             defaultValue?: string;
             onChange?: (event?: React.ChangeEvent) => void;
             showEdit?: () => void;
@@ -25,6 +25,11 @@ const Select = React.forwardRef(
         const selectRef = useRef<HTMLSelectElement>(null);
         const [selectState, setSelectState] = useState(props.defaultValue);
         const [isExpand, setIsExpand] = useState(false);
+
+        // NOTE: 지출 & 수입 변경되었을 때 기본값 다시 세팅
+        useEffect(() => {
+            setSelectState(props.defaultValue);
+        }, [props.defaultValue]);
 
         const toggleList = () => {
             setIsExpand((prev) => !prev);
@@ -66,6 +71,9 @@ const Select = React.forwardRef(
                         <ul>
                             <div className={classes.list}>
                                 {props.data.map((item, i) => {
+                                    if (item.element) {
+                                        return item.element;
+                                    }
                                     return (
                                         <li
                                             key={i}

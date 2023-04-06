@@ -2,6 +2,7 @@ import RadioTab from '../../UI/RadioTab';
 
 function ExpenseTab(props: {
     id: string;
+    className?: string;
     isExpense: boolean;
     setIsExpense: (isExpense: boolean) => void;
     disabled?: boolean;
@@ -27,7 +28,9 @@ function ExpenseTab(props: {
         },
     ];
 
-    return <RadioTab name={props.id} values={tabs} />;
+    return (
+        <RadioTab className={props.className} name={props.id} values={tabs} />
+    );
 }
 
 export default ExpenseTab;

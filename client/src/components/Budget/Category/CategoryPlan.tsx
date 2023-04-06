@@ -32,7 +32,6 @@ function CategoryPlan(props: {
     const isOpen = useSelector(
         (state: any) => state.ui.budget.category.isEditPlan
     );
-    const [isSettingOpen, setIsSettingOpen] = useState(false);
     const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
 
     // Amount state
@@ -289,7 +288,7 @@ function CategoryPlan(props: {
                         className={classes.edit}
                         styleClass="extra"
                         onClick={() => {
-                            setIsSettingOpen(true);
+                            dispatch(uiActions.showCategoryListEditor(true));
                         }}
                     >
                         카테고리 목록 편집
@@ -303,8 +302,6 @@ function CategoryPlan(props: {
             <BudgetCategorySetting
                 budgetId={props.budgetId}
                 isExpense={isExpense}
-                isOpen={isSettingOpen}
-                setIsOpen={setIsSettingOpen}
                 setCheckedCategories={checkedCategoryHandler}
                 checkedIds={props.categories.map((item) => item.id)}
             />

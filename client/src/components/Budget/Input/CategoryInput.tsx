@@ -1,69 +1,141 @@
-import React, { useEffect, useImperativeHandle, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import classes from './CategoryInput.module.css';
 import Category from '../../../models/Category';
 import Select from '../../UI/Select';
 import Budget from '../../../models/Budget';
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../../store/ui';
+import ExpenseTab from '../UI/ExpenseTab';
 
 const CategoryInput = React.forwardRef(
     (
         props: {
             budgetId: string;
             isExpense: boolean;
+            setIsExpense: React.Dispatch<boolean>;
             defaultValue: string;
             className?: string;
             onChange?: (event?: React.ChangeEvent) => void;
-            showEdit?: () => void;
             disabled?: boolean;
         },
         ref
     ) => {
+        const dispatch = useDispatch();
+        const categoryRef = useRef<any>(null);
+
+        const [isExpense, setIsExpense] = useState(props.isExpense);
+
+        // Set category data
+        const budgets = useSelector((state: any) => state.budget);
+
+        const budget = budgets.find(
+            (item: Budget) => item.id === props.budgetId
+        );
+        const budgetCategories = budget?.categories || [];
+
+        const filteredCategories = budgetCategories.filter(
+            (item: Category) => item.isExpense === isExpense
+        );
+
+        // Set state
+        const [categories, setCategories] =
+            useState<Category[]>(filteredCategories);
+        const [defaultValue, setDefaultValue] = useState(
+            props.defaultValue || categories[categories.length - 1]?.id
+        );
+
         useImperativeHandle(ref, () => {
             return {
                 value: () => categoryRef.current!.value(),
                 icon: () => {
                     const currentId = categoryRef.current!.value();
-                    const currentCategory = filteredCategories.find(
+                    const currentCategory = categories.find(
                         (item: Category) => item.id === currentId
                     );
-                    return currentCategory.icon || '';
+                    return currentCategory?.icon || '';
                 },
             };
         });
 
+        // NOTE: 수입/지출 변경 시 카테고리 업데이트
         useEffect(() => {
-            // NOTE: 초기값 기반 onChange 함수 실행
-            props.onChange && props.onChange();
-        }, [props, props.onChange]);
+            const filteredCategories = budgetCategories.filter(
+                (item: Category) => item.isExpense === isExpense
+            );
+            const defaultValue =
+                filteredCategories[filteredCategories.length - 1]?.id;
 
-        const budgets = useSelector((state: any) => state.budget);
-        const budget = budgets.find((item: Budget) => item.id === props.budgetId);
-        const categories = budget?.categories || [];
-        const categoryRef = useRef<any>(null);
+            const a = async () => {
+                await setDefaultValue(defaultValue);
+                await setCategories(filteredCategories);
+                await setCategoryList(getCategoryList(filteredCategories));
+            };
+            a();
+        }, [isExpense]);
 
-        const filteredCategories = categories.filter(
-            (item: Category) => item.isExpense === props.isExpense
+        // NOTE: TransactionForm의 수입/지출 변경 반영
+        useEffect(() => {
+            setIsExpense(props.isExpense);
+        }, [props.isExpense]);
+
+        // NOTE: TransactionForm의 defaultValue 반영
+        useEffect(() => {
+            setDefaultValue(
+                props.defaultValue || categories[categories.length - 1]?.id
+            );
+        }, [props.defaultValue]);
+
+        const typeChangeHandler = (isExpense: boolean) => {
+            props.setIsExpense(isExpense);
+            setIsExpense(isExpense);
+        };
+
+        const getCategoryList = (categories: Category[]) => {
+            // Data for select list
+            const categoryList: any = categories.map((item: Category) => {
+                return {
+                    value: item.id,
+                    label: `${item.icon} ${item.title}`,
+                };
+            });
+
+            return [
+                {
+                    element: (
+                        <ExpenseTab
+                            className={classes.tab}
+                            key="category-input-expense-tab"
+                            id="category-input-expense-tab"
+                            isExpense={isExpense}
+                            setIsExpense={typeChangeHandler}
+                        />
+                    ),
+                },
+                ...categoryList,
+            ];
+        };
+
+        const [categoryList, setCategoryList] = useState(
+            getCategoryList(categories)
         );
 
-        const data = filteredCategories.map((item: Category) => {
-            return {
-                value: item.id,
-                label: `${item.icon} ${item.title}`,
-            };
-        });
-
-        const defaultValue =
-            props.defaultValue ||
-            filteredCategories[filteredCategories.length - 1].id;
+        // NOTE: 카테고리 목록 변경 이후 change(아이콘 placeholder 세팅) 실행 - select 목록에서 찾을 수 있도록
+        useEffect(() => {
+            props.onChange && props.onChange();
+        }, [categoryList]);
 
         return (
             <>
                 <Select
                     ref={categoryRef}
                     className={props.className}
-                    data={data}
-                    defaultValue={props.defaultValue || defaultValue}
+                    data={categoryList}
+                    defaultValue={defaultValue}
                     onChange={props.onChange}
-                    showEdit={props.showEdit}
+                    showEdit={() => {
+                        dispatch(uiActions.showCategoryListEditor(true));
+                    }}
                     disabled={props.disabled}
                 />
             </>
