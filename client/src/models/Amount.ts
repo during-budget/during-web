@@ -14,15 +14,21 @@ const prefix = amountUnit[locale].prefix;
 const suffix = amountUnit[locale].suffix;
 
 const formatCurrent = (amount: number) => {
-    return `${prefix}${amount.toLocaleString()}${suffix}`;
+    return `${prefix}${
+        amount === 0 || amount ? amount.toLocaleString() : ''
+    }${suffix}`;
 };
 
 const formatScheduled = (amount: number) => {
-    return `(${prefix}${amount.toLocaleString()}${suffix})`;
+    return `(${prefix}${
+        amount === 0 || amount ? amount.toLocaleString() : ''
+    }${suffix})`;
 };
 
 const formatPlanned = (amount: number) => {
-    return `/${prefix}${amount.toLocaleString()}${suffix}`;
+    return `/${prefix}${
+        amount === 0 || amount ? amount.toLocaleString() : ''
+    }${suffix}`;
 };
 
 class Amount {

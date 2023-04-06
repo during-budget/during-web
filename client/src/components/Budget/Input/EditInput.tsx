@@ -3,6 +3,8 @@ import classes from './EditInput.module.css';
 
 const EditInput = (props: {
     className?: string;
+    editClass?: string;
+    cancelClass?: string;
     value: string;
     confirmHandler?: (value: string) => void;
     convertDefaultValue?: (value: string) => void;
@@ -26,11 +28,15 @@ const EditInput = (props: {
         setIsEdit(false);
     };
 
+    const cancelHandler = () => {
+        setIsEdit(false);
+    };
+
     const amountInput = (
         <input
             ref={editRef}
             className={classes.edit}
-            type="string"
+            type="number"
             defaultValue={defaultValue || ''}
             onFocus={props.onFocus}
             onBlur={confirmHandler}
@@ -44,15 +50,22 @@ const EditInput = (props: {
             {!isEdit && (
                 <button
                     type="button"
-                    className={`${classes.edit} ${classes.pencil}`}
+                    className={`${classes.edit} ${classes.pencil} ${props.editClass}`}
                     onClick={editHandler}
+                ></button>
+            )}
+            {isEdit && (
+                <button
+                    type="button"
+                    className={`${classes.edit} ${classes.cancel} ${props.cancelClass}`}
+                    onClick={cancelHandler}
                 ></button>
             )}
             {isEdit ? amountInput : amountSpan}
             {isEdit && (
                 <button
                     type="button"
-                    className={`${classes.edit} ${classes.check}`}
+                    className={`${classes.edit} ${classes.check} ${props.editClass}`}
                     onClick={confirmHandler}
                 ></button>
             )}
