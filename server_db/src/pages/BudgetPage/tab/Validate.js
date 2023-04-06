@@ -32,8 +32,8 @@ function Index() {
           } else {
             val.valid = amountCurrent[val.category.categoryId];
           }
-          val.fix = "action";
         }
+        val.fix = "action";
         return val;
       })
     );
