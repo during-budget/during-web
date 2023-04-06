@@ -102,6 +102,21 @@ export const verifyLogin = async (
     return data;
 };
 
+export const logoutUser = async () => {
+    const url = `${BASE_URL}/logout`;
+    const response = await fetch(url, {
+        credentials: 'include',
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        console.error(`Failed logout.\n${data.message ? data.message : ''}`);
+        return null;
+    }
+
+    return response.json();
+};
+
 export const getUserState = async () => {
     const url = `${BASE_URL}/current`;
     const response = await fetch(url, {
