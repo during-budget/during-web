@@ -1,12 +1,19 @@
 import classes from './User.module.css';
 import UserHeader from '../components/User/Profile/UserHeader';
 import SettingList from '../components/User/Setting/SettingList';
-import { ScrollRestoration } from 'react-router-dom';
+import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import Button from '../components/UI/Button';
+import { useDispatch } from 'react-redux';
+import { userActions } from '../store/user';
+import { logoutUser } from '../util/api/userAPI';
 
 function User() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [showCategory, setShowCategory] = useState(false);
     const { email, userName } = useSelector((state: any) => state.user.info);
 
@@ -63,6 +70,12 @@ function User() {
         },
     ];
 
+    const logoutHandler = () => {
+        logoutUser();
+        dispatch(userActions.logout());
+        navigate('/auth', { replace: true });
+    };
+
     return (
         <>
             <ScrollRestoration />
@@ -76,6 +89,13 @@ function User() {
                             items={data.items}
                         />
                     ))}
+                    <Button
+                        styleClass="extra"
+                        className={classes.logout}
+                        onClick={logoutHandler}
+                    >
+                        로그아웃
+                    </Button>
                 </section>
                 <section>
                     <UserCategorySetting
