@@ -44,13 +44,12 @@ function CategoryPlan(props: {
         null
     );
 
+    useEffect(() => {
+        setTotalPlan(props.total[isExpense ? 'expense' : 'income']);
+    }, [isExpense]);
+
     // Set state - categoryPlan
     useEffect(() => {
-        // total plan
-        if (totalPlan < 0 || !isOpen) {
-            setTotalPlan(props.total[isExpense ? 'expense' : 'income']);
-        }
-
         // category plan
         setCategoryPlans([]);
 
@@ -106,7 +105,9 @@ function CategoryPlan(props: {
 
     // Handlers for Overlay
     const closeHandler = () => {
-        dispatch(uiActions.showCategoryPlanEditor(false));
+        dispatch(
+            uiActions.showCategoryPlanEditor({ isExpense, isEditPlan: false })
+        );
     };
 
     const submitHandler = async (event: React.FormEvent) => {
@@ -163,7 +164,9 @@ function CategoryPlan(props: {
         }
 
         // close
-        dispatch(uiActions.showCategoryPlanEditor(false));
+        dispatch(
+            uiActions.showCategoryPlanEditor({ isExpense, isEditPlan: false })
+        );
     };
 
     // Handlers for total plan
