@@ -21,6 +21,24 @@ export default function useAPI() {
     }
   }
 
+  async function PUT({ location, data }) {
+    const config = {
+      method: "put",
+      url: SERVER_URL + location,
+      headers: {},
+      data: data,
+      withCredentials: true,
+    };
+    if (data) {
+      try {
+        const { data: result } = await axios(config);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    }
+  }
+
   async function GET({ location }) {
     const config = {
       method: "get",
@@ -51,5 +69,5 @@ export default function useAPI() {
     }
   }
 
-  return { POST, GET, DELETE };
+  return { POST, PUT, GET, DELETE };
 }

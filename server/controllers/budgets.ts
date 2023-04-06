@@ -5,6 +5,152 @@ import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
 // budget controller
+type budgetKeys =
+  | "expenseScheduled"
+  | "expenseCurrent"
+  | "incomeScheduled"
+  | "incomeCurrent";
+type categoryKeys = "amountPlanned" | "amountScheduled" | "amountCurrent";
+export const validate = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const budget = await Budget.findById(req.params._id);
+    if (!budget) {
+      return res.status(404).send({ message: "budget not found" });
+    }
+
+    const b: { [key: string]: number } = {
+      expenseScheduled: 0,
+      expenseCurrent: 0,
+      incomeScheduled: 0,
+      incomeCurrent: 0,
+    };
+    const amountPlanned: { [key: string]: number } = {};
+    const amountScheduled: { [key: string]: number } = {};
+    const amountCurrent: { [key: string]: number } = {};
+
+    let sumExpensePlanned = 0;
+    let sumIncomePlanned = 0;
+    for (let category of budget.categories) {
+      if (!category.isDefault) {
+        if (category.isExpense) sumExpensePlanned += category.amountPlanned;
+        else sumIncomePlanned += category.amountPlanned;
+      } else {
+        amountPlanned[category.categoryId.toString()] = 0;
+      }
+      amountScheduled[category.categoryId.toString()] = 0;
+      amountCurrent[category.categoryId.toString()] = 0;
+    }
+
+    const transactions = await Transaction.find({ budgetId: budget._id });
+
+    for (let transaction of transactions) {
+      if (!transaction.isCurrent) {
+        if (transaction.isExpense) {
+          b.expenseScheduled += transaction.amount;
+        } else {
+          b.incomeScheduled += transaction.amount;
+        }
+        amountScheduled[transaction.category.categoryId.toString()] +=
+          transaction.amount;
+      } else {
+        if (transaction.isExpense) {
+          b.expenseCurrent += transaction.amount;
+        } else {
+          b.incomeCurrent += transaction.amount;
+        }
+        amountCurrent[transaction.category.categoryId.toString()] +=
+          transaction.amount;
+      }
+    }
+    amountPlanned[budget.findDefaultExpenseCategory()?.categoryId.toString()] =
+      budget.expensePlanned - sumExpensePlanned;
+    amountPlanned[budget.findDefaultIncomeCategory()?.categoryId.toString()] =
+      budget.incomePlanned - sumIncomePlanned;
+
+    /* validate */
+    const invalid: {
+      category?: any;
+      field: string;
+    }[] = [];
+
+    for (let [key, value] of Object.entries(b)) {
+      const k = key as budgetKeys;
+      if (budget[k] !== value) {
+        invalid.push({ field: key });
+      }
+    }
+
+    for (let category of budget.categories) {
+      if (
+        category.isDefault &&
+        category.amountPlanned !== amountPlanned[category.categoryId.toString()]
+      ) {
+        invalid.push({ category, field: "amountPlanned" });
+      }
+      if (
+        category.amountScheduled !==
+        amountScheduled[category.categoryId.toString() ?? ""]
+      ) {
+        invalid.push({
+          category,
+          field: "amountScheduled",
+        });
+      }
+      if (
+        category.amountCurrent !==
+        amountCurrent[category.categoryId.toString() ?? ""]
+      ) {
+        invalid.push({
+          category,
+          field: "amountCurrent",
+        });
+      }
+    }
+
+    return res
+      .status(200)
+      .send({ invalid, b, amountPlanned, amountScheduled, amountCurrent });
+  } catch (err: any) {
+    return res.status(500).send({ message: err.message });
+  }
+};
+export const fix = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const budget = await Budget.findById(req.params._id);
+    if (!budget) {
+      return res.status(404).send({ message: "budget not found" });
+    }
+
+    const key = req.body.key;
+    if (
+      key === "expenseScheduled" ||
+      key === "expenseCurrent" ||
+      key === "incomeScheduled" ||
+      key === "incomeCurrent"
+    ) {
+      const k = key as budgetKeys;
+      budget[k] = req.body.amount;
+    } else if (
+      key === "amountPlanned" ||
+      key === "amountScheduled" ||
+      key === "amountCurrent"
+    ) {
+      const k = key as categoryKeys;
+      const idx = budget.findCategoryIdx(req.body.categoryId);
+      budget.categories[idx][k] = req.body.amount;
+    } else {
+      return res.status(400).send({});
+    }
+    budget.isModified("categories");
+    await budget.save();
+
+    return res.status(200).send({ budget });
+  } catch (err: any) {
+    return res.status(500).send({ message: err.message });
+  }
+};
 
 /**
  * Create budget
