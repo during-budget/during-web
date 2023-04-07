@@ -44,9 +44,9 @@ function TotalStatus(props: {
             <AmountRing
                 amount={total}
                 size="18rem"
-                r="30%"
+                r="35%"
                 thickness="3rem"
-                dash={544}
+                dash={555}
                 blur={6}
             />
             <AmountDetail
