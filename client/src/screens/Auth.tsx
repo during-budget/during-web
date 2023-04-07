@@ -31,11 +31,11 @@ function Auth() {
 
     const getUserLogin = async (user: any) => {
         // get user data
-        const { userName, email } = user;
+        const { userName, email, basicBudgetId } = user;
 
         // set user data
         dispatch(userActions.login());
-        dispatch(userActions.setUserInfo({ userName, email }));
+        dispatch(userActions.setUserInfo({ userName, email, basicBudgetId }));
         dispatch(categoryActions.setCategories(user.categories));
 
         // set budget data
