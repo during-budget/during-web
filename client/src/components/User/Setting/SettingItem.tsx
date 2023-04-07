@@ -5,14 +5,14 @@ import Button from '../../UI/Button';
 function SettingItem(props: {
     icon: string;
     label: string;
-    show: (isShow: boolean) => void;
+    onClick: () => void;
 }) {
     return (
         <li className={classes.container}>
             <Button
                 styleClass="extra"
                 onClick={() => {
-                    props.show(true);
+                    props.onClick();
                 }}
             >
                 <Icon>{props.icon}</Icon>

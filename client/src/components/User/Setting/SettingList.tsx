@@ -3,7 +3,7 @@ import SettingItem from './SettingItem';
 
 function SettingList(props: {
     title: string;
-    items: { icon: string; label: string; show: (isShow: boolean) => void }[];
+    items: { icon: string; label: string; onClick: () => void }[];
 }) {
     return (
         <ul className={classes.container}>
@@ -13,7 +13,7 @@ function SettingList(props: {
                     key={i}
                     icon={item.icon}
                     label={item.label}
-                    show={item.show}
+                    onClick={item.onClick}
                 />
             ))}
         </ul>

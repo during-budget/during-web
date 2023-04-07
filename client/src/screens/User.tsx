@@ -24,17 +24,21 @@ function User() {
                 {
                     icon: '💰',
                     label: '기본 예산 설정',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {
+                        navigate('/user/basic');
+                    },
                 },
                 {
                     icon: '📅',
                     label: '월 시작일 설정',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {},
                 },
                 {
                     icon: '🔖',
                     label: '카테고리 설정',
-                    show: setShowCategory,
+                    onClick: () => {
+                        setShowCategory(true);
+                    },
                 },
             ],
         },
@@ -44,17 +48,17 @@ function User() {
                 {
                     icon: '➕',
                     label: '크기 설정',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {},
                 },
                 {
                     icon: '🎨',
                     label: '색상 설정',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {},
                 },
                 {
                     icon: '🌏',
                     label: '언어 설정',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {},
                 },
             ],
         },
@@ -64,7 +68,7 @@ function User() {
                 {
                     icon: '👤',
                     label: '회원 정보 수정하기',
-                    show: (isShow: boolean) => {},
+                    onClick: () => {},
                 },
             ],
         },
