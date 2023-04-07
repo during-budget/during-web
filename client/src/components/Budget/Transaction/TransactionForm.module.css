@@ -21,6 +21,20 @@
     opacity: 1;
 }
 
+.basic {
+    height: calc(5.8rem + 4vh);
+    clip-path: none;
+}
+
+.info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2vh;
+    text-align: center;
+    z-index: 5;
+}
+
 .field {
     width: 100%;
 }
