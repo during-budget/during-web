@@ -95,6 +95,15 @@ export const update = async (req: Request, res: Response) => {
 
     for (const card of updated) {
       const key = card._id;
+
+      const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+        _id: new Types.ObjectId(card._id),
+      });
+      if (paymentMethodIdx !== -1) {
+        user.paymentMethods[paymentMethodIdx].icon = card.icon;
+        user.paymentMethods[paymentMethodIdx].title = card.title;
+      }
+
       /* update transaction({linkedCardId: card._id}) */
     }
 

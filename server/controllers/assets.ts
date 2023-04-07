@@ -79,6 +79,13 @@ export const update = async (req: Request, res: Response) => {
           user.cards[i].linkedAssetTitle = asset.title;
         }
       }
+      const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+        _id: new Types.ObjectId(asset._id),
+      });
+      if (paymentMethodIdx !== -1) {
+        user.paymentMethods[paymentMethodIdx].icon = asset.icon;
+        user.paymentMethods[paymentMethodIdx].title = asset.title;
+      }
     }
 
     for (const asset of removed) {
