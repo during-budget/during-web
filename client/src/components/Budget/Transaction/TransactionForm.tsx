@@ -60,7 +60,7 @@ function TransactionForm(props: {
         const transaction = new Transaction({
             id: defaultValue.id || uuid(),
             budgetId,
-            isCurrent,
+            isCurrent: props.isBasic ? false : isCurrent,
             isExpense,
             icon: iconRef.current!.value() || '',
             titles: titlesRef.current!.value(),
