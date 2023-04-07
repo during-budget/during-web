@@ -7,18 +7,17 @@ function NavButton(props: {
     isNext?: boolean;
     className?: string;
 }) {
-    const direction = props.isNext ? 'right' : 'left';
-    const icon = <i className={`fa-solid fa-chevron-${direction}`}></i>;
+    const chevron = props.isNext ? '>' : '<';
 
     const navLink = props.to && (
         <Link className={props.className} to={props.to} onClick={props.onClick}>
-            {icon}
+            {chevron}
         </Link>
     );
 
     const navButton = props.onClick && (
         <button type="button" onClick={props.onClick}>
-            {icon}
+            {chevron}
         </button>
     );
 
