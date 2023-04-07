@@ -28,7 +28,8 @@ import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 
 function TransactionForm(props: {
     budgetId: string;
-    date: { start: Date; end: Date };
+    date?: { start: Date; end: Date };
+    isBasic?: boolean;
 }) {
     const dispatch = useDispatch();
 
@@ -158,14 +159,14 @@ function TransactionForm(props: {
             transactionActions.setForm({
                 mode: { isExpand: true },
                 default: {
-                    date: getDefaultDate(),
+                    date: props.date ? getDefaultDate() : undefined,
                 },
             })
         );
     };
 
     const getDefaultDate = () => {
-        const { start, end } = props.date;
+        const { start, end } = props.date!;
         const now = new Date();
 
         if ((!start && !end) || (start <= now && now <= end)) {
@@ -259,11 +260,15 @@ function TransactionForm(props: {
         </div>
     );
 
+    const containerClass = [
+        classes.container,
+        props.isBasic ? classes.basic : '',
+        mode.isExpand ? classes.expand : '',
+    ].join(' ');
+
     return (
         <Overlay
-            className={`${classes.container} ${
-                mode.isExpand && classes.expand
-            }`}
+            className={containerClass}
             isOpen={mode.isExpand}
             isClip={true}
             isShowBackdrop={true}
@@ -303,11 +308,15 @@ function TransactionForm(props: {
                                     setIsExpense={setIsExpense}
                                     disabled={mode.isDone}
                                 />
-                                <span>|</span>
-                                <TransactionNav
-                                    id="transaction-form-current"
-                                    disabled={mode.isDone}
-                                />
+                                {!props.isBasic && (
+                                    <>
+                                        <span>|</span>
+                                        <TransactionNav
+                                            id="transaction-form-current"
+                                            disabled={mode.isDone}
+                                        />
+                                    </>
+                                )}
                             </div>
                         )}
                         {/* buttons */}
@@ -318,6 +327,12 @@ function TransactionForm(props: {
                     </>
                 )}
             </form>
+            {/* msg */}
+            {props.isBasic && (
+                <p className={classes.info}>
+                    ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
+                </p>
+            )}
             <BudgetCategorySetting
                 budgetId={props.budgetId}
                 isExpense={isExpense}
