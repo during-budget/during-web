@@ -3,6 +3,47 @@ import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 import bcrypt from "bcrypt";
 import _ from "lodash";
 
+interface IAsset {
+  _id: Types.ObjectId;
+  icon: string;
+  title: string;
+  amount: number;
+}
+const assetSchema = new Schema<IAsset>({
+  icon: { type: String, default: "" },
+  title: String,
+  amount: { type: Number, default: 0 },
+});
+
+interface ICard {
+  _id: Types.ObjectId;
+  icon: string;
+  title: string;
+  linkedAssetId?: Types.ObjectId;
+  linkedAssetIcon?: string;
+  linkedAssetTitle?: string;
+}
+const cardSchema = new Schema<ICard>({
+  icon: { type: String, default: "" },
+  title: String,
+  linkedAssetId: Schema.Types.ObjectId,
+  linkedAssetIcon: String,
+  linkedAssetTitle: String,
+});
+
+interface IPaymentMethod {
+  _id: Types.ObjectId;
+  type: "asset" | "card";
+  icon: string;
+  title: string;
+}
+
+const paymentMethodSchema = new Schema<IPaymentMethod>({
+  type: String,
+  icon: String,
+  title: String,
+});
+
 interface ICategory {
   _id: Types.ObjectId;
   isExpense?: boolean;
@@ -30,11 +71,17 @@ interface IUser {
   gender?: string;
   tel?: string;
   basicBudgetId: Types.ObjectId;
+  assets: IAsset[];
+  cards: ICard[];
+  paymentMethods: IPaymentMethod[];
 }
 
 interface IUserProps {
   /* subdocument array */
   categories: Types.DocumentArray<ICategory>;
+  assets: Types.DocumentArray<IAsset>;
+  cards: Types.DocumentArray<ICard>;
+  paymentMethods: Types.DocumentArray<IPaymentMethod>;
   /* methods */
   saveReqUser: () => Promise<void>;
   setDefaultCategories: () => void;
@@ -71,6 +118,15 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     gender: String,
     tel: String,
     basicBudgetId: Schema.Types.ObjectId,
+    assets: {
+      type: [assetSchema],
+    },
+    cards: {
+      type: [cardSchema],
+    },
+    paymentMethods: {
+      type: [paymentMethodSchema],
+    },
   },
   { timestamps: true }
 );
@@ -231,4 +287,13 @@ userSchema.methods.pushCategory = function (category: any) {
 };
 
 const User = model<IUser, IUserModel>("User", userSchema);
-export { User, IUser, IUserProps, ICategory, IUserModel };
+export {
+  User,
+  IUser,
+  IUserProps,
+  ICategory,
+  IUserModel,
+  IAsset,
+  ICard,
+  IPaymentMethod,
+};
