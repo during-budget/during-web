@@ -5,6 +5,8 @@ import BasicInfo from "./tab/BasicInfo";
 import Categories from "./tab/Categories";
 import BudgetList from "./tab/BudgetList";
 import TransactionList from "./tab/TransactionList";
+import AssetsAndCards from "./tab/AssetsAndCards";
+import PaymentMethods from "./tab/PaymentMethods";
 
 function Index() {
   return (
@@ -15,6 +17,8 @@ function Index() {
           categories: <Categories />,
           budgets: <BudgetList />,
           transactions: <TransactionList />,
+          "assets & cards": <AssetsAndCards />,
+          "payment methods": <PaymentMethods />,
         }}
       />
     </div>
