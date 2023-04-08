@@ -11,7 +11,7 @@ import BudgetNavigation from './layout/BudgetNavigation';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import User from './screens/User';
-import BasicBudget from './components/User/Basic/BasicBudget';
+import DefaultBudget from './components/User/Default/DefaultBudget';
 
 const router = createBrowserRouter([
     {
@@ -57,8 +57,8 @@ const router = createBrowserRouter([
                         element: <User />,
                     },
                     {
-                        path: '/user/basic',
-                        element: <BasicBudget />,
+                        path: '/user/default',
+                        element: <DefaultBudget />,
                     },
                 ],
             },

@@ -1,18 +1,18 @@
-import classes from './BasicBudget.module.css';
+import classes from './DefaultBudget.module.css';
 import TransactionForm from '../../Budget/Transaction/TransactionForm';
 import TransactionList from '../../Budget/Transaction/TransactionList';
 import { useSelector } from 'react-redux';
 import NavButton from '../../UI/NavButton';
 import { useLocation } from 'react-router';
 
-function BasicBudget() {
+function DefaultBudget() {
     const location = useLocation();
 
     const from = location.state?.from?.pathname;
 
-    const id = useSelector((state: any) => state.user.basicBudgetId);
-    const budget = useSelector((state: any) => state.basic.budget);
-    const transactions = useSelector((state: any) => state.basic.transactions);
+    const id = useSelector((state: any) => state.user.DefaultBudgetId);
+    const budget = useSelector((state: any) => state.budget.default);
+    const transactions = useSelector((state: any) => state.transaction.default);
 
     return (
         <main className={classes.container}>
@@ -25,10 +25,10 @@ function BasicBudget() {
             <hr />
             <section>
                 <TransactionList transactions={transactions} />
-                <TransactionForm budgetId={id} isBasic={true} />
+                <TransactionForm budgetId={id} isDefault={true} />
             </section>
         </main>
     );
 }
 
-export default BasicBudget;
+export default DefaultBudget;
