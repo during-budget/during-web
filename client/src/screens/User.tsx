@@ -25,7 +25,7 @@ function User() {
                     icon: '💰',
                     label: '기본 예산 설정',
                     onClick: () => {
-                        navigate('/user/basic');
+                        navigate('/user/default');
                     },
                 },
                 {

@@ -29,7 +29,7 @@ import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 function TransactionForm(props: {
     budgetId: string;
     date?: { start: Date; end: Date };
-    isBasic?: boolean;
+    isDefault?: boolean;
 }) {
     const dispatch = useDispatch();
 
@@ -37,6 +37,7 @@ function TransactionForm(props: {
         (state: any) => state.transaction.form
     );
     const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
+    const isDefault = props.isDefault;
 
     const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
     const [iconState, setIconState] = useState('');
@@ -60,7 +61,7 @@ function TransactionForm(props: {
         const transaction = new Transaction({
             id: defaultValue.id || uuid(),
             budgetId,
-            isCurrent: props.isBasic ? false : isCurrent,
+            isCurrent: isDefault ? false : isCurrent,
             isExpense,
             icon: iconRef.current!.value() || '',
             titles: titlesRef.current!.value(),
@@ -262,7 +263,7 @@ function TransactionForm(props: {
 
     const containerClass = [
         classes.container,
-        props.isBasic ? classes.basic : '',
+        isDefault ? classes.basic : '',
         mode.isExpand ? classes.expand : '',
     ].join(' ');
 
@@ -308,7 +309,7 @@ function TransactionForm(props: {
                                     setIsExpense={setIsExpense}
                                     disabled={mode.isDone}
                                 />
-                                {!props.isBasic && (
+                                {!isDefault && (
                                     <>
                                         <span>|</span>
                                         <TransactionNav
@@ -328,7 +329,7 @@ function TransactionForm(props: {
                 )}
             </form>
             {/* msg */}
-            {props.isBasic && (
+            {isDefault && (
                 <p className={classes.info}>
                     ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
                 </p>
