@@ -7,9 +7,10 @@ import Overlay from '../components/UI/Overlay';
 import { budgetActions } from '../store/budget';
 import { categoryActions } from '../store/category';
 import { userActions } from '../store/user';
-import { getBudgetList } from '../util/api/budgetAPI';
+import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
+import { basicActions } from '../store/basic';
 
 function Auth() {
     const dispatch = useDispatch();
@@ -37,6 +38,11 @@ function Auth() {
         dispatch(userActions.login());
         dispatch(userActions.setUserInfo({ userName, email, basicBudgetId }));
         dispatch(categoryActions.setCategories(user.categories));
+
+        // set basic budget data
+        const { budget, transactions } = await getBudgetById(basicBudgetId);
+        dispatch(basicActions.setBasicBudget(budget));
+        dispatch(basicActions.setBasicTransaction(transactions));
 
         // set budget data
         const budgetsData = await getBudgetList();
