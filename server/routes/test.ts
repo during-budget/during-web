@@ -1,8 +1,12 @@
-import express from "express";
+import express, { Request, Response } from "express";
 const router = express.Router();
 import * as test from "../controllers/test";
 import * as budgets from "../controllers/budgets";
 import * as transactions from "../controllers/transactions";
+
+router.get("/", async (req: Request, res: Response) => {
+  return res.status(200).send({ message: "hello world!" });
+});
 
 /**
  */
