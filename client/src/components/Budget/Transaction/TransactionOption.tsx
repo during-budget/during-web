@@ -107,10 +107,10 @@ function TransactionOption(props: {
         action: () => {
             // remove
             if (isCurrent && linkId) {
-                dispatch(transactionActions.removeLink(linkId));
+                dispatch(transactionActions.removeLink({ linkId }));
             }
 
-            dispatch(transactionActions.removeTransaction(id));
+            dispatch(transactionActions.removeTransaction({ id }));
             deleteTransaction(id);
 
             // amount

@@ -68,10 +68,16 @@ const transactionSlice = createSlice({
             }
         },
         setBudgetTransactions(state, action) {
-            const { budgetId, transactions: transactionData } = action.payload;
+            const {
+                budgetId,
+                transactions: transactionData,
+                isDefault,
+            } = action.payload;
+
             const otherTransactions = state.data.filter(
                 (item) => item.budgetId !== budgetId
             );
+
             const transactions = transactionData.map((item: any) => {
                 if (item instanceof Transaction) {
                     return item;
@@ -79,59 +85,77 @@ const transactionSlice = createSlice({
                     return Transaction.getTransactionFromData(item);
                 }
             });
-            state.data = [...transactions, ...otherTransactions];
+
+            if (isDefault) {
+                state.default = [...transactions, ...otherTransactions];
+            } else {
+                state.data = [...transactions, ...otherTransactions];
+            }
         },
         addTransaction(state, action) {
-            const data = state.data;
-            const transaction = action.payload;
+            const { transaction, isDefault } = action.payload;
 
-            const idx = data.findIndex((item) => item.id === transaction.id);
+            const transactions = isDefault ? state.default : state.data;
+            const idx = transactions.findIndex(
+                (item) => item.id === transaction.id
+            );
 
             if (idx === -1) {
-                data.unshift(transaction);
+                transactions.unshift(transaction);
             } else {
-                data[idx] = transaction;
+                transactions[idx] = transaction;
             }
 
-            data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+            transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
         },
         removeTransaction(state, action) {
-            const data = state.data;
-            const id = action.payload;
-            const idx = data.findIndex((item: any) => item.id === id);
-            data.splice(idx, 1);
+            const { id, isDefault } = action.payload;
+            const transactions = isDefault ? state.default : state.data;
+            const idx = transactions.findIndex((item: any) => item.id === id);
+            transactions.splice(idx, 1);
         },
         addLink(state, action) {
-            const { targetId, linkId } = action.payload;
-            const idx = state.data.findIndex((item) => item.id === targetId);
+            const { targetId, linkId, isDefault } = action.payload;
 
-            const target = state.data[idx];
+            const transactions = isDefault ? state.default : state.data;
+
+            const idx = transactions.findIndex((item) => item.id === targetId);
+
+            const target = transactions[idx];
 
             if (target) {
                 target.linkId = linkId;
-                state.data[idx] = target;
+                transactions[idx] = target;
             }
         },
         removeLink(state, action) {
-            const linkId = action.payload;
-            const idx = state.data.findIndex((item: any) => item.id === linkId);
+            const { linkId, isDefault } = action.payload;
 
-            const target = state.data[idx];
+            const transactions = isDefault ? state.default : state.data;
+
+            const idx = transactions.findIndex(
+                (item: any) => item.id === linkId
+            );
+
+            const target = transactions[idx];
 
             if (target) {
                 target.linkId = undefined;
-                state.data[idx] = target;
+                transactions[idx] = target;
             }
         },
         updateOverAmount(state, action) {
-            const { id, amount } = action.payload;
-            const idx = state.data.findIndex((item: any) => item.id === id);
+            const { id, amount, isDefault } = action.payload;
 
-            const target = state.data[idx];
+            const transactions = isDefault ? state.default : state.data;
+
+            const idx = transactions.findIndex((item: any) => item.id === id);
+
+            const target = transactions[idx];
 
             if (target) {
                 target.overAmount += amount;
-                state.data[idx] = target;
+                transactions[idx] = target;
             }
         },
         openDetail(state, action) {
@@ -139,8 +163,11 @@ const transactionSlice = createSlice({
             state.detail = { isOpen: true, transaction, category };
         },
         openLink(state, action) {
-            const { id, category } = action.payload;
-            const transaction = state.data.find((item) => item.id === id);
+            const { id, category, isDefault } = action.payload;
+
+            const transactions = isDefault ? state.default : state.data;
+
+            const transaction = transactions.find((item) => item.id === id);
             state.detail = { isOpen: true, transaction, category };
         },
         closeDetail(state) {
