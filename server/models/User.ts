@@ -90,6 +90,18 @@ interface IUserProps {
   findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
   findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
   pushCategory: (category: any) => void;
+  execPM: (transaction: {
+    linkedPaymentMethodId: Types.ObjectId;
+    linkedPaymentMethodType: "asset" | "card";
+    amount: number;
+    isExpense: boolean;
+  }) => boolean;
+  cancelPM: (transaction: {
+    linkedPaymentMethodId: Types.ObjectId;
+    linkedPaymentMethodType: "asset" | "card";
+    amount: number;
+    isExpense: boolean;
+  }) => boolean;
 }
 
 interface IUserModel extends Model<IUser, {}, IUserProps> {}
@@ -284,6 +296,70 @@ userSchema.methods.findDefaultIncomeCategory = function () {
 
 userSchema.methods.pushCategory = function (category: any) {
   this.categories.splice(this.categories.length - 2, 0, category);
+};
+
+userSchema.methods.execPM = function (transaction: {
+  linkedPaymentMethodId: Types.ObjectId;
+  linkedPaymentMethodType: "asset" | "card";
+  amount: number;
+  isExpense: boolean;
+}) {
+  let isUserUpdated = false;
+  if (transaction.linkedPaymentMethodType === "asset") {
+    const asset = _.find(this.assets, {
+      _id: transaction.linkedPaymentMethodId,
+    });
+    if (asset) {
+      if (transaction.isExpense) asset.amount -= transaction.amount;
+      else asset.amount += transaction.amount;
+      isUserUpdated = true;
+    }
+  } else {
+    const card = _.find(this.cards, { _id: transaction.linkedPaymentMethodId });
+    if (card && card.linkedAssetId) {
+      const asset = _.find(this.assets, {
+        _id: card.linkedAssetId,
+      });
+      if (asset) {
+        if (transaction.isExpense) asset.amount -= transaction.amount;
+        else asset.amount += transaction.amount;
+        isUserUpdated = true;
+      }
+    }
+  }
+  return isUserUpdated;
+};
+
+userSchema.methods.cancelPM = function (transaction: {
+  linkedPaymentMethodId: Types.ObjectId;
+  linkedPaymentMethodType: "asset" | "card";
+  amount: number;
+  isExpense: boolean;
+}) {
+  let isUserUpdated = false;
+  if (transaction.linkedPaymentMethodType === "asset") {
+    const asset = _.find(this.assets, {
+      _id: transaction.linkedPaymentMethodId,
+    });
+    if (asset) {
+      if (transaction.isExpense) asset.amount += transaction.amount;
+      else asset.amount -= transaction.amount;
+      isUserUpdated = true;
+    }
+  } else {
+    const card = _.find(this.cards, { _id: transaction.linkedPaymentMethodId });
+    if (card && card.linkedAssetId) {
+      const asset = _.find(this.assets, {
+        _id: card.linkedAssetId,
+      });
+      if (asset) {
+        if (transaction.isExpense) asset.amount += transaction.amount;
+        else asset.amount -= transaction.amount;
+        isUserUpdated = true;
+      }
+    }
+  }
+  return isUserUpdated;
 };
 
 const User = model<IUser, IUserModel>("User", userSchema);

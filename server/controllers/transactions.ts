@@ -66,6 +66,17 @@ export const create = async (req: Request, res: Response) => {
       if (!transactionScheduled) return res.status(404).send({});
       transaction.overAmount = transaction.amount - transactionScheduled.amount;
     }
+    if (req.body.linkedPaymentMethodId) {
+      const pm = _.find(user.paymentMethods ?? [], {
+        _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
+      });
+      if (!pm)
+        return res.status(404).send({ message: "paymentMethod not found" });
+      transaction.linkedPaymentMethodId = pm._id;
+      transaction.linkedPaymentMethodType = pm.type;
+      transaction.linkedPaymentMethodIcon = pm.icon;
+      transaction.linkedPaymentMethodTitle = pm.title;
+    }
     await transaction.save();
 
     // 1. scheduled transaction
@@ -85,6 +96,16 @@ export const create = async (req: Request, res: Response) => {
       if (transaction.isExpense) budget.expenseCurrent += transaction.amount;
       // 2-2. income transaction
       else budget.incomeCurrent += transaction.amount;
+
+      if (transaction.linkedPaymentMethodId) {
+        const isUserUpdated = user.execPM({
+          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+          amount: transaction.amount,
+          isExpense: transaction.isExpense!,
+        });
+        if (isUserUpdated) await user.saveReqUser();
+      }
     }
     await budget.save();
 
@@ -141,6 +162,9 @@ export const updateV2 = async (req: Request, res: Response) => {
       amount: transaction.amount !== req.body.amount,
       isCurrent: transaction.isCurrent !== req.body.isCurrent,
       isExpense: false,
+      linkedPaymentMethodId:
+        transaction.linkedPaymentMethodId !== req.body?.linkedPaymentMethodId,
+      user: false,
     };
 
     if (
@@ -277,9 +301,11 @@ export const updateV2 = async (req: Request, res: Response) => {
       }
 
       if (isUpdated["amount"]) {
-        const diff = req.body.amount - transaction.amount;
+        const exAmount = transaction.amount;
+        const diff = exAmount - req.body.amount;
         transaction.amount = req.body.amount;
 
+        /* category */
         const categoryIdx = budget.findCategoryIdx(
           transaction.category.categoryId
         );
@@ -320,6 +346,22 @@ export const updateV2 = async (req: Request, res: Response) => {
           if (transaction.isExpense) budget.expenseCurrent += diff;
           // 2-2. income transaction
           else budget.incomeCurrent += diff;
+
+          if (transaction.linkedPaymentMethodId) {
+            const isUserUpdated1 = user.cancelPM({
+              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+              amount: exAmount,
+              isExpense: transaction.isExpense!,
+            });
+            const isUserUpdated2 = user.execPM({
+              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+              amount: transaction.amount,
+              isExpense: transaction.isExpense!,
+            });
+            if (isUserUpdated1 || isUserUpdated2) isUpdated["user"] = true;
+          }
         }
 
         budget.categories[categoryIdx] = category;
@@ -356,6 +398,16 @@ export const updateV2 = async (req: Request, res: Response) => {
             budget.incomeCurrent -= transaction.amount;
             budget.incomeScheduled += transaction.amount;
           }
+
+          if (transaction.linkedPaymentMethodId) {
+            const isUserUpdated = user.cancelPM({
+              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+              amount: transaction.amount,
+              isExpense: transaction.isExpense!,
+            });
+            if (isUserUpdated) isUpdated["user"] = true;
+          }
         }
         // 2. scheduled -> current
         else {
@@ -375,13 +427,66 @@ export const updateV2 = async (req: Request, res: Response) => {
 
         transaction.isCurrent = req.body.isCurrent;
         budget.categories[categoryIdx] = category;
+
+        if (transaction.linkedPaymentMethodId) {
+          const isUserUpdated = user.execPM({
+            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+            linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+            amount: transaction.amount,
+            isExpense: transaction.isExpense!,
+          });
+          if (isUserUpdated) isUpdated["user"] = true;
+        }
       }
 
       budget.isModified("categories");
       await transactionLinked?.save();
       await budget.save();
     }
+    if (isUpdated["linkedPaymentMethodId"]) {
+      // cancel ex paymentMethod
+      if (transaction.isCurrent && transaction.linkedPaymentMethodId) {
+        const isUserUpdated = user.cancelPM({
+          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+          amount: transaction.amount,
+          isExpense: transaction.isExpense!,
+        });
+        if (isUserUpdated) isUpdated["user"] = true;
+      }
 
+      // => id1
+      if (req.body.linkedPaymentMethodId) {
+        const pm = _.find(user.paymentMethods ?? [], {
+          _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
+        });
+        if (!pm) {
+          return res.status(404).send({ message: "paymentMethod not found" });
+        }
+        transaction.linkedPaymentMethodId = pm._id;
+        transaction.linkedPaymentMethodType = pm.type;
+        transaction.linkedPaymentMethodIcon = pm.icon;
+        transaction.linkedPaymentMethodTitle = pm.title;
+
+        if (transaction.isCurrent) {
+          const isUserUpdated = user.execPM({
+            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+            linkedPaymentMethodType: transaction.linkedPaymentMethodType,
+            amount: transaction.amount,
+            isExpense: transaction.isExpense!,
+          });
+          if (isUserUpdated) isUpdated["user"] = true;
+        }
+      }
+      // => undefined
+      else {
+        transaction.linkedPaymentMethodId = undefined;
+        transaction.linkedPaymentMethodType = undefined;
+        transaction.linkedPaymentMethodIcon = undefined;
+        transaction.linkedPaymentMethodTitle = undefined;
+      }
+    }
+    if (isUpdated["user"]) await user.saveReqUser();
     await transaction.save();
 
     return res.status(200).send({ transaction });
@@ -666,6 +771,32 @@ export const remove = async (req: Request, res: Response) => {
       else budget.incomeCurrent -= transaction.amount;
     }
 
+    let isUserUpdated = false;
+    if (transaction.isCurrent && transaction.linkedPaymentMethodId) {
+      if (transaction.linkedPaymentMethodType === "asset") {
+        const asset = _.find(user.assets, {
+          _id: transaction.linkedPaymentMethodId,
+        });
+        if (asset) {
+          asset.amount += transaction.amount;
+          isUserUpdated = true;
+        }
+      } else {
+        const card = _.find(user.cards, {
+          _id: transaction.linkedPaymentMethodId,
+        });
+        if (card && card.linkedAssetId) {
+          const asset = _.find(user.assets, {
+            _id: card.linkedAssetId,
+          });
+          if (asset) {
+            asset.amount += transaction.amount;
+            isUserUpdated = true;
+          }
+        }
+      }
+    }
+    if ((isUserUpdated = true)) user.saveReqUser();
     await transaction.remove();
 
     budget.categories[categoryIdx] = category;
