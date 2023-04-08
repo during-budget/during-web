@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 function BudgetNavigation() {
-    const budgets = useSelector((state: any) => state.budget);
+    const budgets = useSelector((state: any) => state.budget.data);
     const id = getCurrentBudgetId(budgets);
 
     return <Navigate to={`/budget/${id}`} replace={true} />;
