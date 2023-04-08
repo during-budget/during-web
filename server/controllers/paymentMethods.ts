@@ -57,7 +57,7 @@ export const find = async (req: Request, res: Response) => {
     const user = req.user!;
 
     return res.status(200).send({
-      paymentMethods: user.paymentMethods ?? [],
+      paymentMethods: user.paymentMethods,
     });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
