@@ -67,7 +67,7 @@ export const create = async (req: Request, res: Response) => {
       transaction.overAmount = transaction.amount - transactionScheduled.amount;
     }
     if (req.body.linkedPaymentMethodId) {
-      const pm = _.find(user.paymentMethods ?? [], {
+      const pm = _.find(user.paymentMethods, {
         _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
       });
       if (!pm)
@@ -457,7 +457,7 @@ export const updateV2 = async (req: Request, res: Response) => {
 
       // => id1
       if (req.body.linkedPaymentMethodId) {
-        const pm = _.find(user.paymentMethods ?? [], {
+        const pm = _.find(user.paymentMethods, {
           _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
         });
         if (!pm) {

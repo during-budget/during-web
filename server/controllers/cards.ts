@@ -146,7 +146,7 @@ export const find = async (req: Request, res: Response) => {
     const user = req.user!;
 
     return res.status(200).send({
-      cards: user.cards ?? [],
+      cards: user.cards,
     });
   } catch (err: any) {
     return res.status(500).send({ message: err.message });
