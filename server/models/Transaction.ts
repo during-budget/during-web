@@ -35,6 +35,10 @@ interface ITransaction {
   category: ICategory;
   tags: [string];
   memo: string;
+  linkedPaymentMethodId?: Types.ObjectId;
+  linkedPaymentMethodType?: "asset" | "card";
+  linkedPaymentMethodIcon?: string;
+  linkedPaymentMethodTitle?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -58,6 +62,10 @@ const transactionSchema = new Schema<ITransaction>(
       type: String,
       default: "",
     },
+    linkedPaymentMethodId: Schema.Types.ObjectId,
+    linkedPaymentMethodType: String,
+    linkedPaymentMethodIcon: String,
+    linkedPaymentMethodTitle: String,
   },
   { timestamps: true }
 );
