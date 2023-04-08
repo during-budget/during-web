@@ -2,69 +2,86 @@ import { createSlice } from '@reduxjs/toolkit';
 import Budget from '../models/Budget';
 import Category from '../models/Category';
 
-const initialState: Budget[] = [];
+const initialState: {
+    data: Budget[];
+    default?: Budget;
+} = {
+    data: [],
+    default: undefined,
+};
 
 const budgetSlice = createSlice({
     name: 'budget',
     initialState,
     reducers: {
         setBudgets(state, action) {
-            const data = action.payload;
-            const budgets = data.map((item: any) =>
+            const budgets = action.payload;
+
+            state.data = budgets.map((item: any) =>
                 Budget.getBudgetFromData(item)
             );
-
-            state.push(...budgets);
-            state.sort(
+            state.data.sort(
                 (prev, next) =>
                     +new Date(prev.date.start) - +new Date(next.date.start)
             );
         },
+        setDefaultBudget(state, action) {
+            const defaultBudget = action.payload;
+            state.default = Budget.getBudgetFromData(defaultBudget);
+        },
         updateBudget(state, action) {
             const { budgetId, budget } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
                 if (budget instanceof Budget) {
-                    state[idx] = budget;
+                    data[idx] = budget;
                 } else {
-                    state[idx] = Budget.getBudgetFromData(budget);
+                    data[idx] = Budget.getBudgetFromData(budget);
                 }
             }
         },
         setCategories(state, action) {
             const { budgetId, categories } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
-                state[idx] = Budget.getBudgetUpdatedCategory(
-                    state[idx] as Budget,
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                data[idx] = Budget.getBudgetUpdatedCategory(
+                    data[idx] as Budget,
                     categories
                 );
             }
         },
         updateCategory(state, action) {
             const { budgetId, isExpense, categories } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
-                const otherTypeCategories = state[idx].categories.filter(
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                const otherTypeCategories = data[idx].categories.filter(
                     (item) =>
                         item.isExpense !== isExpense || item.isDefault === true
                 );
 
-                state[idx] = Budget.getBudgetUpdatedCategory(
-                    state[idx] as Budget,
+                data[idx] = Budget.getBudgetUpdatedCategory(
+                    data[idx] as Budget,
                     [...categories, ...otherTypeCategories]
                 );
             }
         },
         updateCategoryFromSetting(state, action) {
             const { budgetId, categories: settings } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
-                const categories = state[idx].categories.map((item) => {
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                const categories = data[idx].categories.map((item) => {
                     const settingData = settings.find(
                         (setting: any) => setting._id === item.id
                     );
@@ -78,19 +95,21 @@ const budgetSlice = createSlice({
                     return item;
                 });
 
-                state[idx] = Budget.getBudgetUpdatedCategory(
-                    state[idx] as Budget,
+                data[idx] = Budget.getBudgetUpdatedCategory(
+                    data[idx] as Budget,
                     categories as Category[]
                 );
             }
         },
         updateTotalAmount(state, action) {
             const { budgetId, isExpense, isCurrent, amount } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
-                state[idx] = Budget.getBudgetUpdatedTotalAmount(
-                    state[idx],
+            const data = state.data;
+            const idx = state.data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                data[idx] = Budget.getBudgetUpdatedTotalAmount(
+                    data[idx],
                     isExpense,
                     isCurrent,
                     amount
@@ -99,11 +118,13 @@ const budgetSlice = createSlice({
         },
         updateCategoryAmount(state, action) {
             const { budgetId, categoryId, isCurrent, amount } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
 
-            if (state[idx]) {
-                state[idx] = Budget.getBudgetUpdatedCategoryAmount(
-                    state[idx],
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                data[idx] = Budget.getBudgetUpdatedCategoryAmount(
+                    state.data[idx],
                     categoryId,
                     isCurrent,
                     +amount
@@ -114,7 +135,8 @@ const budgetSlice = createSlice({
         updateTransactionAmount(state, action) {
             const { budgetId, prev, next } = action.payload;
 
-            const idx = state.findIndex((item) => item.id === budgetId);
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
 
             const prevState = prev.isCurrent ? 'current' : 'scheduled';
             const nextState = next.isCurrent ? 'current' : 'scheduled';
@@ -122,9 +144,9 @@ const budgetSlice = createSlice({
             const prevType = prev.isExpense ? 'expense' : 'income';
             const nextType = next.isExpense ? 'expense' : 'income';
 
-            if (state[idx]) {
+            if (data[idx]) {
                 const amount = next.amount;
-                const nextBudget = state[idx];
+                const nextBudget = data[idx];
 
                 if (prev.categoryId !== next.categoryId) {
                     const prevIdx = nextBudget.categories.findIndex(
@@ -149,15 +171,18 @@ const budgetSlice = createSlice({
                     nextBudget.total[nextType][nextState] += amount;
                 }
 
-                state[idx] = nextBudget;
+                data[idx] = nextBudget;
             }
         },
         updateTotalPlan(state, action) {
             const { budgetId, isExpense, amount } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
-            if (state[idx]) {
-                state[idx] = Budget.getBudgetUpdatedPlan(
-                    state[idx],
+
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+
+            if (data[idx]) {
+                data[idx] = Budget.getBudgetUpdatedPlan(
+                    data[idx],
                     isExpense,
                     amount
                 );
@@ -165,10 +190,12 @@ const budgetSlice = createSlice({
         },
         updateCategoryPlan(state, action) {
             const { budgetId, categoryId, amount } = action.payload;
-            const idx = state.findIndex((item) => item.id === budgetId);
-            if (state[idx]) {
-                state[idx] = Budget.getBudgetUpdatedCategoryPlan(
-                    state[idx],
+
+            const data = state.data;
+            const idx = data.findIndex((item) => item.id === budgetId);
+            if (data[idx]) {
+                data[idx] = Budget.getBudgetUpdatedCategoryPlan(
+                    data[idx],
                     categoryId,
                     amount
                 );

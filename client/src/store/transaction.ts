@@ -1,8 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Transaction from '../models/Transaction';
 
-const initialState: { data: Transaction[]; form: any; detail: any } = {
+const initialState: {
+    data: Transaction[];
+    default: Transaction[];
+    form: any;
+    detail: any;
+} = {
     data: [],
+    default: [],
     form: {
         mode: {
             isExpand: false,
@@ -44,16 +50,22 @@ const transactionSlice = createSlice({
             form.mode = { ...form.mode, ...setData.mode };
             form.default = { ...form.default, ...setData.default };
         },
-        setTransaction(state, action) {
-            const transactions = action.payload;
-            transactions.sort((prev: any, next: any) =>
+        setTransactions(state, action) {
+            const { transactions: transactionData, isDefault } = action.payload;
+            transactionData.sort((prev: any, next: any) =>
                 new Date(prev.createdAt) < new Date(next.createdAt) ? 1 : -1
             );
-            state.data = transactions.map((item: any) =>
-                Transaction.getTransactionFromData(item)
-            );
 
-            state.data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+            const transactions: Transaction[] = transactionData.map(
+                (item: any) => Transaction.getTransactionFromData(item)
+            );
+            transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+
+            if (isDefault) {
+                state.default = transactions;
+            } else {
+                state.data = transactions;
+            }
         },
         setBudgetTransactions(state, action) {
             const { budgetId, transactions: transactionData } = action.payload;

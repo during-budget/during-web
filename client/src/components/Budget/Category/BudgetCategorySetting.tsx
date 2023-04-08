@@ -30,7 +30,7 @@ function BudgetCategorySetting(props: {
     // Set category data
     const allCategories = useSelector((state: any) => state.category);
 
-    const budgets = useSelector((state: any) => state.budget);
+    const budgets = useSelector((state: any) => state.budget.data);
     const budget = budgets.find((item: Budget) => item.id === props.budgetId);
     const budgetCategories = budget?.categories || [];
 

@@ -28,7 +28,7 @@ const CategoryInput = React.forwardRef(
         const [isExpense, setIsExpense] = useState(props.isExpense);
 
         // Set category data
-        const budgets = useSelector((state: any) => state.budget);
+        const budgets = useSelector((state: any) => state.budget.data);
 
         const budget = budgets.find(
             (item: Budget) => item.id === props.budgetId

@@ -21,7 +21,7 @@ function Budget() {
     let budget, transactions;
 
     // get budget
-    const budgets = useSelector((state: any) => state.budget);
+    const budgets = useSelector((state: any) => state.budget.data);
     budget = budgets.find((item: BudgetModel) => item.id === loaderData.id);
 
     if (!budget) {
@@ -35,7 +35,12 @@ function Budget() {
 
     // set transaction
     useEffect(() => {
-        dispatch(transactionActions.setTransaction(loaderData.transactions));
+        dispatch(
+            transactionActions.setTransactions({
+                transactions: loaderData.transactions,
+                isDefault: false,
+            })
+        );
     }, []);
 
     return (

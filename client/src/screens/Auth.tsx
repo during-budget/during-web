@@ -10,7 +10,7 @@ import { userActions } from '../store/user';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
-import { basicActions } from '../store/basic';
+import { transactionActions } from '../store/transaction';
 
 function Auth() {
     const dispatch = useDispatch();
@@ -39,10 +39,15 @@ function Auth() {
         dispatch(userActions.setUserInfo({ userName, email, basicBudgetId }));
         dispatch(categoryActions.setCategories(user.categories));
 
-        // set basic budget data
+        // set default budget data
         const { budget, transactions } = await getBudgetById(basicBudgetId);
-        dispatch(basicActions.setBasicBudget(budget));
-        dispatch(basicActions.setBasicTransaction(transactions));
+        dispatch(budgetActions.setDefaultBudget(budget));
+        dispatch(
+            transactionActions.setTransactions({
+                transactions,
+                isDefault: true,
+            })
+        );
 
         // set budget data
         const budgetsData = await getBudgetList();
