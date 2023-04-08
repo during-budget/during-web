@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Types } from "mongoose";
 
 import { ICard } from "../models/User";
+import { Transaction } from "../models/Transaction";
 
 export const update = async (req: Request, res: Response) => {
   try {
@@ -97,14 +98,21 @@ export const update = async (req: Request, res: Response) => {
       const key = card._id;
 
       const paymentMethodIdx = _.findIndex(user.paymentMethods, {
-        _id: new Types.ObjectId(card._id),
+        _id: card._id,
       });
       if (paymentMethodIdx !== -1) {
         user.paymentMethods[paymentMethodIdx].icon = card.icon;
         user.paymentMethods[paymentMethodIdx].title = card.title;
-      }
 
-      /* update transaction({linkedCardId: card._id}) */
+        /* update transactions */
+        await Transaction.updateMany(
+          { linkedPaymentMethodId: card._id },
+          {
+            linkedPaymentMethodIcon: card.icon,
+            linkedPaymentMethodTitle: card.title,
+          }
+        );
+      }
     }
 
     for (const card of removed) {
