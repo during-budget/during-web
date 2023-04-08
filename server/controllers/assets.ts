@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Types } from "mongoose";
 
 import { IAsset } from "../models/User";
+import { Transaction } from "../models/Transaction";
 
 export const update = async (req: Request, res: Response) => {
   try {
@@ -80,11 +81,20 @@ export const update = async (req: Request, res: Response) => {
         }
       }
       const paymentMethodIdx = _.findIndex(user.paymentMethods, {
-        _id: new Types.ObjectId(asset._id),
+        _id: asset._id,
       });
       if (paymentMethodIdx !== -1) {
         user.paymentMethods[paymentMethodIdx].icon = asset.icon;
         user.paymentMethods[paymentMethodIdx].title = asset.title;
+
+        /* update transactions */
+        await Transaction.updateMany(
+          { linkedPaymentMethodId: asset._id },
+          {
+            linkedPaymentMethodIcon: asset.icon,
+            linkedPaymentMethodTitle: asset.title,
+          }
+        );
       }
     }
 
