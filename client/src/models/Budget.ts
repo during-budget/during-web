@@ -1,3 +1,4 @@
+import { BudgetDataType } from '../util/api/budgetAPI';
 import Amount from './Amount';
 import Category from './Category';
 
@@ -55,7 +56,7 @@ class Budget {
         return this._categories;
     }
 
-    static getBudgetFromData = (budget: any) => {
+    static getBudgetFromData = (budget: BudgetDataType) => {
         const {
             _id: id,
             title,
@@ -88,14 +89,14 @@ class Budget {
                     incomePlanned
                 ),
             },
-            categories: categories.map((category: any) => {
+            categories: categories.map((category) => {
                 return Category.getCategoryFromData(category);
             }),
         });
     };
 
     static getBudgetUpdatedTotalAmount = (
-        prevBudget: Budget | any,
+        prevBudget: Budget,
         isExpense: boolean,
         isCurrent: boolean,
         amount: number
@@ -114,7 +115,7 @@ class Budget {
     };
 
     static getBudgetUpdatedCategoryAmount = (
-        prevBudget: Budget | any,
+        prevBudget: Budget,
         categoryId: string,
         isCurrent: boolean,
         addingAmount: number
@@ -133,16 +134,7 @@ class Budget {
 
     static getBudgetUpdatedCategory = (
         prevBudget: Budget,
-        updatedCategories: {
-            categoryId: string;
-            icon: string;
-            title: string;
-            isExpense: boolean;
-            isDefault: boolean;
-            amountPlanned: number;
-            amountScheduled: number;
-            amountCurrent: number;
-        }[] | Category[]
+        updatedCategories: Category[]
     ) => {
         const { id, title, date, total } = prevBudget;
 
@@ -158,7 +150,7 @@ class Budget {
     };
 
     static getBudgetUpdatedPlan = (
-        prevBudget: Budget | any,
+        prevBudget: Budget,
         isExpense: boolean,
         amount: number
     ) => {
@@ -175,7 +167,7 @@ class Budget {
     };
 
     static getBudgetUpdatedCategoryPlan(
-        prevBudget: Budget | any,
+        prevBudget: Budget,
         categoryId: string,
         amount: number
     ) {

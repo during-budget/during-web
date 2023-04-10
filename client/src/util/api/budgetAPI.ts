@@ -1,6 +1,23 @@
+import { BudgetCategoryType, UpdatedBudgetCategoryType } from './categoryAPI';
+
 const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/budgets`;
+
+export interface BudgetDataType {
+    _id: string;
+    userId: string;
+    title: string;
+    startDate: string;
+    endDate: string;
+    expenseCurrent: number;
+    expenseScheduled: number;
+    expensePlanned: number;
+    incomeCurrent: number;
+    incomeScheduled: number;
+    incomePlanned: number;
+    categories: BudgetCategoryType[];
+}
 
 export const getBudgetList = async () => {
     const url = BASE_URL;
@@ -16,7 +33,7 @@ export const getBudgetList = async () => {
         );
     }
 
-    return response.json();
+    return response.json() as Promise<{ budgets: BudgetDataType[] }>;
 };
 
 export const getBudgetById = async (id: string) => {
@@ -33,7 +50,11 @@ export const getBudgetById = async (id: string) => {
         );
     }
 
-    return response.json();
+    // TODO: transactionsDataType 정의
+    return response.json() as Promise<{
+        budget: BudgetDataType;
+        transactions: any;
+    }>;
 };
 
 export const updateBudgetFields = async (id: string, data: any) => {
@@ -57,7 +78,7 @@ export const updateBudgetFields = async (id: string, data: any) => {
         );
     }
 
-    return response.json();
+    return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
 export const updateCategoryPlan = async (
@@ -87,7 +108,7 @@ export const updateCategoryPlan = async (
         );
     }
 
-    return response.json();
+    return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
 export const updateBudgetCategories = async (
@@ -126,5 +147,5 @@ export const updateBudgetCategories = async (
         );
     }
 
-    return response.json();
+    return response.json() as Promise<UpdatedBudgetCategoryType>;
 };
