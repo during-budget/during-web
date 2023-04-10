@@ -26,9 +26,7 @@ function TotalStatus(props: {
         });
 
         // Update budget state (for plan update)
-        dispatch(
-            budgetActions.updateBudget({ budgetId: props.budgetId, budget })
-        );
+        dispatch(budgetActions.updateBudget(budget));
     };
 
     return (

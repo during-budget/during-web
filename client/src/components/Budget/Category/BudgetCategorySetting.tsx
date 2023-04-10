@@ -29,6 +29,15 @@ function BudgetCategorySetting(props: {
     const allCategories = useAppSelector((state) => state.category);
 
     const budgets = useAppSelector((state) => state.budget);
+    const budget = budgets[props.budgetId];
+    const budgetCategories = budget?.categories;
+
+    if (!budget || !budgetCategories) {
+        throw new Error(
+            'Error ocurred in BudgetCategorySetting. Budget not exists: ' +
+                props.budgetId
+        );
+    }
 
     const [isEdit, setIsEdit] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
