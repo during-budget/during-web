@@ -1,6 +1,22 @@
+import { UserCategoryType } from './categoryAPI';
+
 const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/users`;
+
+export interface UserDataType {
+    _id: string;
+    userName: string;
+    categories: UserCategoryType[];
+    createdAt: string;
+    updatedAt: string;
+    email: string;
+    isGuest: boolean;
+    basicBudgetId: string;
+    // assets: [];
+    // cards: [];
+    // paymentMethods: [];
+}
 
 export const sendCodeRegister = async (email: string) => {
     const url = `${BASE_URL}/register`;
@@ -23,7 +39,7 @@ export const sendCodeRegister = async (email: string) => {
         );
     }
 
-    return data;
+    return data as { message: string };
 };
 
 export const verifyRegister = async (
@@ -49,7 +65,7 @@ export const verifyRegister = async (
         );
     }
 
-    return data;
+    return data as { user: UserDataType };
 };
 
 export const sendCodeLogin = async (email: string) => {
@@ -73,7 +89,7 @@ export const sendCodeLogin = async (email: string) => {
         );
     }
 
-    return data;
+    return data as { message: string };
 };
 
 export const verifyLogin = async (
@@ -99,7 +115,7 @@ export const verifyLogin = async (
         );
     }
 
-    return data;
+    return data as { user: UserDataType };
 };
 
 export const logoutUser = async () => {
@@ -131,5 +147,5 @@ export const getUserState = async () => {
         return null;
     }
 
-    return response.json();
+    return response.json() as Promise<{ user: UserDataType }>;
 };

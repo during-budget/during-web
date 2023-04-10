@@ -1,3 +1,4 @@
+import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
 import Amount from './Amount';
 
 class Category {
@@ -57,7 +58,9 @@ class Category {
         this._title = title;
     }
 
-    static getCategoryFromData = (category: any) => {
+    static getCategoryFromData = (
+        category: UserCategoryType | BudgetCategoryType
+    ) => {
         const {
             categoryId,
             _id,
@@ -71,9 +74,9 @@ class Category {
         } = category;
 
         const amount = new Amount(
-            amountCurrent,
-            amountScheduled,
-            amountPlanned
+            amountCurrent || 0,
+            amountScheduled || 0,
+            amountPlanned || 0
         );
 
         return new Category({

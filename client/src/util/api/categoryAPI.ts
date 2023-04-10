@@ -4,6 +4,43 @@ import Category from '../../models/Category';
 
 const BASE_URL = `${DURING_SERVER}/api/categories`;
 
+interface CategoryBaisis {
+    icon: string;
+    isExpense: boolean;
+    isIncome: boolean;
+    isDefault: boolean;
+    title: string;
+}
+
+export interface UserCategoryType extends CategoryBaisis {
+    _id: string;
+    categoryId: never;
+    amountCurrent: never;
+    amountPlanned: never;
+    amountScheduled: never;
+}
+export interface BudgetCategoryType extends CategoryBaisis {
+    _id: never;
+    categoryId: string;
+    amountCurrent: number;
+    amountPlanned: number;
+    amountScheduled: number;
+}
+
+export interface UpdatedBudgetCategoryType {
+    categories: BudgetCategoryType[];
+    included: BudgetCategoryType[];
+    updated: BudgetCategoryType[];
+    excluded: BudgetCategoryType[];
+}
+
+export interface UpdatedUserCategoryType {
+    categories: UserCategoryType[];
+    added: UserCategoryType[];
+    updated: UserCategoryType[];
+    removed: UserCategoryType[];
+}
+
 export const getCategories = async () => {
     const response = await fetch(BASE_URL, {
         credentials: 'include',
@@ -17,7 +54,7 @@ export const getCategories = async () => {
         );
     }
 
-    return response.json();
+    return response.json() as Promise<UserCategoryType[]>;
 };
 
 export const updateCategories = async (categoryData: Category[]) => {
@@ -42,13 +79,13 @@ export const updateCategories = async (categoryData: Category[]) => {
         },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+        const data = await response.json();
+
         throw new Error(
             `Failed to update categories.\n${data.message ? data.message : ''}`
         );
     }
 
-    return data;
+    return response.json() as Promise<UpdatedUserCategoryType>;
 };
