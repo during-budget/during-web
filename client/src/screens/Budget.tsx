@@ -8,35 +8,30 @@ import TotalStatus from '../components/Budget/Status/TotalStatus';
 import DateStatus from '../components/Budget/Status/DateStatus';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
-import Category from '../models/Category';
+import { useAppDispatch } from '../hooks/redux-hook';
+import BudgetModel from '../models/Budget';
+import Transaction from '../models/Transaction';
 
 function Budget() {
     const dispatch = useAppDispatch();
     const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-    const [categories, setCategories] = useState<Category[]>([]);
-
     // get budget
-    const budgets = useAppSelector((state) => state.budget);
     const {
         id,
         title,
         date,
         total,
         categories: categoryObj,
-    } = budgets[loaderData.id];
+    } = loaderData.budget;
 
-    // get transaction
-    const transactions = useAppSelector((state) => state.transaction.data);
+    const categories = Object.values(categoryObj);
+    const transactions = loaderData.transactions;
 
     useEffect(() => {
-        // set categories
-        setCategories(Object.values(categoryObj));
-
         // set transactions
         dispatch(
             transactionActions.setTransactions({
@@ -98,12 +93,17 @@ export const loader = async (data: LoaderFunctionArgs) => {
     if (!params.budgetId)
         throw new Error('Invalid params: budgetId not exists');
 
-    const budgetData = await getBudgetById(params.budgetId);
-    const transactionData = await getTransactions(params.budgetId);
+    const { budget: budgetData, transactions: transactionData } =
+        await getBudgetById(params.budgetId);
+
+    const budget = BudgetModel.getBudgetFromData(budgetData);
+    const transactions = transactionData.map((item: any) =>
+        Transaction.getTransactionFromData(item)
+    );
 
     return {
-        id: params.budgetId as string,
-        budget: budgetData.budget,
-        transactions: transactionData.transactions,
+        id: params.budgetId,
+        budget,
+        transactions,
     };
 };
