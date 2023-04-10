@@ -26,7 +26,8 @@ function BudgetCategorySetting(props: {
     const dispatch = useAppDispatch();
 
     // Set category data
-    const allCategories = useAppSelector((state) => state.category);
+    const categoryObj = useAppSelector((state) => state.category);
+    const allCategories = Object.values(categoryObj);
 
     const budgets = useAppSelector((state) => state.budget);
     const budget = budgets[props.budgetId];
@@ -79,7 +80,7 @@ function BudgetCategorySetting(props: {
         if (props.isOpen) {
             setIsEdit(false);
         }
-    }, [allCategories, props.isExpense, props.isOpen]);
+    }, [categoryObj, props.isExpense, props.isOpen]);
 
     // Form handlers (checked)
     const submitHandler = async (event?: React.FormEvent) => {

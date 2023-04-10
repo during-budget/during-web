@@ -1,22 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Category from '../models/Category';
+import { UserCategoryType } from '../util/api/categoryAPI';
 
-const initialState: Category[] = [];
+const initialState: {
+    [id: string]: Category;
+} = {};
 
 const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
-        setCategories(state, action) {
+        setCategories(state, action: PayloadAction<UserCategoryType[]>) {
             const categories = action.payload;
 
-            state.splice(0); // init;
+            // NOTE: Init state
+            for (const item in state) delete state[item];
 
-            categories.forEach((category: any) => {
-                const { _id: id, title, icon, isExpense, isDefault } = category;
-                state.push(
-                    new Category({ id, title, icon, isExpense, isDefault })
-                );
+            categories.forEach((data) => {
+                const category = Category.getCategoryFromData(data);
+                state[category.id] = category;
             });
         },
     },
