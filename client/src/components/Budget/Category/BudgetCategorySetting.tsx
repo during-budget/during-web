@@ -65,7 +65,7 @@ function BudgetCategorySetting(props: {
         setDefaultCategory(currentDefault);
 
         // checked categories
-        const checkedIds = budgetCategories.map((item: Category) => item.id);
+        const checkedIds = Object.keys(budgetCategories);
         setCheckedCategoryIds(
             new Map(
                 categories.map((item: Category) => [
@@ -100,11 +100,12 @@ function BudgetCategorySetting(props: {
             // send requeset
             const {
                 categories: updatedCategories,
-                removed: removedCategories,
+                updated,
+                removed,
             } = await updateCategories(updatingCategories);
 
             // update transaction state (removed category -> default category)
-            if (removedCategories.length > 0) {
+            if (removed.length > 0) {
                 const { transactions } = await getTransactions(props.budgetId);
 
                 dispatch(
@@ -115,12 +116,15 @@ function BudgetCategorySetting(props: {
                 );
             }
 
-            // update state
+            // update category state
             dispatch(categoryActions.setCategories(updatedCategories));
+
+            // update budget state
             dispatch(
                 budgetActions.updateCategoryFromSetting({
                     budgetId: props.budgetId,
-                    categories: updatedCategories,
+                    updated,
+                    removed,
                 })
             );
         } else {
@@ -139,9 +143,7 @@ function BudgetCategorySetting(props: {
             // checkedCategories -> update budget categories (include / exclude)
             const updatingCategories: Category[] = [];
             checkedCategories.forEach((checkedItem: Category) => {
-                const existingItem = budgetCategories.find(
-                    (item: Category) => item.id === checkedItem.id
-                );
+                const existingItem = budgetCategories[checkedItem.id];
                 if (existingItem) {
                     updatingCategories.push(existingItem);
                 } else {

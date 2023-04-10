@@ -2,46 +2,49 @@ import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import classes from './Budget.module.css';
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getTransactions } from '../util/api/transactionAPI';
-import BudgetModel from '../models/Budget';
 import Carousel from '../components/UI/Carousel';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
 import DateStatus from '../components/Budget/Status/DateStatus';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import Category from '../models/Category';
 
 function Budget() {
     const dispatch = useAppDispatch();
     const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-    let budget, transactions;
+    const [categories, setCategories] = useState<Category[]>([]);
 
     // get budget
     const budgets = useAppSelector((state) => state.budget);
-    budget = budgets[loaderData.id];
-
-    if (!budget) {
-        budget = BudgetModel.getBudgetFromData(loaderData.budget);
-    }
-
-    const { id, title, date, total, categories } = budget;
+    const {
+        id,
+        title,
+        date,
+        total,
+        categories: categoryObj,
+    } = budgets[loaderData.id];
 
     // get transaction
-    transactions = useAppSelector((state) => state.transaction.data);
+    const transactions = useAppSelector((state) => state.transaction.data);
 
-    // set transaction
     useEffect(() => {
+        // set categories
+        setCategories(Object.values(categoryObj));
+
+        // set transactions
         dispatch(
             transactionActions.setTransactions({
                 transactions: loaderData.transactions,
                 isDefault: false,
             })
         );
-    }, []);
+    }, [loaderData, categoryObj]);
 
     return (
         <>
@@ -92,7 +95,8 @@ export default Budget;
 export const loader = async (data: LoaderFunctionArgs) => {
     const { params } = data;
 
-    if (!params.budgetId) throw new Error('Invalid params: budgetId not exists');
+    if (!params.budgetId)
+        throw new Error('Invalid params: budgetId not exists');
 
     const budgetData = await getBudgetById(params.budgetId);
     const transactionData = await getTransactions(params.budgetId);

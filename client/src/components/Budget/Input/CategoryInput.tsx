@@ -37,7 +37,7 @@ const CategoryInput = React.forwardRef(
             );
         }
 
-        const filteredCategories = budgetCategories.filter(
+        const filteredCategories = Object.values(budgetCategories).filter(
             (item: Category) => item.isExpense === isExpense
         );
 
@@ -63,7 +63,7 @@ const CategoryInput = React.forwardRef(
 
         // NOTE: 수입/지출 변경 시 카테고리 업데이트
         useEffect(() => {
-            const filteredCategories = budgetCategories.filter(
+            const filteredCategories = Object.values(budgetCategories).filter(
                 (item: Category) => item.isExpense === isExpense
             );
             const defaultValue =
