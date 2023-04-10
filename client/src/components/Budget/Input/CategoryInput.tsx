@@ -7,6 +7,7 @@ import Budget from '../../../models/Budget';
 import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
 import ExpenseTab from '../UI/ExpenseTab';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 const CategoryInput = React.forwardRef(
     (
@@ -22,18 +23,13 @@ const CategoryInput = React.forwardRef(
         },
         ref
     ) => {
-        const dispatch = useDispatch();
+        const dispatch = useAppDispatch();
         const categoryRef = useRef<any>(null);
 
         const [isExpense, setIsExpense] = useState(props.isExpense);
 
         // Set category data
-        const budgets = useSelector((state: any) => state.budget.data);
-
-        const budget = budgets.find(
-            (item: Budget) => item.id === props.budgetId
-        );
-        const budgetCategories = budget?.categories || [];
+        const budgets = useAppSelector((state) => state.budget);
 
         const filteredCategories = budgetCategories.filter(
             (item: Category) => item.isExpense === isExpense

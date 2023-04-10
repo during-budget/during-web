@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Amount from '../../../models/Amount';
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
@@ -7,14 +5,15 @@ import { updateBudgetFields } from '../../../util/api/budgetAPI';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import ExpenseTab from '../UI/ExpenseTab';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function TotalStatus(props: {
     budgetId: string;
     total: { expense: Amount; income: Amount };
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
+    const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
     const total = isExpense ? props.total.expense : props.total.income;
 
     const updatePlan = async (amountStr: string) => {

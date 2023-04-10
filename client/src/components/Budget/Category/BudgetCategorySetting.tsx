@@ -2,20 +2,18 @@ import { v4 as uuid } from 'uuid';
 import classes from './BudgetCategorySetting.module.css';
 import Category from '../../../models/Category';
 import Overlay from '../../UI/Overlay';
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Icon from '../../UI/Icon';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Button from '../../UI/Button';
 import EmojiInput from '../Input/EmojiInput';
 import { updateCategories } from '../../../util/api/categoryAPI';
-import category, { categoryActions } from '../../../store/category';
-import { useDispatch } from 'react-redux';
+import { categoryActions } from '../../../store/category';
 import { budgetActions } from '../../../store/budget';
-import Budget from '../../../models/Budget';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { transactionActions } from '../../../store/transaction';
 import { getTransactions } from '../../../util/api/transactionAPI';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function BudgetCategorySetting(props: {
     isOpen: boolean;
@@ -25,14 +23,12 @@ function BudgetCategorySetting(props: {
     sendRequest?: boolean;
     setCategoryPlans?: (plans: any[]) => void;
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     // Set category data
-    const allCategories = useSelector((state: any) => state.category);
+    const allCategories = useAppSelector((state) => state.category);
 
-    const budgets = useSelector((state: any) => state.budget.data);
-    const budget = budgets.find((item: Budget) => item.id === props.budgetId);
-    const budgetCategories = budget?.categories || [];
+    const budgets = useAppSelector((state) => state.budget);
 
     const [isEdit, setIsEdit] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);

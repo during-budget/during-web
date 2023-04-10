@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../../hooks/redux-hook';
 import Category from '../../../models/Category';
 import Transaction from '../../../models/Transaction';
 import { budgetActions } from '../../../store/budget';
@@ -32,7 +32,7 @@ function TransactionOption(props: {
         overAmount,
     } = props.transaction;
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const edit = (isCurrent || !linkId) && {
         name: '내역 수정',

@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import Calendar from '../../UI/Calendar';
 import RadioTab from '../../UI/RadioTab';
 import IncomeExpenseAmount from '../Amount/IncomeExpenseAmount';
+import { useAppDispatch } from '../../../hooks/redux-hook';
 
 function MonthlyStatus(props: {
     date: { start: Date; end: Date };
     dailyAmountObj: any;
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [isView, setIsView] = useState(true);
 
     const actionTabs = [

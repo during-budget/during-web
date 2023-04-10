@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import classes from './CategoryPlan.module.css';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
@@ -19,6 +18,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { getTransactions } from '../../../util/api/transactionAPI';
 import { transactionActions } from '../../../store/transaction';
 import CategoryPlanList from './CategoryPlanList';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function CategoryPlan(props: {
     budgetId: string;
@@ -26,13 +26,13 @@ function CategoryPlan(props: {
     total: any;
     categories: Category[];
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     // Boolean state
-    const isOpen = useSelector(
-        (state: any) => state.ui.budget.category.isEditPlan
+    const isOpen = useAppSelector(
+        (state) => state.ui.budget.category.isEditPlan
     );
-    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
+    const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
     const [isEditSetting, setIsEditSetting] = useState(false);
 
     // Amount state

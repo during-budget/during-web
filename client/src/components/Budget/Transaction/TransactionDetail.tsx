@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
 import classes from './TransactionDetail.module.css';
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
@@ -9,12 +8,13 @@ import { getNumericDotDateString } from '../../../util/date';
 import Amount from '../../../models/Amount';
 import OverAmountMsg from './OverAmountMsg';
 import { transactionActions } from '../../../store/transaction';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function TransactionDetail() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const { isOpen, transaction, category } = useSelector(
-        (state: any) => state.transaction.detail
+    const { isOpen, transaction, category } = useAppSelector(
+        (state) => state.transaction.detail
     );
 
     const closeHandler = async () => {

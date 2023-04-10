@@ -1,8 +1,9 @@
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import { useAppSelector } from '../hooks/redux-hook';
+import Budget from '../models/Budget';
 
 function BudgetNavigation() {
-    const budgets = useSelector((state: any) => state.budget.data);
+    const budgets = useAppSelector((state) => state.budget);
     const id = getCurrentBudgetId(budgets);
 
     return <Navigate to={`/budget/${id}`} replace={true} />;

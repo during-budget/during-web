@@ -13,7 +13,6 @@ import Overlay from '../../UI/Overlay';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
 import Transaction from '../../../models/Transaction';
-import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../../../store/transaction';
 import {
     createTransaction,
@@ -25,18 +24,19 @@ import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { v4 as uuid } from 'uuid';
 import { getNumericHypenDateString } from '../../../util/date';
 import BudgetCategorySetting from '../Category/BudgetCategorySetting';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function TransactionForm(props: {
     budgetId: string;
     date?: { start: Date; end: Date };
     isDefault?: boolean;
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const { mode, default: defaultValue } = useSelector(
-        (state: any) => state.transaction.form
+    const { mode, default: defaultValue } = useAppSelector(
+        (state) => state.transaction.form
     );
-    const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
+    const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
     const isDefault = props.isDefault;
 
     const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
