@@ -11,6 +11,9 @@ function DefaultBudget() {
     const from = location.state?.from?.pathname;
 
     const id = useAppSelector((state) => state.user.info.defaultBudgetId);
+    const budgets = useAppSelector((state) => state.budget);
+    const budget = budgets[id];
+    const transactions = useAppSelector((state) => state.transaction.default);
 
     return (
         <main className={classes.container}>

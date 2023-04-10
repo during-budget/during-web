@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router-dom';
+import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import classes from './Budget.module.css';
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getTransactions } from '../util/api/transactionAPI';
@@ -10,19 +10,19 @@ import DateStatus from '../components/Budget/Status/DateStatus';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 
 function Budget() {
-    const dispatch = useDispatch();
-    const loaderData: any = useLoaderData();
+    const dispatch = useAppDispatch();
+    const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
     let budget, transactions;
 
     // get budget
-    const budgets = useSelector((state: any) => state.budget.data);
-    budget = budgets.find((item: BudgetModel) => item.id === loaderData.id);
+    const budgets = useAppSelector((state) => state.budget);
+    budget = budgets[loaderData.id];
 
     if (!budget) {
         budget = BudgetModel.getBudgetFromData(loaderData.budget);
@@ -31,7 +31,7 @@ function Budget() {
     const { id, title, date, total, categories } = budget;
 
     // get transaction
-    transactions = useSelector((state: any) => state.transaction.data);
+    transactions = useAppSelector((state) => state.transaction.data);
 
     // set transaction
     useEffect(() => {
@@ -89,14 +89,16 @@ function Budget() {
 
 export default Budget;
 
-export const loader = async (data: any) => {
+export const loader = async (data: LoaderFunctionArgs) => {
     const { params } = data;
+
+    if (!params.budgetId) throw new Error('Invalid params: budgetId not exists');
 
     const budgetData = await getBudgetById(params.budgetId);
     const transactionData = await getTransactions(params.budgetId);
 
     return {
-        id: params.budgetId,
+        id: params.budgetId as string,
         budget: budgetData.budget,
         transactions: transactionData.transactions,
     };

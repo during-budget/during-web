@@ -41,9 +41,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
         );
 
         // Update budget state (for plan update)
-        dispatch(
-            budgetActions.updateBudget({ budgetId: props.budgetId, budget })
-        );
+        dispatch(budgetActions.updateBudget(budget));
     };
 
     useEffect(() => {

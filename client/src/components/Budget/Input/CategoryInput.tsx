@@ -1,10 +1,7 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import classes from './CategoryInput.module.css';
 import Category from '../../../models/Category';
 import Select from '../../UI/Select';
-import Budget from '../../../models/Budget';
-import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
 import ExpenseTab from '../UI/ExpenseTab';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
@@ -30,6 +27,15 @@ const CategoryInput = React.forwardRef(
 
         // Set category data
         const budgets = useAppSelector((state) => state.budget);
+        const budget = budgets[props.budgetId];
+        const budgetCategories = budget?.categories;
+
+        if (!budget || !budgetCategories) {
+            throw new Error(
+                'An error ocurred in CategoryInput. Budget not exists: ' +
+                    props.budgetId
+            );
+        }
 
         const filteredCategories = budgetCategories.filter(
             (item: Category) => item.isExpense === isExpense

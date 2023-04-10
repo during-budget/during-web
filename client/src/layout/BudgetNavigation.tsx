@@ -9,18 +9,20 @@ function BudgetNavigation() {
     return <Navigate to={`/budget/${id}`} replace={true} />;
 }
 
-const getCurrentBudgetId = (budgets: any) => {
+const getCurrentBudgetId = (budgetObj: { [id: string]: Budget }) => {
+    let id = 'new';
     const now = new Date();
 
-    let id = 'new';
-    budgets.forEach((budget: any) => {
+    const budgets = Object.values(budgetObj);
+
+    budgets.forEach((budget) => {
         const start = new Date(budget.date.start);
         const end = new Date(budget.date.end);
         const nextStart = new Date(end.setDate(end.getDate() + 1)); // end + 1
 
         const isCurrentBudget = start < now && now < nextStart;
         if (isCurrentBudget) {
-            id = budget._id;
+            id = budget.id; // TODO: 원래 _id로 접근해서 잘 돌아가던 코드..... 문제가 있는지 확인 필요
             return false;
         }
     });
