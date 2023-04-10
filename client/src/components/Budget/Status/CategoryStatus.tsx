@@ -7,16 +7,16 @@ import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import IndexNav from '../../UI/IndexNav';
 import Button from '../../UI/Button';
-import { useDispatch, useSelector } from 'react-redux';
 import { budgetActions } from '../../../store/budget';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 import { uiActions } from '../../../store/ui';
 import ExpenseTab from '../UI/ExpenseTab';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const isExpense = useSelector((state: any) => state.ui.budget.isExpense);
+    const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
     const filteredCategories = props.categories.filter((item: Category) =>
         isExpense ? item.isExpense : !item.isExpense

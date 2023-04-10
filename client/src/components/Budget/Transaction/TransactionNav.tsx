@@ -1,15 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { uiActions } from '../../../store/ui';
 import RadioTab from '../../UI/RadioTab';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function TransactionNav(props: {
     id: string;
     isLine?: boolean;
     disabled?: boolean;
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const isCurrent = useSelector((state: any) => state.ui.budget.isCurrent);
+    const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
     const setIsCurrent = (state: boolean) => {
         dispatch(uiActions.setIsCurrent(state));
     };

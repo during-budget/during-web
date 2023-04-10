@@ -3,20 +3,20 @@ import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import Overlay from '../../UI/Overlay';
 import { useEffect, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 import Category from '../../../models/Category';
 import UserCategoryList from './UserCategoryList';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { updateCategories } from '../../../util/api/categoryAPI';
 import { categoryActions } from '../../../store/category';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function UserCategorySetting(props: {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const allCategories = useSelector((state: any) => state.category);
+    const allCategories = useAppSelector((state) => state.category);
 
     const [isExpense, setIsExpense] = useState(true);
     const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);

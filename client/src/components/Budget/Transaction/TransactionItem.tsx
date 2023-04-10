@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
 import classes from './TransactionItem.module.css';
 import Amount from '../../../models/Amount';
 import Transaction from '../../../models/Transaction';
@@ -7,9 +6,10 @@ import Icon from '../../UI/Icon';
 import TransactionOption from './TransactionOption';
 import OverAmountMsg from './OverAmountMsg';
 import { transactionActions } from '../../../store/transaction';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function TransactionItem(props: { transaction: Transaction }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {
         id,
@@ -24,8 +24,8 @@ function TransactionItem(props: { transaction: Transaction }) {
         overAmount,
     } = props.transaction;
 
-    const categories = useSelector((state: any) => state.category);
-    const category = categories?.find((item: any) => item.id === categoryId);
+    const categories = useAppSelector((state) => state.category);
+    const category = categories?.find((item) => item.id === categoryId);
 
     const liClass = [
         classes.container,
@@ -67,10 +67,11 @@ function TransactionItem(props: { transaction: Transaction }) {
                                 />
                             )}
                         </div>
+                        {/* TODO: !!! category! 이거 undefined있을 수 있음 처리 꼭 필요 */}
                         <TransactionOption
                             className={classes.option}
                             transaction={props.transaction}
-                            category={category}
+                            category={category!}
                         />
                     </div>
                 </div>

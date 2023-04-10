@@ -5,7 +5,7 @@ const initialState = {
     info: {
         email: '',
         userName: '',
-        basicBudgetId: ''
+        defaultBudgetId: '',
     },
 };
 

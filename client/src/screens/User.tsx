@@ -4,18 +4,17 @@ import SettingList from '../components/User/Setting/SettingList';
 import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import Button from '../components/UI/Button';
-import { useDispatch } from 'react-redux';
 import { userActions } from '../store/user';
 import { logoutUser } from '../util/api/userAPI';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 
 function User() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const [showCategory, setShowCategory] = useState(false);
-    const { email, userName } = useSelector((state: any) => state.user.info);
+    const { email, userName } = useAppSelector((state) => state.user.info);
 
     const settings = [
         {
