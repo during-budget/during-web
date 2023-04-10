@@ -13,7 +13,7 @@ class Budget {
         expense: Amount;
         income: Amount;
     };
-    private _categories: Category[];
+    private _categories: { [id: string]: Category };
 
     constructor(budget: {
         id: string;
@@ -26,7 +26,7 @@ class Budget {
             expense: Amount;
             income: Amount;
         };
-        categories: Category[];
+        categories: { [id: string]: Category };
     }) {
         const { id, title, date, total, categories } = budget;
         this._id = id;
@@ -68,8 +68,15 @@ class Budget {
             incomeCurrent,
             incomeScheduled,
             incomePlanned,
-            categories,
+            categories: categoryData,
         } = budget;
+
+        const categories: { [id: string]: Category } = {};
+        categoryData.forEach((data) => {
+            const category = Category.getCategoryFromData(data);
+            categories[category.id] = category;
+        });
+
         return new Budget({
             id,
             title,
@@ -89,9 +96,7 @@ class Budget {
                     incomePlanned
                 ),
             },
-            categories: categories.map((category) => {
-                return Category.getCategoryFromData(category);
-            }),
+            categories,
         });
     };
 
@@ -121,12 +126,12 @@ class Budget {
         addingAmount: number
     ) => {
         const { id, title, date, total, categories } = prevBudget;
-        const idx = categories.findIndex((item: any) => item.id === categoryId);
-        if (categories[idx]) {
+
+        if (categories[categoryId]) {
             if (isCurrent) {
-                categories[idx].amount.addCurrent(addingAmount);
+                categories[categoryId].amount.addCurrent(addingAmount);
             } else {
-                categories[idx].amount.addScheduled(addingAmount);
+                categories[categoryId].amount.addScheduled(addingAmount);
             }
         }
         return new Budget({ id, title, date, total, categories });
@@ -138,12 +143,9 @@ class Budget {
     ) => {
         const { id, title, date, total } = prevBudget;
 
-        const categories = updatedCategories.map((category) => {
-            if (category instanceof Category) {
-                return category;
-            } else {
-                return Category.getCategoryFromData(category);
-            }
+        const categories: { [id: string]: Category } = {};
+        updatedCategories.forEach((category) => {
+            categories[category.id] = category;
         });
 
         return new Budget({ id, title, date, total, categories });
@@ -172,9 +174,8 @@ class Budget {
         amount: number
     ) {
         const { id, title, date, total, categories } = prevBudget;
-        const idx = categories.findIndex((item: any) => item.id === categoryId);
-        if (categories[idx]) {
-            categories[idx].amount.planned = amount;
+        if (categories[categoryId]) {
+            categories[categoryId].amount.planned = amount;
         }
         return new Budget({ id, title, date, total, categories });
     }

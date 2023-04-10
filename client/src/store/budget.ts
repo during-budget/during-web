@@ -80,7 +80,7 @@ const budgetSlice = createSlice({
                 );
 
             const budget = state[budgetId] as Budget;
-            const otherCategories = budget.categories.filter(
+            const otherCategories = Object.values(budget.categories).filter(
                 (item) =>
                     item.isExpense !== isExpense || item.isDefault === true
             );
@@ -94,32 +94,32 @@ const budgetSlice = createSlice({
             state,
             action: PayloadAction<{
                 budgetId: string;
-                categories: UserCategoryType[];
+                updated: UserCategoryType[];
+                removed: UserCategoryType[];
             }>
         ) {
-            const { budgetId, categories: settings } = action.payload;
+            const { budgetId, updated, removed } = action.payload;
 
             if (!state[budgetId])
                 throw new Error('Budget not exists: ' + budgetId);
 
             const budget = state[budgetId] as Budget;
-            const categories = budget.categories.map((item) => {
-                const settingData = settings.find(
-                    (setting: any) => setting._id === item.id
-                );
 
-                if (settingData) {
-                    const { icon, title } = settingData;
-                    item.icon = icon;
-                    item.title = title;
-                }
+            const categories = budget.categories;
 
-                return item;
-            }) as Category[];
+            updated.forEach((data) => {
+                const { _id: id, title, icon } = data;
+                categories[id].title = title;
+                categories[id].icon = icon;
+            });
+
+            removed.forEach((data) => {
+                delete categories[data._id];
+            });
 
             state[budgetId] = Budget.getBudgetUpdatedCategory(
                 budget,
-                categories
+                Object.values(categories)
             );
         },
         updateTotalAmount(
@@ -193,22 +193,18 @@ const budgetSlice = createSlice({
             const prevType = prev.isExpense ? 'expense' : 'income';
             const nextType = next.isExpense ? 'expense' : 'income';
 
-            const amount = next.amount;
+            const prevId = prev.id;
+            const nextId = next.id;
             const nextBudget = state[budgetId];
+            const amount = next.amount;
 
-            if (prev.categoryId !== next.categoryId) {
-                const prevIdx = nextBudget.categories.findIndex(
-                    (item) => item.id === prev.categoryId
-                );
-                const nextIdx = nextBudget.categories.findIndex(
-                    (item) => item.id === next.categoryId
-                );
-
-                if (0 <= prevIdx) {
-                    nextBudget.categories[prevIdx].amount[prevState] -= amount;
+            if (prevId !== nextId) {
+                if (nextBudget.categories[prevId]) {
+                    nextBudget.categories[prevId].amount[prevState] -= amount;
+                    // TODO: 0인 경우 마이너스를 해 말아? 체크해볼 것.
                 }
-                if (0 <= nextIdx) {
-                    nextBudget.categories[nextIdx].amount[nextState] += amount;
+                if (nextBudget.categories[nextId]) {
+                    nextBudget.categories[nextId].amount[nextState] += amount;
                 }
             }
 
