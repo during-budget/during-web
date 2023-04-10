@@ -16,7 +16,8 @@ function UserCategorySetting(props: {
 }) {
     const dispatch = useAppDispatch();
 
-    const allCategories = useAppSelector((state) => state.category);
+    const categoryObj = useAppSelector((state) => state.category);
+    const allCategories = Object.values(categoryObj);
 
     const [isExpense, setIsExpense] = useState(true);
     const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);
