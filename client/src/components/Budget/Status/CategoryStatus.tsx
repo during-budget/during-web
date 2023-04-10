@@ -18,16 +18,15 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
 
     const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
-    const filteredCategories = props.categories.filter((item: Category) =>
-        isExpense ? item.isExpense : !item.isExpense
-    );
-
     const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
-    const [categories, setCategories] = useState(filteredCategories);
 
-    const categoryNames = categories.map((item) => {
-        return `${item.icon} ${item.title}`;
+    const categories = props.categories.filter((item: Category) => {
+        return isExpense ? item.isExpense : !item.isExpense;
     });
+
+    const categoryNames = categories.map(
+        (item) => `${item.icon} ${item.title}`
+    );
 
     const updatePlan = async (amountStr: string) => {
         const amount = +amountStr;
@@ -47,15 +46,7 @@ function CategoryStatus(props: { budgetId: string; categories: Category[] }) {
     useEffect(() => {
         // init index
         setCurrentCategoryIdx(0);
-
-        // filter category
-        const filteredCategories = props.categories.filter((item: Category) =>
-            isExpense ? item.isExpense : !item.isExpense
-        );
-
-        // set category
-        setCategories(filteredCategories);
-    }, [props.categories, isExpense]);
+    }, [props.categories]);
 
     return (
         <>
