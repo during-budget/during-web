@@ -1,5 +1,8 @@
 import { TransactionDataType } from '../util/api/transactionAPI';
 
+const DEFAULT_DATE_PREFIX = '매월 ';
+const DEFAULT_DATE_SUFFIX = '일';
+
 class Transaction {
     private _id: string;
     private _budgetId: string;
@@ -130,28 +133,33 @@ class Transaction {
     static getTransacitonsFilteredByDate = (data: {
         transactions: Transaction[];
         isCurrent: boolean;
+        isDefault?: boolean;
     }) => {
-        const filteredTransactions = data.transactions.filter(
-            (item: Transaction) =>
-                data.isCurrent ? item.isCurrent : !item.isCurrent
+        const { transactions, isCurrent, isDefault } = data;
+
+        const filteredTransactions = transactions.filter((item: Transaction) =>
+            isCurrent ? item.isCurrent : !item.isCurrent
         );
 
         const dateTransactions: {
-            date: string;
-            transactions: Transaction[];
-        }[] = [];
+            [date: string]: Transaction[];
+        } = {};
 
         filteredTransactions.forEach((transaction: Transaction) => {
-            const date = transaction.date.toLocaleDateString(
+            const dateStr = transaction.date.toLocaleDateString(
                 navigator.language
             );
 
-            const target = dateTransactions.find((item) => item.date === date);
+            const key = isDefault
+                ? DEFAULT_DATE_PREFIX +
+                  new Date(dateStr).getDate() +
+                  DEFAULT_DATE_SUFFIX
+                : dateStr;
 
-            if (target) {
-                target.transactions.push(transaction);
+            if (dateTransactions[key]) {
+                dateTransactions[key].push(transaction);
             } else {
-                dateTransactions.push({ date, transactions: [transaction] });
+                dateTransactions[key] = [transaction];
             }
         });
 

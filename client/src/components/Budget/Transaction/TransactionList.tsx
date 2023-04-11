@@ -4,31 +4,40 @@ import { getNumericHypenDateString } from '../../../util/date';
 import TransactionItem from './TransactionItem';
 import { useAppSelector } from '../../../hooks/redux-hook';
 
-function TransactionList() {
+interface Props {
+    isDefault?: boolean;
+}
+
+function TransactionList({ isDefault }: Props) {
     const transactions = useAppSelector((state) => state.transaction.data);
 
-    const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
-    const transactionList = Transaction.getTransacitonsFilteredByDate({
+    const isCurrent = isDefault
+        ? false
+        : useAppSelector((state) => state.ui.budget.isCurrent);
+    const dateTransactionData = Transaction.getTransacitonsFilteredByDate({
         transactions,
         isCurrent,
+        isDefault,
     });
+
+    const dateList = Object.keys(dateTransactionData);
 
     return (
         <ol className={classes.container}>
-            {transactionList.map((data) => {
-                const { date, transactions } = data;
+            {dateList.map((date) => {
+                const id = isDefault
+                    ? undefined
+                    : getNumericHypenDateString(new Date(date));
+
                 return (
                     <li key={date}>
                         <ol>
                             {/* Date */}
-                            <h5
-                                id={getNumericHypenDateString(new Date(date))}
-                                className={classes.date}
-                            >
+                            <h5 id={id} className={classes.date}>
                                 {date}
                             </h5>
                             {/* Transactions */}
-                            {transactions.map((item: Transaction) => (
+                            {dateTransactionData[date].map((item) => (
                                 <TransactionItem
                                     key={item.id}
                                     transaction={item}
