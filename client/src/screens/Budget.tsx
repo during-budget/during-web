@@ -1,7 +1,6 @@
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import classes from './Budget.module.css';
 import { getBudgetById } from '../util/api/budgetAPI';
-import { getTransactions } from '../util/api/transactionAPI';
 import Carousel from '../components/UI/Carousel';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
@@ -11,13 +10,14 @@ import TransactionLayout from '../components/Budget/Transaction/TransactionLayou
 import { useEffect } from 'react';
 import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
-import { useAppDispatch } from '../hooks/redux-hook';
-import BudgetModel from '../models/Budget';
-import Transaction from '../models/Transaction';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 
 function Budget() {
     const dispatch = useAppDispatch();
+
     const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+
+    const budgets = useAppSelector((state) => state.budget);
 
     // get budget
     const {
@@ -26,19 +26,14 @@ function Budget() {
         date,
         total,
         categories: categoryObj,
-    } = loaderData.budget;
+    } = budgets[loaderData.budget._id];
 
+    // TODO: Budget 객체가 첫 로드 한번만 실행됨 보장할 것.
     const categories = Object.values(categoryObj);
-    const transactions = loaderData.transactions;
 
     useEffect(() => {
         // set transactions
-        dispatch(
-            transactionActions.setTransactions({
-                transactions: loaderData.transactions,
-                isDefault: false,
-            })
-        );
+        dispatch(transactionActions.setTransactions(loaderData.transactions));
     }, [loaderData, categoryObj]);
 
     return (
@@ -55,21 +50,13 @@ function Budget() {
                     initialIndex={1}
                     itemClassName={classes.status}
                 >
-                    <DateStatus
-                        title={title}
-                        date={date}
-                        transactions={transactions}
-                    />
+                    <DateStatus title={title} date={date} />
                     <TotalStatus budgetId={id} total={total} />
                     <CategoryStatus budgetId={id} categories={categories} />
                 </Carousel>
                 <hr />
                 {/* Transactions */}
-                <TransactionLayout
-                    budgetId={id}
-                    transactions={transactions}
-                    date={date}
-                />
+                <TransactionLayout budgetId={id} date={date} />
                 {/* Overlays */}
                 <CategoryPlan
                     budgetId={id}
@@ -93,17 +80,17 @@ export const loader = async (data: LoaderFunctionArgs) => {
     if (!params.budgetId)
         throw new Error('Invalid params: budgetId not exists');
 
-    const { budget: budgetData, transactions: transactionData } =
-        await getBudgetById(params.budgetId);
+    //     const { budget: budgetData, transactions: transactionData } =
+    //         await getBudgetById(params.budgetId);
+    // const id = params.budgetId;
+    //     const budget = BudgetModel.getBudgetFromData(budgetData);
+    //     const transactions = transactionData.map((item: any) =>
+    //         Transaction.getTransactionFromData(item)
+    //     );
 
-    const budget = BudgetModel.getBudgetFromData(budgetData);
-    const transactions = transactionData.map((item: any) =>
-        Transaction.getTransactionFromData(item)
-    );
-
-    return {
-        id: params.budgetId,
-        budget,
-        transactions,
-    };
+    //     return {
+    //         id,
+    //         data: await getBudgetById(params.budgetId);
+    //     };
+    return getBudgetById(params.budgetId);
 };

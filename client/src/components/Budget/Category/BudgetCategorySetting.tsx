@@ -108,13 +108,7 @@ function BudgetCategorySetting(props: {
             // update transaction state (removed category -> default category)
             if (removed.length > 0) {
                 const { transactions } = await getTransactions(props.budgetId);
-
-                dispatch(
-                    transactionActions.setBudgetTransactions({
-                        budgetId: props.budgetId,
-                        transactions,
-                    })
-                );
+                dispatch(transactionActions.setTransactions(transactions));
             }
 
             // update category state
@@ -203,12 +197,7 @@ function BudgetCategorySetting(props: {
                         props.budgetId
                     );
 
-                    dispatch(
-                        transactionActions.setBudgetTransactions({
-                            budgetId: props.budgetId,
-                            transactions,
-                        })
-                    );
+                    dispatch(transactionActions.setTransactions(transactions));
                 }
             }
 

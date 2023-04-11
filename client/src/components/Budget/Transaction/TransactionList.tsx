@@ -4,8 +4,8 @@ import { getNumericHypenDateString } from '../../../util/date';
 import TransactionItem from './TransactionItem';
 import { useAppSelector } from '../../../hooks/redux-hook';
 
-function TransactionList(props: { transactions: Transaction[] }) {
-    const { transactions } = props;
+function TransactionList() {
+    const transactions = useAppSelector((state) => state.transaction.data);
 
     const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
     const transactionList = Transaction.getTransacitonsFilteredByDate({

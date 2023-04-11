@@ -11,9 +11,8 @@ function DefaultBudget() {
     const from = location.state?.from?.pathname;
 
     const id = useAppSelector((state) => state.user.info.defaultBudgetId);
-    const budgets = useAppSelector((state) => state.budget);
-    const budget = budgets[id];
-    const transactions = useAppSelector((state) => state.transaction.default);
+    // const budgets = useAppSelector((state) => state.budget);
+    // const budget = budgets[id];
 
     return (
         <main className={classes.container}>
@@ -25,7 +24,7 @@ function DefaultBudget() {
             <section></section>
             <hr />
             <section>
-                <TransactionList transactions={transactions} />
+                <TransactionList />
                 <TransactionForm budgetId={id} isDefault={true} />
             </section>
         </main>

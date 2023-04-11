@@ -5,13 +5,14 @@ import { getNumericHypenDateString } from '../../../util/date';
 import StatusHeader from './StatusHeader';
 import MonthlyStatus from '../Date/MonthlyStatus';
 import WeeklyStatus from '../Date/WeeklyStatus';
+import { useAppSelector } from '../../../hooks/redux-hook';
 
 function DateStatus(props: {
     title: string;
     date: { start: Date; end: Date };
-    transactions: Transaction[];
 }) {
-    const { title, date, transactions } = props;
+    const { title, date } = props;
+    const transactions = useAppSelector((state) => state.transaction.data);
 
     const [isMonthly, setIsMonthly] = useState(true);
     const [dailyAmountObj, setDailyAmountObj] = useState({});

@@ -70,8 +70,8 @@ function TransactionForm(props: {
             categoryId: categoryRef.current!.value(),
             tags: tagsRef.current!.value(),
             memo: memoRef.current!.value(),
-            linkId: defaultValue.linkId || null,
-            overAmount: defaultValue.overAmount || 0,
+            linkId: defaultValue.linkId || undefined,
+            overAmount: defaultValue.overAmount,
         });
 
         if (mode.isDone) {
@@ -89,25 +89,25 @@ function TransactionForm(props: {
                 })
             );
         } else {
-            const { createdId, createdLinkId } = await createTransaction(
+            const { transaction: createdTransaction } = await createTransaction(
                 transaction
             );
-            transaction.id = createdId;
-            transaction.linkId = createdLinkId;
+            transaction.id = createdTransaction._id;
+            transaction.linkId = createdTransaction.linkId || undefined;
         }
 
         // add linkId to scheduled
         if (mode.isDone) {
             dispatch(
                 transactionActions.addLink({
-                    targetId: transaction.linkId,
+                    targetId: transaction.linkId!,
                     linkId: transaction.id,
                 })
             );
         }
 
         // add or replace
-        await dispatch(transactionActions.addTransaction({ transaction })); // NOTE: await for scroll
+        await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
         dispatchAmount(transaction);
 
         // scroll
@@ -219,7 +219,9 @@ function TransactionForm(props: {
                 className={classes.field}
                 onFocus={expandHandler}
                 onClick={expandHandler}
-                defaultValue={defaultValue.amount}
+                defaultValue={
+                    defaultValue.amount ? defaultValue.amount.toString() : ''
+                }
                 required={true}
             />
             <Button onClick={expandHandler}>내역 추가</Button>
@@ -301,7 +303,7 @@ function TransactionForm(props: {
                             defaultValue={defaultValue.memo}
                         />
                         {/* types */}
-                        {!defaultValue.isDone && (
+                        {!mode.isDone && (
                             <div className={classes.types}>
                                 <ExpenseTab
                                     id="transaction-form-expense"

@@ -1,7 +1,27 @@
 const { DURING_SERVER } = import.meta.env;
 import Transaction from '../../models/Transaction';
+import { TransactionCategoryType } from './categoryAPI';
 
 const BASE_URL = `${DURING_SERVER}/api/transactions`;
+
+export interface TransactionDataType {
+    _id: string;
+    userId: string;
+    budgetId: string;
+    date: string;
+    isCurrent: boolean;
+    isExpense: boolean;
+    isIncome: boolean;
+    linkId: string | null;
+    icon: string;
+    title: string[];
+    amount: number;
+    category: TransactionCategoryType;
+    tags: string[];
+    memo: string;
+    createdAt: string;
+    overAmount?: number;
+}
 
 export const getTransactions = async (budgetId: string) => {
     const url = `${BASE_URL}?budgetId=${encodeURIComponent(budgetId)}`;
@@ -17,7 +37,7 @@ export const getTransactions = async (budgetId: string) => {
         );
     }
 
-    return response.json();
+    return response.json() as Promise<{ transactions: TransactionDataType[] }>;
 };
 
 export const createTransaction = async (transaction: Transaction) => {
@@ -56,17 +76,14 @@ export const createTransaction = async (transaction: Transaction) => {
         },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+        const data = await response.json();
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
     }
 
-    const { _id: createdId, linkId: createdLinkId } = data.transaction;
-
-    return { createdId, createdLinkId };
+    return response.json() as Promise<{ transaction: TransactionDataType }>;
 };
 
 export const deleteTransaction = async (transactionId: string) => {
@@ -119,11 +136,12 @@ export const updateTransaction = async (transaction: Transaction) => {
         },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+        const data = await response.json();
         throw new Error(
             `Failed to create transaction.\n${data.message ? data.message : ''}`
         );
     }
+
+    return response.json() as Promise<{ transaction: TransactionDataType }>;
 };
