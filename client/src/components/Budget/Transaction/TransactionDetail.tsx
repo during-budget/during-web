@@ -63,18 +63,18 @@ function TransactionDetail() {
                         {transaction && (isExpense ? '-' : '+')}
                         {amount && Amount.getAmountStr(amount)}
                     </p>
-                    {isCurrent && linkId && amount && (
+                    {isCurrent && linkId && overAmount !== undefined ? (
                         <OverAmountMsg
                             className={classes.over}
                             overAmount={overAmount}
                         />
-                    )}
+                    ) : null}
                 </div>
                 <div className={classes.main}>
                     <Icon size="5rem" fontSize="2.5rem">
-                        {icon || category.icon}
+                        {icon || category?.icon}
                     </Icon>
-                    <span className={classes.category}>{category.title}</span>
+                    <span className={classes.category}>{category?.title}</span>
                     <span className={classes.titles}>
                         {titles?.join(' | ')}
                     </span>
@@ -105,7 +105,7 @@ function TransactionDetail() {
                 )}
             </div>
             <div className={classes.buttons}>
-                {transaction && (
+                {transaction && category && (
                     <TransactionOption
                         transaction={transaction}
                         category={category}

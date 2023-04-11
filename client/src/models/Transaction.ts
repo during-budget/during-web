@@ -1,3 +1,5 @@
+import { TransactionDataType } from '../util/api/transactionAPI';
+
 class Transaction {
     private _id: string;
     private _budgetId: string;
@@ -107,25 +109,11 @@ class Transaction {
         this._overAmount = amount;
     }
 
-    static getTransactionFromData = (item: {
-        _id: string;
-        budgetId: string;
-        linkId?: string;
-        isCurrent: boolean;
-        isExpense: boolean;
-        title: string[];
-        date: string;
-        amount: number;
-        category: any;
-        tags?: string[];
-        icon?: string;
-        memo?: string;
-        overAmount?: number;
-    }) => {
+    static getTransactionFromData = (item: TransactionDataType) => {
         return new Transaction({
             id: item._id,
             budgetId: item.budgetId,
-            linkId: item.linkId,
+            linkId: item.linkId || undefined,
             isCurrent: item.isCurrent,
             isExpense: item.isExpense,
             titles: item.title,

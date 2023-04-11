@@ -6,14 +6,9 @@ import Overlay from '../components/UI/Overlay';
 import { budgetActions } from '../store/budget';
 import { categoryActions } from '../store/category';
 import { userActions } from '../store/user';
-import {
-    BudgetDataType,
-    getBudgetById,
-    getBudgetList,
-} from '../util/api/budgetAPI';
+import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
-import { transactionActions } from '../store/transaction';
 import { useAppDispatch } from '../hooks/redux-hook';
 
 function Auth() {
@@ -44,14 +39,8 @@ function Auth() {
         dispatch(categoryActions.setCategories(user.categories));
 
         // set default budget data
-        const { budget, transactions } = await getBudgetById(defaultBudgetId);
-        dispatch(budgetActions.setBudget(budget));
-        dispatch(
-            transactionActions.setTransactions({
-                transactions,
-                isDefault: true,
-            })
-        );
+        const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);
+        dispatch(budgetActions.setBudget(defaultBudget));
 
         // set budget data
         const { budgets } = await getBudgetList();

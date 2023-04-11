@@ -1,4 +1,5 @@
 import { BudgetCategoryType, UpdatedBudgetCategoryType } from './categoryAPI';
+import { TransactionDataType } from './transactionAPI';
 
 const { DURING_SERVER } = import.meta.env;
 
@@ -53,7 +54,7 @@ export const getBudgetById = async (id: string) => {
     // TODO: transactionsDataType 정의
     return response.json() as Promise<{
         budget: BudgetDataType;
-        transactions: any;
+        transactions: TransactionDataType[];
     }>;
 };
 

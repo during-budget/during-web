@@ -156,12 +156,7 @@ function CategoryPlan(props: {
         // category - set transactions updated category
         if (excluded.length > 0) {
             const { transactions } = await getTransactions(props.budgetId);
-            dispatch(
-                transactionActions.setBudgetTransactions({
-                    budgetId: props.budgetId,
-                    transactions,
-                })
-            );
+            dispatch(transactionActions.setTransactions(transactions));
         }
 
         // close

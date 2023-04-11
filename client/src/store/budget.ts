@@ -4,6 +4,7 @@ import Category from '../models/Category';
 import { BudgetDataType } from '../util/api/budgetAPI';
 import Transaction from '../models/Transaction';
 import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
+import { TransactionDefaultType } from './transaction';
 
 const initialState: {
     [id: string]: Budget;
@@ -175,7 +176,7 @@ const budgetSlice = createSlice({
             state,
             action: PayloadAction<{
                 budgetId: string;
-                prev: Transaction;
+                prev: TransactionDefaultType;
                 next: Transaction;
             }>
         ) {
