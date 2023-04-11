@@ -163,7 +163,8 @@ export const updateV2 = async (req: Request, res: Response) => {
       isCurrent: transaction.isCurrent !== req.body.isCurrent,
       isExpense: false,
       linkedPaymentMethodId:
-        transaction.linkedPaymentMethodId !== req.body?.linkedPaymentMethodId,
+        transaction.linkedPaymentMethodId?.toString() !==
+        req.body?.linkedPaymentMethodId,
       user: false,
     };
 
@@ -423,20 +424,20 @@ export const updateV2 = async (req: Request, res: Response) => {
             budget.incomeScheduled -= transaction.amount;
             budget.incomeCurrent += transaction.amount;
           }
+
+          if (transaction.linkedPaymentMethodId) {
+            const isUserUpdated = user.execPM({
+              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+              amount: transaction.amount,
+              isExpense: transaction.isExpense!,
+            });
+            if (isUserUpdated) isUpdated["user"] = true;
+          }
         }
 
         transaction.isCurrent = req.body.isCurrent;
         budget.categories[categoryIdx] = category;
-
-        if (transaction.linkedPaymentMethodId) {
-          const isUserUpdated = user.execPM({
-            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-            linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-            amount: transaction.amount,
-            isExpense: transaction.isExpense!,
-          });
-          if (isUserUpdated) isUpdated["user"] = true;
-        }
       }
 
       budget.isModified("categories");
