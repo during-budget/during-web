@@ -1,7 +1,7 @@
 import classes from './UserCategorySetting.module.css';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import Overlay from '../../UI/Overlay';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import Category from '../../../models/Category';
 import UserCategoryList from './UserCategoryList';
