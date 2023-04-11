@@ -79,18 +79,5 @@ export const loader = async (data: LoaderFunctionArgs) => {
 
     if (!params.budgetId)
         throw new Error('Invalid params: budgetId not exists');
-
-    //     const { budget: budgetData, transactions: transactionData } =
-    //         await getBudgetById(params.budgetId);
-    // const id = params.budgetId;
-    //     const budget = BudgetModel.getBudgetFromData(budgetData);
-    //     const transactions = transactionData.map((item: any) =>
-    //         Transaction.getTransactionFromData(item)
-    //     );
-
-    //     return {
-    //         id,
-    //         data: await getBudgetById(params.budgetId);
-    //     };
     return getBudgetById(params.budgetId);
 };

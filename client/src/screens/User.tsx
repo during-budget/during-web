@@ -14,7 +14,9 @@ function User() {
     const dispatch = useAppDispatch();
 
     const [showCategory, setShowCategory] = useState(false);
-    const { email, userName } = useAppSelector((state) => state.user.info);
+    const { email, userName, defaultBudgetId } = useAppSelector(
+        (state) => state.user.info
+    );
 
     const settings = [
         {
@@ -24,7 +26,7 @@ function User() {
                     icon: '💰',
                     label: '기본 예산 설정',
                     onClick: () => {
-                        navigate('/user/default');
+                        navigate(`/user/default/${defaultBudgetId}`);
                     },
                 },
                 {

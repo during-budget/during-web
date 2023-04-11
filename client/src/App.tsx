@@ -57,8 +57,9 @@ const router = createBrowserRouter([
                         element: <User />,
                     },
                     {
-                        path: '/user/default',
+                        path: '/user/default/:budgetId',
                         element: <DefaultBudget />,
+                        loader: budgetLoader,
                     },
                 ],
             },
