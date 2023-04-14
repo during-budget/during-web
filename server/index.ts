@@ -71,7 +71,8 @@ app.use(passport.initialize());
 app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
 
 const combined =
-  ':remote-addr - :remote-user ":method :url HTTP/:http-version" ":status :response-time ms" ":referrer" ":user-agent"';
+  ':remote-addr - :remote-user ":method :url HTTP/:http-version" :body ":status :response-time ms" ":referrer" ":user-agent"';
+morgan.token("body", (req: Request, res: Response) => JSON.stringify(req.body));
 app.use(morgan(combined, { stream }));
 
 routers.forEach((router: string) => {
