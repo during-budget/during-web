@@ -4,6 +4,8 @@ import { HydratedDocument, Types } from "mongoose";
 import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
+import { logger } from "../log/logger";
+
 // budget controller
 type budgetKeys =
   | "expenseScheduled"
@@ -112,6 +114,7 @@ export const validate = async (req: Request, res: Response) => {
       .status(200)
       .send({ invalid, b, amountPlanned, amountScheduled, amountCurrent });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -148,6 +151,7 @@ export const fix = async (req: Request, res: Response) => {
 
     return res.status(200).send({ budget });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -219,6 +223,7 @@ export const create = async (req: Request, res: Response) => {
 
     return res.status(200).send({ budget });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -282,6 +287,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
 
     return res.status(200).send({ budget, transactions });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -466,6 +472,7 @@ export const updateCategoriesV2 = async (req: Request, res: Response) => {
       excluded,
     });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -523,6 +530,7 @@ export const updateCategoryAmountPlanned = async (
 
     return res.status(200).send({ budget });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -561,6 +569,7 @@ export const updateField = async (req: Request, res: Response) => {
 
     return res.status(200).send({ budget });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -621,6 +630,7 @@ export const find = async (req: Request, res: Response) => {
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ budgets });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -641,6 +651,7 @@ export const remove = async (req: Request, res: Response) => {
     await budget.remove();
     return res.status(200).send();
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };

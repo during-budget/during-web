@@ -5,6 +5,8 @@ import { Types } from "mongoose";
 import { ICard } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
+import { logger } from "../log/logger";
+
 export const update = async (req: Request, res: Response) => {
   try {
     /* validate */
@@ -137,6 +139,7 @@ export const update = async (req: Request, res: Response) => {
     await user.saveReqUser();
     return res.status(200).send({ cards: user.cards });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -149,6 +152,7 @@ export const find = async (req: Request, res: Response) => {
       cards: user.cards,
     });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };

@@ -13,6 +13,8 @@ import { client } from "../redis";
 import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 
+import { logger } from "../log/logger";
+
 //_____________________________________________________________________________
 
 /**
@@ -40,6 +42,7 @@ export const register = async (req: Request, res: Response) => {
     ]);
     return res.status(200).send({ message: "Verification code is sent" });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -98,6 +101,7 @@ export const loginGuest = async (req: Request, res: Response) => {
       }
     )(req, res);
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
