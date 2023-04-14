@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "../log/logger";
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
+    logger.info(`${req.user._id}`);
     next();
   } else {
     res.status(403).send({ message: "You are not logged in." });
