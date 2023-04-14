@@ -21,6 +21,10 @@ import { client } from "./redis";
 import passport from "passport";
 import { config as passportConfig } from "./passport";
 
+/* logger */
+import morgan from "morgan";
+import { stream } from "./log/logger";
+
 const app: Express = express();
 
 passportConfig();
@@ -65,6 +69,10 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
+
+const combined =
+  ':remote-addr - :remote-user ":method :url HTTP/:http-version" ":status :response-time ms" ":referrer" ":user-agent"';
+app.use(morgan(combined, { stream }));
 
 routers.forEach((router: string) => {
   app.use("/api/" + router, require("./routes/" + router));

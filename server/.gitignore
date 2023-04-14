@@ -3,3 +3,4 @@ package-lock.json
 .env*
 /sessions
 /client_test
+/logs
