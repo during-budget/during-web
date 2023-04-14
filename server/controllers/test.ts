@@ -6,6 +6,8 @@ import { Transaction, ITransaction } from "../models/Transaction";
 import nodeMailer from "nodemailer";
 import { Model } from "mongoose";
 
+import { logger } from "../log/logger";
+
 // test controller
 
 const sendMail = async () => {
@@ -44,6 +46,7 @@ export const hello = async (req: Request, res: Response) => {
     await sendMail();
     return res.status(200).send({ message: "hello world!" });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -60,6 +63,7 @@ export const dataList = async (req: Request, res: Response) => {
     const transactions = await Transaction.find();
     return res.status(200).send({ users, budgets, transactions });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -76,6 +80,7 @@ export const create = async (req: Request, res: Response) => {
     await testData.save();
     return res.status(200).send({ testData });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -93,6 +98,7 @@ export const find = async (req: Request, res: Response) => {
       return res.status(404).send({ message: "testData not found" });
     return res.status(200).send({ testData });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -116,6 +122,7 @@ export const update = async (req: Request, res: Response) => {
       return res.status(404).send({ message: "testData not found" });
     return res.status(200).send({ testData });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -130,6 +137,7 @@ export const remove = async (req: Request, res: Response) => {
     await Test.findByIdAndRemove(req.params._id);
     return res.status(200).send();
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };

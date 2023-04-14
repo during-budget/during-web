@@ -4,6 +4,8 @@ import { Types } from "mongoose";
 
 import { IPaymentMethod } from "../models/User";
 
+import { logger } from "../log/logger";
+
 export const update = async (req: Request, res: Response) => {
   try {
     /* validate */
@@ -48,6 +50,7 @@ export const update = async (req: Request, res: Response) => {
     await user.saveReqUser();
     return res.status(200).send({ paymentMethods: user.paymentMethods });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -60,6 +63,7 @@ export const find = async (req: Request, res: Response) => {
       paymentMethods: user.paymentMethods,
     });
   } catch (err: any) {
+    logger.error(err.message);
     return res.status(500).send({ message: err.message });
   }
 };

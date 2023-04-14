@@ -3,8 +3,8 @@ const router = express.Router();
 import { isLoggedIn } from "../middleware/auth";
 import * as budgets from "../controllers/budgets";
 
-router.get("/:_id/validate", isLoggedIn, budgets.validate);
-router.put("/:_id/fix", isLoggedIn, budgets.fix);
+router.get("/:_id/validate", budgets.validate);
+router.put("/:_id/fix", budgets.fix);
 
 router.post("/", isLoggedIn, budgets.create);
 router.post("/basic", isLoggedIn, budgets.createWithBasic);
