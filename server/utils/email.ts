@@ -17,7 +17,7 @@ export const sendEmail = async (props: {
   });
 
   const mailOptions = {
-    from: "During Team",
+    from: `During <${process.env.NODEMAILER_USER}>`,
     to: props.to,
     subject: props.subject,
     html: props.html,
