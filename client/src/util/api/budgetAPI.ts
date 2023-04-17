@@ -20,6 +20,34 @@ export interface BudgetDataType {
     categories: BudgetCategoryType[];
 }
 
+export const createBudgetFromBasic = async (year: number, month: number) => {
+    const url = `${BASE_URL}/basic`;
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+            year,
+            month,
+            title: month + '월',
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Response(
+            `Failed to create budgets from basic.\n${
+                data.message ? data.message : ''
+            }`,
+            { status: response.status }
+        );
+    }
+
+    return response.json() as Promise<{ budget: BudgetDataType }>;
+};
+
 export const getBudgetList = async () => {
     const url = BASE_URL;
     const response = await fetch(url, {
