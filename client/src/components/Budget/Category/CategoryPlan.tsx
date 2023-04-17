@@ -25,6 +25,7 @@ function CategoryPlan(props: {
     title: string;
     total: any;
     categories: Category[];
+    isDefault?: boolean;
 }) {
     const dispatch = useAppDispatch();
 
@@ -38,7 +39,7 @@ function CategoryPlan(props: {
     // Amount state
     const [totalPlan, setTotalPlan] = useState<number>(-1);
     const [categoryPlans, setCategoryPlans] = useState<
-        { id: string; icon: string; title: string; plan: number }[]
+        { id: string; icon: string; title: string; amount: Amount }[]
     >([]);
     const [leftAmount, setLeftAmountState] = useState(0);
     const [defaultCategory, setDefaultCategory] = useState<Category | null>(
@@ -69,7 +70,7 @@ function CategoryPlan(props: {
                             id,
                             icon,
                             title,
-                            plan: amount?.planned || 0,
+                            amount,
                         };
 
                         // NOTE: 이미 존재하는 경우(편집중인 경우) 기존 값 사용
@@ -78,7 +79,7 @@ function CategoryPlan(props: {
                         );
 
                         if (isExist && !isOpen) {
-                            newItem.plan = isExist.plan;
+                            newItem.amount = isExist.amount;
                         }
 
                         return [...prev, newItem];
@@ -98,7 +99,7 @@ function CategoryPlan(props: {
 
     const setLeftAmount = () => {
         const totalCategoryPlan = categoryPlans.reduce(
-            (prev, curr) => prev + curr.plan,
+            (prev, curr) => prev + curr.amount.planned,
             0
         );
         setLeftAmountState(totalPlan - totalCategoryPlan);
@@ -132,10 +133,10 @@ function CategoryPlan(props: {
 
         // category - request
         const categoryReqData = categoryPlans.map((item) => {
-            const { id, plan } = item;
+            const { id, amount } = item;
             return {
                 categoryId: id,
-                amountPlanned: plan,
+                amountPlanned: amount.planned,
             };
         });
 
@@ -177,14 +178,24 @@ function CategoryPlan(props: {
 
     // Handler for category plan
     const changeCategoryPlanHandler = (i: number, value: number) => {
-        const newPlan = { ...categoryPlans[i], plan: value };
+        const prevPlan = categoryPlans[i];
+        const prevAmount = prevPlan.amount;
+
+        const newAmount = new Amount(
+            prevAmount.current,
+            prevAmount.scheduled,
+            value
+        );
+
+        const newPlan = { ...prevPlan, amount: newAmount };
+
         setCategoryPlans(
             (
                 prev: {
                     id: string;
                     icon: string;
                     title: string;
-                    plan: number;
+                    amount: Amount;
                 }[]
             ) => {
                 if (i === 0) {
@@ -235,7 +246,7 @@ function CategoryPlan(props: {
                         borderRadius="0.4rem"
                         amountData={[
                             ...categoryPlans.map((item) => {
-                                return { label: item.icon, amount: item.plan };
+                                return { label: item.icon, amount: item.amount.planned };
                             }),
                             {
                                 label: defaultCategory?.icon || '',
@@ -252,6 +263,7 @@ function CategoryPlan(props: {
                                 changeCategoryPlanHandler={
                                     changeCategoryPlanHandler
                                 }
+                                isDefault={props.isDefault}
                             />
                         </DragDropContext>
                     </ul>

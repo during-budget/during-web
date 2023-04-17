@@ -41,6 +41,7 @@ function TransactionList({ isDefault }: Props) {
                                 <TransactionItem
                                     key={item.id}
                                     transaction={item}
+                                    isDefault={true}
                                 />
                             ))}
                         </ol>

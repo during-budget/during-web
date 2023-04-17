@@ -13,6 +13,7 @@ function TransactionOption(props: {
     category: Category;
     onSelect?: () => void;
     onClick?: (event?: React.MouseEvent) => void;
+    isDefault?: boolean;
     className?: string;
     contextStyle?: any;
 }) {
@@ -78,6 +79,7 @@ function TransactionOption(props: {
     };
 
     const getDone = !isCurrent &&
+        !props.isDefault &&
         !linkId && {
             name: '거래내역으로 등록',
             action: () => {

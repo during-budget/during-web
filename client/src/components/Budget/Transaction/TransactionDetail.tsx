@@ -1,16 +1,20 @@
-import classes from './TransactionDetail.module.css';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import Amount from '../../../models/Amount';
+import { transactionActions } from '../../../store/transaction';
+import { getNumericDotDateString } from '../../../util/date';
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
 import Overlay from '../../UI/Overlay';
 import Tag from '../../UI/Tag';
-import TransactionOption from './TransactionOption';
-import { getNumericDotDateString } from '../../../util/date';
-import Amount from '../../../models/Amount';
 import OverAmountMsg from './OverAmountMsg';
-import { transactionActions } from '../../../store/transaction';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import classes from './TransactionDetail.module.css';
+import TransactionOption from './TransactionOption';
 
-function TransactionDetail() {
+interface Props {
+    isDefault?: boolean;
+}
+
+function TransactionDetail({ isDefault }: Props) {
     const dispatch = useAppDispatch();
 
     const { isOpen, transaction, category } = useAppSelector(
@@ -110,6 +114,7 @@ function TransactionDetail() {
                         transaction={transaction}
                         category={category}
                         onSelect={closeHandler}
+                        isDefault={isDefault}
                         className={classes.option}
                         contextStyle={{
                             bottom: '0.5rem',

@@ -1,10 +1,10 @@
 import { Droppable } from 'react-beautiful-dnd';
-import Amount from '../../../models/Amount';
 import CategoryPlanItem from './CategoryPlanItem';
 
 function CategoryPlanList(props: {
     categoryPlans: any;
     changeCategoryPlanHandler: any;
+    isDefault?: boolean;
 }) {
     return (
         <Droppable droppableId="category-plan-droppable">
@@ -21,8 +21,9 @@ function CategoryPlanList(props: {
                             id={item.id}
                             icon={item.icon}
                             title={item.title}
-                            plan={Amount.getAmountStr(item.plan)}
+                            amount={item.amount}
                             onChange={props.changeCategoryPlanHandler}
+                            isDefault={props.isDefault}
                         />
                     ))}
                     {provided.placeholder}

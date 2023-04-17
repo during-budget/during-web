@@ -1,12 +1,15 @@
-import classes from './DefaultBudget.module.css';
-import TransactionForm from '../../Budget/Transaction/TransactionForm';
-import TransactionList from '../../Budget/Transaction/TransactionList';
-import NavButton from '../../UI/NavButton';
+import { useEffect } from 'react';
 import { useLoaderData, useLocation } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import { loader as BudgetLoader } from '../../../screens/Budget';
-import { useEffect } from 'react';
 import { transactionActions } from '../../../store/transaction';
+import CategoryPlan from '../../Budget/Category/CategoryPlan';
+import TransactionDetail from '../../Budget/Transaction/TransactionDetail';
+import TransactionForm from '../../Budget/Transaction/TransactionForm';
+import TransactionList from '../../Budget/Transaction/TransactionList';
+import NavButton from '../../UI/NavButton';
+import classes from './DefaultBudget.module.css';
+import DefaultStatus from './DefaultStatus';
 
 function DefaultBudget() {
     const location = useLocation();
@@ -23,14 +26,12 @@ function DefaultBudget() {
     // get budget
     const {
         id,
+        title,
         total,
         categories: categoryObj,
     } = budgets[loaderData.budget._id];
 
-    const { expense, income } = total;
-
-    const expenseAmount = expense.scheduled;
-    const incomeAmount = income.scheduled;
+    const categories = Object.values(categoryObj);
 
     //  set transactions
     useEffect(() => {
@@ -44,12 +45,31 @@ function DefaultBudget() {
                 to={from || '/user'}
                 isNext={false}
             />
-            <section></section>
+            <section className={classes.status}>
+                <h1>{title}</h1>
+                <DefaultStatus
+                    budgetId={id}
+                    total={total}
+                    categories={categories}
+                />
+            </section>
             <hr />
-            <section>
+            <section className={classes.transactions}>
                 <TransactionList isDefault={true} />
                 <TransactionForm budgetId={id} isDefault={true} />
+                <TransactionDetail isDefault={true} />
             </section>
+            {/* Overlay */}
+            <CategoryPlan
+                budgetId={id}
+                categories={categories}
+                total={{
+                    expense: total.expense.planned,
+                    income: total.income.planned,
+                }}
+                title={title}
+                isDefault={true}
+            />
         </main>
     );
 }
