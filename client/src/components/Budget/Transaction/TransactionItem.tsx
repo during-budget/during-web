@@ -8,7 +8,10 @@ import OverAmountMsg from './OverAmountMsg';
 import { transactionActions } from '../../../store/transaction';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
-function TransactionItem(props: { transaction: Transaction }) {
+function TransactionItem(props: {
+    transaction: Transaction;
+    isDefault?: boolean;
+}) {
     const dispatch = useAppDispatch();
 
     const {
@@ -72,6 +75,7 @@ function TransactionItem(props: { transaction: Transaction }) {
                             className={classes.option}
                             transaction={props.transaction}
                             category={category!}
+                            isDefault={props.isDefault}
                         />
                     </div>
                 </div>

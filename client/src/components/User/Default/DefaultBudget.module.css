@@ -13,7 +13,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 6rem;
-    height: 6rem;
+    width: 12vh;
+    height: 12vh;
     font-size: 1.5rem;
+}
+
+.status {
+    text-align: center;
+}
+
+.status > h1 {
+    margin-bottom: 4vh;
+}
+
+.transactions {
+    margin-top: 2vh;
 }

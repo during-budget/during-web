@@ -26,7 +26,7 @@
 }
 
 .content input {
-    width: 40vw;
+    width: 35vw;
     height: 5vh;
     text-align: right;
     scroll-margin: 5vh;
@@ -36,4 +36,28 @@
     content: '\f0c9';
     font: var(--fa-font-solid);
     font-size: 0.5rem;
+}
+
+.title {
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.detail {
+    width: 100%;
+    font-size: var(--size-8);
+}
+
+.detail p {
+    display: flex;
+    gap: 2vw;
+    line-height: 1.125;
+}
+
+.detail .label {
+    font-weight: 500;
+}
+
+.detail .amount {
+    font-weight: 200;
 }

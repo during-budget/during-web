@@ -1,18 +1,19 @@
-import classes from './CategoryPlanItem.module.css';
-import Icon from '../../UI/Icon';
-import { useEffect, useState } from 'react';
-import Amount from '../../../models/Amount';
+import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import Amount from '../../../models/Amount';
+import Icon from '../../UI/Icon';
+import classes from './CategoryPlanItem.module.css';
 
 function CategoryPlanItem(props: {
     id: string;
     idx: number;
     icon: string;
     title: string;
-    plan: string;
+    amount: Amount;
     onChange?: (i: number, value: number) => void;
+    isDefault?: boolean;
 }) {
-    const [plan, setPlan] = useState(props.plan);
+    const [plan, setPlan] = useState(Amount.getAmountStr(props.amount.planned));
 
     // Change - Set number
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +67,33 @@ function CategoryPlanItem(props: {
                         <div className={classes.content}>
                             <div className={classes.info}>
                                 <Icon>{props.icon}</Icon>
-                                <p>{props.title}</p>
+                                <div>
+                                    <p className={classes.title}>
+                                        {props.title}
+                                    </p>
+                                    <div className={classes.detail}>
+                                        <p>
+                                            <span className={classes.label}>
+                                                예정
+                                            </span>
+                                            <span className={classes.amount}>
+                                                {props.amount.getScheduledStr()}
+                                            </span>
+                                        </p>
+                                        {!props.isDefault && (
+                                            <p>
+                                                <span className={classes.label}>
+                                                    현재
+                                                </span>
+                                                <span
+                                                    className={classes.amount}
+                                                >
+                                                    {props.amount.getCurrentStr()}
+                                                </span>
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                             {/* TODO: number input으로 대체 */}
                             <input
