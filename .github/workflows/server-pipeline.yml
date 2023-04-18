@@ -5,7 +5,7 @@ on:
     branches: [server]
 
 jobs:
-  backend-CI:
+  server-CI:
     name: server-CI
     runs-on: ubuntu-latest
 
@@ -38,8 +38,9 @@ jobs:
       # .env 파일 생성
       - name: Set .env File
         run: |
-          cd backend
+          cd server
           echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env
+          echo "CLIENT= ${{secrets.CLIENT}}" >> .env
           echo "DB_URL= ${{secrets.DB_URL}}" >> .env
           echo "REDIS_URL = ${{secrets.REDIS_URL}}" >> .env
           echo "CRYPTO_KEY= ${{secrets.CRYPTO_KEY}}" >> .env
@@ -69,10 +70,18 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  backend-CD:
-    name: backend-CD
-    needs: backend-CI
-    runs-on: [self-hosted, label-go] # AWS ./configure에서 사용할 label명
+      # 디스코드 알림
+      - name: Send Discord Notification
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SERVER }}
+          DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+        if: always() # Pick up events even if the job fails or is canceled.
+
+  server-CD:
+    name: server-CD
+    needs: server-CI
+    runs-on: [self-hosted]
 
     steps:
       # 체크아웃
@@ -103,3 +112,11 @@ jobs:
         run: |
           docker image prune -f
           docker images
+
+      # 디스코드 알림
+      - name: Send Discord Notification
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SERVER }}
+          DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+        if: always() # Pick up events even if the job fails or is canceled.
