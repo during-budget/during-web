@@ -1,0 +1,65 @@
+name: client-pipeline
+
+on:
+  push:
+    branches: [client]
+
+jobs:
+  client-CI:
+    name: client-CI/CD
+    runs-on: ubuntu-22.04
+    env:
+      CI: false
+
+    steps:
+      # 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 캐시 받아오기
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-master-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+
+      - name: Set .env File
+        run: |
+          cd client
+          echo "DURING_SERVER=${{secrets.DURING_SERVER}}" >> .env
+
+      - name: Install Dependencies and Build
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLIENT_S3_ACCESSKEYID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLIENT_S3_SECRETACCESSKEY }}
+          AWS_REGION: ${{ secrets.CLIENT_S3_REGION }}
+
+        run: |
+          cd client
+          aws s3 sync \
+          --cache-control private,max-age=0,must-revalidate \
+          --include "*.html" --include "*.json" \
+          --delete \
+          ./dist ${{secrets.CLIENT_S3_BUCKET}} 
+          aws s3 sync \
+          --cache-control private,max-age=31536000 \
+          --exclude "*.html" --exclude "*.json" \
+          --delete \
+          ./dist ${{secrets.CLIENT_S3_BUCKET}} \
+
+      # 디스코드 알림
+        - name: Send Discord Notification
+          uses: Ilshidur/action-discord@0.3.2
+          env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_CLIENT }}
+            DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+          if: always() # Pick up events even if the job fails or is canceled.
