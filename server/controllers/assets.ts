@@ -14,7 +14,7 @@ export const update = async (req: Request, res: Response) => {
       return res.status(409).send({ message: "field 'assets' is required" });
 
     const user = req.user!;
-    if (!user.assets) user.assets = [];
+    if (!user.assets) user.assets = new Types.DocumentArray([]);
 
     const assetDict: { [key: string]: IAsset } = Object.fromEntries(
       user.assets.map((asset: any) => [asset._id, asset.toObject()])

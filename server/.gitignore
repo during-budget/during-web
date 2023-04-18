@@ -4,3 +4,4 @@ package-lock.json
 /sessions
 /client_test
 /logs
+/dist

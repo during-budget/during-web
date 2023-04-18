@@ -15,7 +15,7 @@ export const update = async (req: Request, res: Response) => {
         .send({ message: "field 'paymentMethods' is required" });
 
     const user = req.user!;
-    if (!user.paymentMethods) user.paymentMethods = [];
+    if (!user.paymentMethods) user.paymentMethods = new Types.DocumentArray([]);
 
     const _paymentMethods: Types.DocumentArray<IPaymentMethod> =
       new Types.DocumentArray([]);

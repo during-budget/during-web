@@ -100,11 +100,11 @@ export const updateV2 = async (req: Request, res: Response) => {
       if (!category.isDefault) removed.push(category);
     }
 
-    user.categories = [
+    user.categories = new Types.DocumentArray([
       ..._categories,
       defaultExpenseCategory,
       defaultIncomeCategory,
-    ];
+    ]);
 
     await user.saveReqUser();
 
