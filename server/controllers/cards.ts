@@ -14,7 +14,7 @@ export const update = async (req: Request, res: Response) => {
       return res.status(409).send({ message: "field 'cards' is required" });
 
     const user = req.user!;
-    if (!user.cards) user.cards = [];
+    if (!user.cards) user.cards = new Types.DocumentArray([]);
 
     const cardDict: { [key: string]: ICard } = Object.fromEntries(
       user.cards.map((card: any) => [card._id, card.toObject()])
@@ -134,7 +134,7 @@ export const update = async (req: Request, res: Response) => {
         if (pm.type === "asset") pmAsset.push(pm);
         else pmCard.push(pm);
       }
-      user.paymentMethods = [...pmCard, ...pmAsset];
+      user.paymentMethods = new Types.DocumentArray([...pmCard, ...pmAsset]);
     }
     await user.saveReqUser();
     return res.status(200).send({ cards: user.cards });
