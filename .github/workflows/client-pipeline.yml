@@ -5,11 +5,9 @@ on:
     branches: [client]
 
 jobs:
-  client-CI:
-    name: client-CI/CD
+  client-CI_CD:
+    name: client-CI_CD
     runs-on: ubuntu-22.04
-    env:
-      CI: false
 
     steps:
       # 체크아웃
@@ -57,9 +55,9 @@ jobs:
           ./dist ${{secrets.CLIENT_S3_BUCKET}} \
 
       # 디스코드 알림
-        - name: Send Discord Notification
-          uses: Ilshidur/action-discord@0.3.2
-          env:
-            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_CLIENT }}
-            DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
-          if: always() # Pick up events even if the job fails or is canceled.
+      - name: Send Discord Notification
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_CLIENT }}
+          DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+        if: always() # Pick up events even if the job fails or is canceled.
