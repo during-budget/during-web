@@ -1,5 +1,16 @@
 /* dotenv, express */
-import "dotenv/config";
+import * as dotenv from "dotenv";
+const { resolve } = require("path");
+
+console.log("NODE_ENV: ", process.env.NODE_ENV);
+if (process.env.NODE_ENV?.trim() == "development") {
+  dotenv.config({ path: __dirname + "/.env.development" });
+} else if (process.env.NODE_ENV?.trim() == "production") {
+  dotenv.config({ path: resolve(__dirname, "../.env.production") });
+} else {
+  dotenv.config();
+}
+
 import express, { Express, Request, Response, NextFunction } from "express";
 import { AddressInfo } from "net";
 
