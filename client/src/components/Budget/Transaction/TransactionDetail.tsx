@@ -52,7 +52,6 @@ function TransactionDetail({ isDefault }: Props) {
         <Overlay
             className={`${classes.container} ${isOpen ? classes.open : ''}`}
             isOpen={isOpen}
-            isShowBackdrop={true}
             closeHandler={closeHandler}
         >
             <span className={classes.type}>
