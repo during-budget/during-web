@@ -5,20 +5,22 @@ import transactionReducer from './transaction';
 import uiReducer from './ui';
 import userReducer from './user';
 import userCategoryReducer from './user-category';
+import totalCategoryReducer from './total';
 
 const store = configureStore({
-    reducer: {
-        user: userReducer,
-        userCategory: userCategoryReducer,
-        budget: budgetReducer,
-        budgetCategory: budgetCategoryReducer,
-        transaction: transactionReducer,
-        ui: uiReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: false,
-        }),
+  reducer: {
+    user: userReducer,
+    userCategory: userCategoryReducer,
+    budget: budgetReducer,
+    total: totalCategoryReducer,
+    budgetCategory: budgetCategoryReducer,
+    transaction: transactionReducer,
+    ui: uiReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
