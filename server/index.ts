@@ -41,7 +41,7 @@ const app: Express = express();
 passportConfig();
 
 mongoose
-  .connect(process.env.DB_URL!)
+  .connect(process.env.DB_URL)
   .then(() => console.log("MongoDB connection is made."))
   .catch((err) => console.log(err));
 
@@ -50,7 +50,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.CLIENT!, "http://localhost:3001"],
+    origin: [process.env.CLIENT, "http://localhost:3001"],
     credentials: true,
   })
 );
@@ -59,7 +59,7 @@ app.use(
   session({
     resave: false, // req마다 session 새로 저장
     saveUninitialized: false, // uninitialized session을 저장함. false인 것이 리소스 활용 측면에서 유리하지만 rolling을 사용하려면 true가 되어야 한다.
-    secret: process.env.SESSION_KEY!.trim(),
+    secret: process.env.SESSION_KEY.trim(),
     cookie: {
       httpOnly: true, // 브라우저에서 쿠키값에 대한 접근을 하지 못하게 막는다.
       secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
@@ -94,7 +94,7 @@ app.get("/api/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send({ message: "hello world!" });
 });
 
-app.set("port", process.env.SERVER_PORT!.trim() ?? 3000);
+app.set("port", process.env.SERVER_PORT.trim() ?? 3000);
 
 const server = app.listen(app.get("port"), function () {
   const { port } = server.address() as AddressInfo;

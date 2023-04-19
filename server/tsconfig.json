@@ -10,5 +10,6 @@
     "esModuleInterop": true,
     "jsx": "react",
     "typeRoots": ["./node_modules/@types", "./@types"]
-  }
+  },
+  "include": ["**/*.ts", "**/*.d.ts"]
 }
