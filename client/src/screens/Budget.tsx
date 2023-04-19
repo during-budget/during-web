@@ -11,73 +11,66 @@ import { useEffect } from 'react';
 import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import { totalActions } from '../store/total';
+import { budgetCategoryActions } from '../store/budget-category';
 
 function Budget() {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  // get loaderData
+  const { id, data } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-    const budgets = useAppSelector((state) => state.budget);
+  // set loaderData
+  dispatch(totalActions.setTotalFromBudgetData(data.budget));
+  dispatch(budgetCategoryActions.setCategoryFromBudgetData(data.budget));
+  dispatch(transactionActions.setTransactions(data.transactions));
 
-    // get budget
-    const {
-        id,
-        title,
-        date,
-        total,
-        categories: categoryObj,
-    } = budgets[loaderData.budget._id];
+  // get budget Data
+  const budgets = useAppSelector((state) => state.budget);
+  const { title, date } = budgets[id];
 
-    // TODO: Budget 객체가 첫 로드 한번만 실행됨 보장할 것.
-    const categories = Object.values(categoryObj);
-
-    useEffect(() => {
-        // set transactions
-        dispatch(transactionActions.setTransactions(loaderData.transactions));
-    }, [loaderData, categoryObj]);
-
-    return (
-        <>
-            <BudgetHeader
-                startDate={new Date(date.start)}
-                endDate={new Date(date.end)}
-                title={title}
-            />
-            <main>
-                {/* Status */}
-                <Carousel
-                    id="status"
-                    initialIndex={1}
-                    itemClassName={classes.status}
-                >
-                    <DateStatus title={title} date={date} />
-                    <TotalStatus budgetId={id} total={total} />
-                    <CategoryStatus budgetId={id} categories={categories} />
-                </Carousel>
-                <hr />
-                {/* Transactions */}
-                <TransactionLayout budgetId={id} date={date} />
-                {/* Overlays */}
-                <CategoryPlan
-                    budgetId={id}
-                    categories={categories}
-                    total={{
-                        expense: total.expense.planned,
-                        income: total.income.planned,
-                    }}
-                    title={title}
-                />
-            </main>
-        </>
-    );
+  return (
+    <>
+      <BudgetHeader
+        startDate={new Date(date.start)}
+        endDate={new Date(date.end)}
+        title={title}
+      />
+      <main>
+        {/* Status */}
+        {/* TODO: initialIndex 1로 바꾸기 */}
+        <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
+          <DateStatus title={title} date={date} />
+          <TotalStatus budgetId={id} />
+          <CategoryStatus budgetId={id} />
+        </Carousel>
+        <hr />
+        {/* Transactions */}
+        <TransactionLayout budgetId={id} date={date} />
+        {/* Overlays */}
+        {/* <CategoryPlan
+          budgetId={id}
+          categories={categories}
+          total={{
+            expense: total.expense.planned,
+            income: total.income.planned,
+          }}
+          title={title}
+        /> */}
+      </main>
+    </>
+  );
 }
 
 export default Budget;
 
 export const loader = async (data: LoaderFunctionArgs) => {
-    const { params } = data;
+  const { params } = data;
 
-    if (!params.budgetId)
-        throw new Error('Invalid params: budgetId not exists');
-    return getBudgetById(params.budgetId);
+  if (!params.budgetId) throw new Response('Budget Not Found', { status: 404 });
+
+  return {
+    id: params.budgetId,
+    data: await getBudgetById(params.budgetId),
+  };
 };
