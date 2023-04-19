@@ -1,15 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user';
 import budgetReducer from './budget';
-import categoryReducer from './category';
+import budgetCategoryReducer from './budget-category';
 import transactionReducer from './transaction';
 import uiReducer from './ui';
+import userReducer from './user';
+import userCategoryReducer from './user-category';
 
 const store = configureStore({
     reducer: {
         user: userReducer,
+        userCategory: userCategoryReducer,
         budget: budgetReducer,
-        category: categoryReducer,
+        budgetCategory: budgetCategoryReducer,
         transaction: transactionReducer,
         ui: uiReducer,
     },

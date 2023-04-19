@@ -4,7 +4,7 @@ import EmailForm from '../components/Auth/EmailForm';
 import SNSForm from '../components/Auth/SNSForm';
 import Overlay from '../components/UI/Overlay';
 import { budgetActions } from '../store/budget';
-import { categoryActions } from '../store/category';
+import { categoryActions } from '../store/user-category';
 import { userActions } from '../store/user';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
