@@ -27,7 +27,7 @@ function TransactionItem(props: {
         overAmount,
     } = props.transaction;
 
-    const categoryObj = useAppSelector((state) => state.category);
+    const categoryObj = useAppSelector((state) => state.userCategory);
     const category = categoryObj[categoryId];
 
     const liClass = [

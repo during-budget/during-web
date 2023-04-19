@@ -7,7 +7,7 @@ import Category from '../../../models/Category';
 import UserCategoryList from './UserCategoryList';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { updateCategories } from '../../../util/api/categoryAPI';
-import { categoryActions } from '../../../store/category';
+import { categoryActions } from '../../../store/user-category';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function UserCategorySetting(props: {
@@ -16,7 +16,7 @@ function UserCategorySetting(props: {
 }) {
     const dispatch = useAppDispatch();
 
-    const categoryObj = useAppSelector((state) => state.category);
+    const categoryObj = useAppSelector((state) => state.userCategory);
     const allCategories = useMemo(() => Object.values(categoryObj), [categoryObj]);
 
     const [isExpense, setIsExpense] = useState(true);

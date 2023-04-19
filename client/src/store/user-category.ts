@@ -7,7 +7,7 @@ const initialState: {
 } = {};
 
 const categorySlice = createSlice({
-    name: 'category',
+    name: 'user-category',
     initialState,
     reducers: {
         setCategories(state, action: PayloadAction<UserCategoryType[]>) {

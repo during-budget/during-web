@@ -8,7 +8,7 @@ import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Button from '../../UI/Button';
 import EmojiInput from '../Input/EmojiInput';
 import { updateCategories } from '../../../util/api/categoryAPI';
-import { categoryActions } from '../../../store/category';
+import { categoryActions } from '../../../store/user-category';
 import { budgetActions } from '../../../store/budget';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { transactionActions } from '../../../store/transaction';
@@ -26,7 +26,7 @@ function BudgetCategorySetting(props: {
     const dispatch = useAppDispatch();
 
     // Set category data
-    const categoryObj = useAppSelector((state) => state.category);
+    const categoryObj = useAppSelector((state) => state.userCategory);
     const allCategories = Object.values(categoryObj);
 
     const budgets = useAppSelector((state) => state.budget);
