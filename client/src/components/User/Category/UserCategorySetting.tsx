@@ -102,7 +102,6 @@ function UserCategorySetting(props: {
             className={classes.container}
             isOpen={props.isOpen}
             closeHandler={closeHandler}
-            isShowBackdrop={true}
         >
             <form onSubmit={submitHandler}>
                 <div className={classes.header}>

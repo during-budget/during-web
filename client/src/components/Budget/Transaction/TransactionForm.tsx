@@ -274,7 +274,6 @@ function TransactionForm(props: {
             className={containerClass}
             isOpen={mode.isExpand}
             isClip={true}
-            isShowBackdrop={true}
             closeHandler={closeHandler}
         >
             <form onSubmit={submitHandler}>

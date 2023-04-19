@@ -70,7 +70,6 @@ const EmojiInput = React.forwardRef(
                 <Overlay
                     className={classes.overlay}
                     isOpen={open}
-                    isShowBackdrop={true}
                     closeHandler={cancelHandler}
                 >
                     <div className={classes.header}>

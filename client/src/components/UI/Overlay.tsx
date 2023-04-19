@@ -5,7 +5,7 @@ function Overlay(props: {
     isOpen: boolean;
     isClip?: boolean;
     closeHandler?: () => void;
-    isShowBackdrop?: boolean;
+    isHideBackdrop?: boolean;
     children?: React.ReactNode;
     className?: string;
 }) {
@@ -27,7 +27,7 @@ function Overlay(props: {
         >
             <div
                 className={`${classes.backdrop} ${
-                    props.isShowBackdrop ? classes.show : ''
+                    props.isHideBackdrop ? '' : classes.show
                 }`}
                 onClick={props.closeHandler}
             ></div>
