@@ -35,21 +35,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
 
-      # .env 파일 생성
-      - name: Set .env File
+      # .env.production 파일 생성
+      - name: Set .env.production File
         run: |
           cd server
-          echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env
-          echo "CLIENT= ${{secrets.CLIENT}}" >> .env
-          echo "DB_URL= ${{secrets.DB_URL}}" >> .env
-          echo "REDIS_URL = ${{secrets.REDIS_URL}}" >> .env
-          echo "CRYPTO_KEY= ${{secrets.CRYPTO_KEY}}" >> .env
-          echo "CRYPTO_SALT=${{secrets.CRYPTO_SALT}}" >> .env
-          echo "CRYPTO_ALGORITHM=${{secrets.CRYPTO_ALGORITHM}}" >> .env
-          echo "SALT_ROUNDS= ${{secrets.SALT_ROUNDS}}" >> .env
-          echo "SESSION_KEY= ${{secrets.SESSION_KEY}}" >> .env
-          echo "NODEMAILER_USER= ${{secrets.NODEMAILER_USER}}" >> .env
-          echo "NODEMAILER_PASS= ${{secrets.NODEMAILER_PASS}}" >> .env
+          echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env.production
+          echo "CLIENT= ${{secrets.CLIENT}}" >> .env.production
+          echo "DB_URL= ${{secrets.DB_URL}}" >> .env.production
+          echo "REDIS_URL = ${{secrets.REDIS_URL}}" >> .env.production
+          echo "CRYPTO_KEY= ${{secrets.CRYPTO_KEY}}" >> .env.production
+          echo "CRYPTO_SALT=${{secrets.CRYPTO_SALT}}" >> .env.production
+          echo "CRYPTO_ALGORITHM=${{secrets.CRYPTO_ALGORITHM}}" >> .env.production
+          echo "SALT_ROUNDS= ${{secrets.SALT_ROUNDS}}" >> .env.production
+          echo "SESSION_KEY= ${{secrets.SESSION_KEY}}" >> .env.production
+          echo "NODEMAILER_USER= ${{secrets.NODEMAILER_USER}}" >> .env.production
+          echo "NODEMAILER_PASS= ${{secrets.NODEMAILER_PASS}}" >> .env.production
 
       # 빌드 후 푸쉬
       - name: Build and push
