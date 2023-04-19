@@ -13,4 +13,4 @@ RUN npm install
 RUN npm run build
 
 # 컨테이너가 켜지자마자 실행할 명령어 
-CMD ["node", "dist/index.js"]
+CMD ["npm", "run", "prod"]
