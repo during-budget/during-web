@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
@@ -34,16 +28,12 @@ const CategoryInput = React.forwardRef(
     // Set category data
     const storedCategories = useAppSelector((state) => state.budgetCategory);
     const filteredCategories = useMemo(
-      () =>
-        Object.values(storedCategories).filter(
-          (item: Category) => item.isExpense === isExpense
-        ),
+      () => storedCategories.filter((item: Category) => item.isExpense === isExpense),
       [storedCategories]
     );
 
     // Set state
-    const [categories, setCategories] =
-      useState<Category[]>(filteredCategories);
+    const [categories, setCategories] = useState<Category[]>(filteredCategories);
     const [defaultValue, setDefaultValue] = useState(
       props.defaultValue || categories[categories.length - 1]?.id
     );
@@ -66,8 +56,7 @@ const CategoryInput = React.forwardRef(
       const filteredCategories = Object.values(storedCategories).filter(
         (item: Category) => item.isExpense === isExpense
       );
-      const defaultValue =
-        filteredCategories[filteredCategories.length - 1]?.id;
+      const defaultValue = filteredCategories[filteredCategories.length - 1]?.id;
 
       setDefaultValue(defaultValue);
       setCategories(filteredCategories);
@@ -81,9 +70,7 @@ const CategoryInput = React.forwardRef(
 
     // NOTE: TransactionForm의 defaultValue 반영
     useEffect(() => {
-      setDefaultValue(
-        props.defaultValue || categories[categories.length - 1]?.id
-      );
+      setDefaultValue(props.defaultValue || categories[categories.length - 1]?.id);
     }, [props.defaultValue]);
 
     const typeChangeHandler = (isExpense: boolean) => {
@@ -116,9 +103,7 @@ const CategoryInput = React.forwardRef(
       ];
     };
 
-    const [categoryList, setCategoryList] = useState(
-      getCategoryList(categories)
-    );
+    const [categoryList, setCategoryList] = useState(getCategoryList(categories));
 
     // NOTE: 카테고리 목록 변경 이후 change(아이콘 placeholder 세팅) 실행 - select 목록에서 찾을 수 있도록
     useEffect(() => {

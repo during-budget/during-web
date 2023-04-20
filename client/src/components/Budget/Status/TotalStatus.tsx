@@ -20,7 +20,7 @@ function TotalStatus(props: { budgetId: string }) {
 
   // Update plan amount (request & dispatch)
   const updatePlan = async (amountStr: string) => {
-    // convert amouint
+    // convert amount
     const amount = +amountStr;
 
     // send Request
@@ -32,7 +32,7 @@ function TotalStatus(props: { budgetId: string }) {
     // Update total plan state
     dispatch(totalActions.updateTotalAmount({ isExpense, planned: amount }));
     // Update category plan state
-    dispatch(budgetCategoryActions.setCategoryFromBudgetData(budget));
+    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
   };
 
   return (

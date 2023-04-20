@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import Category, { CategoryObjType } from '../models/Category';
+import Category from '../models/Category';
 import { UserCategoryType } from '../util/api/categoryAPI';
 
-const initialState: CategoryObjType = {};
+const initialState: Category[] = [];
 
 const categorySlice = createSlice({
   name: 'user-category',
@@ -12,11 +12,11 @@ const categorySlice = createSlice({
       const categories = action.payload;
 
       // NOTE: Init state
-      for (const item in state) delete state[item];
+      state.length = 0;
 
-      categories.forEach((data, i) => {
+      categories.forEach((data) => {
         const category = Category.getCategoryFromData(data);
-        state[category.id] = category;
+        state.push(category);
       });
     },
   },

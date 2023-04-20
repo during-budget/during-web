@@ -1,4 +1,4 @@
-import { CategoryObjType } from '../models/Category';
+import Category from '../models/Category';
 
 // 상태관리 시 사용
 export const getExpenseKey = (isExpense: boolean) => {
@@ -16,14 +16,12 @@ export const getCurrentKey = (isCurrent: boolean) => {
 };
 
 export const getFilteredCategories = (params: {
-  categoryObj: CategoryObjType;
+  categories: Category[];
   isExpense: boolean;
   includeDefault?: boolean;
   isDefault?: boolean;
 }) => {
-  const { categoryObj, isExpense, includeDefault, isDefault } = params;
-
-  const categories = Object.values(categoryObj);
+  const { categories, isExpense, includeDefault, isDefault } = params;
 
   if (includeDefault) {
     return categories.filter((item) => item.isExpense === isExpense);

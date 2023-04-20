@@ -21,7 +21,7 @@ function Budget() {
 
   // set loaderData
   dispatch(totalActions.setTotalFromBudgetData(data.budget));
-  dispatch(budgetCategoryActions.setCategoryFromBudgetData(data.budget));
+  dispatch(budgetCategoryActions.setCategoryFromData(data.budget.categories));
   dispatch(transactionActions.setTransactions(data.transactions));
 
   return (

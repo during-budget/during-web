@@ -1,28 +1,23 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import Category, { CategoryObjType } from '../models/Category';
+import Category from '../models/Category';
 import { BudgetDataType } from '../util/api/budgetAPI';
 import { BudgetCategoryType } from '../util/api/categoryAPI';
 
-const initialState: CategoryObjType = {};
+const initialState: Category[] = [];
 
 const budgetCategorySlice = createSlice({
   name: 'budget-category',
   initialState,
   reducers: {
-    setCategoryFromBudgetData(state, action: PayloadAction<BudgetDataType>) {
-      const budgetData = action.payload;
-
-      budgetData.categories.forEach((item) => {
-        const category = Category.getCategoryFromData(item);
-        state[category.id] = category;
-      });
-    },
     setCategoryFromData(state, action: PayloadAction<BudgetCategoryType[]>) {
-      const categoryData = action.payload;
+      const categories = action.payload;
 
-      categoryData.forEach((data) => {
-        const newCategory = Category.getCategoryFromData(data);
-        state[newCategory.id] = newCategory;
+      // NOTE: Init state
+      state.length = 0;
+
+      categories.forEach((item) => {
+        const category = Category.getCategoryFromData(item);
+        state.push(category);
       });
     },
     updateCategoryAmount(
@@ -36,12 +31,16 @@ const budgetCategorySlice = createSlice({
     ) {
       const { categoryId, current, scheduled, planned } = action.payload;
 
-      state[categoryId] = Category.getCategoryUpdatedAmount({
-        prevCategory: state[categoryId] as Category,
-        current,
-        scheduled,
-        planned,
-      });
+      const idx = state.findIndex((item) => item.id === categoryId);
+
+      if (state[idx]) {
+        state[idx] = Category.getCategoryUpdatedAmount({
+          prevCategory: state[idx] as Category,
+          current,
+          scheduled,
+          planned,
+        });
+      }
     },
   },
 });
