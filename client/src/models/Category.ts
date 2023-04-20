@@ -1,9 +1,6 @@
 import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
 import Amount from './Amount';
-
-export interface CategoryObjType {
-  [id: string]: Category;
-}
+import { v4 as uuid } from 'uuid';
 
 class Category {
   private _id: string;
@@ -95,7 +92,22 @@ class Category {
     });
   };
 
-  static clone(instance: Category, updatingOpts?: Partial<Category>): Category {
+  static getEmptyCategory = () => {
+    return new Category({
+      id: uuid(),
+      title: '',
+      icon: '',
+      isExpense: true,
+      isDefault: false,
+    });
+  };
+
+  static clone(
+    instance: Category | undefined,
+    updatingOpts?: Partial<Category>
+  ): Category {
+    if (!instance) return this.getEmptyCategory();
+
     const { id, title, icon, isExpense, isDefault, amount } = instance;
     return new Category({
       id,

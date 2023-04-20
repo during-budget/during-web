@@ -26,27 +26,22 @@ function CategoryStatus(props: { budgetId: string }) {
   }, [storedCategories]);
 
   // Get category data
-  const categories = Object.values(storedCategories).filter((item) => {
+  const categories = storedCategories.filter((item) => {
     return isExpense ? item.isExpense : !item.isExpense;
   });
 
   const categoryNames = categories.map((item) => `${item.icon} ${item.title}`);
 
   // Update category plan (in AmountDetail)
-  const updatePlan = (amountStr: string) => {
+  const updatePlan = async (amountStr: string) => {
     const amount = +amountStr;
     const categoryId = categories[currentCategoryIdx].id;
 
     // Send request
-    updateCategoryPlan(props.budgetId, categoryId, amount);
+    const { budget } = await updateCategoryPlan(props.budgetId, categoryId, amount);
 
     // Dispatch budget state (for plan update)
-    dispatch(
-      budgetCategoryActions.updateCategoryAmount({
-        categoryId,
-        planned: amount,
-      })
-    );
+    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
   };
 
   return (

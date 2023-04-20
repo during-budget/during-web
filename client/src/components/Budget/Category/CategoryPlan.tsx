@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DragDropContext, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { OnDragEndResponder } from 'react-beautiful-dnd';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
@@ -12,6 +12,7 @@ import { getTransactions } from '../../../util/api/transactionAPI';
 import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
+import DraggableList from '../../UI/DraggableList';
 import Overlay from '../../UI/Overlay';
 import AmountBars from '../Amount/AmountBars';
 import EditInput from '../Input/EditInput';
@@ -25,8 +26,8 @@ function CategoryPlan(props: { budgetId: string }) {
   // Get stored states
   const isOpen = useAppSelector((state) => state.ui.budget.category.showEditPlan);
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
-  const totalObj = useAppSelector((state) => state.total);
-  const categoryObj = useAppSelector((state) => state.budgetCategory);
+  const storedTotal = useAppSelector((state) => state.total);
+  const storedCategories = useAppSelector((state) => state.budgetCategory);
   const { title } = useAppSelector((state) => state.budget)[props.budgetId];
   const isDefaultBudget =
     props.budgetId === useAppSelector((state) => state.user.info.defaultBudgetId);
@@ -41,13 +42,11 @@ function CategoryPlan(props: { budgetId: string }) {
 
   // Update states - from store
   useEffect(() => {
-    setTotalPlanState(totalObj[getExpenseKey(isExpense)].planned);
-  }, [isExpense, totalObj]);
+    setTotalPlanState(storedTotal[getExpenseKey(isExpense)].planned);
+  }, [isExpense, storedTotal]);
 
   useEffect(() => {
     setCategoryState([]);
-
-    const storedCategories = Object.values(categoryObj);
 
     storedCategories.forEach((item) => {
       if (item.isExpense === isExpense) {
@@ -70,7 +69,7 @@ function CategoryPlan(props: { budgetId: string }) {
         }
       }
     });
-  }, [isExpense, categoryObj]);
+  }, [isExpense, storedCategories]);
 
   // Handlers for Overlay
   const closeHandler = () => {
@@ -81,7 +80,8 @@ function CategoryPlan(props: { budgetId: string }) {
     event.preventDefault();
 
     // total - request
-    updateBudgetFields(props.budgetId, {
+    // NOTE: total 업데이트로 인한 defaultCategory 연산 -> 해당 결과 기반 카테고리 예산 업데이트 결과를 위한 await
+    await updateBudgetFields(props.budgetId, {
       [getExpensePlannedKey(isExpense)]: totalPlanState,
     });
 
@@ -94,6 +94,7 @@ function CategoryPlan(props: { budgetId: string }) {
     );
 
     // category - request
+    // NOTE: 마운트 이후에는(useEffect 이후) 항상 defaultCategory가 존재함
     const categoryReqData = categoryState.map((item) => {
       const { id, amount } = item;
       return {
@@ -123,6 +124,9 @@ function CategoryPlan(props: { budgetId: string }) {
 
   // Handler for category plan - updating category plan amount onChange item's input
   const updateCategoryPlanHandler = (i: number, value: number) => {
+    let planDiff = 0;
+
+    // Update target category
     setCategoryState((prev) => {
       const prevAmount = prev[i].amount;
       const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
@@ -130,14 +134,31 @@ function CategoryPlan(props: { budgetId: string }) {
 
       nextCategories[i] = Category.clone(prev[i], { amount: nextAmount });
 
+      planDiff = prevAmount.planned - nextAmount.planned;
+
       return nextCategories;
+    });
+
+    // Update default
+    setDefaultCategory((prev) => {
+      const nextDefault = Category.clone(prev);
+      nextDefault.amount.planned += planDiff;
+      return nextDefault;
     });
   };
 
-  // Handlers for total plan
+  // Handlers for plan amounts
   const confirmTotalHandler = (total: string) => {
-    setTotalPlanState(+total.replace(/[^0-9]+/g, ''));
-    // NOTE: request는 전체 submit 이후에 전송
+    const confirmedTotal = +total.replace(/[^0-9]+/g, '');
+    const planDiff = confirmedTotal - totalPlanState;
+
+    setDefaultCategory((prev) => {
+      const nextDefault = Category.clone(prev);
+      nextDefault.amount.planned += planDiff;
+      return nextDefault;
+    });
+
+    setTotalPlanState(confirmedTotal);
   };
 
   const focusTotalHandler = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -183,31 +204,20 @@ function CategoryPlan(props: { budgetId: string }) {
           {/* category - plan editors (with current, scheudled amount) */}
           <ul className={classes.list}>
             <h5>목표 예산</h5>
-            <DragDropContext onDragEnd={sortHandler}>
-              <Droppable droppableId="category-plan-droppable">
-                {(provided) => (
-                  <ul
-                    ref={provided.innerRef}
-                    className="category-plan-droppable"
-                    {...provided.droppableProps}
-                  >
-                    {categoryState.map((item: any, i: number) => (
-                      <CategoryPlanItem
-                        key={item.id}
-                        idx={i}
-                        id={item.id}
-                        icon={item.icon}
-                        title={item.title}
-                        amount={item.amount}
-                        onChange={updateCategoryPlanHandler}
-                        hideCurrent={isDefaultBudget}
-                      />
-                    ))}
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
+            <DraggableList id="category-plan-draggable-list" sortHandler={sortHandler}>
+              {categoryState.map((item: any, i: number) => (
+                <CategoryPlanItem
+                  key={item.id}
+                  idx={i}
+                  id={item.id}
+                  icon={item.icon}
+                  title={item.title}
+                  amount={item.amount}
+                  onChange={updateCategoryPlanHandler}
+                  hideCurrent={isDefaultBudget}
+                />
+              ))}
+            </DraggableList>
           </ul>
           {/* category - default amount (left amount) */}
           <div className={classes.left}>
