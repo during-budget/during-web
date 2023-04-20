@@ -3,7 +3,7 @@ import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
 import { uiActions } from '../../../store/ui';
 import { updateBudgetFields } from '../../../util/api/budgetAPI';
-import { getExpensePlannedKey } from '../../../util/key';
+import { getExpensePlannedKey } from '../../../util/filter';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import ExpenseTab from '../UI/ExpenseTab';
@@ -52,11 +52,7 @@ function TotalStatus(props: { budgetId: string }) {
         dash={555}
         blur={6}
       />
-      <AmountDetail
-        id="total"
-        amount={currentTotal}
-        editPlanHandler={updatePlan}
-      />
+      <AmountDetail id="total" amount={currentTotal} editPlanHandler={updatePlan} />
     </>
   );
 }

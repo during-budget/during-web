@@ -1,18 +1,17 @@
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
-import classes from './Budget.module.css';
-import { getBudgetById } from '../util/api/budgetAPI';
-import Carousel from '../components/UI/Carousel';
-import BudgetHeader from '../components/Budget/UI/BudgetHeader';
-import TotalStatus from '../components/Budget/Status/TotalStatus';
-import DateStatus from '../components/Budget/Status/DateStatus';
-import CategoryStatus from '../components/Budget/Status/CategoryStatus';
-import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
-import { useEffect } from 'react';
-import { transactionActions } from '../store/transaction';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
-import { totalActions } from '../store/total';
+import CategoryStatus from '../components/Budget/Status/CategoryStatus';
+import DateStatus from '../components/Budget/Status/DateStatus';
+import TotalStatus from '../components/Budget/Status/TotalStatus';
+import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
+import BudgetHeader from '../components/Budget/UI/BudgetHeader';
+import Carousel from '../components/UI/Carousel';
+import { useAppDispatch } from '../hooks/redux-hook';
 import { budgetCategoryActions } from '../store/budget-category';
+import { totalActions } from '../store/total';
+import { transactionActions } from '../store/transaction';
+import { getBudgetById } from '../util/api/budgetAPI';
+import classes from './Budget.module.css';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -30,9 +29,8 @@ function Budget() {
       <BudgetHeader budgetId={id} />
       <main>
         {/* Status */}
-        {/* TODO: initialIndex 1로 바꾸기 */}
         <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
-          <DateStatus  budgetId={id} />
+          <DateStatus budgetId={id} />
           <TotalStatus budgetId={id} />
           <CategoryStatus budgetId={id} />
         </Carousel>
@@ -40,15 +38,7 @@ function Budget() {
         {/* Transactions */}
         <TransactionLayout budgetId={id} />
         {/* Overlays */}
-        {/* <CategoryPlan
-          budgetId={id}
-          categories={categories}
-          total={{
-            expense: total.expense.planned,
-            income: total.income.planned,
-          }}
-          title={title}
-        /> */}
+        <CategoryPlan budgetId={id} />
       </main>
     </>
   );
