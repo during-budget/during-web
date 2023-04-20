@@ -7,7 +7,7 @@ import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import { deleteTransaction } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
-import { getCurrentKey } from '../../../util/key';
+import { getCurrentKey } from '../../../util/filter';
 import OptionButton from '../../UI/OptionButton';
 
 function TransactionOption(props: {

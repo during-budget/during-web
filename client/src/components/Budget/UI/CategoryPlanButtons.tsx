@@ -11,7 +11,7 @@ const CategoryPlanButtons = () => {
     dispatch(
       uiActions.showCategoryPlanEditor({
         isExpense: isExpense,
-        isEditPlan: true,
+        showEditPlan: true,
       })
     );
   };

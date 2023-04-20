@@ -1,6 +1,10 @@
 import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
 import Amount from './Amount';
 
+export interface CategoryObjType {
+  [id: string]: Category;
+}
+
 class Category {
   private _id: string;
   private _title: string;
@@ -62,9 +66,7 @@ class Category {
     this._amount = amount;
   }
 
-  static getCategoryFromData = (
-    category: UserCategoryType | BudgetCategoryType
-  ) => {
+  static getCategoryFromData = (category: UserCategoryType | BudgetCategoryType) => {
     const {
       categoryId,
       _id,
@@ -93,6 +95,19 @@ class Category {
     });
   };
 
+  static clone(instance: Category, updatingOpts?: Partial<Category>): Category {
+    const { id, title, icon, isExpense, isDefault, amount } = instance;
+    return new Category({
+      id,
+      title,
+      icon,
+      isExpense,
+      isDefault,
+      amount,
+      ...updatingOpts,
+    });
+  }
+
   static getCategoryUpdatedAmount({
     prevCategory,
     current,
@@ -104,14 +119,7 @@ class Category {
     scheduled?: number;
     planned?: number;
   }) {
-    const {
-      id,
-      title,
-      icon,
-      isExpense,
-      isDefault,
-      amount: prevAmount,
-    } = prevCategory;
+    const prevAmount = prevCategory.amount;
 
     const {
       current: prevCurrent,
@@ -124,7 +132,8 @@ class Category {
       scheduled !== undefined ? scheduled + prevScheduled : prevScheduled,
       planned !== undefined ? planned : prevPlanned
     );
-    return new Category({ id, title, icon, isExpense, isDefault, amount });
+
+    return this.clone(prevCategory, { amount });
   }
 }
 

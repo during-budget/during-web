@@ -1,10 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import Category, { CategoryObjType } from '../models/Category';
 import { BudgetDataType } from '../util/api/budgetAPI';
-import Category from '../models/Category';
+import { BudgetCategoryType } from '../util/api/categoryAPI';
 
-const initialState: {
-  [id: string]: Category;
-} = {};
+const initialState: CategoryObjType = {};
 
 const budgetCategorySlice = createSlice({
   name: 'budget-category',
@@ -16,6 +15,14 @@ const budgetCategorySlice = createSlice({
       budgetData.categories.forEach((item) => {
         const category = Category.getCategoryFromData(item);
         state[category.id] = category;
+      });
+    },
+    setCategoryFromData(state, action: PayloadAction<BudgetCategoryType[]>) {
+      const categoryData = action.payload;
+
+      categoryData.forEach((data) => {
+        const newCategory = Category.getCategoryFromData(data);
+        state[newCategory.id] = newCategory;
       });
     },
     updateCategoryAmount(

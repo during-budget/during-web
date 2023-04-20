@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Amount from '../models/Amount';
 import { BudgetDataType } from '../util/api/budgetAPI';
-import { getExpenseKey } from '../util/key';
+import { getExpenseKey } from '../util/filter';
 
 export interface TotalType {
   expense: Amount;
@@ -27,11 +27,7 @@ const totalSlice = createSlice({
         incomePlanned,
       } = action.payload;
 
-      state.expense = new Amount(
-        expenseCurrent,
-        expenseScheduled,
-        expensePlanned
-      );
+      state.expense = new Amount(expenseCurrent, expenseScheduled, expensePlanned);
       state.income = new Amount(incomeCurrent, incomeScheduled, incomePlanned);
     },
     updateTotalAmount(
