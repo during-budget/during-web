@@ -25,28 +25,20 @@ function Budget() {
   dispatch(budgetCategoryActions.setCategoryFromBudgetData(data.budget));
   dispatch(transactionActions.setTransactions(data.transactions));
 
-  // get budget Data
-  const budgets = useAppSelector((state) => state.budget);
-  const { title, date } = budgets[id];
-
   return (
     <>
-      <BudgetHeader
-        startDate={new Date(date.start)}
-        endDate={new Date(date.end)}
-        title={title}
-      />
+      <BudgetHeader budgetId={id} />
       <main>
         {/* Status */}
         {/* TODO: initialIndex 1로 바꾸기 */}
         <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
-          <DateStatus title={title} date={date} />
+          <DateStatus  budgetId={id} />
           <TotalStatus budgetId={id} />
           <CategoryStatus budgetId={id} />
         </Carousel>
         <hr />
         {/* Transactions */}
-        <TransactionLayout budgetId={id} date={date} />
+        <TransactionLayout budgetId={id} />
         {/* Overlays */}
         {/* <CategoryPlan
           budgetId={id}
