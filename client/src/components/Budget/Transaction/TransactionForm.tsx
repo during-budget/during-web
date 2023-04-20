@@ -6,12 +6,9 @@ import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
-import {
-  createTransaction,
-  updateTransaction,
-} from '../../../util/api/transactionAPI';
+import { createTransaction, updateTransaction } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
-import { getCurrentKey } from '../../../util/key';
+import { getCurrentKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
@@ -28,12 +25,12 @@ import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
 
-function TransactionForm(props: {
-  budgetId: string;
-  date?: { start: Date; end: Date };
-  isDefault?: boolean;
-}) {
+function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
+
+  // get budget Data
+  const budgets = useAppSelector((state) => state.budget);
+  const { date } = budgets[props.budgetId];
 
   const { mode, default: defaultValue } = useAppSelector(
     (state) => state.transaction.form
@@ -82,9 +79,7 @@ function TransactionForm(props: {
 
     // send request
     if (mode.isEdit) {
-      const { transaction: transactionData } = await updateTransaction(
-        transaction
-      );
+      const { transaction: transactionData } = await updateTransaction(transaction);
       dispatch(
         transactionActions.updateTransactionFromData({
           id: transactionData._id,
@@ -92,9 +87,7 @@ function TransactionForm(props: {
         })
       );
     } else {
-      const { transaction: createdTransaction } = await createTransaction(
-        transaction
-      );
+      const { transaction: createdTransaction } = await createTransaction(transaction);
       transaction.id = createdTransaction._id;
       transaction.linkId = createdTransaction.linkId || undefined;
     }
@@ -158,14 +151,14 @@ function TransactionForm(props: {
       transactionActions.setForm({
         mode: { isExpand: true },
         default: {
-          date: props.date ? getDefaultDate() : undefined,
+          date: date ? getDefaultDate() : undefined,
         },
       })
     );
   };
 
   const getDefaultDate = () => {
-    const { start, end } = props.date!;
+    const { start, end } = date!;
     const now = new Date();
 
     if ((!start && !end) || (start <= now && now <= end)) {
@@ -318,18 +311,13 @@ function TransactionForm(props: {
               </div>
             )}
             {/* buttons */}
-            <ConfirmCancelButtons
-              className={classes.buttons}
-              onClose={closeHandler}
-            />
+            <ConfirmCancelButtons className={classes.buttons} onClose={closeHandler} />
           </>
         )}
       </form>
       {/* msg */}
       {isDefault && (
-        <p className={classes.info}>
-          ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
-        </p>
+        <p className={classes.info}>ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요</p>
       )}
       <BudgetCategorySetting
         budgetId={props.budgetId}
