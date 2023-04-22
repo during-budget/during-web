@@ -22,5 +22,5 @@ const categorySlice = createSlice({
   },
 });
 
-export const categoryActions = categorySlice.actions;
+export const userCategoryActions = categorySlice.actions;
 export default categorySlice.reducer;

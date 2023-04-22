@@ -40,36 +40,39 @@ function CategoryPlan(props: { budgetId: string }) {
   // Set states - ui
   const [isEditSetting, setIsEditSetting] = useState(false);
 
-  // Update states - from store
+  // Update state <- from store
+  // TODO: isExpense 일치 일반 카테고리와 기본 카테고리 분류해서 얻는 헬퍼 함수나 훅.. 만들기...
   useEffect(() => {
     setTotalPlanState(storedTotal[getExpenseKey(isExpense)].planned);
   }, [isExpense, storedTotal]);
 
   useEffect(() => {
     setCategoryState([]);
-
     storedCategories.forEach((item) => {
       if (item.isExpense === isExpense) {
         if (item.isDefault) {
           setDefaultCategory(item);
         } else {
-          const newItem = Category.clone(item);
-
-          // NOTE: 이미 존재하는 경우(편집중인 경우) 기존 amount 값 사용 #58 - 53adb6
-          // TODO: budgetCategorySetting으로 추가/삭제 시도하면서 체크 필요
-          const isExist = categoryState.find(
-            (prevCategory) => prevCategory.id === item.id
-          );
-
-          if (isExist && !isOpen) {
-            newItem.amount = isExist.amount;
-          }
-
-          setCategoryState((prev) => [...prev, newItem]);
+          setCategoryState((prev) => [...prev, item]);
         }
       }
     });
   }, [isExpense, storedCategories]);
+
+  // Update default state <- category, total
+  useEffect(() => {
+    setDefaultCategory((prev) => {
+      const nextDefault = Category.clone(prev);
+      const categoryPlanSum = categoryState.reduce(
+        (acc, curr) => acc + curr.amount.planned,
+        0
+      );
+
+      nextDefault.amount.planned = totalPlanState - categoryPlanSum;
+
+      return nextDefault;
+    });
+  }, [categoryState, totalPlanState]);
 
   // Handlers for Overlay
   const closeHandler = () => {
@@ -138,26 +141,11 @@ function CategoryPlan(props: { budgetId: string }) {
 
       return nextCategories;
     });
-
-    // Update default
-    setDefaultCategory((prev) => {
-      const nextDefault = Category.clone(prev);
-      nextDefault.amount.planned += planDiff;
-      return nextDefault;
-    });
   };
 
   // Handlers for plan amounts
   const confirmTotalHandler = (total: string) => {
     const confirmedTotal = +total.replace(/[^0-9]+/g, '');
-    const planDiff = confirmedTotal - totalPlanState;
-
-    setDefaultCategory((prev) => {
-      const nextDefault = Category.clone(prev);
-      nextDefault.amount.planned += planDiff;
-      return nextDefault;
-    });
-
     setTotalPlanState(confirmedTotal);
   };
 
@@ -244,9 +232,11 @@ function CategoryPlan(props: { budgetId: string }) {
       </Overlay>
       <BudgetCategorySetting
         budgetId={props.budgetId}
+        budgetCategories={categoryState}
         isExpense={isExpense}
         isOpen={isEditSetting}
         setIsOpen={setIsEditSetting}
+        setCategoryPlans={setCategoryState}
       />
     </>
   );
