@@ -7,7 +7,7 @@ import Category from '../../../models/Category';
 import UserCategoryList from './UserCategoryList';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import { updateCategories } from '../../../util/api/categoryAPI';
-import { categoryActions } from '../../../store/user-category';
+import { userCategoryActions } from '../../../store/user-category';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 
 function UserCategorySetting(props: {
@@ -59,10 +59,13 @@ function UserCategorySetting(props: {
     }
 
     // get response
-    const { categories } = await updateCategories(updatingCategories);
+    const { categories } = await updateCategories({
+      isExpense,
+      categoryData: updatingCategories,
+    });
 
     // dispatch
-    dispatch(categoryActions.setCategories(categories));
+    dispatch(userCategoryActions.setCategories(categories));
 
     // close overlay
     props.setIsOpen(false);

@@ -5,95 +5,96 @@ import Category from '../../models/Category';
 const BASE_URL = `${DURING_SERVER}/api/categories`;
 
 interface CategoryBaisis {
-    icon: string;
-    isExpense: boolean;
-    isIncome: boolean;
-    isDefault: boolean;
-    title: string;
+  icon: string;
+  isExpense: boolean;
+  isIncome: boolean;
+  isDefault: boolean;
+  title: string;
 }
 
 export interface UserCategoryType extends CategoryBaisis {
-    _id: string;
-    categoryId: never;
-    amountCurrent: never;
-    amountPlanned: never;
-    amountScheduled: never;
+  _id: string;
+  categoryId: never;
+  amountCurrent: never;
+  amountPlanned: never;
+  amountScheduled: never;
 }
 export interface BudgetCategoryType extends CategoryBaisis {
-    _id: never;
-    categoryId: string;
-    amountCurrent: number;
-    amountPlanned: number;
-    amountScheduled: number;
+  _id: never;
+  categoryId: string;
+  amountCurrent: number;
+  amountPlanned: number;
+  amountScheduled: number;
 }
 
 export interface TransactionCategoryType extends CategoryBaisis {
-    _id: never;
-    categoryId: string;
-    amountCurrent: never;
-    amountPlanned: never;
-    amountScheduled: never;
+  _id: never;
+  categoryId: string;
+  amountCurrent: never;
+  amountPlanned: never;
+  amountScheduled: never;
 }
 
 export interface UpdatedBudgetCategoryType {
-    categories: BudgetCategoryType[];
-    included: BudgetCategoryType[];
-    updated: BudgetCategoryType[];
-    excluded: BudgetCategoryType[];
+  categories: BudgetCategoryType[];
+  included: BudgetCategoryType[];
+  updated: BudgetCategoryType[];
+  excluded: BudgetCategoryType[];
 }
 
 export interface UpdatedUserCategoryType {
-    categories: UserCategoryType[];
-    added: UserCategoryType[];
-    updated: UserCategoryType[];
-    removed: UserCategoryType[];
+  categories: UserCategoryType[];
+  added: UserCategoryType[];
+  updated: UserCategoryType[];
+  removed: UserCategoryType[];
 }
 
 export const getCategories = async () => {
-    const response = await fetch(BASE_URL, {
-        credentials: 'include',
+  const response = await fetch(BASE_URL, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Response(`Failed to get categories.\n${data.message ? data.message : ''}`, {
+      status: response.status,
     });
+  }
 
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Response(
-            `Failed to get categories.\n${data.message ? data.message : ''}`,
-            { status: response.status }
-        );
-    }
-
-    return response.json() as Promise<UserCategoryType[]>;
+  return response.json() as Promise<UserCategoryType[]>;
 };
 
-export const updateCategories = async (categoryData: Category[]) => {
-    const categories = categoryData.map((category) => {
-        const { id, isExpense, icon, title } = category;
+export const updateCategories = async (data: {
+  isExpense?: boolean;
+  categoryData: Category[];
+}) => {
+  const { isExpense, categoryData } = data;
+  const categories = categoryData.map((category) => {
+    const { id, isExpense, icon, title } = category;
 
-        return {
-            _id: isUUID(id) ? undefined : id,
-            isExpense,
-            isIncome: !isExpense,
-            icon,
-            title,
-        };
-    });
+    return {
+      _id: isUUID(id) ? undefined : id,
+      isExpense,
+      isIncome: !isExpense,
+      icon,
+      title,
+    };
+  });
 
-    const response = await fetch(BASE_URL, {
-        method: 'PUT',
-        credentials: 'include',
-        body: JSON.stringify({ categories }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+  const response = await fetch(BASE_URL, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify({ isExpense, categories }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    if (!response.ok) {
-        const data = await response.json();
+  if (!response.ok) {
+    const data = await response.json();
 
-        throw new Error(
-            `Failed to update categories.\n${data.message ? data.message : ''}`
-        );
-    }
+    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+  }
 
-    return response.json() as Promise<UpdatedUserCategoryType>;
+  return response.json() as Promise<UpdatedUserCategoryType>;
 };

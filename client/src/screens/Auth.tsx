@@ -4,7 +4,7 @@ import EmailForm from '../components/Auth/EmailForm';
 import SNSForm from '../components/Auth/SNSForm';
 import Overlay from '../components/UI/Overlay';
 import { budgetActions } from '../store/budget';
-import { categoryActions } from '../store/user-category';
+import { userCategoryActions } from '../store/user-category';
 import { userActions } from '../store/user';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
@@ -36,7 +36,7 @@ function Auth() {
         // set user data
         dispatch(userActions.login());
         dispatch(userActions.setUserInfo({ userName, email, defaultBudgetId }));
-        dispatch(categoryActions.setCategories(user.categories));
+        dispatch(userCategoryActions.setCategories(user.categories));
 
         // set default budget data
         const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);

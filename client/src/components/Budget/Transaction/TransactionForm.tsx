@@ -319,13 +319,13 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       {isDefault && (
         <p className={classes.info}>ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요</p>
       )}
-      <BudgetCategorySetting
+      {/* <BudgetCategorySetting
         budgetId={props.budgetId}
         isExpense={isExpense}
         isOpen={isEditSetting}
         setIsOpen={setIsEditSetting}
         sendRequest={true}
-      />
+      /> */}
     </Overlay>
   );
 }

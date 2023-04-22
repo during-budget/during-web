@@ -1,115 +1,120 @@
 .container {
-    position: relative;
-    height: 95vh;
+  position: relative;
+  height: 95vh;
 }
 
 .container.open {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 .container form {
-    scrollbar-width: 0;
-    -ms-overflow-style: none;
+  scrollbar-width: 0;
+  -ms-overflow-style: none;
 }
 
 .container form::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .container > form > h5 {
-    margin-bottom: 2vh;
+  margin-bottom: 2vh;
 }
 
 .content {
-    height: 80vh;
-    overflow: scroll;
-    overflow-x: hidden;
+  height: 80vh;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 .total {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-self: center;
-    width: 100%;
-    height: 8vh;
-    margin-bottom: 1vh;
-    border-radius: 1rem;
-    background-color: var(--gray-1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  width: 100%;
+  height: 8vh;
+  margin-bottom: 1vh;
+  border-radius: 1rem;
+  background-color: var(--gray-1);
 }
 
 .total input,
 .total span {
-    width: 100%;
-    display: block;
-    text-align: center;
-    font-size: var(--size-2);
+  width: 100%;
+  display: block;
+  text-align: center;
+  font-size: var(--size-2);
 }
 
 .total span {
-    font-weight: 800;
+  font-weight: 800;
 }
 
 .totalEdit::before {
-    position: absolute;
-    right: 6vw;
-    transform: translateY(-50%);
+  position: absolute;
+  right: 6vw;
+  transform: translateY(-50%);
 }
 
 .totalCancel::before {
-    position: absolute;
-    left: 6vw;
-    transform: translateY(-50%);
-    color: var(--gray-3);
+  position: absolute;
+  left: 6vw;
+  transform: translateY(-50%);
+  color: var(--gray-3);
 }
 
 .bars {
-    height: 6vh;
-    margin-bottom: 3vh;
+  height: 6vh;
+  margin-bottom: 3vh;
 }
 
 .list {
-    height: 40vh;
-    margin-bottom: 1vh;
-    overflow: hidden;
+  height: 40vh;
+  margin-bottom: 1vh;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
 }
 
 .list h5 {
-    margin-bottom: 1vh;
+  margin-bottom: 1vh;
 }
 
 .list > div {
-    height: 35vh;
-    overflow: scroll;
+  height: 35vh;
+  overflow: scroll;
 }
 
 .list > div::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .left {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2vh;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    background-color: var(--gray-1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2vh;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  background-color: var(--gray-1);
 }
 
 .left .info {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .left > p {
-    font-size: var(--size-3);
-    font-weight: 800;
+  font-size: var(--size-3);
+  font-weight: 800;
 }
 
 .container > form > button {
-    margin-bottom: 5vh;
+  margin-bottom: 5vh;
 }
