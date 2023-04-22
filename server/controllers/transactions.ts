@@ -306,7 +306,7 @@ export const updateV2 = async (req: Request, res: Response) => {
 
       if (isUpdated["amount"]) {
         const exAmount = transaction.amount;
-        const diff = exAmount - req.body.amount;
+        const diff = req.body.amount - exAmount;
         transaction.amount = req.body.amount;
 
         /* category */
