@@ -1,40 +1,43 @@
 .header {
-    margin: 3vh 0;
+  margin: 3vh 0;
 }
 
 .top {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 700;
-    padding: 2vh 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  padding: 2vh 0;
 }
 
-.top button:first-child {
-    position: absolute;
-    left: 5vw;
+.top button:first-child,
+.top a:first-child {
+  position: absolute;
+  left: 5vw;
 }
 
-.top button:last-child {
-    position: absolute;
-    right: 5vw;
+.top button:last-child,
+.top a:last-child {
+  position: absolute;
+  right: 5vw;
 }
 
-.top button {
-    padding: var(--size-6);
-    font-size: var(--size-4);
+.top button,
+.top a {
+  padding: var(--size-6);
+  font-size: var(--size-4);
 }
 
 .bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .bottom a {
-    font-size: var(--size-10);
+  font-size: var(--size-10);
 }
 
 .bottom h1 {
-    margin: 0 20vw;
+  margin: 0 20vw;
 }

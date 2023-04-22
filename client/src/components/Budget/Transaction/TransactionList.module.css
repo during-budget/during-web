@@ -1,14 +1,18 @@
 .container {
-    width: 90vw;
-    margin: 0 auto;
-    padding-bottom: 8rem; /* NOTE: Nav & TransactionForm height */
+  width: 90vw;
+  margin: 0 auto;
+  padding-bottom: 8rem; /* NOTE: Nav & TransactionForm height */
 }
 
 .container > li {
-    margin-bottom: 3rem;
+  margin-bottom: 3rem;
+}
+
+.container.default {
+  margin-top: 2vh;
 }
 
 .date {
-    margin-bottom: var(--size-6);
-    scroll-margin: 10vh;
+  margin-bottom: var(--size-6);
+  scroll-margin: 10vh;
 }
