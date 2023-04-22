@@ -3,31 +3,33 @@ import RequireAuth from './RequireAuth';
 import classes from './Nav.module.css';
 
 function Nav() {
-    const loacation = useLocation();
+  const loacation = useLocation();
 
-    const navData = [
-        { path: '/budget', icon: <i className="fa-solid fa-home"></i> },
-        { path: '/during', icon: <i className="fa-solid fa-circle-dot"></i> },
-        { path: '/user', icon: <i className="fa-solid fa-user"></i> },
-    ];
+  const navData = [
+    { path: '/budget', icon: <i className="fa-solid fa-home"></i> },
+    { path: '/during', icon: <i className="fa-solid fa-circle-dot"></i> },
+    { path: '/user', icon: <i className="fa-solid fa-user"></i> },
+  ];
 
-    const navList = navData.map((data) => {
-        const isCurrentPath = loacation.pathname.includes(data.path);
-        const className = `${classes.link} ${isCurrentPath && classes.active}`;
-
-        return (
-            <Link key={data.path} to={data.path} className={className}>
-                {data.icon}
-            </Link>
-        );
-    });
+  const navList = navData.map((data) => {
+    const isCurrentPath = loacation.pathname.includes(data.path);
+    const className = `${classes.link} ${isCurrentPath && classes.active}`;
 
     return (
-        <RequireAuth>
-            <Outlet />
-            <nav className={classes.nav}>{navList}</nav>
-        </RequireAuth>
+      <Link key={data.path} to={data.path} className={className}>
+        {data.icon}
+      </Link>
     );
+  });
+
+  const isDefaultBudget = loacation.search === '?isDefault';
+
+  return (
+    <RequireAuth>
+      <Outlet />
+      {!isDefaultBudget && <nav className={classes.nav}>{navList}</nav>}
+    </RequireAuth>
+  );
 }
 
 export default Nav;

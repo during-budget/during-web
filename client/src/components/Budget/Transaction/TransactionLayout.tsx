@@ -3,13 +3,15 @@ import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
 import TransactionNav from './TransactionNav';
 
-function TransactionLayout(props: { budgetId: string }) {
+function TransactionLayout(props: { budgetId: string; isDefault?: boolean }) {
+  const { budgetId, isDefault } = props;
+
   return (
     <section>
-      <TransactionNav id="layout" isLine={true} />
-      <TransactionList />
-      <TransactionForm budgetId={props.budgetId} />
-      <TransactionDetail />
+      {!isDefault && <TransactionNav id="layout" isLine={true} />}
+      <TransactionList isDefault={isDefault} />
+      <TransactionForm budgetId={budgetId} isDefault={isDefault} />
+      <TransactionDetail isDefault={isDefault} />
     </section>
   );
 }

@@ -23,11 +23,9 @@ function TransactionList({ isDefault }: Props) {
   const dateList = Object.keys(dateTransactionData);
 
   return (
-    <ol className={classes.container}>
+    <ol className={`${classes.container} ${classes.default}`}>
       {dateList.map((date) => {
-        const id = isDefault
-          ? undefined
-          : getNumericHypenDateString(new Date(date));
+        const id = isDefault ? undefined : getNumericHypenDateString(new Date(date));
 
         return (
           <li key={date}>
@@ -38,12 +36,7 @@ function TransactionList({ isDefault }: Props) {
               </h5>
               {/* Transactions */}
               {dateTransactionData[date].map((item) => (
-                <TransactionItem
-                  key={item.id}
-                  transaction={item}
-                  // TODO: isDefault
-                  // isDefault={true}
-                />
+                <TransactionItem key={item.id} transaction={item} isDefault={isDefault} />
               ))}
             </ol>
           </li>

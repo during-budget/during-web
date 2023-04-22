@@ -17,26 +17,34 @@ function Budget() {
   const dispatch = useAppDispatch();
 
   // get loaderData
-  const { id, data } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { id, isDefaultBudget, data } = useLoaderData() as Awaited<
+    ReturnType<typeof loader>
+  >;
 
   // set loaderData
   dispatch(totalActions.setTotalFromBudgetData(data.budget));
   dispatch(budgetCategoryActions.setCategoryFromData(data.budget.categories));
   dispatch(transactionActions.setTransactions(data.transactions));
 
+  const statusCarousel = (
+    <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
+      <DateStatus budgetId={id} />
+      <TotalStatus budgetId={id} />
+      <CategoryStatus budgetId={id} />
+    </Carousel>
+  );
+
+  const defaultBudgetStatus = <></>;
+
   return (
     <>
-      <BudgetHeader budgetId={id} />
+      <BudgetHeader budgetId={id} isDefault={isDefaultBudget} />
       <main>
         {/* Status */}
-        <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
-          <DateStatus budgetId={id} />
-          <TotalStatus budgetId={id} />
-          <CategoryStatus budgetId={id} />
-        </Carousel>
+        {isDefaultBudget ? defaultBudgetStatus : statusCarousel}
         <hr />
         {/* Transactions */}
-        <TransactionLayout budgetId={id} />
+        <TransactionLayout budgetId={id} isDefault={isDefaultBudget} />
         {/* Overlays */}
         <CategoryPlan budgetId={id} />
       </main>
@@ -50,9 +58,9 @@ export const loader = async (data: LoaderFunctionArgs) => {
   const { params } = data;
 
   if (!params.budgetId) throw new Response('Budget Not Found', { status: 404 });
-
   return {
     id: params.budgetId,
+    isDefaultBudget: params.isDefault ? true : false,
     data: await getBudgetById(params.budgetId),
   };
 };
