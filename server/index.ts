@@ -119,6 +119,8 @@ app.set("port", process.env.SERVER_PORT.trim() ?? 3000);
 
 const server = app.listen(app.get("port"), function () {
   const { port } = server.address() as AddressInfo;
+  const date = new Date();
+  console.log("Date: ", date);
   console.log("Express server listening on port " + port);
 });
 
