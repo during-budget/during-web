@@ -52,7 +52,7 @@ jobs:
           echo "NODEMAILER_PASS= ${{secrets.NODEMAILER_PASS}}" >> .env.production
           echo "S3_ACESSKEYID= ${{secrets.S3_ACESSKEYID}}" >> .env.production
           echo "S3_SECRETACCESSKEY= ${{secrets.S3_SECRETACCESSKEY}}" >> .env.production
-          echo "S3_BUCKET_LOGS= ${{S3_BUCKET_LOGS}}" >> .env.production
+          echo "S3_BUCKET_LOGS= ${{secrets.S3_BUCKET_LOGS}}" >> .env.production
 
       # 빌드 후 푸쉬
       - name: Build and push
@@ -84,7 +84,10 @@ jobs:
   server-CD:
     name: server-CD
     needs: server-CI
-    runs-on: [self-hosted]
+    strategy:
+      matrix:
+        labels: [L0]
+    runs-on: ${{ matrix.labels }}
 
     steps:
       # 체크아웃
