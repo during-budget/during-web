@@ -103,7 +103,7 @@ const combined = (
 app.use(
   morgan(combined, {
     skip: (req, res) => req.url === "/index.html",
-    stream: logger.stream as unknown as StreamOptions,
+    stream: logger.stream() as unknown as StreamOptions,
   })
 );
 
