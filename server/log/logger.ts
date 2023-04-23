@@ -1,53 +1,9 @@
-import winston, { format } from "winston";
-const { combine, timestamp, printf, label } = format;
-import WinstonDaily from "winston-daily-rotate-file";
+import { devLogger } from "./devLogger";
+import { prodLogger } from "./prodLogger";
 
-const logger = winston.createLogger({
-  level: "http",
-  format: combine(
-    timestamp({
-      format: "YYYY-MM-DD HH:mm:ss",
-    }),
-    printf((info: any) => {
-      return `${info.timestamp} ${info.level}: ${info.message}`;
-    })
-  ),
-  defaultMeta: { service: "user-service" },
-  transports: [
-    new WinstonDaily({
-      level: "http",
-      datePattern: "YYYY-MM-DD",
-      dirname: "./logs",
-      filename: `%DATE%.log`,
-      maxSize: "20m",
-      maxFiles: "7d",
-      zippedArchive: true,
-    }),
-    new WinstonDaily({
-      level: "info",
-      datePattern: "YYYY-MM-DD",
-      dirname: "./logs",
-      filename: `%DATE%.info.log`,
-      maxSize: "20m",
-      maxFiles: "7d",
-      zippedArchive: true,
-    }),
-    new WinstonDaily({
-      level: "error",
-      datePattern: "YYYY-MM-DD",
-      dirname: "./logs",
-      filename: `%DATE%.error.log`,
-      maxSize: "20m",
-      maxFiles: "7d",
-      zippedArchive: true,
-    }),
-  ],
-});
+let logger = devLogger;
+if (process.env.NODE_ENV === "production") {
+  logger = prodLogger;
+}
 
-const stream = {
-  write: (message: string) => {
-    logger.http(message);
-  },
-};
-
-export { logger, stream };
+export { logger };
