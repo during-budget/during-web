@@ -33,8 +33,8 @@ import passport from "passport";
 import { config as passportConfig } from "./passport";
 
 /* logger */
-import morgan from "morgan";
-import { stream } from "./log/logger";
+import morgan, { StreamOptions, TokenIndexer } from "morgan";
+import { logger } from "./log/logger";
 
 const app: Express = express();
 
@@ -81,10 +81,31 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session()); //반드시 app.use(session(...)) 아래에 있어야 함
 
-const combined =
-  ':remote-addr - :remote-user ":method :url HTTP/:http-version" :body ":status :response-time ms" ":referrer" ":user-agent"';
-morgan.token("body", (req: Request, res: Response) => JSON.stringify(req.body));
-app.use(morgan(combined, { stream }));
+const combined = (
+  tokens: TokenIndexer<Request, Response>,
+  req: Request,
+  res: Response
+) => {
+  return [
+    `HTTP/${tokens["http-version"](req, res)}`, // HTTP/1.1,
+    tokens["remote-addr"](req, res), // ip
+    req.user?._id ?? "undefined",
+    tokens["method"](req, res), // POST, GET, ...
+    tokens["url"](req, res), // '/api/users/current'
+    JSON.stringify(req.body), // req.body
+    tokens["status"](req, res), // 200, 404, ...
+    tokens["response-time"](req, res), // ms
+    '"' + tokens["referrer"](req, res) + '"',
+    '"' + tokens["user-agent"](req, res) + '"',
+  ].join(",");
+};
+
+app.use(
+  morgan(combined, {
+    skip: (req, res) => req.url === "/index.html",
+    stream: logger.stream as unknown as StreamOptions,
+  })
+);
 
 routers.forEach((router: string) => {
   app.use("/api/" + router, require("./routes/" + router));
