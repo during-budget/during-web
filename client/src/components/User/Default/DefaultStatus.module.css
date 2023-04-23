@@ -1,79 +1,99 @@
 .tab {
-    margin-bottom: 1vh;
+  margin-bottom: 1vh;
 }
 
 .container {
-    margin: 0 auto;
-    width: 70vw;
+  margin: 0 auto;
+  width: 70vw;
 }
 
 .scheduled {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 5vw;
-    /* font-size: 1.125rem; */
-    font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5vw;
+  margin-bottom: 1vh;
+  font-weight: 800;
 }
 
 .scheduled > span {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .planned {
-    position: relative;
-    font-weight: 800;
+  position: relative;
+  font-weight: 800;
 }
 
 .planned label {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 5vw;
-    display: flex;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5vw;
+  display: flex;
+  align-items: center;
+  z-index: 1;
 }
 
-.planned input {
-    text-align: right;
-    font-size: 1.5rem;
-    font-weight: inherit;
-    margin: 1vh 0;
+.plan {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  width: 100%;
+  height: 8vh;
+  margin-bottom: 1vh;
+  border-radius: 1rem;
+  background-color: var(--gray-1);
 }
-/* 
-.total {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 4rem;
-    font-size: 1.625rem;
-    font-weight: 600;
-    border-radius: 0.5rem;
-    background-color: var(--gray-1);
-    margin-bottom: 1vh;
-} */
+
+.plan input,
+.plan span {
+  width: 100%;
+  display: block;
+  text-align: right;
+  padding: 0 15vw;
+  font-size: var(--size-4);
+}
+
+.plan span {
+  font-weight: 800;
+}
+
+.planEdit::before {
+  position: absolute;
+  right: 6vw;
+  transform: translateY(-50%);
+}
+
+.planCancel::before {
+  position: absolute;
+  left: 15vw;
+  transform: translateY(-50%);
+  color: var(--gray-3);
+}
 
 .bars {
-    height: 3.5rem;
+  height: 3.5rem;
 }
 
 .buttons {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .edit {
-    position: relative;
-    padding: 1rem 0;
-    font-size: var(--size-7);
+  position: relative;
+  padding: 1rem 0;
+  font-size: var(--size-7);
 }
 
 .edit::before {
-    content: '\f303';
-    font: var(--fa-font-solid);
-    font-size: var(--size-8);
-    position: absolute;
-    top: var(--size-5);
-    left: calc(-1 * var(--size-5));
+  content: '\f303';
+  font: var(--fa-font-solid);
+  font-size: var(--size-8);
+  position: absolute;
+  top: var(--size-5);
+  left: calc(-1 * var(--size-5));
 }

@@ -12,7 +12,6 @@ import { getCurrentKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
-import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
@@ -35,7 +34,9 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const { mode, default: defaultValue } = useAppSelector(
     (state) => state.transaction.form
   );
-  const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
+  const isCurrent = props.isDefault
+    ? false
+    : useAppSelector((state) => state.ui.budget.isCurrent);
   const isDefault = props.isDefault;
 
   const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
@@ -60,7 +61,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     const transaction = new Transaction({
       id: defaultValue.id || uuid(),
       budgetId,
-      isCurrent: isDefault ? false : isCurrent,
+      isCurrent,
       isExpense,
       icon: iconRef.current!.value() || '',
       titles: titlesRef.current!.value(),

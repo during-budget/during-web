@@ -1,74 +1,73 @@
 import { useEffect, useState } from 'react';
-import classes from './DefaultStatus.module.css';
-import ExpenseTab from '../../Budget/UI/ExpenseTab';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
-import Category from '../../../models/Category';
+import { budgetCategoryActions } from '../../../store/budget-category';
+import { totalActions } from '../../../store/total';
+import { updateBudgetFields, updateCategoryPlan } from '../../../util/api/budgetAPI';
+import { getExpensePlannedKey, getFilteredCategories } from '../../../util/filter';
 import AmountBars from '../../Budget/Amount/AmountBars';
-import Button from '../../UI/Button';
-import { uiActions } from '../../../store/ui';
-import { useAppDispatch } from '../../../hooks/redux-hook';
-import { updateBudgetFields } from '../../../util/api/budgetAPI';
+import EditInput from '../../Budget/Input/EditInput';
+import CategoryPlanButtons from '../../Budget/UI/CategoryPlanButtons';
+import ExpenseTab from '../../Budget/UI/ExpenseTab';
+import classes from './DefaultStatus.module.css';
 
-interface Props {
-  budgetId: string;
-  total: {
-    expense: Amount;
-    income: Amount;
-  };
-  categories: Category[];
-}
+const DefaultStatus = (props: { budgetId: string }) => {
+  const dispatch = useDispatch();
 
-function DefaultStatus({ budgetId, total, categories }: Props) {
-  const dispatch = useAppDispatch();
   const [isExpense, setIsExpense] = useState(true);
-  const [plan, setPlan] = useState('0원');
 
-  const currentCategories = categories.filter((item) => item.isExpense === isExpense);
+  const total = useAppSelector((state) => state.total);
+  const totalAmount = isExpense ? total.expense : total.income;
 
-  const amount = isExpense ? total.expense.scheduled : total.income.scheduled;
+  const categories = getFilteredCategories({
+    categories: useAppSelector((state) => state.budgetCategory),
+    isExpense,
+    includeDefault: true,
+  });
+
+  // 예정 내역이 추가될 경우 -> 목표가 예정보다 작으면 업데이트
   useEffect(() => {
-    const plannedAmount = isExpense ? total.expense.planned : total.income.planned;
-    setPlan(Amount.getAmountStr(plannedAmount));
-  }, [isExpense]);
-
-  // Change - Set number
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-
-    setPlan(value);
-  };
-
-  // Focus - Conver to number
-  const focusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-
-    if (value === '0') {
-      setPlan('');
-    } else {
-      setPlan(value);
+    if (totalAmount.planned < totalAmount.scheduled) {
+      dispatch(
+        totalActions.updateTotalAmount({ isExpense, planned: totalAmount.scheduled })
+      );
     }
 
-    event.target.scrollIntoView({
-      block: 'start',
-      behavior: 'smooth',
+    categories.forEach((item) => {
+      const amount = item.amount;
+      if (amount.planned < amount.scheduled) {
+        updateCategoryPlan(props.budgetId, item.id, amount.scheduled);
+        dispatch(
+          budgetCategoryActions.updateCategoryAmount({
+            categoryId: item.id,
+            planned: amount.scheduled,
+          })
+        );
+      }
     });
-  };
+  }, [totalAmount.scheduled]);
 
-  // Blur - Set AmountStr
-  const blurHandler = async (event: React.FocusEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+  // TODO: 목표내역이 수정될 경우 -> 전체 목표가 카테고리별 목표의 합보다 작으면 경고
+
+  // Handlers for plan amounts
+  const confirmTotalHandler = async (total: string) => {
+    const confirmedTotal = +total.replace(/[^0-9]+/g, '');
 
     // send Request
-    const key = isExpense ? 'expensePlanned' : 'incomePlanned';
-    updateBudgetFields(budgetId, {
-      [key]: +value,
+    const key = getExpensePlannedKey(isExpense);
+    const { budget } = await updateBudgetFields(props.budgetId, {
+      [key]: confirmedTotal,
     });
 
-    if (value === '' || +value <= 0) {
-      setPlan('0원');
-    } else {
-      setPlan(Amount.getAmountStr(+value));
-    }
+    // Update total plan state
+    dispatch(totalActions.updateTotalAmount({ isExpense, planned: confirmedTotal }));
+    // Update category plan state
+    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+  };
+
+  const convertTotalHandler = (value: string) => {
+    return value.replace(/[^0-9]/g, '');
   };
 
   return (
@@ -80,66 +79,41 @@ function DefaultStatus({ budgetId, total, categories }: Props) {
         setIsExpense={setIsExpense}
       />
       <div className={classes.container}>
-        {/* scheduled amount */}
+        {/* Scheduled amount */}
         <div className={classes.scheduled}>
           <span>예정</span>
-          <p className={classes.total}>{Amount.getAmountStr(amount)}</p>
+          <p className={classes.total}>{Amount.getAmountStr(totalAmount.scheduled)}</p>
         </div>
-        {/* plan editor */}
-        {/* TODO: CategoryPlanItem의 Input과 같은 컴포넌트 NumberInput으로 통합 */}
+        {/* Planned amount */}
         <div className={classes.planned}>
           <label htmlFor="default-budget-plan">목표</label>
-          <input
+          <EditInput
             id="default-budget-plan"
-            type="text"
-            value={plan}
-            onChange={changeHandler}
-            onFocus={focusHandler}
-            onBlur={blurHandler}
+            className={classes.plan}
+            editClass={classes.planEdit}
+            cancelClass={classes.planCancel}
+            value={Amount.getAmountStr(totalAmount.planned)}
+            min={totalAmount.scheduled}
+            convertDefaultValue={convertTotalHandler}
+            confirmHandler={confirmTotalHandler}
           />
         </div>
-        {/* plan chart */}
+        {/* Planned chart */}
         <AmountBars
           className={classes.bars}
           borderRadius="0.4rem"
-          amountData={currentCategories.map((item) => {
+          amountData={categories.map((item) => {
             return {
               label: item.icon,
               amount: item.amount.planned,
             };
           })}
         />
-        <div className={classes.buttons}>
-          <Button
-            styleClass="extra"
-            onClick={() => {
-              dispatch(
-                uiActions.showCategoryPlanEditor({
-                  isExpense: true,
-                  showEditPlan: true,
-                })
-              );
-            }}
-          >
-            <span className={classes.edit}>지출 카테고리 편집</span>
-          </Button>
-          <Button
-            styleClass="extra"
-            onClick={() => {
-              dispatch(
-                uiActions.showCategoryPlanEditor({
-                  isExpense: false,
-                  showEditPlan: true,
-                })
-              );
-            }}
-          >
-            <span className={classes.edit}>수입 카테고리 편집</span>
-          </Button>
-        </div>
+        {/* Plan buttons */}
+        <CategoryPlanButtons />
       </div>
     </>
   );
-}
+};
 
 export default DefaultStatus;
