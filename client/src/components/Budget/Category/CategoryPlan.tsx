@@ -149,9 +149,8 @@ function CategoryPlan(props: { budgetId: string }) {
     setTotalPlanState(confirmedTotal);
   };
 
-  const focusTotalHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-    event.target.value = value;
+  const convertTotalHandler = (value: string) => {
+    return value.replace(/[^0-9]/g, '');
   };
 
   const sortHandler: OnDragEndResponder = (result) => {
@@ -177,8 +176,8 @@ function CategoryPlan(props: { budgetId: string }) {
             editClass={classes.totalEdit}
             cancelClass={classes.totalCancel}
             value={Amount.getAmountStr(totalPlanState)}
-            onFocus={focusTotalHandler}
             confirmHandler={confirmTotalHandler}
+            convertDefaultValue={convertTotalHandler}
           />
           {/* total - plan amount bars */}
           <AmountBars
