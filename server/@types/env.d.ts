@@ -20,5 +20,9 @@ declare namespace NodeJS {
     CRYPTO_KEY: string;
     CRYPTO_SALT: string;
     CRYPTO_ALGORITHM: string;
+
+    S3_ACESSKEYID: string;
+    S3_SECRETACCESSKEY: string;
+    S3_BUCKET_LOGS: string;
   }
 }

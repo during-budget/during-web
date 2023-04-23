@@ -13,9 +13,9 @@ import * as _stream from "stream";
 /* prodLogger */
 const stream = (level = "") =>
   new S3StreamLogger({
-    bucket: process.env.s3_bucket_logs,
-    access_key_id: process.env.s3_accessKeyId,
-    secret_access_key: process.env.s3_secretAccessKey,
+    bucket: process.env.S3_BUCKET_LOGS ?? "undefined",
+    access_key_id: process.env.S3_ACESSKEYID ?? "undefined",
+    secret_access_key: process.env.S3_SECRETACCESSKEY ?? "undefined",
     name_format: `${time_data}${level !== "" ? "." + level : ""}.log`,
   });
 
