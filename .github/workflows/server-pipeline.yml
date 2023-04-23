@@ -50,6 +50,9 @@ jobs:
           echo "SESSION_KEY= ${{secrets.SESSION_KEY}}" >> .env.production
           echo "NODEMAILER_USER= ${{secrets.NODEMAILER_USER}}" >> .env.production
           echo "NODEMAILER_PASS= ${{secrets.NODEMAILER_PASS}}" >> .env.production
+          echo "S3_ACESSKEYID= ${{secrets.S3_ACESSKEYID}}" >> .env.production
+          echo "S3_SECRETACCESSKEY= ${{secrets.S3_SECRETACCESSKEY}}" >> .env.production
+          echo "S3_BUCKET_LOGS= ${{S3_BUCKET_LOGS}}" >> .env.production
 
       # 빌드 후 푸쉬
       - name: Build and push
