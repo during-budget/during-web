@@ -100,10 +100,15 @@ const combined = (
   ].join(",");
 };
 
+const stream: StreamOptions = {
+  write: (message) => {
+    logger.http(message);
+  },
+};
 app.use(
   morgan(combined, {
     skip: (req, res) => req.url === "/index.html",
-    stream: logger.stream() as unknown as StreamOptions,
+    stream,
   })
 );
 
