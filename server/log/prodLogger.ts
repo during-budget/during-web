@@ -6,7 +6,7 @@ const S3StreamLogger = _S3StreamLogger.S3StreamLogger;
 import strftime from "strftime";
 
 const strftimeKOR = strftime.timezone("+0900");
-const time_data = strftimeKOR("%F", new Date());
+const time_data = () => strftimeKOR("%F", new Date());
 
 import * as _stream from "stream";
 
@@ -16,7 +16,8 @@ const stream = (level = "") =>
     bucket: process.env.S3_BUCKET_LOGS ?? "undefined",
     access_key_id: process.env.S3_ACESSKEYID ?? "undefined",
     secret_access_key: process.env.S3_SECRETACCESSKEY ?? "undefined",
-    name_format: `${time_data}${level !== "" ? "." + level : ""}.log`,
+    name_format: `${time_data()}${level !== "" ? "." + level : ""}.log`,
+    rotate_every: "day",
   });
 
 const prodLogger = winston.createLogger({
