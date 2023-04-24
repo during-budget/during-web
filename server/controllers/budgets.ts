@@ -292,7 +292,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
   }
 };
 
-export const updateCategoriesV2 = async (req: Request, res: Response) => {
+export const updateCategoriesV3 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("isExpense" in req.body) && !("isIncome" in req.body))

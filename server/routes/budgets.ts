@@ -9,7 +9,7 @@ router.put("/:_id/fix", budgets.fix);
 router.post("/", isLoggedIn, budgets.create);
 router.post("/basic", isLoggedIn, budgets.createWithBasic);
 
-router.put("/:_id/categories", isLoggedIn, budgets.updateCategoriesV2);
+router.patch("/:_id/categories", isLoggedIn, budgets.updateCategoriesV3);
 router.put(
   "/:_id/categories/:categoryId/amountPlanned",
   isLoggedIn,
