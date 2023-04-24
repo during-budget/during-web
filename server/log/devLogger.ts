@@ -2,8 +2,6 @@ import winston, { format } from "winston";
 const { combine, timestamp, printf, label } = format;
 import WinstonDaily from "winston-daily-rotate-file";
 
-import * as _stream from "stream";
-
 const devLogger = winston.createLogger({
   level: "http",
   format: combine(
@@ -45,18 +43,5 @@ const devLogger = winston.createLogger({
     }),
   ],
 });
-
-// devLogger.stream = {
-//   write: (message) => {
-//     devLogger.http(message);
-//   },
-// };
-
-devLogger.stream = (options?: any) =>
-  new _stream.Duplex({
-    write: (message: string) => {
-      devLogger.http(message);
-    },
-  });
 
 export { devLogger };

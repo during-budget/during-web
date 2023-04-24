@@ -6,19 +6,20 @@ const S3StreamLogger = _S3StreamLogger.S3StreamLogger;
 import strftime from "strftime";
 
 const strftimeKOR = strftime.timezone("+0900");
-const time_data = () => strftimeKOR("%F", new Date());
-
-import * as _stream from "stream";
 
 /* prodLogger */
-const stream = (level = "") =>
-  new S3StreamLogger({
+const stream = (level = "") => {
+  const time_data = strftimeKOR("%F", new Date());
+
+  return new S3StreamLogger({
     bucket: process.env.S3_BUCKET_LOGS ?? "undefined",
     access_key_id: process.env.S3_ACESSKEYID ?? "undefined",
     secret_access_key: process.env.S3_SECRETACCESSKEY ?? "undefined",
-    name_format: `${time_data()}${level !== "" ? "." + level : ""}.log`,
+    name_format: `${time_data}${level !== "" ? "." + level : ""}.log`,
     rotate_every: "day",
+    max_file_size: 2000000000, // 2gb
   });
+};
 
 const prodLogger = winston.createLogger({
   level: "http",
@@ -46,12 +47,5 @@ const prodLogger = winston.createLogger({
     }),
   ],
 });
-
-prodLogger.stream = (options?: any) =>
-  new _stream.Duplex({
-    write: (message: string) => {
-      prodLogger.http(message);
-    },
-  });
 
 export { prodLogger };
