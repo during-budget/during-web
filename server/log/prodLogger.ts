@@ -6,6 +6,8 @@ const S3StreamLogger = _S3StreamLogger.S3StreamLogger;
 import strftime from "strftime";
 
 const strftimeKOR = strftime.timezone("+0900");
+const time_data = () => strftimeKOR("%F", new Date());
+
 
 /* prodLogger */
 const stream = (level = "") => {
