@@ -9,7 +9,7 @@ const strftimeKOR = strftime.timezone("+0900");
 
 /* prodLogger */
 const stream = (level = "") => {
-  const time_data = strftimeKOR("%F", new Date());
+  const time_data = strftimeKOR("%F %T", new Date());
 
   return new S3StreamLogger({
     bucket: process.env.S3_BUCKET_LOGS ?? "undefined",
