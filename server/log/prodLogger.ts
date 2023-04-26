@@ -13,14 +13,13 @@ const time_data = () => strftimeKOR("%F", new Date());
 const stream = (level = "") => {
   const instanceId = new mongoose.Types.ObjectId();
   const time_data = strftimeKOR("%F %T", new Date());
-  console.log("instanceId: ", instanceId);
 
   return new S3StreamLogger({
     bucket: process.env.S3_BUCKET_LOGS ?? "undefined",
     folder: "raw",
     access_key_id: process.env.S3_ACESSKEYID ?? "undefined",
     secret_access_key: process.env.S3_SECRETACCESSKEY ?? "undefined",
-    name_format: `${time_data} ${instanceId}${
+    name_format: `${time_data} ${instanceId.toString()}${
       level !== "" ? "." + level : ""
     }.log`,
     rotate_every: "day",
