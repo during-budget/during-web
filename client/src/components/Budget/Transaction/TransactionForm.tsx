@@ -29,8 +29,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
 
   // get budget Data
-  const budgets = useAppSelector((state) => state.budget);
-  const { date } = budgets[props.budgetId];
+  const { date } = useAppSelector((state) => state.budget.current);
 
   const { mode, default: defaultValue } = useAppSelector(
     (state) => state.transaction.form

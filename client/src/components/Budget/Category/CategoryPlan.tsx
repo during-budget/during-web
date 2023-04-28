@@ -30,7 +30,7 @@ function CategoryPlan(props: { budgetId: string }) {
   const currentCategories = isExpense
     ? storedCategories.expense
     : storedCategories.income;
-  const { title } = useAppSelector((state) => state.budget)[props.budgetId];
+  const { title } = useAppSelector((state) => state.budget.current);
   const isDefaultBudget =
     props.budgetId === useAppSelector((state) => state.user.info.defaultBudgetId);
 

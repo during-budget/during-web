@@ -13,6 +13,8 @@ import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './Budget.module.css';
+import BudgetList from '../components/Budget/List/BudgetList';
+import { budgetActions } from '../store/budget';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -23,6 +25,7 @@ function Budget() {
   >;
 
   // set loaderData
+  dispatch(budgetActions.setCurrentBudget(data.budget));
   dispatch(totalActions.setTotalFromBudgetData(data.budget));
   dispatch(budgetCategoryActions.setCategoryFromData(data.budget.categories));
   dispatch(transactionActions.setTransactions(data.transactions));
@@ -48,6 +51,7 @@ function Budget() {
         <TransactionLayout budgetId={id} isDefault={isDefaultBudget} />
         {/* Overlays */}
         <CategoryPlan budgetId={id} />
+        <BudgetList />
       </main>
     </>
   );

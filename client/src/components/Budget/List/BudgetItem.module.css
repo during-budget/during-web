@@ -1,0 +1,35 @@
+.item .info {
+  text-align: center;
+  color: var(--primary);
+  transform: translateY(-1vh);
+}
+
+.item .info p {
+  font-size: 0.625rem;
+}
+
+.item .info h5 {
+  font-size: 1.125rem;
+}
+
+.item .add {
+  background-color: var(--gray-1);
+  box-sizing: border-box;
+  border: 1.25rem solid #fff;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item .add::after {
+  content: '+';
+  font-size: 1.8rem;
+  color: var(--secondary);
+}
+
+.item .button .info {
+  color: var(--secondary-text);
+}

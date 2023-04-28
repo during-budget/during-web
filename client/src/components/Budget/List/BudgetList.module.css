@@ -1,0 +1,25 @@
+.container {
+  text-align: left;
+}
+
+.container > .year {
+  padding-top: 1vh;
+}
+
+.container > .year,
+.container > nav {
+  width: 90vw;
+  margin: 0 auto;
+}
+
+.container > nav > ol {
+  padding: 0 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 5vh;
+}
+
+.container > ol > * {
+  margin-top: 1.6rem;
+}
