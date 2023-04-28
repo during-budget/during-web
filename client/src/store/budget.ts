@@ -3,38 +3,34 @@ import Budget from '../models/Budget';
 import { BudgetDataType } from '../util/api/budgetAPI';
 
 const initialState: {
-  [id: string]: Budget;
-} = {};
+  list: Budget[];
+  current: Budget;
+  default: Budget;
+} = {
+  list: [],
+  current: Budget.getEmptyBudget(),
+  default: Budget.getEmptyBudget(),
+};
 
 const budgetSlice = createSlice({
   name: 'budget',
   initialState,
   reducers: {
-    setBudgets(state, action: PayloadAction<BudgetDataType[]>) {
+    setBudgetList(state, action: PayloadAction<BudgetDataType[]>) {
       const budgets = action.payload;
-
-      // NOTE: Init state
-      for (const item in state) delete state[item];
-
-      budgets.forEach((item) => {
-        const budget = Budget.getBudgetFromData(item);
-        state[budget.id] = budget;
-      });
+      state.list = budgets.map((item) => Budget.getBudgetFromData(item));
     },
-    setBudget(state, action: PayloadAction<BudgetDataType>) {
-      const budgetData: BudgetDataType = action.payload;
-      const budget = Budget.getBudgetFromData(budgetData);
-
-      state[budget.id] = budget;
+    addBudgetItem(state, action: PayloadAction<BudgetDataType>) {
+      const budget = action.payload;
+      state.list.push(Budget.getBudgetFromData(budget));
     },
-    updateBudget(state, action: PayloadAction<Budget | BudgetDataType>) {
-      let budget = action.payload;
-
-      if (!('id' in budget)) {
-        budget = Budget.getBudgetFromData(budget);
-      }
-
-      state[budget.id] = budget;
+    setCurrentBudget(state, action: PayloadAction<BudgetDataType>) {
+      const budgetData = action.payload;
+      state.current = Budget.getBudgetFromData(budgetData);
+    },
+    setDefaultBudget(state, action: PayloadAction<BudgetDataType>) {
+      const budgetData = action.payload;
+      state.default = Budget.getBudgetFromData(budgetData);
     },
   },
 });

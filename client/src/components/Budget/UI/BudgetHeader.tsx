@@ -1,29 +1,41 @@
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { useAppSelector } from '../../../hooks/redux-hook';
+import { uiActions } from '../../../store/ui';
 import { getNumericDotDateString } from '../../../util/date';
 import NavButton from '../../UI/NavButton';
 import classes from './BudgetHeader.module.css';
+import dayjs from 'dayjs';
 
 function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
-  const { budgetId, isDefault } = props;
+  const dispatch = useDispatch();
+
+  const { isDefault } = props;
 
   // get budget Data
-  const budgets = useAppSelector((state) => state.budget);
-  const { title, date } = budgets[budgetId];
+  const { title, date } = useAppSelector((state) => state.budget.current);
 
   // get location
   const location = useLocation();
   const from = location.state?.from?.pathname;
+
+  // for budget list
+  const openBudgetList = () => {
+    dispatch(uiActions.showBudgetList(true));
+  };
+
+  const closeBudgetList = () => {
+    dispatch(uiActions.showBudgetList(false));
+  };
 
   // set button
   const defaultButton = (
     <NavButton className={classes.back} to={from || '/user'} isNext={false} />
   );
 
-  // TODO: BudgetList 구현
-  const hamburgerButton = (
-    <button type="button">
-      <i className="fa-solid fa-bars"></i>
+  const calendarButton = (
+    <button type="button" onClick={openBudgetList}>
+      <i className="fa-regular fa-calendar"></i>
     </button>
   );
 
@@ -32,15 +44,17 @@ function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
   const dateHeader = (
     <>
       <span>{getNumericDotDateString(date.start)}</span>
-      <span>{getNumericDotDateString(date.end)}</span>
       <span> ~ </span>
+      <span>{getNumericDotDateString(date.end)}</span>
     </>
   );
 
   const top = (
     <>
-      {isDefault ? defaultButton : hamburgerButton}
-      <div className={classes.date}>{isDefault ? defaultHeader : dateHeader}</div>
+      {isDefault ? defaultButton : calendarButton}
+      <div className={classes.date} onClick={openBudgetList}>
+        {isDefault ? defaultHeader : dateHeader}
+      </div>
       {/* TODO: Search 구현 */}
       <button type="button">
         <i className="fa-solid fa-magnifying-glass"></i>
@@ -48,22 +62,32 @@ function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
     </>
   );
 
-  // TODO: 이전/이후 budget id 가져오기 - 이동 구현
+  const prevDate = dayjs(date.start).add(-1, 'month');
+  const nextDate = dayjs(date.start).add(1, 'month');
+
   const bottom = isDefault ? (
-    <h1>{title}</h1>
+    <h1 onClick={openBudgetList}>{title}</h1>
   ) : (
     <>
-      <NavButton to="/budget" isNext={false} />
+      <NavButton
+        to={`/budget?year=${prevDate.year()}&month=${prevDate.month() + 1}`}
+        isNext={false}
+      />
       <h1>{title}</h1>
-      <NavButton to="/budget" isNext={true} />
+      <NavButton
+        to={`/budget?year=${nextDate.year()}&month=${nextDate.month() + 1}`}
+        isNext={true}
+      />
     </>
   );
 
   return (
-    <header className={classes.header}>
-      <div className={classes.top}>{top}</div>
-      <div className={classes.bottom}>{bottom}</div>
-    </header>
+    <>
+      <header className={classes.header}>
+        <div className={classes.top}>{top}</div>
+        <div className={classes.bottom}>{bottom}</div>
+      </header>
+    </>
   );
 }
 

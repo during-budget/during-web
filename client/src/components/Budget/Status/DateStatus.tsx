@@ -9,8 +9,7 @@ import StatusHeader from './StatusHeader';
 
 function DateStatus(props: { budgetId: string }) {
   // get budget Data
-  const budgets = useAppSelector((state) => state.budget);
-  const { title, date } = budgets[props.budgetId];
+  const { title, date } = useAppSelector((state) => state.budget.current);
 
   const transactions = useAppSelector((state) => state.transaction.data);
 
