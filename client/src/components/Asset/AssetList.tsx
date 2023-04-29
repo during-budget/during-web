@@ -1,32 +1,28 @@
-import { AssetDataType, CardDataType } from '../../util/api/assetAPI';
+import Amount from '../../models/Amount';
+import { AssetProps } from '../../screens/Asset';
+import Icon from '../UI/Icon';
+import classes from './AssetList.module.css';
+import CardList from './CardList';
 
-interface AssetListProps {
-  assets: AssetDataType[];
-  cards: CardDataType[];
-}
-
-const AssetList = ({ assets, cards }: AssetListProps) => {
+const AssetList = ({ assets, cards }: AssetProps) => {
   return (
     <section>
-      <ul>
+      <ul className={classes.list}>
         {assets.map((asset) => {
+          const assetCards = cards.filter((card) => card.linkedAssetId === asset._id);
           return (
-            <li key={asset._id}>
-              <p>
-                {asset.icon} {asset.title}
-              </p>
-              <p>{asset.amount}</p>
-              <p>
-                {cards.map((card) => {
-                  if (card.linkedAssetId === asset._id) {
-                    return (
-                      <span key={card._id}>
-                        {card.icon} {card.title}
-                      </span>
-                    );
-                  }
-                })}
-              </p>
+            <li key={asset._id} className={classes.item}>
+              <div className={classes.asset}>
+                <div className={classes.info}>
+                  <Icon>{asset.icon}</Icon>
+                  <div className={classes.titles}>
+                    <p className={classes.type}>계좌</p>
+                    <p className={classes.title}>{asset.title}</p>
+                  </div>
+                </div>
+                <p className={classes.amount}>{Amount.getAmountStr(asset.amount)}</p>
+              </div>
+              <CardList className={classes.cards} cards={assetCards} />
             </li>
           );
         })}

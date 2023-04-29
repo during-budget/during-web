@@ -1,0 +1,15 @@
+.container {
+  margin: 0 auto;
+  width: 70vw;
+  text-align: center;
+}
+
+.bars {
+  height: 3.5rem;
+}
+
+.total {
+  font-size: 2.5rem;
+  padding: 10vw;
+  border-radius: 0.4rem;
+}
