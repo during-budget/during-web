@@ -1,0 +1,45 @@
+.list {
+  padding: 0 5vw;
+  margin-top: 5vh;
+  margin-bottom: 20vh;
+}
+
+.item {
+  margin-bottom: 5vh;
+}
+
+.asset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titles {
+  font-weight: 600;
+}
+
+.type {
+  font-size: var(--size-7);
+}
+
+.title {
+  font-size: var(--size-4);
+}
+
+.amount {
+  flex-shrink: 0;
+  font-size: var(--size-3);
+  font-weight: 600;
+  text-align: right;
+}
+
+.cards {
+  margin-top: 0.5vh;
+  margin-left: 3rem;
+}

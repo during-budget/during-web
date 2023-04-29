@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vw 1vw;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 5vh;
+  overflow: scroll;
+  background-color: var(--gray-1);
+  padding: 1vh 2vh;
+  border-radius: 0.4rem;
+  font-weight: 600;
+}
+
+.type {
+  font-size: var(--size-8);
+}
+
+.title {
+  font-weight: 800;
+}
