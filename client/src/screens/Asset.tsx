@@ -1,10 +1,13 @@
 import AssetList from '../components/Asset/AssetList';
 import AssetStatus from '../components/Asset/AssetStatus';
-import PaymentStatus from '../components/Asset/PaymentStatus';
+import CardStatus from '../components/Asset/CardStatus';
 import Carousel from '../components/UI/Carousel';
+import { useAppSelector } from '../hooks/redux-hook';
 import classes from './Asset.module.css';
 
 const Asset = () => {
+  const { assets, cards } = useAppSelector((state) => state.asset);
+
   return (
     <>
       <header className={classes.header}>
@@ -12,11 +15,11 @@ const Asset = () => {
       </header>
       <main>
         <Carousel id="asset-payment-status" itemClassName={classes.status}>
-          <AssetStatus />
-          <PaymentStatus />
+          <AssetStatus assets={assets} />
+          <CardStatus cards={cards} />
         </Carousel>
         <hr />
-        <AssetList />
+        <AssetList assets={assets} cards={cards} />
       </main>
     </>
   );

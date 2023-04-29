@@ -6,6 +6,7 @@ import uiReducer from './ui';
 import userReducer from './user';
 import userCategoryReducer from './user-category';
 import totalCategoryReducer from './total';
+import assetReducer from './asset';
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     total: totalCategoryReducer,
     budgetCategory: budgetCategoryReducer,
     transaction: transactionReducer,
+    asset: assetReducer,
     ui: uiReducer,
   },
   middleware: (getDefaultMiddleware) =>
