@@ -1,0 +1,11 @@
+.header {
+  text-align: center;
+  margin-top: 10vh;
+}
+
+.status {
+  width: calc(100% - 20vw) !important;
+  margin-bottom: 3vh;
+  padding: 0 10vw;
+  width: calc(100% - 20vw) !important;
+}

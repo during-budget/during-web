@@ -7,7 +7,7 @@ function Nav() {
 
   const navData = [
     { path: '/budget', icon: <i className="fa-solid fa-home"></i> },
-    { path: '/during', icon: <i className="fa-solid fa-circle-dot"></i> },
+    { path: '/asset', icon: <i className="fa-solid fa-sack-dollar"></i> },
     { path: '/user', icon: <i className="fa-solid fa-user"></i> },
   ];
 

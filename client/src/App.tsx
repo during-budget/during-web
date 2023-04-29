@@ -9,6 +9,7 @@ import CurrentBudgetNavigator, {
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import User from './screens/User';
+import Asset from './screens/Asset';
 
 const router = createBrowserRouter([
   {
@@ -48,12 +49,20 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: '/during',
+        path: '/asset',
         element: <Nav />,
+        errorElement: <ErrorBoundary />,
+        children: [
+          {
+            path: '/asset',
+            element: <Asset />,
+          },
+        ],
       },
       {
         path: '/user',
         element: <Nav />,
+        errorElement: <ErrorBoundary />,
         children: [
           {
             path: '/user',
