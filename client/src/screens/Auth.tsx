@@ -10,6 +10,7 @@ import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
 import { useAppDispatch } from '../hooks/redux-hook';
+import { assetActions } from '../store/asset';
 
 function Auth() {
   const dispatch = useAppDispatch();
@@ -31,12 +32,27 @@ function Auth() {
 
   const getUserLogin = async (user: UserDataType) => {
     // get user data
-    const { userName, email, basicBudgetId: defaultBudgetId } = user;
+    const {
+      userName,
+      email,
+      basicBudgetId: defaultBudgetId,
+      categories,
+      assets,
+      cards,
+      paymentMethods,
+    } = user;
 
     // set user data
     dispatch(userActions.login());
-    dispatch(userActions.setUserInfo({ userName, email, defaultBudgetId }));
-    dispatch(userCategoryActions.setCategories(user.categories));
+    dispatch(
+      userActions.setUserInfo({
+        userName,
+        email,
+        defaultBudgetId,
+      })
+    );
+    dispatch(userCategoryActions.setCategories(categories));
+    dispatch(assetActions.setAssets({ assets, cards, paymentMethods }));
 
     // set default budget data
     const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);
