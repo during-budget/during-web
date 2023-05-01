@@ -26,9 +26,7 @@ function CategoryStatus(props: { budgetId: string }) {
   }, [storedCategories]);
 
   // Get category data
-  const categories = storedCategories.filter((item) => {
-    return isExpense ? item.isExpense : !item.isExpense;
-  });
+  const categories = isExpense ? storedCategories.expense : storedCategories.income;
 
   const categoryNames = categories.map((item) => `${item.icon} ${item.title}`);
 

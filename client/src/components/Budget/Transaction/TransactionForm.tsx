@@ -23,6 +23,7 @@ import TitleInput from '../Input/TitleInput';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
+import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 
 function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
@@ -81,16 +82,17 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     // send request
     if (mode.isEdit) {
       const { transaction: transactionData } = await updateTransaction(transaction);
-      dispatch(
+      await dispatch(
         transactionActions.updateTransactionFromData({
           id: transactionData._id,
           transactionData,
         })
-      );
+      ); // NOTE: await for scroll
     } else {
       const { transaction: createdTransaction } = await createTransaction(transaction);
       transaction.id = createdTransaction._id;
       transaction.linkId = createdTransaction.linkId || undefined;
+      await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
     }
 
     // add linkId to scheduled
@@ -103,8 +105,6 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       );
     }
 
-    // add or replace
-    await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
     dispatchAmount(transaction);
 
     // scroll
@@ -132,6 +132,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     dispatch(
       budgetCategoryActions.updateCategoryAmount({
         categoryId,
+        isExpense,
         [key]: updatedAmount,
       })
     );
@@ -320,13 +321,13 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       {isDefault && (
         <p className={classes.info}>ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요</p>
       )}
-      {/* <BudgetCategorySetting
+      <BudgetCategorySetting
         budgetId={props.budgetId}
         isExpense={isExpense}
         isOpen={isEditSetting}
         setIsOpen={setIsEditSetting}
         sendRequest={true}
-      /> */}
+      />
     </Overlay>
   );
 }

@@ -20,11 +20,9 @@ const DefaultStatus = (props: { budgetId: string }) => {
   const total = useAppSelector((state) => state.total);
   const totalAmount = isExpense ? total.expense : total.income;
 
-  const categories = getFilteredCategories({
-    categories: useAppSelector((state) => state.budgetCategory),
-    isExpense,
-    includeDefault: true,
-  });
+  const categories = useAppSelector((state) =>
+    isExpense ? state.budgetCategory.expense : state.budgetCategory.income
+  );
 
   // 예정 내역이 추가될 경우 -> 목표가 예정보다 작으면 업데이트
   useEffect(() => {
@@ -41,6 +39,7 @@ const DefaultStatus = (props: { budgetId: string }) => {
         dispatch(
           budgetCategoryActions.updateCategoryAmount({
             categoryId: item.id,
+            isExpense,
             planned: amount.scheduled,
           })
         );

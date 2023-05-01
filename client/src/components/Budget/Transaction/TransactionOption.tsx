@@ -132,6 +132,7 @@ function TransactionOption(props: {
       dispatch(
         budgetCategoryActions.updateCategoryAmount({
           categoryId,
+          isExpense,
           [key]: -amount,
         })
       );

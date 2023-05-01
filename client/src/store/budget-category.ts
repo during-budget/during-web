@@ -2,7 +2,10 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Category from '../models/Category';
 import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
 
-const initialState: Category[] = [];
+const initialState: { income: Category[]; expense: Category[] } = {
+  income: [],
+  expense: [],
+};
 
 const budgetCategorySlice = createSlice({
   name: 'budget-category',
@@ -12,12 +15,25 @@ const budgetCategorySlice = createSlice({
       const categories = action.payload;
 
       // NOTE: Init state
-      state.length = 0;
+      state.income.length = 0;
+      state.expense.length = 0;
 
       categories.forEach((item) => {
         const category = Category.getCategoryFromData(item);
-        state.push(category);
+        if (category.isExpense) {
+          state.expense.push(category);
+        } else {
+          state.income.push(category);
+        }
       });
+    },
+    updateCategory(
+      state,
+      action: PayloadAction<{ isExpense: boolean; categories: Category[] }>
+    ) {
+      const { isExpense, categories } = action.payload;
+      const key = isExpense ? 'expense' : 'income';
+      state[key] = categories;
     },
     updateCategoryFromSetting(
       state,
@@ -41,40 +57,46 @@ const budgetCategorySlice = createSlice({
       // update state - get removing idx & update data & remove data
       const removingIdx: number[] = [];
 
-      state.forEach((item, i) => {
-        const isRemoved = removingId.includes(item.id);
-        const updatingData = updatingObj.get(item.id);
+      for (const i in state) {
+        const key = i === 'income' ? 'income' : 'expense';
 
-        if (isRemoved) {
-          removingIdx.push(i);
-        }
+        state[key].forEach((item, i) => {
+          const isRemoved = removingId.includes(item.id);
+          const updatingData = updatingObj.get(item.id);
 
-        if (updatingData) {
-          state[i].title = updatingData.title;
-          state[i].icon = updatingData.icon;
-        }
-      });
+          if (isRemoved) {
+            removingIdx.push(i);
+          }
 
-      removingIdx.forEach((idx) => {
-        state.splice(idx, 1);
-      });
+          if (updatingData) {
+            state[key][i].title = updatingData.title;
+            state[key][i].icon = updatingData.icon;
+          }
+        });
+
+        removingIdx.forEach((idx) => {
+          state[key].splice(idx, 1);
+        });
+      }
     },
     updateCategoryAmount(
       state,
       action: PayloadAction<{
         categoryId: string;
+        isExpense: boolean;
         current?: number;
         scheduled?: number;
         planned?: number;
       }>
     ) {
-      const { categoryId, current, scheduled, planned } = action.payload;
+      const { categoryId, current, isExpense, scheduled, planned } = action.payload;
 
-      const idx = state.findIndex((item) => item.id === categoryId);
+      const key = isExpense ? 'expense' : 'income';
+      const idx = state[key].findIndex((item) => item.id === categoryId);
 
-      if (state[idx]) {
-        state[idx] = Category.getCategoryUpdatedAmount({
-          prevCategory: state[idx] as Category,
+      if (state[key][idx]) {
+        state[key][idx] = Category.getCategoryUpdatedAmount({
+          prevCategory: state[key][idx] as Category,
           current,
           scheduled,
           planned,

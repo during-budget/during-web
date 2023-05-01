@@ -28,8 +28,8 @@ const CategoryInput = React.forwardRef(
     // Set category data
     const storedCategories = useAppSelector((state) => state.budgetCategory);
     const filteredCategories = useMemo(
-      () => storedCategories.filter((item: Category) => item.isExpense === isExpense),
-      [storedCategories]
+      () => (isExpense ? storedCategories.expense : storedCategories.income),
+      [storedCategories, isExpense]
     );
 
     // Set state
@@ -53,15 +53,12 @@ const CategoryInput = React.forwardRef(
 
     // NOTE: 수입/지출 변경 시 카테고리 업데이트
     useEffect(() => {
-      const filteredCategories = Object.values(storedCategories).filter(
-        (item: Category) => item.isExpense === isExpense
-      );
       const defaultValue = filteredCategories[filteredCategories.length - 1]?.id;
 
       setDefaultValue(defaultValue);
       setCategories(filteredCategories);
       setCategoryList(getCategoryList(filteredCategories));
-    }, [isExpense, storedCategories]);
+    }, [isExpense, filteredCategories]);
 
     // NOTE: TransactionForm의 수입/지출 변경 반영
     useEffect(() => {

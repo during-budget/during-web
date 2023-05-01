@@ -97,6 +97,9 @@ const transactionSlice = createSlice({
         Transaction.getTransactionFromData(item)
       );
 
+      // sort by date
+      transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+
       state.data = transactions;
     },
     addTransaction(state, action: PayloadAction<Transaction>) {
@@ -104,14 +107,7 @@ const transactionSlice = createSlice({
 
       const transactions = state.data;
 
-      const idx = transactions.findIndex((item) => item.id === transaction.id);
-
-      if (idx === -1) {
-        transactions.unshift(transaction);
-      } else {
-        transactions[idx] = transaction;
-      }
-
+      transactions.unshift(transaction);
       transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
     },
     removeTransaction(state, action: PayloadAction<string>) {
@@ -128,13 +124,13 @@ const transactionSlice = createSlice({
       }>
     ) {
       const { id, transactionData } = action.payload;
+
       const idx = state.data.findIndex((item) => item.id === id);
       state.data[idx] = Transaction.getTransactionFromData(transactionData);
+
+      state.data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
     },
-    addLink(
-      state,
-      action: PayloadAction<{ targetId: string; linkId: string }>
-    ) {
+    addLink(state, action: PayloadAction<{ targetId: string; linkId: string }>) {
       const { targetId, linkId } = action.payload;
 
       const transactions = state.data;
@@ -160,10 +156,7 @@ const transactionSlice = createSlice({
         transactions[idx] = target;
       }
     },
-    updateOverAmount(
-      state,
-      action: PayloadAction<{ id: string; amount: number }>
-    ) {
+    updateOverAmount(state, action: PayloadAction<{ id: string; amount: number }>) {
       const { id, amount } = action.payload;
 
       const transactions = state.data;

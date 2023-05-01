@@ -15,35 +15,24 @@ function UserCategorySetting(props: {
 }) {
   const dispatch = useAppDispatch();
 
-  const storedCategories = useAppSelector((state) => state.userCategory);
-
   const [isExpense, setIsExpense] = useState(true);
   const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);
   const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category | undefined>(undefined);
 
+  const storedCategories = useAppSelector((state) => state.userCategory);
+  const currentCategories = isExpense
+    ? storedCategories.expense
+    : storedCategories.income;
+
   // Set categories
   useEffect(() => {
-    setExpenseCategories([]);
-    setIncomeCategories([]);
-
-    storedCategories.forEach((item: Category) => {
-      if (item.isDefault) {
-        return;
-      }
-
-      if (item.isExpense) {
-        setExpenseCategories((prev) => [...prev, item]);
-      } else {
-        setIncomeCategories((prev) => [...prev, item]);
-      }
-    });
+    setExpenseCategories(storedCategories.expense.filter((item) => !item.isDefault));
+    setIncomeCategories(storedCategories.income.filter((item) => !item.isDefault));
   }, [storedCategories, props.isOpen]);
 
   useEffect(() => {
-    const currentDefault = storedCategories.find(
-      (item: Category) => item.isDefault && item.isExpense === isExpense
-    );
+    const currentDefault = currentCategories.find((item: Category) => item.isDefault);
     setDefaultCategory(currentDefault);
   }, [isExpense]);
 
@@ -59,7 +48,6 @@ function UserCategorySetting(props: {
 
     // get response
     const { categories } = await updateCategories({
-      isExpense,
       categoryData: updatingCategories,
     });
 
