@@ -1,0 +1,65 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1vh;
+}
+
+.container.dragging {
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
+}
+
+.sm {
+  width: 10%;
+}
+
+.md {
+  width: 20%;
+}
+
+.lg {
+  width: 30%;
+}
+
+.buttons {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttons > * {
+  font-size: var(--size-10);
+}
+
+.buttons .pencil::before {
+  content: '\f303';
+  font: var(--fa-font-solid);
+}
+
+.buttons .confirm::before {
+  content: '\f00c';
+  font: var(--fa-font-solid);
+}
+
+.buttons .trash::before {
+  content: '\f2ed';
+  font: var(--fa-font-solid);
+}
+
+.buttons .handle::before {
+  content: '\f0c9';
+  font: var(--fa-font-solid);
+}
+
+/* NOTE: Button 컴포넌트 스타일과 동일 */
+.buttons .handle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-weight: 600;
+  border-radius: var(--size-10);
+}

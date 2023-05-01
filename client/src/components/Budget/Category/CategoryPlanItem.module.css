@@ -1,63 +1,43 @@
-.container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1vh;
-}
-
-.container.dragging {
-    background-color: #fff;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0px 4px 60px rgb(99 99 99 / 20%);
-}
-
 .content {
-    width: 90%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .content .info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .content input {
-    width: 35vw;
-    height: 5vh;
-    text-align: right;
-    scroll-margin: 5vh;
-}
-
-.handle::before {
-    content: '\f0c9';
-    font: var(--fa-font-solid);
-    font-size: 0.5rem;
+  width: 35vw;
+  height: 5vh;
+  text-align: right;
+  scroll-margin: 5vh;
 }
 
 .title {
-    font-weight: 600;
-    line-height: 1.5;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .detail {
-    width: 100%;
-    font-size: var(--size-8);
+  width: 100%;
+  font-size: var(--size-8);
 }
 
 .detail p {
-    display: flex;
-    gap: 2vw;
-    line-height: 1.125;
+  display: flex;
+  gap: 2vw;
+  line-height: 1.125;
 }
 
 .detail .label {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .detail .amount {
-    font-weight: 200;
+  font-weight: 200;
 }

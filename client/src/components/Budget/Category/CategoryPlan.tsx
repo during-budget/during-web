@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { OnDragEndResponder } from 'react-beautiful-dnd';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
@@ -153,14 +152,6 @@ function CategoryPlan(props: { budgetId: string }) {
     return value.replace(/[^0-9]/g, '');
   };
 
-  const sortHandler: OnDragEndResponder = (result) => {
-    if (!result.destination) return;
-    const items = [...categoryState];
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setCategoryState(items);
-  };
-
   return (
     <>
       <Overlay
@@ -191,7 +182,11 @@ function CategoryPlan(props: { budgetId: string }) {
           {/* category - plan editors (with current, scheudled amount) */}
           <ul className={classes.list}>
             <h5>목표 예산</h5>
-            <DraggableList id="category-plan-draggable-list" sortHandler={sortHandler}>
+            <DraggableList
+              id="category-plan-draggable-list"
+              list={categoryState}
+              setList={setCategoryState}
+            >
               {categoryState.map((item: any, i: number) => (
                 <CategoryPlanItem
                   key={item.id}

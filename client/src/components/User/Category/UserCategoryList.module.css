@@ -1,50 +1,72 @@
 .container {
-    height: 48vh;
-    overflow: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: 0;
+  height: 48vh;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: 0;
 }
 
 .container::-webkit-scrollbar {
-    display: none;
+  display: none;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.info .icon {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.75rem;
+}
+
+.info span.title {
+  font-size: var(--size-5);
+  overflow-x: scroll;
+}
+
+.info input.title {
+  width: 60%;
+  height: 3rem;
 }
 
 .add {
-    height: 4rem;
+  height: 4rem;
 }
 
 .default {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    background-color: var(--gray-1);
-    padding: 1rem;
-    border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--gray-1);
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
 .default .icon {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.75rem;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.75rem;
 }
 
 .default .inputs {
-    display: flex;
-    gap: 1rem;
-    width: 80%;
+  display: flex;
+  gap: 1rem;
+  width: 80%;
 }
 
 .default .title {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .default .label {
-    display: inline-block;
-    width: 1.875rem;
-    text-align: center;
-    padding: 0.2rem 0.5rem;
-    background-color: var(--primary);
-    color: #fff;
-    border-radius: 0.2rem;
+  display: inline-block;
+  width: 1.875rem;
+  text-align: center;
+  padding: 0.2rem 0.5rem;
+  background-color: var(--primary);
+  color: #fff;
+  border-radius: 0.2rem;
 }

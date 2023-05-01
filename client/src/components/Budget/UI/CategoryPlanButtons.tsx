@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
-import Button from '../../UI/Button';
+import EditButton from '../../UI/EditButton';
 import classes from './CategoryPlanButtons.module.css';
 
 const CategoryPlanButtons = () => {
@@ -18,22 +18,18 @@ const CategoryPlanButtons = () => {
 
   return (
     <div className={classes.buttons}>
-      <Button
-        styleClass="extra"
+      <EditButton
         onClick={() => {
           openCategoryPlan({ isExpense: true });
         }}
-      >
-        <span className={classes.edit}>지출 세부 목표 설정</span>
-      </Button>
-      <Button
-        styleClass="extra"
+        label="지출 세부 목표 설정"
+      />
+      <EditButton
         onClick={() => {
           openCategoryPlan({ isExpense: false });
         }}
-      >
-        <span className={classes.edit}>수입 세부 목표 설정</span>
-      </Button>
+        label="수입 세부 목표 설정"
+      />
     </div>
   );
 };
