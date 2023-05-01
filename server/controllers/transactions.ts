@@ -625,23 +625,28 @@ export const remove = async (req: Request, res: Response) => {
         }
       }
     }
-    if ((isUserUpdated = true)) user.saveReqUser();
+    if (isUserUpdated) user.saveReqUser();
     await transaction.remove();
 
     budget.categories[categoryIdx] = category;
     budget.isModified("categories");
     await budget.save();
 
+    let transactionLinked: HydratedDocument<ITransaction> | null = null;
     if (transaction.linkId) {
-      const _transaction = await Transaction.findById(transaction.linkId);
-      if (_transaction) {
-        _transaction.linkId = undefined;
-        _transaction.overAmount = undefined;
-        await _transaction.save();
+      transactionLinked = await Transaction.findById(transaction.linkId);
+      if (transactionLinked) {
+        transactionLinked.linkId = undefined;
+        transactionLinked.overAmount = undefined;
+        await transactionLinked.save();
       }
     }
 
-    return res.status(200).send();
+    return res.status(200).send({
+      transactionLinked: transactionLinked ?? undefined,
+      budget,
+      assets: isUserUpdated ? user.assets : undefined,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
