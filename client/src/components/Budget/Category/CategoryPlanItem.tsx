@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
 import Amount from '../../../models/Amount';
+import DraggableItem from '../../UI/DraggableItem';
 import Icon from '../../UI/Icon';
 import classes from './CategoryPlanItem.module.css';
 
@@ -52,55 +52,36 @@ function CategoryPlanItem(props: {
   };
 
   return (
-    <Draggable draggableId={props.id} key={props.id} index={props.idx}>
-      {(provided, snapshot) => {
-        const lockedProvided = lockXAxis(provided);
-        return (
-          <li
-            key={props.idx}
-            {...lockedProvided.draggableProps}
-            ref={lockedProvided.innerRef}
-            className={`${classes.container} ${
-              snapshot.isDragging ? classes.dragging : ''
-            }`}
-          >
-            <div className={classes.content}>
-              <div className={classes.info}>
-                <Icon>{props.icon}</Icon>
-                <div>
-                  <p className={classes.title}>{props.title}</p>
-                  <div className={classes.detail}>
-                    <p>
-                      <span className={classes.label}>예정</span>
-                      <span className={classes.amount}>
-                        {props.amount.getScheduledStr()}
-                      </span>
-                    </p>
-                    {!props.hideCurrent && (
-                      <p>
-                        <span className={classes.label}>현재</span>
-                        <span className={classes.amount}>
-                          {props.amount.getCurrentStr()}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {/* TODO: number input으로 대체 */}
-              <input
-                type="text"
-                value={plan}
-                onChange={changeHandler}
-                onFocus={focusHandler}
-                onBlur={blurHandler}
-              ></input>
+    <DraggableItem id={props.id} idx={props.idx}>
+      <div className={classes.content}>
+        <div className={classes.info}>
+          <Icon>{props.icon}</Icon>
+          <div>
+            <p className={classes.title}>{props.title}</p>
+            <div className={classes.detail}>
+              <p>
+                <span className={classes.label}>예정</span>
+                <span className={classes.amount}>{props.amount.getScheduledStr()}</span>
+              </p>
+              {!props.hideCurrent && (
+                <p>
+                  <span className={classes.label}>현재</span>
+                  <span className={classes.amount}>{props.amount.getCurrentStr()}</span>
+                </p>
+              )}
             </div>
-            <div {...lockedProvided.dragHandleProps} className={classes.handle} />
-          </li>
-        );
-      }}
-    </Draggable>
+          </div>
+        </div>
+        {/* TODO: number input으로 대체 */}
+        <input
+          type="text"
+          value={plan}
+          onChange={changeHandler}
+          onFocus={focusHandler}
+          onBlur={blurHandler}
+        ></input>
+      </div>
+    </DraggableItem>
   );
 }
 
