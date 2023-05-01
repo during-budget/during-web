@@ -627,6 +627,28 @@ export const find = async (req: Request, res: Response) => {
       //   }),
       // });
     }
+    if ("year" in req.query) {
+      const year = parseInt(req.query.year as string);
+      if ("month" in req.query) {
+        const month = parseInt(req.query.month as string);
+        const budget = await Budget.findOne({
+          userId: user._id,
+          startDate: new Date(year, month - 1, 1, 9),
+        });
+        if (!budget) {
+          return res.status(404).send({ message: "budget not found" });
+        }
+        return res.status(200).send({ budget });
+      }
+      const budgets = await Budget.find({
+        userId: user._id,
+        startDate: {
+          $gte: new Date(year, 0, 1, 9),
+          $lte: new Date(year, 11, 1, 9),
+        },
+      });
+      return res.status(200).send({ budgets });
+    }
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ budgets });
   } catch (err: any) {
