@@ -100,13 +100,17 @@ export const create = async (req: Request, res: Response) => {
       else budget.incomeCurrent += transaction.amount;
 
       if (transaction.linkedPaymentMethodId) {
-        const isUserUpdated = user.execPM({
-          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-          amount: transaction.amount,
-          isExpense: transaction.isExpense!,
-        });
-        if (isUserUpdated) await user.saveReqUser();
+        const linkedAssetUpdate =
+          "linkedAssetUpdate" in req.body ? req.body.linkedAssetUpdate : true;
+        if (linkedAssetUpdate) {
+          const isUserUpdated = user.execPM({
+            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+            linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+            amount: transaction.amount,
+            isExpense: transaction.isExpense!,
+          });
+          if (isUserUpdated) await user.saveReqUser();
+        }
       }
     }
     await budget.save();
