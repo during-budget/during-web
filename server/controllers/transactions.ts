@@ -181,24 +181,30 @@ export const updateV2 = async (req: Request, res: Response) => {
         transaction.linkedPaymentMethodId?.toString() !==
         req.body?.linkedPaymentMethodId,
       user: false,
+      transactionLinked: false,
     };
+
+    let budget: HydratedDocument<IBudget, IBudgetProps> | null = null;
+    let transactionLinked: HydratedDocument<ITransaction> | null = null;
 
     if (
       isUpdated["categoryId"] ||
       isUpdated["amount"] ||
       isUpdated["isCurrent"]
     ) {
-      const budget = await Budget.findById(transaction.budgetId);
+      budget = await Budget.findById(transaction.budgetId);
       if (!budget)
         return res
           .status(404)
           .send({ message: `budget(${transaction.budgetId}) not found` });
 
-      const transactionLinked = await Transaction.findById(transaction?.linkId);
-      if (transaction.linkId && !transactionLinked) {
-        return res
-          .status(404)
-          .send({ message: "linked transaction not found " });
+      if (transaction?.linkId) {
+        transactionLinked = await Transaction.findById(transaction.linkId);
+        if (!transactionLinked) {
+          return res
+            .status(404)
+            .send({ message: "linked transaction not found " });
+        }
       }
 
       if (isUpdated["categoryId"]) {
@@ -310,6 +316,7 @@ export const updateV2 = async (req: Request, res: Response) => {
           transactionLinked.category = {
             ...newCategory,
           };
+          isUpdated["transactionLinked"] = true;
         }
 
         budget.categories[oldCategoryIdx] = oldCategory;
@@ -335,14 +342,10 @@ export const updateV2 = async (req: Request, res: Response) => {
 
         // 1. scheduled transaction
         if (!transaction.isCurrent) {
-          if (transaction.linkId) {
-            const transactionLinked = await Transaction.findById(
-              transaction.linkId
-            );
-            if (!transactionLinked) return res.status(404).send({});
+          if (transactionLinked) {
             transactionLinked.overAmount =
               (transactionLinked.overAmount ?? 0) - diff;
-            await transactionLinked.save();
+            isUpdated["transactionLinked"] = true;
           }
           category.amountScheduled += diff;
 
@@ -353,7 +356,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         }
         // 2. current transaction
         else {
-          if (transaction.linkId) {
+          if (transactionLinked) {
             transaction.overAmount = (transaction.overAmount ?? 0) + diff;
           }
           category.amountCurrent += diff;
@@ -456,7 +459,9 @@ export const updateV2 = async (req: Request, res: Response) => {
       }
 
       budget.isModified("categories");
-      await transactionLinked?.save();
+      if (isUpdated["transactionLinked"]) {
+        await transactionLinked?.save();
+      }
       await budget.save();
     }
     if (isUpdated["linkedPaymentMethodId"]) {
@@ -505,7 +510,14 @@ export const updateV2 = async (req: Request, res: Response) => {
     if (isUpdated["user"]) await user.saveReqUser();
     await transaction.save();
 
-    return res.status(200).send({ transaction });
+    return res.status(200).send({
+      transaction,
+      transactionLinked: isUpdated["transactionLinked"]
+        ? transactionLinked
+        : undefined,
+      budget: budget ?? undefined,
+      assets: isUpdated["user"] ? user.assets : undefined,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
