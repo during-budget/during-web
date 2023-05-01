@@ -71,6 +71,7 @@ function UserCategoryList(props: {
     <>
       <DraggableList
         id="user-category-setting-list"
+        className={classes.list}
         list={props.categories}
         setList={props.setCategories}
       >

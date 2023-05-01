@@ -4,9 +4,8 @@ import Category from '../../../models/Category';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { transactionActions } from '../../../store/transaction';
 import { userCategoryActions } from '../../../store/user-category';
-import { updateCategories } from '../../../util/api/categoryAPI';
+import { updateCategoriesPartially } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
-import { getFilteredCategories } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
@@ -15,10 +14,11 @@ import CategoryAddButton from './CategoryAddButton';
 import CategoryCheckItem from './CategoryCheckItem';
 import CategoryEditItem from './CategoryEditItem';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
+import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 
 interface BudgetCategorySettingProps {
   budgetId: string;
-  budgetCategories: Category[];
+  budgetCategories?: Category[];
   isExpense: boolean;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -29,7 +29,7 @@ interface BudgetCategorySettingProps {
 
 function BudgetCategorySetting({
   budgetId,
-  budgetCategories,
+  budgetCategories: propsBudgetCategories,
   isExpense,
   isOpen,
   setIsOpen,
@@ -39,7 +39,19 @@ function BudgetCategorySetting({
   const dispatch = useAppDispatch();
 
   // Set category data
-  const storedCategories = useAppSelector((state) => state.userCategory);
+  const storedUserCategories = useAppSelector((state) => state.userCategory);
+  const storedBudgetCategories = useAppSelector((state) => state.budgetCategory);
+
+  const currentUserCategories = isExpense
+    ? storedUserCategories.expense
+    : storedUserCategories.income;
+  const currentBudgetCategories = isExpense
+    ? storedBudgetCategories.expense
+    : storedBudgetCategories.income;
+
+  const budgetCategories = propsBudgetCategories
+    ? propsBudgetCategories
+    : currentBudgetCategories;
 
   // Set state for edit & check
   const [isEdit, setIsEdit] = useState(false);
@@ -54,13 +66,9 @@ function BudgetCategorySetting({
   // Set categories
   useEffect(() => {
     // categories
-    setCategories(getFilteredCategories({ categories: storedCategories, isExpense }));
+    setCategories(currentUserCategories.filter((item) => !item.isDefault));
     setDefaultCategory(
-      getFilteredCategories({
-        categories: storedCategories,
-        isExpense,
-        isDefault: true,
-      })[0]
+      currentUserCategories.find((item) => item.isDefault) || Category.getEmptyCategory()
     );
 
     // checked categories
@@ -73,7 +81,7 @@ function BudgetCategorySetting({
     if (isOpen) {
       setIsEdit(false);
     }
-  }, [storedCategories, isExpense, isOpen]);
+  }, [currentUserCategories, budgetCategories, isExpense, isOpen]);
 
   // Form handlers
   const submitHandler = async (event?: React.FormEvent) => {
@@ -87,12 +95,11 @@ function BudgetCategorySetting({
   };
 
   const submitEditData = async () => {
-    const updatingCategories = [...categories, defaultCategory];
     const {
       categories: updatedCategories,
       updated,
       removed,
-    } = await updateCategories({ isExpense, categoryData: updatingCategories });
+    } = await updateCategoriesPartially({ isExpense, categories });
 
     // update transaction state (removed category -> default category)
     if (removed.length > 0) {
@@ -132,39 +139,33 @@ function BudgetCategorySetting({
     if (setCategoryPlans) {
       setCategoryPlans(updatingCategories);
     } else {
-      // TODO: 입력폼에서의 budget setting 시 고려
-      //   dispatch(
-      //     budgetActions.updateCategory({
-      //       isExpense: isExpense,
-      //       budgetId: budgetId,
-      //       categories: updatingCategories,
-      //     })
-      //   );
-      // }
-      // if (sendRequest) {
-      //   // consist request data - {categoryId, amountPlanned}[]
-      //   const categoryReqData = updatingCategories.map((item) => {
-      //     const { id, amount } = item;
-      //     return {
-      //       categoryId: id,
-      //       amountPlanned: amount.planned,
-      //     };
-      //   });
-      //   // send request
-      //   const { categories: updatedCategories, excluded: excludedCategories } =
-      //     await updateBudgetCategories(props.budgetId, props.isExpense, categoryReqData);
-      //   // set state - updated category
-      //   dispatch(
-      //     budgetActions.setCategories({
-      //       budgetId: props.budgetId,
-      //       categories: updatedCategories,
-      //     })
-      //   );
-      //   // set state - transactions updated category (excluded -> default)
-      //   if (excludedCategories.length > 0) {
-      //     const { transactions } = await getTransactions(props.budgetId);
-      //     dispatch(transactionActions.setTransactions(transactions));
-      //   }
+      dispatch(
+        budgetCategoryActions.updateCategory({
+          isExpense,
+          categories: updatingCategories,
+        })
+      );
+
+      if (sendRequest) {
+        // consist request data - {categoryId, amountPlanned}[]
+        const categoryReqData = updatingCategories.map((item) => {
+          const { id, amount } = item;
+          return {
+            categoryId: id,
+            amountPlanned: amount.planned,
+          };
+        });
+        // send request
+        const { categories: updatedCategories, excluded: excludedCategories } =
+          await updateBudgetCategories(budgetId, isExpense, categoryReqData);
+        // set state - updated category
+        dispatch(budgetCategoryActions.setCategoryFromData(updatedCategories));
+        // set state - transactions updated category (excluded -> default)
+        if (excludedCategories.length > 0) {
+          const { transactions } = await getTransactions(budgetId);
+          dispatch(transactionActions.setTransactions(transactions));
+        }
+      }
     }
   };
 

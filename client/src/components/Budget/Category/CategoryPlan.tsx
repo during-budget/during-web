@@ -27,6 +27,9 @@ function CategoryPlan(props: { budgetId: string }) {
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedTotal = useAppSelector((state) => state.total);
   const storedCategories = useAppSelector((state) => state.budgetCategory);
+  const currentCategories = isExpense
+    ? storedCategories.expense
+    : storedCategories.income;
   const { title } = useAppSelector((state) => state.budget)[props.budgetId];
   const isDefaultBudget =
     props.budgetId === useAppSelector((state) => state.user.info.defaultBudgetId);
@@ -47,7 +50,7 @@ function CategoryPlan(props: { budgetId: string }) {
 
   useEffect(() => {
     setCategoryState([]);
-    storedCategories.forEach((item) => {
+    currentCategories.forEach((item) => {
       if (item.isExpense === isExpense) {
         if (item.isDefault) {
           setDefaultCategory(item);
@@ -56,7 +59,7 @@ function CategoryPlan(props: { budgetId: string }) {
         }
       }
     });
-  }, [isExpense, storedCategories]);
+  }, [isExpense, currentCategories]);
 
   // Update default state <- category, total
   useEffect(() => {

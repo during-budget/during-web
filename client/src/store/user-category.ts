@@ -2,7 +2,10 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Category from '../models/Category';
 import { UserCategoryType } from '../util/api/categoryAPI';
 
-const initialState: Category[] = [];
+const initialState: { income: Category[]; expense: Category[] } = {
+  income: [],
+  expense: [],
+};
 
 const categorySlice = createSlice({
   name: 'user-category',
@@ -12,11 +15,16 @@ const categorySlice = createSlice({
       const categories = action.payload;
 
       // NOTE: Init state
-      state.length = 0;
+      state.income.length = 0;
+      state.expense.length = 0;
 
-      categories.forEach((data) => {
-        const category = Category.getCategoryFromData(data);
-        state.push(category);
+      categories.forEach((item) => {
+        const category = Category.getCategoryFromData(item);
+        if (category.isExpense) {
+          state.expense.push(category);
+        } else {
+          state.income.push(category);
+        }
       });
     },
   },

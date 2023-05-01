@@ -25,9 +25,10 @@ function TransactionItem(props: { transaction: Transaction; isDefault?: boolean 
     overAmount,
   } = props.transaction;
 
-  const storedCategories = useAppSelector((state) => state.budgetCategory);
+  const storedCategories = useAppSelector((state) =>
+    isExpense ? state.budgetCategory.expense : state.budgetCategory.income
+  );
   const category = storedCategories.find((item) => item.id === categoryId);
-
   const liClass = [classes.container, linkId && !isCurrent ? classes.done : ''];
 
   const openDetail = (event: React.MouseEvent<HTMLLIElement>) => {

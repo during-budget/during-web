@@ -9,6 +9,11 @@
   display: none;
 }
 
+.list {
+  height: 50vh;
+  overflow: scroll;
+}
+
 .info {
   display: flex;
   align-items: center;

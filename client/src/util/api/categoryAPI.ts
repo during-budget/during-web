@@ -64,27 +64,13 @@ export const getCategories = async () => {
   return response.json() as Promise<UserCategoryType[]>;
 };
 
-export const updateCategories = async (data: {
-  isExpense?: boolean;
-  categoryData: Category[];
-}) => {
-  const { isExpense, categoryData } = data;
-  const categories = categoryData.map((category) => {
-    const { id, isExpense, icon, title } = category;
-
-    return {
-      _id: isUUID(id) ? undefined : id,
-      isExpense,
-      isIncome: !isExpense,
-      icon,
-      title,
-    };
-  });
+export const updateCategories = async (data: { categoryData: Category[] }) => {
+  const { categoryData } = data;
 
   const response = await fetch(BASE_URL, {
     method: 'PUT',
     credentials: 'include',
-    body: JSON.stringify({ isExpense, categories }),
+    body: JSON.stringify({ categories: convertCategory(categoryData) }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -97,4 +83,46 @@ export const updateCategories = async (data: {
   }
 
   return response.json() as Promise<UpdatedUserCategoryType>;
+};
+
+export const updateCategoriesPartially = async (data: {
+  isExpense?: boolean;
+  categories: Category[];
+}) => {
+  const { isExpense, categories } = data;
+
+  const response = await fetch(BASE_URL, {
+    method: 'PATCH',
+    credentials: 'include',
+    body: JSON.stringify({
+      isExpense,
+      isIncome: !isExpense,
+      categories: convertCategory(categories),
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<UpdatedUserCategoryType>;
+};
+
+const convertCategory = (categoryData: Category[]) => {
+  return categoryData.map((category) => {
+    const { id, isExpense, icon, title } = category;
+
+    return {
+      _id: isUUID(id) ? undefined : id,
+      isExpense,
+      isIncome: !isExpense,
+      icon,
+      title,
+    };
+  });
 };
