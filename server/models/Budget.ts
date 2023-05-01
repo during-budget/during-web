@@ -178,4 +178,4 @@ budgetSchema.methods.increaseDefaultIncomeCategory = function (
 };
 
 const Budget = model<IBudget, BudgetModelType>("Budget", budgetSchema);
-export { Budget, IBudget, BudgetModelType, ICategory };
+export { Budget, IBudget, IBudgetProps, BudgetModelType, ICategory };

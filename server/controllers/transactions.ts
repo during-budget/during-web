@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { Budget } from "../models/Budget";
-import { Transaction } from "../models/Transaction";
-import { Types } from "mongoose";
+import { Budget, IBudget, IBudgetProps } from "../models/Budget";
+import { ITransaction, Transaction } from "../models/Transaction";
+import { HydratedDocument, Types } from "mongoose";
 
 import { logger } from "../log/logger";
 
@@ -60,8 +60,11 @@ export const create = async (req: Request, res: Response) => {
       tags: req.body.tags ?? [],
       memo: req.body.memo ?? "",
     });
+
+    let isUserUpdated = false;
+    let transactionScheduled: HydratedDocument<ITransaction> | null = null;
     if (transaction.isCurrent && transaction?.linkId) {
-      const transactionScheduled = await Transaction.findByIdAndUpdate(
+      transactionScheduled = await Transaction.findByIdAndUpdate(
         { _id: transaction.linkId },
         { linkId: transaction._id }
       );
@@ -103,7 +106,7 @@ export const create = async (req: Request, res: Response) => {
         const linkedAssetUpdate =
           "linkedAssetUpdate" in req.body ? req.body.linkedAssetUpdate : true;
         if (linkedAssetUpdate) {
-          const isUserUpdated = user.execPM({
+          isUserUpdated = user.execPM({
             linkedPaymentMethodId: transaction.linkedPaymentMethodId,
             linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
             amount: transaction.amount,
@@ -115,7 +118,12 @@ export const create = async (req: Request, res: Response) => {
     }
     await budget.save();
 
-    return res.status(200).send({ transaction });
+    return res.status(200).send({
+      transaction,
+      transactionScheduled: transactionScheduled ?? undefined,
+      budget,
+      assets: isUserUpdated ? user.assets : undefined,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
