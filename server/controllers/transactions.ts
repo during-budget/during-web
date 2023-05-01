@@ -177,9 +177,10 @@ export const updateV2 = async (req: Request, res: Response) => {
       amount: transaction.amount !== req.body.amount,
       isCurrent: transaction.isCurrent !== req.body.isCurrent,
       isExpense: false,
-      linkedPaymentMethodId:
-        transaction.linkedPaymentMethodId?.toString() !==
-        req.body?.linkedPaymentMethodId,
+      linkedPaymentMethodId: transaction.linkedPaymentMethodId
+        ? transaction.linkedPaymentMethodId.toString() !==
+          req.body?.linkedPaymentMethodId
+        : false,
       user: false,
       transactionLinked: false,
     };
