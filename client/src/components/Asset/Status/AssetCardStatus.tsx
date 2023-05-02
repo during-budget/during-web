@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { AssetProps } from '../../screens/Asset';
-import Carousel from '../UI/Carousel';
-import AssetCardListEditor from './AssetCardListEditor';
+import { AssetProps } from '../../../screens/Asset';
+import Carousel from '../../UI/Carousel';
+import AssetCardListEditor from '../Editor/AssetCardListEditor';
 import classes from './AssetCardStatus.module.css';
 import AssetStatus from './AssetStatus';
 import CardStatus from './CardStatus';

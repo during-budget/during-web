@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { AssetProps } from '../../screens/Asset';
-import EditButton from '../UI/EditButton';
-import RadioTab from '../UI/RadioTab';
-import CardList from './CardList';
-import classes from './CardStatus.module.css';
+import { AssetProps } from '../../../screens/Asset';
+import EditButton from '../../UI/EditButton';
+import RadioTab from '../../UI/RadioTab';
+import CardList from '../List/CardList';
+import classes from '../Status/CardStatus.module.css';
 
 export interface CardStatusProps extends AssetProps {
   openEditor: (payload: { isAsset: boolean }) => void;

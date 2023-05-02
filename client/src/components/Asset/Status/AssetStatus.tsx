@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import Amount from '../../models/Amount';
-import { AssetDataType } from '../../util/api/assetAPI';
-import AmountBars from '../Budget/Amount/AmountBars';
-import EditButton from '../UI/EditButton';
+import Amount from '../../../models/Amount';
+import { AssetDataType } from '../../../util/api/assetAPI';
+import AmountBars from '../../Budget/Amount/AmountBars';
+import EditButton from '../../UI/EditButton';
 import classes from './AssetStatus.module.css';
 
 interface AssetStatusProps {
