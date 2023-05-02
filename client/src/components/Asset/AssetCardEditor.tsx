@@ -30,6 +30,7 @@ const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps)
   useEffect(() => {
     if (isOpen) {
       setDetailState('all');
+      setListState(list);
     }
   }, [isOpen]);
 
@@ -56,7 +57,9 @@ const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps)
   const editHandler = (idx: number) => {};
 
   /** 해당 자산/카드 삭제하여 paymentState에 반영 */
-  const removeHandler = (idx: number) => {};
+  const removeHandler = (idx: number) => {
+    setListState((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)]);
+  };
 
   return (
     <Overlay isOpen={isOpen} closeHandler={closeEditor} className={classes.container}>
