@@ -8,11 +8,13 @@ interface IAsset {
   icon: string;
   title: string;
   amount: number;
+  detail: string;
 }
 const assetSchema = new Schema<IAsset>({
   icon: { type: String, default: "" },
   title: String,
   amount: { type: Number, default: 0 },
+  detail: { type: String, default: "" },
 });
 
 interface ICard {
@@ -22,6 +24,7 @@ interface ICard {
   linkedAssetId?: Types.ObjectId;
   linkedAssetIcon?: string;
   linkedAssetTitle?: string;
+  detail: string;
 }
 const cardSchema = new Schema<ICard>({
   icon: { type: String, default: "" },
@@ -29,6 +32,7 @@ const cardSchema = new Schema<ICard>({
   linkedAssetId: Schema.Types.ObjectId,
   linkedAssetIcon: String,
   linkedAssetTitle: String,
+  detail: { type: String, default: "" },
 });
 
 interface IPaymentMethod {
@@ -36,12 +40,14 @@ interface IPaymentMethod {
   type: "asset" | "card";
   icon: string;
   title: string;
+  detail: string;
 }
 
 const paymentMethodSchema = new Schema<IPaymentMethod>({
   type: String,
   icon: String,
   title: String,
+  detail: { type: String, default: "" },
 });
 
 interface ICategory {
