@@ -40,6 +40,7 @@ interface ITransaction {
   linkedPaymentMethodIcon?: string;
   linkedPaymentMethodTitle?: string;
   linkedPaymentMethodDetail?: string;
+  updateAsset: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -68,6 +69,7 @@ const transactionSchema = new Schema<ITransaction>(
     linkedPaymentMethodIcon: String,
     linkedPaymentMethodTitle: String,
     linkedPaymentMethodDetail: String,
+    updateAsset: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
