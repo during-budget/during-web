@@ -180,7 +180,7 @@ export const updateV2 = async (req: Request, res: Response) => {
       linkedPaymentMethodId: transaction.linkedPaymentMethodId
         ? transaction.linkedPaymentMethodId.toString() !==
           req.body?.linkedPaymentMethodId
-        : false,
+        : "linkedPaymentMethodId" in req.body,
       user: false,
       transactionLinked: false,
     };
