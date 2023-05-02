@@ -15,10 +15,10 @@ import DraggableItem from '../UI/DraggableItem';
 import DraggableList from '../UI/DraggableList';
 import Icon from '../UI/Icon';
 import Overlay from '../UI/Overlay';
-import classes from './AssetCardEditor.module.css';
+import classes from './AssetCardListEditor.module.css';
 import DetailTypeTab from './DetailTypeTab';
 
-interface AssetCardEditorProps {
+interface AssetCardListEditorProps {
   isAsset: boolean;
   showAll?: boolean;
   isOpen: boolean;
@@ -27,7 +27,7 @@ interface AssetCardEditorProps {
 
 type AssetCardDataType = AssetDataType | CardDataType;
 
-const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps) => {
+const AssetCardListEditor = ({ isAsset, isOpen, closeEditor }: AssetCardListEditorProps) => {
   const dispatch = useDispatch();
 
   const list: AssetCardDataType[] = useAppSelector((state) =>
@@ -133,4 +133,4 @@ const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps)
   );
 };
 
-export default AssetCardEditor;
+export default AssetCardListEditor;
