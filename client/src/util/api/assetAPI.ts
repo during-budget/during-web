@@ -7,12 +7,14 @@ export interface AssetDataType {
   icon: string;
   title: string;
   amount: number;
+  detail: 'account' | 'cash' | 'etc';
 }
 
 export interface CardDataType {
   _id: string;
   icon: string;
   title: string;
+  detail: 'credit' | 'debit' | 'prepaid';
   linkedAssetId: string;
   linkedAssetIcon: string;
   linkedAssetTitle: string;
@@ -23,6 +25,7 @@ export interface PaymentDataType {
   type: string;
   icon: string;
   title: string;
+  detail: 'account' | 'cash' | 'etc' | 'credit' | 'debit' | 'prepaid';
 }
 
 export const getAssets = async () => {

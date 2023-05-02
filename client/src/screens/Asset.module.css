@@ -3,10 +3,3 @@
   margin-top: 10vh;
   margin-bottom: 4vh;
 }
-
-.status {
-  width: calc(100% - 20vw) !important;
-  margin-bottom: 3vh;
-  padding: 0 10vw;
-  width: calc(100% - 20vw) !important;
-}

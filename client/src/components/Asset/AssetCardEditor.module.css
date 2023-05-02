@@ -1,0 +1,40 @@
+.container h2 {
+  padding-top: 5vh;
+  padding-bottom: 2vh;
+  text-align: center;
+}
+
+.tab {
+  width: fit-content;
+  margin: 0 auto;
+  margin-bottom: 5vh;
+}
+
+.list {
+  padding: 0 10vw;
+  height: 50vh;
+  overflow-y: scroll;
+}
+
+.data {
+  display: flex;
+  align-items: center;
+  gap: 5vw;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail {
+  font-size: var(--size-8);
+}
+
+.title {
+  font-size: var(--size-5);
+}
+
+.add {
+  margin-bottom: 15vh;
+}
