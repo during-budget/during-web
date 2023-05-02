@@ -1,5 +1,6 @@
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
+import BudgetList from '../components/Budget/List/BudgetList';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import DateStatus from '../components/Budget/Status/DateStatus';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
@@ -8,13 +9,12 @@ import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/redux-hook';
+import { budgetActions } from '../store/budget';
 import { budgetCategoryActions } from '../store/budget-category';
 import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './Budget.module.css';
-import BudgetList from '../components/Budget/List/BudgetList';
-import { budgetActions } from '../store/budget';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -59,10 +59,9 @@ function Budget() {
 
 export default Budget;
 
-export const loader = async (data: LoaderFunctionArgs) => {
-  const { params } = data;
-
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.budgetId) throw new Response('Budget Not Found', { status: 404 });
+
   return {
     id: params.budgetId,
     isDefaultBudget: params.isDefault ? true : false,

@@ -3,7 +3,9 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Root from './layout/Root';
 import Nav from './layout/Nav';
 import ErrorBoundary from './layout/ErrorBoundary';
-import BudgetNavigation from './layout/BudgetNavigation';
+import CurrentBudgetNavigator, {
+  loader as currentBudgetLoader,
+} from './layout/CurrentBudgetNavigator';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import User from './screens/User';
@@ -30,7 +32,8 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/budget',
-            element: <BudgetNavigation />,
+            element: <CurrentBudgetNavigator />,
+            loader: currentBudgetLoader,
           },
           {
             path: '/budget/:budgetId',

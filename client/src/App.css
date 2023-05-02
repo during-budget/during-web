@@ -1,141 +1,141 @@
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
 
 :root {
-    --primary: #313338;
-    --secondary: #d9d9d9;
-    --gray-1: #f8f8f8;
-    --gray-2: #d9d9d9;
-    --gray-3: #a5a5a5;
-    --gray-4: #313338;
-    --gray-4-opacity: rgba(49, 51, 56, 0.5);
-    --error-text: #ff6161;
-    --error-background: #ffefef;
-    --size-1: 2rem;
-    --size-2: 1.75rem;
-    --size-3: 1.5rem;
-    --size-4: 1.25rem;
-    --size-5: 1.125rem;
-    --size-6: 1rem;
-    --size-7: 0.875rem;
-    --size-8: 0.75rem;
-    --size-9: 0.625rem;
-    --size-10: 0.5rem;
-    --size-11: 0.25rem;
-    --fast-in: cubic-bezier(0.4, 0.39, 0.08, 1.02);
-    --slow-in: cubic-bezier(0.56, -0.01, 0.56, 0.89);
+  --primary: #313338;
+  --secondary: #d9d9d9;
+  --gray-1: #f8f8f8;
+  --gray-2: #d9d9d9;
+  --gray-3: #a5a5a5;
+  --gray-4: #313338;
+  --gray-4-opacity: rgba(49, 51, 56, 0.5);
+  --error-text: #ff6161;
+  --error-background: #ffefef;
+  --size-1: 2rem;
+  --size-2: 1.75rem;
+  --size-3: 1.5rem;
+  --size-4: 1.25rem;
+  --size-5: 1.125rem;
+  --size-6: 1rem;
+  --size-7: 0.875rem;
+  --size-8: 0.75rem;
+  --size-9: 0.625rem;
+  --size-10: 0.5rem;
+  --size-11: 0.25rem;
+  --fast-in: cubic-bezier(0.4, 0.39, 0.08, 1.02);
+  --slow-in: cubic-bezier(0.56, -0.01, 0.56, 0.89);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    color: var(--gray-4);
+  margin: 0;
+  padding: 0;
+  color: var(--gray-4);
 }
 
 body {
-    height: 100%;
-    font-family: 'SUIT Variable', SUIT, -apple-system, BlinkMacSystemFont,
-        system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
-        'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  font-family: 'SUIT Variable', SUIT, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-    font-size: var(--size-1);
+  font-size: var(--size-1);
 }
 
 h2 {
-    font-size: var(--size-2);
+  font-size: var(--size-2);
 }
 
 h3 {
-    font-size: var(--size-3);
+  font-size: var(--size-3);
 }
 
 h4 {
-    font-size: var(--size-4);
+  font-size: var(--size-4);
 }
 
 h5 {
-    font-size: var(--size-5);
+  font-size: var(--size-5);
 }
 h6 {
-    font-size: var(--size-6);
+  font-size: var(--size-6);
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 input,
 select,
 textarea {
-    box-sizing: border-box;
-    padding: var(--size-6);
-    width: 100%;
-    height: 3.5rem;
-    font-size: var(--size-5);
-    font-family: inherit;
-    border-radius: var(--size-10);
-    background-color: var(--gray-1);
-    border: none;
-    outline: none;
+  box-sizing: border-box;
+  padding: var(--size-6);
+  width: 100%;
+  height: 3.5rem;
+  font-size: var(--size-5);
+  font-family: inherit;
+  border-radius: var(--size-10);
+  background-color: var(--gray-1);
+  border: none;
+  outline: none;
 }
 
 input:focus {
-    outline: none;
+  outline: none;
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: var(--gray-3);
+  color: var(--gray-3);
 }
 
 input[type='checkbox'] {
-    accent-color: var(--primary);
+  accent-color: var(--primary);
 }
 
 textarea {
-    font-family: inherit;
+  font-family: inherit;
 }
 
 select {
-    appearance: none;
+  appearance: none;
 }
 
 button {
-    cursor: pointer;
-    border: 0;
-    background-color: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
 }
 
 ul,
 ol,
 li {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 hr {
-    margin-top: var(--size-1);
-    width: 100%;
-    height: var(--size-1);
-    border: none;
-    background-color: #f6f6f6;
+  margin-top: var(--size-1);
+  width: 100%;
+  height: var(--size-1);
+  border: none;
+  background-color: #f6f6f6;
 }
 
 main {
-    margin-bottom: 9vh; /* NOTE: Nav height */
+  margin-bottom: 9vh; /* NOTE: Nav height */
 }
 
 @media screen and (max-width: 400px) {
-    html {
-        font-size: 14px;
-    }
+  html {
+    font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 350px) {
-    html {
-        font-size: 12px;
-    }
+  html {
+    font-size: 12px;
+  }
 }
