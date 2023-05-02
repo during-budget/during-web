@@ -39,6 +39,7 @@ interface ITransaction {
   linkedPaymentMethodType?: "asset" | "card";
   linkedPaymentMethodIcon?: string;
   linkedPaymentMethodTitle?: string;
+  linkedPaymentMethodDetail?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -66,6 +67,7 @@ const transactionSchema = new Schema<ITransaction>(
     linkedPaymentMethodType: String,
     linkedPaymentMethodIcon: String,
     linkedPaymentMethodTitle: String,
+    linkedPaymentMethodDetail: String,
   },
   { timestamps: true }
 );
