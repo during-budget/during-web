@@ -28,6 +28,7 @@ export interface PaymentDataType {
   detail: 'account' | 'cash' | 'etc' | 'credit' | 'debit' | 'prepaid';
 }
 
+/** 자산 가져오기 */
 export const getAssets = async () => {
   const url = `${BASE_URL}/assets`;
   const response = await fetch(url, {
@@ -43,6 +44,7 @@ export const getAssets = async () => {
   return response.json() as Promise<{ assets: AssetDataType[] }>;
 };
 
+/** 카드 가져오기 */
 export const getCards = async () => {
   const url = `${BASE_URL}/cards`;
   const response = await fetch(url, {
@@ -58,6 +60,7 @@ export const getCards = async () => {
   return response.json() as Promise<{ cards: CardDataType[] }>;
 };
 
+/** 결제수단(자산 + 카드) 가져오기 */
 export const getpaymentMethods = async () => {
   const url = `${BASE_URL}/paymentMethods`;
   const response = await fetch(url, {
@@ -71,4 +74,48 @@ export const getpaymentMethods = async () => {
   }
 
   return response.json() as Promise<{ paymentMethods: PaymentDataType[] }>;
+};
+
+/** 자산 업데이트 */
+export const updateAssets = async ({ assets }: { assets: Partial<AssetDataType>[] }) => {
+  const url = `${BASE_URL}/assets`;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify({ assets }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ assets: AssetDataType[] }>;
+};
+
+/** 카드 업데이트 */
+export const updateCards = async ({ cards }: { cards: Partial<CardDataType>[] }) => {
+  const url = `${BASE_URL}/cards`;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify({ cards }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ cards: CardDataType[] }>;
 };
