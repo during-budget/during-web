@@ -59,6 +59,7 @@ export const create = async (req: Request, res: Response) => {
       category,
       tags: req.body.tags ?? [],
       memo: req.body.memo ?? "",
+      updateAsset: "updateAsset" in req.body ? req.body.updateAsset : true,
     });
 
     let isUserUpdated = false;
@@ -103,18 +104,14 @@ export const create = async (req: Request, res: Response) => {
       // 2-2. income transaction
       else budget.incomeCurrent += transaction.amount;
 
-      if (transaction.linkedPaymentMethodId) {
-        const linkedAssetUpdate =
-          "linkedAssetUpdate" in req.body ? req.body.linkedAssetUpdate : true;
-        if (linkedAssetUpdate) {
-          isUserUpdated = user.execPM({
-            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-            linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-            amount: transaction.amount,
-            isExpense: transaction.isExpense!,
-          });
-          if (isUserUpdated) await user.saveReqUser();
-        }
+      if (transaction.linkedPaymentMethodId && transaction.updateAsset) {
+        isUserUpdated = user.execPM({
+          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+          amount: transaction.amount,
+          isExpense: transaction.isExpense!,
+        });
+        if (isUserUpdated) await user.saveReqUser();
       }
     }
     await budget.save();
