@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AssetProps } from '../../screens/Asset';
 import Carousel from '../UI/Carousel';
-import AssetCardEditor from './AssetCardEditor';
+import AssetCardListEditor from './AssetCardListEditor';
 import classes from './AssetCardStatus.module.css';
 import AssetStatus from './AssetStatus';
 import CardStatus from './CardStatus';
@@ -25,7 +25,7 @@ const AssetCardStatus = ({ assets, cards }: AssetProps) => {
         <AssetStatus assets={assets} openEditor={openEditor} />
         <CardStatus assets={assets} cards={cards} openEditor={openEditor} />
       </Carousel>
-      <AssetCardEditor
+      <AssetCardListEditor
         isOpen={showEditor}
         closeEditor={closeEditor}
         isAsset={isAssetEditor}
