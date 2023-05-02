@@ -647,7 +647,11 @@ export const remove = async (req: Request, res: Response) => {
     }
 
     let isUserUpdated = false;
-    if (transaction.isCurrent && transaction.linkedPaymentMethodId) {
+    if (
+      transaction.isCurrent &&
+      transaction.linkedPaymentMethodId &&
+      transaction.updateAsset
+    ) {
       if (transaction.linkedPaymentMethodType === "asset") {
         const asset = _.find(user.assets, {
           _id: transaction.linkedPaymentMethodId,
