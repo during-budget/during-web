@@ -142,6 +142,7 @@ const updateV2BodyFields = [
   "categoryId",
   "amount",
   "isCurrent",
+  "updateAsset",
 ];
 export const updateV2 = async (req: Request, res: Response) => {
   try {
@@ -185,6 +186,10 @@ export const updateV2 = async (req: Request, res: Response) => {
 
     let budget: HydratedDocument<IBudget, IBudgetProps> | null = null;
     let transactionLinked: HydratedDocument<ITransaction> | null = null;
+
+    const exUpdateAsset = transaction.updateAsset;
+    transaction.updateAsset = req.body.updateAsset;
+    isUpdated["updateAsset"] = exUpdateAsset !== transaction.updateAsset;
 
     if (
       isUpdated["categoryId"] ||
@@ -366,18 +371,25 @@ export const updateV2 = async (req: Request, res: Response) => {
           else budget.incomeCurrent += diff;
 
           if (transaction.linkedPaymentMethodId) {
-            const isUserUpdated1 = user.cancelPM({
-              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-              amount: exAmount,
-              isExpense: transaction.isExpense!,
-            });
-            const isUserUpdated2 = user.execPM({
-              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-              amount: transaction.amount,
-              isExpense: transaction.isExpense!,
-            });
+            let isUserUpdated1 = false;
+            let isUserUpdated2 = false;
+            if (exUpdateAsset) {
+              isUserUpdated1 = user.cancelPM({
+                linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+                linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+                amount: exAmount,
+                isExpense: transaction.isExpense!,
+              });
+            }
+            if (transaction.updateAsset) {
+              isUserUpdated2 = user.execPM({
+                linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+                linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+                amount: transaction.amount,
+                isExpense: transaction.isExpense!,
+              });
+            }
+
             if (isUserUpdated1 || isUserUpdated2) isUpdated["user"] = true;
           }
         }
@@ -417,7 +429,7 @@ export const updateV2 = async (req: Request, res: Response) => {
             budget.incomeScheduled += transaction.amount;
           }
 
-          if (transaction.linkedPaymentMethodId) {
+          if (transaction.linkedPaymentMethodId && exUpdateAsset) {
             const isUserUpdated = user.cancelPM({
               linkedPaymentMethodId: transaction.linkedPaymentMethodId,
               linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
@@ -442,7 +454,7 @@ export const updateV2 = async (req: Request, res: Response) => {
             budget.incomeCurrent += transaction.amount;
           }
 
-          if (transaction.linkedPaymentMethodId) {
+          if (transaction.linkedPaymentMethodId && transaction.updateAsset) {
             const isUserUpdated = user.execPM({
               linkedPaymentMethodId: transaction.linkedPaymentMethodId,
               linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
@@ -465,7 +477,11 @@ export const updateV2 = async (req: Request, res: Response) => {
     }
     if (isUpdated["linkedPaymentMethodId"]) {
       // cancel ex paymentMethod
-      if (transaction.isCurrent && transaction.linkedPaymentMethodId) {
+      if (
+        transaction.isCurrent &&
+        transaction.linkedPaymentMethodId &&
+        exUpdateAsset
+      ) {
         const isUserUpdated = user.cancelPM({
           linkedPaymentMethodId: transaction.linkedPaymentMethodId,
           linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
@@ -489,7 +505,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         transaction.linkedPaymentMethodTitle = pm.title;
         transaction.linkedPaymentMethodDetail = pm.detail;
 
-        if (transaction.isCurrent) {
+        if (transaction.isCurrent && transaction.updateAsset) {
           const isUserUpdated = user.execPM({
             linkedPaymentMethodId: transaction.linkedPaymentMethodId,
             linkedPaymentMethodType: transaction.linkedPaymentMethodType,
@@ -507,6 +523,36 @@ export const updateV2 = async (req: Request, res: Response) => {
         transaction.linkedPaymentMethodTitle = undefined;
       }
     }
+    if (
+      isUpdated["updateAsset"] &&
+      !isUpdated["amount"] &&
+      !isUpdated["isCurrent"] &&
+      !isUpdated["linkedPaymentMethodId"] &&
+      transaction.isCurrent &&
+      transaction.linkedPaymentMethodId
+    ) {
+      // false -> true
+      if (transaction.updateAsset) {
+        const isUserUpdated = user.execPM({
+          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+          amount: transaction.amount,
+          isExpense: transaction.isExpense!,
+        });
+        if (isUserUpdated) isUpdated["user"] = true;
+      }
+      // true -> false
+      else {
+        const isUserUpdated = user.cancelPM({
+          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
+          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
+          amount: transaction.amount,
+          isExpense: transaction.isExpense!,
+        });
+        if (isUserUpdated) isUpdated["user"] = true;
+      }
+    }
+
     if (isUpdated["user"]) await user.saveReqUser();
     await transaction.save();
 
