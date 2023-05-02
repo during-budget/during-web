@@ -56,6 +56,7 @@ export const update = async (req: Request, res: Response) => {
           _id: exCard._id,
           icon: _card.icon ?? exCard.icon,
           title: _card.title ?? exCard.title,
+          detail: _card.detail ?? exCard.detail,
         } as ICard;
         if (exCard.linkedAssetId === _card.linkedAssetId) {
           card.linkedAssetId = exCard.linkedAssetId;
@@ -74,7 +75,11 @@ export const update = async (req: Request, res: Response) => {
 
         _cards.push(card);
         delete cardDict[key];
-        if (exCard.icon !== card.icon || exCard.title !== card.title) {
+        if (
+          exCard.icon !== card.icon ||
+          exCard.title !== card.title ||
+          exCard.detail !== card.detail
+        ) {
           updated.push(card);
         }
       }
@@ -93,6 +98,7 @@ export const update = async (req: Request, res: Response) => {
         type: "card",
         icon: card.icon,
         title: card.title,
+        detail: card.detail,
       });
     }
 
@@ -105,6 +111,7 @@ export const update = async (req: Request, res: Response) => {
       if (paymentMethodIdx !== -1) {
         user.paymentMethods[paymentMethodIdx].icon = card.icon;
         user.paymentMethods[paymentMethodIdx].title = card.title;
+        user.paymentMethods[paymentMethodIdx].detail = card.detail;
 
         /* update transactions */
         await Transaction.updateMany(
@@ -112,6 +119,7 @@ export const update = async (req: Request, res: Response) => {
           {
             linkedPaymentMethodIcon: card.icon,
             linkedPaymentMethodTitle: card.title,
+            linkedPaymentMethodDetail: card.detail,
           }
         );
       }

@@ -47,12 +47,17 @@ export const update = async (req: Request, res: Response) => {
           icon: _asset.icon ?? exAsset.icon,
           title: _asset.title ?? exAsset.title,
           amount: _asset.amount ?? 0,
+          detail: _asset.detail ?? exAsset.detail,
         };
         _assets.push(asset);
 
         delete assetDict[key];
 
-        if (exAsset.icon !== asset.icon || exAsset.title !== asset.title) {
+        if (
+          exAsset.icon !== asset.icon ||
+          exAsset.title !== asset.title ||
+          exAsset.detail !== asset.detail
+        ) {
           updated.push(asset);
         }
       }
@@ -71,6 +76,7 @@ export const update = async (req: Request, res: Response) => {
         type: "asset",
         icon: asset.icon,
         title: asset.title,
+        detail: asset.detail,
       });
     }
 
@@ -88,6 +94,7 @@ export const update = async (req: Request, res: Response) => {
       if (paymentMethodIdx !== -1) {
         user.paymentMethods[paymentMethodIdx].icon = asset.icon;
         user.paymentMethods[paymentMethodIdx].title = asset.title;
+        user.paymentMethods[paymentMethodIdx].detail = asset.detail;
 
         /* update transactions */
         await Transaction.updateMany(
@@ -95,6 +102,7 @@ export const update = async (req: Request, res: Response) => {
           {
             linkedPaymentMethodIcon: asset.icon,
             linkedPaymentMethodTitle: asset.title,
+            linkedPaymentMethodDetail: asset.detail,
           }
         );
       }
