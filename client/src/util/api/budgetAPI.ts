@@ -20,6 +20,7 @@ export interface BudgetDataType {
   categories: BudgetCategoryType[];
 }
 
+/** 기본 예산 정보 바탕으로 특정 년/월의 예산 생성 */
 export const createBudgetFromBasic = async (year: number, month: number) => {
   const url = `${BASE_URL}/basic`;
   const response = await fetch(url, {
@@ -46,6 +47,7 @@ export const createBudgetFromBasic = async (year: number, month: number) => {
   return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
+/** 전체 Budget 목록 조회 */
 export const getBudgetList = async () => {
   const url = BASE_URL;
   const response = await fetch(url, {
@@ -62,6 +64,47 @@ export const getBudgetList = async () => {
   return response.json() as Promise<{ budgets: BudgetDataType[] }>;
 };
 
+/** 연도 기준으로 Budget 목록 조회 */
+export const getBudgetByYear = async (year: number) => {
+  const url = `${BASE_URL}?year=${year}`;
+  const response = await fetch(url, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Response(
+      `Failed to get budgets by date.\n${data.message ? data.message : ''}`,
+      {
+        status: response.status,
+      }
+    );
+  }
+
+  return response.json() as Promise<{ budgets: BudgetDataType[] }>;
+};
+
+/** 월 기준으로 Budget 목록 조회 */
+export const getBudgetByMonth = async (year: number, month: number) => {
+  const url = `${BASE_URL}?year=${year}&month=${month}`;
+  const response = await fetch(url, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Response(
+      `Failed to get budgets by date.\n${data.message ? data.message : ''}`,
+      {
+        status: response.status,
+      }
+    );
+  }
+
+  return response.json() as Promise<{ budget: BudgetDataType }>;
+};
+
+/** id 기준으로 Budget 조회 */
 export const getBudgetById = async (id: string) => {
   const url = `${BASE_URL}/${encodeURIComponent(id)}`;
   const response = await fetch(url, {
@@ -82,6 +125,7 @@ export const getBudgetById = async (id: string) => {
   }>;
 };
 
+/** 예산 정보 업데이트 */
 export const updateBudgetFields = async (id: string, data: any) => {
   const url = `${BASE_URL}/${encodeURIComponent(id)}`;
   const response = await fetch(url, {
@@ -104,6 +148,7 @@ export const updateBudgetFields = async (id: string, data: any) => {
   return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
+/** 예산 내 카테고리 목표 금액 업데이트 */
 export const updateCategoryPlan = async (
   budgetId: string,
   categoryId: string,
@@ -132,6 +177,7 @@ export const updateCategoryPlan = async (
   return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
+/** 예산 내 카ㅔ고리 업데이트 */
 export const updateBudgetCategories = async (
   budgetId: string,
   isExpense: boolean,

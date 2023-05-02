@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { useAppSelector } from '../../../hooks/redux-hook';
@@ -5,7 +6,7 @@ import { uiActions } from '../../../store/ui';
 import { getNumericDotDateString } from '../../../util/date';
 import NavButton from '../../UI/NavButton';
 import classes from './BudgetHeader.module.css';
-import dayjs from 'dayjs';
+import BudgetNav from './BudgetNav';
 
 function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useDispatch();
@@ -68,17 +69,11 @@ function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
   const bottom = isDefault ? (
     <h1 onClick={openBudgetList}>{title}</h1>
   ) : (
-    <>
-      <NavButton
-        to={`/budget?year=${prevDate.year()}&month=${prevDate.month() + 1}`}
-        isNext={false}
-      />
-      <h1>{title}</h1>
-      <NavButton
-        to={`/budget?year=${nextDate.year()}&month=${nextDate.month() + 1}`}
-        isNext={true}
-      />
-    </>
+    <BudgetNav
+      title={title}
+      start={{ year: prevDate.year(), month: prevDate.month() + 1 }}
+      end={{ year: nextDate.year(), month: nextDate.month() + 1 }}
+    />
   );
 
   return (
