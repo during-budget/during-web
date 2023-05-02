@@ -20,16 +20,18 @@ export default function TransactionPopup({ open, setOpen, transaction }) {
                 flexDirection: "column",
               }}
             >
-              {Object.keys(transaction).map((key, idx) => (
-                <TextField
-                  id={`dialog-input-${key}-${idx}`}
-                  label={key}
-                  defaultValue={transaction[key]}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-              ))}
+              {Object.keys(transaction)
+                .filter((key) => !key.includes("linked"))
+                .map((key, idx) => (
+                  <TextField
+                    id={`dialog-input-${key}-${idx}`}
+                    label={key}
+                    defaultValue={transaction[key]}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                ))}
             </div>
 
             <div
@@ -49,6 +51,26 @@ export default function TransactionPopup({ open, setOpen, transaction }) {
                   }}
                 />
               ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "24px",
+                flexDirection: "column",
+              }}
+            >
+              {Object.keys(transaction)
+                .filter((key) => key.includes("linked"))
+                .map((key, idx) => (
+                  <TextField
+                    id={`dialog-input-${key}-${idx}`}
+                    label={key}
+                    defaultValue={transaction[key]}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                ))}
             </div>
           </div>
         </DialogContent>
