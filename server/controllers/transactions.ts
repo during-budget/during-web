@@ -81,6 +81,7 @@ export const create = async (req: Request, res: Response) => {
       transaction.linkedPaymentMethodType = pm.type;
       transaction.linkedPaymentMethodIcon = pm.icon;
       transaction.linkedPaymentMethodTitle = pm.title;
+      transaction.linkedPaymentMethodDetail = pm.detail;
     }
     await transaction.save();
 
@@ -489,6 +490,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         transaction.linkedPaymentMethodType = pm.type;
         transaction.linkedPaymentMethodIcon = pm.icon;
         transaction.linkedPaymentMethodTitle = pm.title;
+        transaction.linkedPaymentMethodDetail = pm.detail;
 
         if (transaction.isCurrent) {
           const isUserUpdated = user.execPM({
