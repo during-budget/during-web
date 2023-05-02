@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ASSET_CARD_DETAIL_TYPE, DetailTablValueType } from '../../constants/type';
-import { useAppSelector } from '../../hooks/redux-hook';
-import { assetActions } from '../../store/asset';
+import { ASSET_CARD_DETAIL_TYPE, DetailTablValueType } from '../../../constants/type';
+import { useAppSelector } from '../../../hooks/redux-hook';
+import { assetActions } from '../../../store/asset';
 import {
   AssetDataType,
   CardDataType,
   updateAssets,
   updateCards,
-} from '../../util/api/assetAPI';
-import Button from '../UI/Button';
-import ConfirmCancelButtons from '../UI/ConfirmCancelButtons';
-import DraggableItem from '../UI/DraggableItem';
-import DraggableList from '../UI/DraggableList';
-import Icon from '../UI/Icon';
-import Overlay from '../UI/Overlay';
+} from '../../../util/api/assetAPI';
+import Button from '../../UI/Button';
+import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
+import DraggableItem from '../../UI/DraggableItem';
+import DraggableList from '../../UI/DraggableList';
+import Icon from '../../UI/Icon';
+import Overlay from '../../UI/Overlay';
 import classes from './AssetCardListEditor.module.css';
-import DetailTypeTab from './DetailTypeTab';
+import DetailTypeTab from '../UI/DetailTypeTab';
 
 interface AssetCardListEditorProps {
   isAsset: boolean;
