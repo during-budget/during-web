@@ -17,10 +17,19 @@ const assetSlice = createSlice({
   name: 'asset',
   initialState,
   reducers: {
-    setAssets(state, action: PayloadAction<AssetSliceType>) {
-      const { assets, cards, paymentMethods } = action.payload;
+    setAssets(state, action: PayloadAction<{ assets: AssetDataType[] }>) {
+      const { assets } = action.payload;
       state.assets = assets;
+    },
+    setCards(state, action: PayloadAction<{ cards: CardDataType[] }>) {
+      const { cards } = action.payload;
       state.cards = cards;
+    },
+    setPaymentMethods(
+      state,
+      action: PayloadAction<{ paymentMethods: PaymentDataType[] }>
+    ) {
+      const { paymentMethods } = action.payload;
       state.paymentMethods = paymentMethods;
     },
   },

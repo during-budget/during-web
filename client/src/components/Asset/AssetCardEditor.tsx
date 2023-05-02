@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ASSET_CARD_DETAIL_TYPE, DetailTablValueType } from '../../constants/type';
 import { useAppSelector } from '../../hooks/redux-hook';
-import { AssetDataType, CardDataType } from '../../util/api/assetAPI';
+import { assetActions } from '../../store/asset';
+import {
+  AssetDataType,
+  CardDataType,
+  updateAssets,
+  updateCards,
+} from '../../util/api/assetAPI';
 import Button from '../UI/Button';
 import ConfirmCancelButtons from '../UI/ConfirmCancelButtons';
 import DraggableItem from '../UI/DraggableItem';
@@ -18,8 +25,12 @@ interface AssetCardEditorProps {
   closeEditor: () => void;
 }
 
+type AssetCardDataType = AssetDataType | CardDataType;
+
 const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps) => {
-  const list: (AssetDataType | CardDataType)[] = useAppSelector((state) =>
+  const dispatch = useDispatch();
+
+  const list: AssetCardDataType[] = useAppSelector((state) =>
     isAsset ? state.asset.assets : state.asset.cards
   );
 
@@ -51,6 +62,16 @@ const AssetCardEditor = ({ isAsset, isOpen, closeEditor }: AssetCardEditorProps)
   /** 자산/카드 목록 수정사항 제출 */
   const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (isAsset) {
+      const { assets } = await updateAssets({ assets: listState as AssetDataType[] });
+      dispatch(assetActions.setAssets({ assets }));
+    } else {
+      const { cards } = await updateCards({ cards: listState as CardDataType[] });
+      dispatch(assetActions.setCards({ cards }));
+    }
+
+    closeEditor();
   };
 
   /** 해당 자산/카드 편집 오버레이 열기 */

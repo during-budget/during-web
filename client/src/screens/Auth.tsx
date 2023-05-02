@@ -3,14 +3,14 @@ import { useLoaderData, useLocation, useNavigate } from 'react-router';
 import EmailForm from '../components/Auth/EmailForm';
 import SNSForm from '../components/Auth/SNSForm';
 import Overlay from '../components/UI/Overlay';
+import { useAppDispatch } from '../hooks/redux-hook';
+import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
-import { userCategoryActions } from '../store/user-category';
 import { userActions } from '../store/user';
+import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
-import { useAppDispatch } from '../hooks/redux-hook';
-import { assetActions } from '../store/asset';
 
 function Auth() {
   const dispatch = useAppDispatch();
@@ -52,7 +52,9 @@ function Auth() {
       })
     );
     dispatch(userCategoryActions.setCategories(categories));
-    dispatch(assetActions.setAssets({ assets, cards, paymentMethods }));
+    dispatch(assetActions.setAssets({ assets }));
+    dispatch(assetActions.setCards({ cards }));
+    dispatch(assetActions.setPaymentMethods({ paymentMethods }));
 
     // set default budget data
     const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);
