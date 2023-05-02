@@ -32,7 +32,7 @@ const CategoryCheckItem = ({
         className={classes.check}
         type="checkbox"
         name="category-setting"
-        checked={checkedCategoryIds.get(category.id)}
+        checked={!!checkedCategoryIds.get(category.id)}
         onChange={checkedHandler}
         value={category.id}
       />
