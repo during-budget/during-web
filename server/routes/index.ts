@@ -1,5 +1,4 @@
 const routers = [
-  "test",
   "users",
   "budgets",
   "transactions",
@@ -8,5 +7,9 @@ const routers = [
   "cards",
   "paymentMethods",
 ];
+
+if (process.env.NODE_ENV?.trim() == "development") {
+  routers.push("test");
+}
 
 export { routers };
