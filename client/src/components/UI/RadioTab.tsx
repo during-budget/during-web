@@ -1,23 +1,26 @@
 import classes from './RadioTab.module.css';
 
-function RadioTab(props: {
+interface RadioTabProps {
   className?: string;
   name: string;
-  values: {
-    label: string;
-    value: string;
-    checked?: boolean;
-    onChange?: () => void;
-    disabled?: boolean;
-  }[];
+  values: RadioTabValueType[];
   isBold?: boolean;
   isLine?: boolean;
   isCenter?: boolean;
-}) {
-  const { className, name, values } = props;
-  const boldStyle = props.isBold === false ? {} : { fontWeight: '600' };
-  const lineClass = props.isLine ? classes.line : '';
-  const centerClass = props.isCenter ? classes.center : '';
+}
+
+export interface RadioTabValueType {
+  label: string;
+  value: string;
+  checked?: boolean;
+  onChange?: () => void;
+  disabled?: boolean;
+}
+
+function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTabProps) {
+  const boldStyle = isBold === false ? {} : { fontWeight: '600' };
+  const lineClass = isLine ? classes.line : '';
+  const centerClass = isCenter ? classes.center : '';
 
   return (
     <ul className={`${classes.tab} ${lineClass} ${centerClass} ${className}`}>

@@ -8,10 +8,16 @@
   margin-bottom: 5vh;
 }
 
-.asset {
+.spacing {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.go {
+  padding: 0 5vw;
+  padding-right: 0;
 }
 
 .info {

@@ -12,16 +12,19 @@ const AssetList = ({ assets, cards }: AssetProps) => {
           const assetCards = cards.filter((card) => card.linkedAssetId === asset._id);
           return (
             <li key={asset._id} className={classes.item}>
-              <div className={classes.asset}>
-                <div className={classes.info}>
-                  <Icon>{asset.icon}</Icon>
-                  <div className={classes.titles}>
-                    <p className={classes.type}>계좌</p>
-                    <p className={classes.title}>{asset.title}</p>
+              <a className={classes.spacing} href={`/asset/${asset._id}`}>
+                <div className={classes.spacing}>
+                  <div className={classes.info}>
+                    <Icon>{asset.icon}</Icon>
+                    <div className={classes.titles}>
+                      <p className={classes.type}>계좌</p>
+                      <p className={classes.title}>{asset.title}</p>
+                    </div>
                   </div>
+                  <p className={classes.amount}>{Amount.getAmountStr(asset.amount)}</p>
                 </div>
-                <p className={classes.amount}>{Amount.getAmountStr(asset.amount)}</p>
-              </div>
+                <span className={classes.go}>&gt;</span>
+              </a>
               <CardList className={classes.cards} cards={assetCards} />
             </li>
           );

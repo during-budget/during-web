@@ -7,6 +7,7 @@ interface DraggableItemProps {
   id: string;
   idx: number;
   onRemove?: (idx: number) => void;
+  onEdit?: (idx: number) => void;
   className?: string;
 }
 
@@ -14,12 +15,24 @@ const DraggableItem = ({
   id,
   idx,
   onRemove,
+  onEdit,
   className,
   children,
 }: PropsWithChildren<DraggableItemProps>) => {
   const removeHandler = () => {
     onRemove && onRemove(idx);
   };
+
+  const editHandler = () => {
+    onEdit && onEdit(idx);
+  };
+
+  let buttonAreaClass = classes.sm;
+  if (onRemove && onEdit) {
+    buttonAreaClass = classes.lg;
+  } else if (onRemove || onEdit) {
+    buttonAreaClass = classes.md;
+  }
 
   return (
     <Draggable draggableId={id} key={id} index={idx}>
@@ -35,7 +48,14 @@ const DraggableItem = ({
             } ${className}`}
           >
             {children}
-            <div className={`${classes.buttons} ${onRemove ? classes.md : classes.sm}`}>
+            <div className={`${classes.buttons} ${buttonAreaClass}`}>
+              {onEdit && (
+                <Button
+                  className={classes.pencil}
+                  styleClass="extra"
+                  onClick={editHandler}
+                />
+              )}
               {onRemove && (
                 <Button
                   className={classes.trash}
