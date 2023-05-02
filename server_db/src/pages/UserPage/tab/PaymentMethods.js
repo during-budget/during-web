@@ -55,6 +55,9 @@ function List() {
             {
               label: "title",
             },
+            {
+              label: "detail",
+            },
           ]}
           rows={paymentMethods}
         />

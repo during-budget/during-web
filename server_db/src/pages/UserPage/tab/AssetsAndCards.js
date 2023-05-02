@@ -61,6 +61,9 @@ function List() {
             {
               label: "amount",
             },
+            {
+              label: "detail",
+            },
           ]}
           rows={assets}
         />
@@ -91,6 +94,9 @@ function List() {
             },
             {
               label: "title",
+            },
+            {
+              label: "detail",
             },
           ]}
           rows={cards}
