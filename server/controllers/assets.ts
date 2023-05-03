@@ -26,6 +26,9 @@ export const update = async (req: Request, res: Response) => {
     const updated: Types.DocumentArray<IAsset> = new Types.DocumentArray([]);
     const removed: Types.DocumentArray<IAsset> = new Types.DocumentArray([]);
 
+    let isUpdatedCards = false;
+    let isUpdatedPM = false;
+
     for (let _asset of req.body.assets) {
       /* create asset */
       if (!("_id" in _asset)) {
@@ -67,6 +70,7 @@ export const update = async (req: Request, res: Response) => {
       removed.push(asset);
     }
 
+    isUpdatedPM = added.length > 0 || updated.length > 0 || removed.length > 0;
     user.assets = _assets;
 
     for (const asset of added) {
@@ -77,6 +81,7 @@ export const update = async (req: Request, res: Response) => {
         icon: asset.icon,
         title: asset.title,
         detail: asset.detail,
+        isChecked: true,
       });
     }
 
@@ -86,6 +91,7 @@ export const update = async (req: Request, res: Response) => {
         if (user.cards[i].linkedAssetId?.equals(key)) {
           user.cards[i].linkedAssetIcon = asset.icon;
           user.cards[i].linkedAssetTitle = asset.title;
+          isUpdatedCards = true;
         }
       }
       const paymentMethodIdx = _.findIndex(user.paymentMethods, {
@@ -125,7 +131,11 @@ export const update = async (req: Request, res: Response) => {
       }
     }
     await user.saveReqUser();
-    return res.status(200).send({ assets: user.assets });
+    return res.status(200).send({
+      assets: user.assets,
+      cards: isUpdatedCards ? user.cards : undefined,
+      paymentMethods: isUpdatedPM ? user.paymentMethods : undefined,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });

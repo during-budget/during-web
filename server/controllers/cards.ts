@@ -26,6 +26,8 @@ export const update = async (req: Request, res: Response) => {
     const updated: Types.DocumentArray<ICard> = new Types.DocumentArray([]);
     const removed: Types.DocumentArray<ICard> = new Types.DocumentArray([]);
 
+    let isUpdatedPM = false;
+
     for (let _card of req.body.cards) {
       /* create card */
       if (!("_id" in _card)) {
@@ -89,6 +91,7 @@ export const update = async (req: Request, res: Response) => {
       removed.push(card);
     }
 
+    isUpdatedPM = added.length > 0 || updated.length > 0 || removed.length > 0;
     user.cards = _cards;
 
     for (const card of added) {
@@ -99,6 +102,7 @@ export const update = async (req: Request, res: Response) => {
         icon: card.icon,
         title: card.title,
         detail: card.detail,
+        isChecked: true,
       });
     }
 
@@ -145,7 +149,12 @@ export const update = async (req: Request, res: Response) => {
       user.paymentMethods = new Types.DocumentArray([...pmCard, ...pmAsset]);
     }
     await user.saveReqUser();
-    return res.status(200).send({ cards: user.cards });
+    return res
+      .status(200)
+      .send({
+        cards: user.cards,
+        paymentMethods: isUpdatedPM ? user.paymentMethods : undefined,
+      });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
