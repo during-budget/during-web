@@ -41,6 +41,7 @@ interface IPaymentMethod {
   icon: string;
   title: string;
   detail: string;
+  isChecked: boolean;
 }
 
 const paymentMethodSchema = new Schema<IPaymentMethod>({
@@ -48,6 +49,7 @@ const paymentMethodSchema = new Schema<IPaymentMethod>({
   icon: String,
   title: String,
   detail: { type: String, default: "" },
+  isChecked: { type: Boolean, default: true },
 });
 
 interface ICategory {
