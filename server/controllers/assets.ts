@@ -264,3 +264,43 @@ export const find = async (req: Request, res: Response) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+
+    let isUpdatedCards = false;
+
+    const assetIdx = _.findIndex(user.assets, {
+      _id: new Types.ObjectId(req.params._id),
+    });
+    if (assetIdx === -1)
+      return res.status(404).send({ message: "asset not found" });
+
+    for (let i = 0; i < user.cards.length; i++) {
+      if (user.cards[i].linkedAssetId?.equals(user.assets[assetIdx]._id)) {
+        user.cards[i].linkedAssetId = undefined;
+        user.cards[i].linkedAssetIcon = undefined;
+        user.cards[i].linkedAssetTitle = undefined;
+        isUpdatedCards = true;
+      }
+    }
+    const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+      _id: user.assets[assetIdx]._id,
+    });
+    if (paymentMethodIdx !== -1) {
+      user.paymentMethods.splice(paymentMethodIdx, 1);
+    }
+    user.assets.splice(assetIdx, 1);
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      assets: user.assets,
+      cards: isUpdatedCards ? user.cards : undefined,
+      paymentMethods: user.paymentMethods,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};

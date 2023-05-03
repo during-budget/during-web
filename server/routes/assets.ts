@@ -9,6 +9,6 @@ router.get("/", isLoggedIn, assets.find);
 
 router.post("/", isLoggedIn, assets.create);
 router.put("/:_id", isLoggedIn, assets.update);
-// router.delete("/:_id", isLoggedIn, assets.find);
+router.delete("/:_id", isLoggedIn, assets.remove);
 
 module.exports = router;
