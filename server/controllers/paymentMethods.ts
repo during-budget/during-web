@@ -17,35 +17,42 @@ export const update = async (req: Request, res: Response) => {
     const user = req.user!;
     if (!user.paymentMethods) user.paymentMethods = new Types.DocumentArray([]);
 
+    const pmDict: { [key: string]: IPaymentMethod } = Object.fromEntries(
+      user.paymentMethods.map((pm: any) => [pm._id, pm.toObject()])
+    );
+
     const _paymentMethods: Types.DocumentArray<IPaymentMethod> =
       new Types.DocumentArray([]);
 
-    const exAssetsAndCards = [
-      ...user.assets.map((asset: any) => {
-        return { ...asset.toObject(), type: "asset" };
-      }),
-      ...user.cards.map((card: any) => {
-        return { ...card.toObject(), type: "card" };
-      }),
-    ];
-
-    for (let _paymentMethod of req.body.paymentMethods) {
-      if (!("_id" in _paymentMethod)) {
+    for (let _pm of req.body.paymentMethods) {
+      if (!("_id" in _pm)) {
         return res.status(400).send({ message: "field '_id' is required" });
       }
-
-      const exPaymentMethod = _.find(exAssetsAndCards, {
-        _id: new Types.ObjectId(_paymentMethod._id),
-      }) as IPaymentMethod;
-
-      if (!exPaymentMethod) {
+      if (!("isChecked" in _pm)) {
         return res
-          .status(404)
-          .send({ message: "paymentMethod not found", exAssetsAndCards });
+          .status(400)
+          .send({ message: "field 'isChecked' is required" });
       }
-      /* include paymentMethod */
-      _paymentMethods.push(exPaymentMethod);
+
+      /* update pm */
+      const key = _pm._id;
+      const exPM = pmDict[key];
+      if (!exPM)
+        return res.status(404).send({ message: "paymentMethod not found" });
+
+      _paymentMethods.push({
+        ...exPM,
+        isChecked: _pm.isChecked,
+      });
+      delete pmDict[key];
     }
+    /* block removing pm */
+    if (Object.keys(pmDict).length > 0) {
+      return res
+        .status(409)
+        .send({ message: "paymentMethod cannot be removed" });
+    }
+
     user.paymentMethods = _paymentMethods;
     await user.saveReqUser();
     return res.status(200).send({ paymentMethods: user.paymentMethods });
