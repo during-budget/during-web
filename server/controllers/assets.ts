@@ -7,7 +7,41 @@ import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
 
-export const update = async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+
+    if (!("title" in req.body)) {
+      return res.status(400).send({ message: "field 'title' is required" });
+    }
+
+    const asset = {
+      _id: new Types.ObjectId(),
+      icon: req.body.icon ?? "",
+      title: req.body.title,
+      amount: req.body.amount ?? 0,
+      detail: req.body.detail ?? "",
+    };
+
+    user.assets.push(asset);
+    user.paymentMethods.push({
+      type: "asset",
+      ...asset,
+      isChecked: true,
+    });
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      assets: user.assets,
+      paymentMethods: user.paymentMethods,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("assets" in req.body))

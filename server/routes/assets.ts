@@ -4,7 +4,11 @@ import { isLoggedIn } from "../middleware/auth";
 
 import * as assets from "../controllers/assets";
 
-router.put("/", isLoggedIn, assets.update);
+router.put("/", isLoggedIn, assets.updateAll);
 router.get("/", isLoggedIn, assets.find);
+
+router.post("/", isLoggedIn, assets.create);
+// router.put("/:_id", isLoggedIn, assets.find);
+// router.delete("/:_id", isLoggedIn, assets.find);
 
 module.exports = router;
