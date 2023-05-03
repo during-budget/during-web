@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardDataType } from '../../util/api/assetAPI';
+import { CardDataType } from '../../../util/api/assetAPI';
 import classes from './CardList.module.css';
 
 interface CardListProps {
