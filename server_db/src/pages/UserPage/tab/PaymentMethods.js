@@ -19,7 +19,11 @@ function List() {
 
   const updateDocuments = async () => {
     const { document } = await API.GET({ location: "test/users/" + _id });
-    setPaymentMethods(document.paymentMethods ?? []);
+    setPaymentMethods(
+      document.paymentMethods?.map((pm) => {
+        return { ...pm, isChecked: pm.isChecked === true ? "true" : "false" };
+      }) ?? []
+    );
   };
 
   useEffect(() => {
@@ -57,6 +61,10 @@ function List() {
             },
             {
               label: "detail",
+            },
+            {
+              label: "isChecked",
+              width: "32px",
             },
           ]}
           rows={paymentMethods}
