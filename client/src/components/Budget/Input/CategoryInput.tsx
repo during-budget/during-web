@@ -14,7 +14,7 @@ const CategoryInput = React.forwardRef(
       setIsExpense: React.Dispatch<boolean>;
       defaultValue: string;
       className?: string;
-      onChange?: (event?: React.ChangeEvent) => void;
+      onChange?: (value?: string) => void;
       disabled?: boolean;
       setIsEditSetting: (isEdit: boolean) => void;
     },

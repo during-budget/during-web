@@ -1,9 +1,8 @@
-import AssetCardStatus from '../components/Asset/Status/AssetCardStatus';
 import AssetList from '../components/Asset/List/AssetList';
+import AssetCardStatus from '../components/Asset/Status/AssetCardStatus';
 import { useAppSelector } from '../hooks/redux-hook';
 import { AssetDataType, CardDataType } from '../util/api/assetAPI';
 import classes from './Asset.module.css';
-
 export interface AssetProps {
   assets: AssetDataType[];
   cards: CardDataType[];

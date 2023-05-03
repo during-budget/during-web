@@ -1,12 +1,3 @@
-export type DetailTablValueType =
-  | 'all'
-  | 'account'
-  | 'cash'
-  | 'etc'
-  | 'debit'
-  | 'credit'
-  | 'prepaid';
-
 export const ASSET_CARD_DETAIL_TYPE = {
   all: '전체',
   account: '계좌',

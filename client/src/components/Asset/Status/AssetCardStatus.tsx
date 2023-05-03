@@ -29,7 +29,6 @@ const AssetCardStatus = ({ assets, cards }: AssetProps) => {
         isOpen={showEditor}
         closeEditor={closeEditor}
         isAsset={isAssetEditor}
-        showAll={true}
       />
     </>
   );
