@@ -41,6 +41,82 @@ export const create = async (req: Request, res: Response) => {
   }
 };
 
+export const update = async (req: Request, res: Response) => {
+  try {
+    for (let field of ["icon", "title", "amount", "detail"]) {
+      if (!(field in req.body)) {
+        return res.status(400).send({
+          message: "fields  ['icon','title','amount','detail'] are required",
+          missing: field,
+        });
+      }
+    }
+
+    const user = req.user!;
+
+    /* update asset */
+    const assetIdx = _.findIndex(user.assets, {
+      _id: new Types.ObjectId(req.params._id),
+    });
+    if (assetIdx === -1)
+      return res.status(404).send({ message: "asset not found" });
+
+    const isUpdatedIcon = user.assets[assetIdx].icon !== req.body.icon;
+    const isUpdatedTitle = user.assets[assetIdx].title !== req.body.title;
+    const isUpdatedDetail = user.assets[assetIdx].detail !== req.body.detail;
+    let isUpdatedCards = false;
+    let isUpdatedPM = false;
+
+    user.assets[assetIdx].icon = req.body.icon;
+    user.assets[assetIdx].title = req.body.title;
+    user.assets[assetIdx].detail = req.body.detail;
+    user.assets[assetIdx].amount = req.body.amount;
+    const asset = user.assets[assetIdx];
+
+    if (isUpdatedIcon || isUpdatedTitle) {
+      for (let i = 0; i < user.cards.length; i++) {
+        if (user.cards[i].linkedAssetId?.equals(asset._id)) {
+          user.cards[i].linkedAssetIcon = asset.icon;
+          user.cards[i].linkedAssetTitle = asset.title;
+          isUpdatedCards = true;
+        }
+      }
+
+      if (isUpdatedDetail) {
+        const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+          _id: asset._id,
+        });
+        if (paymentMethodIdx !== -1) {
+          user.paymentMethods[paymentMethodIdx].icon = asset.icon;
+          user.paymentMethods[paymentMethodIdx].title = asset.title;
+          user.paymentMethods[paymentMethodIdx].detail = asset.detail;
+          isUpdatedPM = true;
+
+          /* update transactions */
+          await Transaction.updateMany(
+            { linkedPaymentMethodId: asset._id },
+            {
+              linkedPaymentMethodIcon: asset.icon,
+              linkedPaymentMethodTitle: asset.title,
+              linkedPaymentMethodDetail: asset.detail,
+            }
+          );
+        }
+      }
+    }
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      assets: user.assets,
+      cards: isUpdatedCards ? user.cards : undefined,
+      paymentMethods: isUpdatedPM ? user.paymentMethods : undefined,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
