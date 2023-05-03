@@ -8,7 +8,7 @@ router.put("/", isLoggedIn, assets.updateAll);
 router.get("/", isLoggedIn, assets.find);
 
 router.post("/", isLoggedIn, assets.create);
-// router.put("/:_id", isLoggedIn, assets.find);
+router.put("/:_id", isLoggedIn, assets.update);
 // router.delete("/:_id", isLoggedIn, assets.find);
 
 module.exports = router;
