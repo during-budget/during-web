@@ -2,19 +2,23 @@ const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api`;
 
+export type AssetDetailType = 'account' | 'cash' | 'etc';
+export type CardDetailType = 'debit' | 'credit' | 'prepaid';
+export type DetailType = AssetDetailType | CardDetailType;
+
 export interface AssetDataType {
   _id: string;
   icon: string;
   title: string;
   amount: number;
-  detail: 'account' | 'cash' | 'etc';
+  detail: AssetDetailType;
 }
 
 export interface CardDataType {
   _id: string;
   icon: string;
   title: string;
-  detail: 'credit' | 'debit' | 'prepaid';
+  detail: CardDetailType;
   linkedAssetId: string;
   linkedAssetIcon: string;
   linkedAssetTitle: string;
@@ -25,7 +29,7 @@ export interface PaymentDataType {
   type: string;
   icon: string;
   title: string;
-  detail: 'account' | 'cash' | 'etc' | 'credit' | 'debit' | 'prepaid';
+  detail: DetailType;
 }
 
 /** 자산 가져오기 */

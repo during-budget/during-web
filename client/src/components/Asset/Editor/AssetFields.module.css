@@ -1,0 +1,15 @@
+.fields {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  position: absolute;
+  left: 3vw;
+  font-size: var(--size-7);
+}
+
+.amount {
+  text-align: right;
+}

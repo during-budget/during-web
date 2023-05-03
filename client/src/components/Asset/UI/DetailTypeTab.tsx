@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { ASSET_CARD_DETAIL_TYPE, DetailTablValueType } from '../../../constants/type';
+import { ASSET_CARD_DETAIL_TYPE } from '../../../constants/type';
+import { AssetDetailType, CardDetailType, DetailType } from '../../../util/api/assetAPI';
 import RadioTab, { RadioTabValueType } from '../../UI/RadioTab';
 
-const ASSET_DEATAIL_TAB: DetailTablValueType[] = ['account', 'cash', 'etc'];
-const CARD_DEATAIL_TAB: DetailTablValueType[] = ['debit', 'credit'];
+const ASSET_DEATAIL_TAB: AssetDetailType[] = ['account', 'cash', 'etc'];
+const CARD_DEATAIL_TAB: CardDetailType[] = ['debit', 'credit'];
 
 interface DetailTypeTabProps {
   id: string;
@@ -11,7 +12,7 @@ interface DetailTypeTabProps {
   isAsset: boolean;
   isAll?: boolean;
   detailState: string;
-  setDetailState: React.Dispatch<React.SetStateAction<DetailTablValueType>>;
+  setDetailState: (value: DetailType | 'all') => void;
 }
 
 const DetailTypeTab = ({
@@ -24,7 +25,9 @@ const DetailTypeTab = ({
 }: DetailTypeTabProps) => {
   // Set tab data
   const tabData = useMemo(() => {
-    const data = isAsset ? [...ASSET_DEATAIL_TAB] : [...CARD_DEATAIL_TAB];
+    const data: ('all' | DetailType)[] = isAsset
+      ? [...ASSET_DEATAIL_TAB]
+      : [...CARD_DEATAIL_TAB];
     if (isAll) {
       data.unshift('all');
     }
