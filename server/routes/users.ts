@@ -26,4 +26,7 @@ router.put("/", isLoggedIn, users.updateFields);
 router.get("/current", isLoggedIn, users.current);
 router.get("/list", isLoggedIn, users.list);
 
+/* delete account */
+router.delete("/", isLoggedIn, users.remove);
+
 module.exports = router;
