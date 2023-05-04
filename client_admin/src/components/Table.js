@@ -15,7 +15,7 @@ export async function copyClipBoard(text) {
   }
 }
 
-const Index = ({ columns, rows }) => {
+const Index = ({ columns, rows, expandable }) => {
   const [tableParams, setTableParams] = useState({
     pagination: {
       current: 1,
@@ -33,6 +33,29 @@ const Index = ({ columns, rows }) => {
 
   return (
     <Table
+      expandable={
+        expandable
+          ? {
+              ...expandable,
+              expandIcon: ({ expanded, onExpand, record }) =>
+                expanded ? (
+                  <Button
+                    style={{ margin: "24px" }}
+                    type="text"
+                    onClick={(e) => onExpand(record, e)}
+                  >
+                    <SearchOutlined />
+                  </Button>
+                ) : (
+                  <Button type="link" onClick={(e) => onExpand(record, e)}>
+                    <SearchOutlined />
+                  </Button>
+                ),
+              columnTitle: "detail",
+              columnWidth: "124px",
+            }
+          : {}
+      }
       columns={columns.map((column) => {
         if (!column.dataIndex) {
           column.dataIndex = column.key;
@@ -65,7 +88,10 @@ const Index = ({ columns, rows }) => {
               {text} <SearchOutlined />
             </Button>
           );
+        } else if (column.type === "expand-detail") {
+          return Table.EXPAND_COLUMN;
         }
+
         return column;
       })}
       dataSource={rows}
