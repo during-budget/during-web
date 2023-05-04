@@ -35,3 +35,15 @@ export const forceNotLoggedIn = (
     next();
   }
 };
+
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    if (req.user.auth === "admin") {
+      next();
+    } else {
+      res.status(403).send({ message: "You have no permission." });
+    }
+  } else {
+    res.status(403).send({ message: "You are not logged in." });
+  }
+};

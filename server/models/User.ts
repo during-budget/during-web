@@ -82,6 +82,7 @@ interface IUser {
   assets: IAsset[];
   cards: ICard[];
   paymentMethods: IPaymentMethod[];
+  auth?:string;
 }
 
 interface IUserProps {
@@ -147,6 +148,9 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     paymentMethods: {
       type: [paymentMethodSchema],
     },
+    auth:{
+      type:String
+    }
   },
   { timestamps: true }
 );
