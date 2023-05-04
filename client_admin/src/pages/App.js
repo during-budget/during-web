@@ -12,7 +12,24 @@ import DBPage from "./DBPage/Index.js";
 // import TransactionList from "./TransactionPage/List.js";
 // import TransactionPage from "./TransactionPage/Index.js";
 
+import useAPI from "../hooks/useAPI";
+import useStore from "../hooks/useStore";
+
 function App() {
+  const API = useAPI();
+  const { logIn, logOut } = useStore((state) => state);
+
+  API.GET({ location: "users/current" }, (user, error) => {
+    if (error) {
+      alert("ERROR!");
+      logOut();
+      return;
+    }
+
+    if (user) logIn(user);
+    else logOut();
+  });
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div style={{ paddingTop: "20px", minHeight: "100px", padding: "50px" }}>

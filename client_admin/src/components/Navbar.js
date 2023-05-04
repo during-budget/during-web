@@ -1,9 +1,12 @@
 import { HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button } from "antd";
 import React from "react";
 import { useLocation } from "react-router-dom";
+import useStore from "../hooks/useStore";
 
 const Navbar = () => {
+  const { user, logIn, logOut } = useStore((state) => state);
+
   const location = useLocation();
   const locationArr = location.pathname.split("/").filter((x) => x !== "");
 
@@ -22,7 +25,26 @@ const Navbar = () => {
     });
   }
 
-  return <Breadcrumb items={items} />;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <Breadcrumb items={items} />
+      {user ? (
+        <Button type="link" onClick={() => logOut()}>
+          logout
+        </Button>
+      ) : (
+        <Button type="link" onClick={() => logIn({ _id: "asdf" })}>
+          login
+        </Button>
+      )}
+    </div>
+  );
 };
 
 export default Navbar;
