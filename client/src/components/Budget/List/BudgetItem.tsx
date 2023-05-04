@@ -37,6 +37,11 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
     </div>
   );
 
+  // NOTE: Get dash for different font-size (match for rem)
+  const mediumScreen = window.matchMedia('(max-width: 400px)');
+  const smallScreen = window.matchMedia('(max-width: 350px)');
+  const dash = smallScreen.matches ? 190 : mediumScreen.matches ? 220 : 250;
+
   const amountRing = budget && (
     <>
       <Link to={`/budget/${budget.id}`} onClick={closeHandler}>
@@ -45,7 +50,7 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
           amount={budget.total.expense}
           size="8rem"
           r="2.5rem"
-          dash={220}
+          dash={dash}
           thickness="1.125rem"
           blur={2.6}
         />{' '}
