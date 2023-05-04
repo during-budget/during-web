@@ -43,9 +43,10 @@ const Index = ({ columns, rows }) => {
         if (column.type === "button-copy") {
           column.render = (text, record) => (
             <Button
+              type="text"
               onClick={(e) => {
                 copyClipBoard(record[column.key]).then((text) => {
-                  alert(`copied! => ${text}`);
+                  alert(`✂️ ${text}`);
                 });
               }}
             >
