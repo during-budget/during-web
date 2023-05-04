@@ -93,15 +93,12 @@ const getObserver = (selector: any) => {
 
 const toggleActive = (currentIdx: number) => {
   const navItems = document.querySelectorAll(`.${classes.carouselNav} button`);
-  let i = 0;
   for (const target of navItems) {
-    console.log(currentIdx, getNavIndexById(target.id));
     if (currentIdx === getNavIndexById(target.id)) {
       target.className = classes.active;
     } else {
       target.className = '';
     }
-    console.log(i++, target);
   }
 };
 
