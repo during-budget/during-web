@@ -34,11 +34,11 @@ function NewBudget() {
     }
   }, [budget]);
 
-  const startDate = new Date(year, month, 1);
+  const startDate = new Date(year, month - 1, 1);
   const endDate = dayjs(startDate).endOf('month').toDate();
 
   const createNewBudget = async () => {
-    const { budget } = await createBudgetFromBasic(year, month + 1);
+    const { budget } = await createBudgetFromBasic(year, month);
     navigate(`/budget/${budget._id}`);
   };
 

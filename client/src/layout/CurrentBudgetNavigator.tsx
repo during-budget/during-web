@@ -5,7 +5,6 @@ import { getBudgetByMonth } from '../util/api/budgetAPI';
 
 function CurrentBudgetNavigator() {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
 
   const { budget } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
