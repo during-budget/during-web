@@ -10,8 +10,6 @@ interface CardFieldsProps {
 const CardFields = ({ assetId, setAssetId }: CardFieldsProps) => {
   const assets = useAppSelector((state) => state.asset.assets);
 
-  console.log('field', assets.find((item) => item._id === assetId)?.title);
-
   const data = assets.map((item) => {
     return {
       value: item._id,

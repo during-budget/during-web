@@ -102,16 +102,11 @@ const AssetCardListEditor = ({
         (item) => item._id !== undefined && item._id === target._id
       );
 
-      console.log(target);
-
       if (idx === -1) {
         next.push(target);
-        console.log('pushed', target);
       } else {
         next[idx] = target;
-        console.log('updated', next[idx], target);
       }
-      console.log('list', next);
 
       return next;
     });

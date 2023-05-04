@@ -1,15 +1,16 @@
-import './App.css';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import Root from './layout/Root';
-import Nav from './layout/Nav';
-import ErrorBoundary from './layout/ErrorBoundary';
+import './App.css';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
 } from './layout/CurrentBudgetNavigator';
+import ErrorBoundary from './layout/ErrorBoundary';
+import Nav from './layout/Nav';
+import Root from './layout/Root';
+import Asset from './screens/Asset';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
+import NewBudget from './screens/NewBudget';
 import User from './screens/User';
-import Asset from './screens/Asset';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             path: '/budget',
             element: <CurrentBudgetNavigator />,
             loader: currentBudgetLoader,
+          },
+          {
+            path: '/budget/new',
+            element: <NewBudget />,
           },
           {
             path: '/budget/:budgetId',

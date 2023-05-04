@@ -3,15 +3,18 @@ import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { uiActions } from '../../../store/ui';
-import { getNumericDotDateString } from '../../../util/date';
+import { getMonthName, getNumericDotDateString } from '../../../util/date';
 import NavButton from '../../UI/NavButton';
 import classes from './BudgetHeader.module.css';
 import BudgetNav from './BudgetNav';
 
-function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
-  const dispatch = useDispatch();
+interface BudgetHeaderProps {
+  newDate?: { start: Date; end: Date };
+  isDefault?: boolean;
+}
 
-  const { isDefault } = props;
+function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
+  const dispatch = useDispatch();
 
   // get budget Data
   const { title, date } = useAppSelector((state) => state.budget.current);
@@ -44,9 +47,9 @@ function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
   const defaultHeader = <span>매월 반복</span>;
   const dateHeader = (
     <>
-      <span>{getNumericDotDateString(date.start)}</span>
+      <span>{getNumericDotDateString(newDate ? newDate.start : date.start)}</span>
       <span> ~ </span>
-      <span>{getNumericDotDateString(date.end)}</span>
+      <span>{getNumericDotDateString(newDate ? newDate.end : date.end)}</span>
     </>
   );
 
@@ -63,14 +66,14 @@ function BudgetHeader(props: { budgetId: string; isDefault?: boolean }) {
     </>
   );
 
-  const prevDate = dayjs(date.start).add(-1, 'month');
-  const nextDate = dayjs(date.start).add(1, 'month');
+  const prevDate = dayjs(newDate ? newDate.start : date.start).add(-1, 'month');
+  const nextDate = dayjs(newDate ? newDate.end : date.end).add(1, 'month');
 
   const bottom = isDefault ? (
     <h1 onClick={openBudgetList}>{title}</h1>
   ) : (
     <BudgetNav
-      title={title}
+      title={newDate ? getMonthName(newDate.start, 'ko-KR') : title}
       start={{ year: prevDate.year(), month: prevDate.month() + 1 }}
       end={{ year: nextDate.year(), month: nextDate.month() + 1 }}
     />
