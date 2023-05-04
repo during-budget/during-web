@@ -238,3 +238,17 @@ export const list = async (req: Request, res: Response) => {
     return res.status(err.status || 500).send({ message: err.message });
   }
 };
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    await Promise.all([
+      Transaction.deleteMany({ userId: user._id }),
+      Budget.deleteMany({ userId: user._id }),
+    ]);
+    await User.findByIdAndRemove(user._id);
+    return res.status(200).send();
+  } catch (err: any) {
+    return res.status(err.status || 500).send({ message: err.message });
+  }
+};
