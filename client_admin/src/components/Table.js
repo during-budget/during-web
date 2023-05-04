@@ -1,4 +1,4 @@
-import { Button, Space, Table, Tag } from "antd";
+import { Button, Table } from "antd";
 import {
   CopyOutlined,
   DeleteOutlined,
@@ -23,7 +23,7 @@ const Index = ({ columns, rows }) => {
     },
   });
 
-  const handleTableChange = (pagination, filters, sorter) => {
+  const handleTableChange = (pagination, filters, sorter, extra) => {
     setTableParams({
       pagination,
       filters,
@@ -54,7 +54,7 @@ const Index = ({ columns, rows }) => {
           );
         } else if (column.type === "button-delete") {
           column.render = (_, record) => (
-            <Button danger type="text" onClick={column.onClick}>
+            <Button danger type="text" onClick={() => column.onClick(record)}>
               <DeleteOutlined />
             </Button>
           );
