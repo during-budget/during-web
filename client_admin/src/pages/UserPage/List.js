@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import useAPI from "../../hooks/useAPI";
 import Table from "../../components/Table";
-import RefreshButton from "../../components/RefreshButton";
+import HeaderRefresh from "../../components/HeaderRefresh";
 
 import _ from "lodash";
 
@@ -32,7 +32,7 @@ function List() {
 
   return (
     <div style={{ marginTop: "24px" }}>
-      <RefreshButton text="users" setIsLoading={setIsLoading} />
+      <HeaderRefresh text="users" setIsLoading={setIsLoading} />
 
       <Table
         columns={[
