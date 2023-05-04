@@ -5,8 +5,7 @@ import Navbar from "../components/Navbar";
 // pages for this product
 import LandingPage from "./LandingPage/Index.js";
 import LogInPage from "./LogInPage/Index.js";
-import DBPage from "./DBPage/Index.js";
-// import UserList from "./UserPage/List.js";
+import UserList from "./UserPage/List.js";
 // import UserPage from "./UserPage/Index.js";
 // import BudgetList from "./BudgetPage/List.js";
 // import BudgetPage from "./BudgetPage/Index.js";
@@ -49,10 +48,16 @@ function App() {
           <Route
             exact
             path="/DB"
-            element={user ? <DBPage /> : <Navigate to="/login" />}
+            element={
+              user ? <Navigate to="/DB/users" /> : <Navigate to="/login" />
+            }
           />
-          {/* <Route exact path="/users" element={<UserList />} />
-          <Route exact path="/users/:_id" element={<UserPage />} />
+          <Route
+            exact
+            path="/DB/users"
+            element={user ? <UserList /> : <Navigate to="/login" />}
+          />
+          {/*<Route exact path="/users/:_id" element={<UserPage />} />
           <Route exact path="/budgets" element={<BudgetList />} />
           <Route exact path="/budgets/:_id" element={<BudgetPage />} />
           <Route exact path="/transactions" element={<TransactionList />} />
