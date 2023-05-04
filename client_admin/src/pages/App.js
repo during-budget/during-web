@@ -1,9 +1,10 @@
 import React, { Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 // pages for this product
 import LandingPage from "./LandingPage/Index.js";
+import LogInPage from "./LogInPage/Index.js";
 import DBPage from "./DBPage/Index.js";
 // import UserList from "./UserPage/List.js";
 // import UserPage from "./UserPage/Index.js";
@@ -17,7 +18,7 @@ import useStore from "../hooks/useStore";
 
 function App() {
   const API = useAPI();
-  const { logIn, logOut } = useStore((state) => state);
+  const { user, logIn, logOut } = useStore((state) => state);
 
   API.GET({ location: "users/current" }, (user, error) => {
     if (error) {
@@ -35,8 +36,21 @@ function App() {
       <div style={{ paddingTop: "20px", minHeight: "100px", padding: "50px" }}>
         <Navbar />
         <Routes>
-          <Route exact path="/" element={<LandingPage />} />
-          <Route exact path="/DB" element={<DBPage />} />
+          <Route
+            exact
+            path="/"
+            element={user ? <LandingPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/login"
+            element={!user ? <LogInPage /> : <Navigate to="/" />}
+          />
+          <Route
+            exact
+            path="/DB"
+            element={user ? <DBPage /> : <Navigate to="/login" />}
+          />
           {/* <Route exact path="/users" element={<UserList />} />
           <Route exact path="/users/:_id" element={<UserPage />} />
           <Route exact path="/budgets" element={<BudgetList />} />

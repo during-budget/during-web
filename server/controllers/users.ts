@@ -112,7 +112,10 @@ export const loginGuest = async (req: Request, res: Response) => {
  * @body {email: 'user00001'}
  */
 export const loginLocal = async (req: Request, res: Response) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({
+    email: req.body.email,
+    auth: req.body?.auth,
+  });
   if (!user) return res.status(404).send({ message: "User not found" });
 
   const code = generateRandomNumber(6);

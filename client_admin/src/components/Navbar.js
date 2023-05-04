@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import useStore from "../hooks/useStore";
 
 const Navbar = () => {
-  const { user, logIn, logOut } = useStore((state) => state);
+  const { user, logOut } = useStore((state) => state);
 
   const location = useLocation();
   const locationArr = location.pathname.split("/").filter((x) => x !== "");
@@ -35,13 +35,14 @@ const Navbar = () => {
     >
       <Breadcrumb items={items} />
       {user ? (
-        <Button type="link" onClick={() => logOut()}>
-          logout
-        </Button>
+        <div>
+          {user.email}
+          <Button type="link" onClick={() => logOut()}>
+            logout
+          </Button>
+        </div>
       ) : (
-        <Button type="link" onClick={() => logIn({ _id: "asdf" })}>
-          login
-        </Button>
+        <></>
       )}
     </div>
   );
