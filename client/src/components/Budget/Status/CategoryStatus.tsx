@@ -24,7 +24,7 @@ function CategoryStatus(props: { budgetId: string }) {
   // CategoryIdx - Init index when category changes
   useEffect(() => {
     setCurrentCategoryIdx(0);
-  }, [storedCategories]);
+  }, [storedCategories, isExpense]);
 
   // Get category data
   const categories = isExpense ? storedCategories.expense : storedCategories.income;
