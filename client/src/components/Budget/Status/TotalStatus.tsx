@@ -37,6 +37,11 @@ function TotalStatus(props: { budgetId?: string }) {
     dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
   };
 
+  // NOTE: Get dash for different font-size (match for rem)
+  const mediumScreen = window.matchMedia('(max-width: 400px)');
+  const smallScreen = window.matchMedia('(max-width: 350px)');
+  const dash = smallScreen.matches ? 475 : (mediumScreen.matches ? 555 : 635);
+
   return (
     <>
       {budgetId && (
@@ -53,7 +58,7 @@ function TotalStatus(props: { budgetId?: string }) {
         size="18rem"
         r="35%"
         thickness="3rem"
-        dash={555}
+        dash={dash}
         blur={6}
       />
       {budgetId && (
