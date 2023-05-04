@@ -1,0 +1,23 @@
+.status {
+  width: calc(100% - 20vw) !important;
+  margin-bottom: 3vh;
+  padding: 0 10vw;
+  width: calc(100% - 20vw) !important;
+}
+
+.create {
+  text-align: center;
+  margin: 6vh 10vw;
+}
+
+.button {
+  height: 8vh;
+  font-size: var(--size-4);
+  margin: 1vh 0;
+  margin-bottom: 2vh;
+}
+
+.link {
+  font-size: var(--size-5);
+  font-weight: 600;
+}

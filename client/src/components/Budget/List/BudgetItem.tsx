@@ -1,8 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Budget from '../../../models/Budget';
-import { budgetActions } from '../../../store/budget';
-import { createBudgetFromBasic } from '../../../util/api/budgetAPI';
 import { getMonthName } from '../../../util/date';
 import AmountRing from '../Amount/AmountRing';
 import classes from './BudgetItem.module.css';
@@ -41,16 +39,6 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
     </div>
   );
 
-  const addBudget = async () => {
-    const { budget } = await createBudgetFromBasic(
-      startDate.getFullYear(),
-      startDate.getMonth() + 1
-    );
-    dispatch(budgetActions.setCurrentBudget(budget));
-    dispatch(budgetActions.addBudgetItem(budget));
-    closeHandler();
-  };
-
   const amountRing = budget && (
     <>
       <Link to={`/budget/${budget.id}`} onClick={closeHandler}>
@@ -70,7 +58,7 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
 
   const addButton = (
     <Link
-      to={`/budget/new?year=${startDate.getFullYear()}&month=${startDate.getMonth()}`}
+      to={`/budget/new?year=${startDate.getFullYear()}&month=${startDate.getMonth() + 1}`}
       onClick={() => {
         closeHandler();
       }}
