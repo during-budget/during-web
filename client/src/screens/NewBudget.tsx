@@ -1,22 +1,14 @@
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import {
-  Link,
-  LoaderFunctionArgs,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import BudgetList from '../components/Budget/List/BudgetList';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Button from '../components/UI/Button';
 import Carousel from '../components/UI/Carousel';
 import { useAppSelector } from '../hooks/redux-hook';
-import { createBudgetFromBasic, getBudgetByMonth } from '../util/api/budgetAPI';
+import { createBudgetFromBasic } from '../util/api/budgetAPI';
 import classes from './NewBudget.module.css';
-import { useEffect } from 'react';
 
 dayjs.extend(customParseFormat);
 
@@ -26,13 +18,11 @@ function NewBudget() {
 
   const defaultBudgetId = useAppSelector((state) => state.budget.default.id);
 
-  const { year, month, budget } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const [params] = useSearchParams();
 
-  useEffect(() => {
-    if (budget) {
-      navigate(`/budget/${budget._id}`);
-    }
-  }, [budget]);
+  const now = new Date();
+  const year = +(params.get('year') || now.getFullYear());
+  const month = +(params.get('month') || now.getMonth() + 1);
 
   const startDate = new Date(year, month - 1, 1);
   const endDate = dayjs(startDate).endOf('month').toDate();
@@ -77,22 +67,3 @@ function NewBudget() {
 }
 
 export default NewBudget;
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const url = new URL(request.url);
-  const params = url.searchParams;
-
-  const now = new Date();
-  const year = +(params.get('year') || now.getFullYear());
-  const month = +(params.get('month') || now.getMonth() + 1);
-
-  const { budget } = await getBudgetByMonth(year, month);
-
-  console.log(year, month);
-
-  return {
-    year,
-    month,
-    budget,
-  };
-};

@@ -9,7 +9,7 @@ import Root from './layout/Root';
 import Asset from './screens/Asset';
 import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
-import NewBudget , { loader as DateBudgetLoader }from './screens/NewBudget';
+import NewBudget from './screens/NewBudget';
 import User from './screens/User';
 
 const router = createBrowserRouter([
@@ -40,7 +40,6 @@ const router = createBrowserRouter([
           {
             path: '/budget/new',
             element: <NewBudget />,
-            loader: DateBudgetLoader,
           },
           {
             path: '/budget/:budgetId',

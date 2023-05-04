@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { Navigate, useLoaderData, useSearchParams } from 'react-router-dom';
+import { Navigate, useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../store/budget';
 import { getBudgetByMonth } from '../util/api/budgetAPI';
 
