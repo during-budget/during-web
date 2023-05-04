@@ -31,7 +31,7 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
   };
 
   const navigateToNewBudget = (year: number, month: number) => {
-    navigate(`/budget/new?year=${year}&month=${month - 1}`);
+    navigate(`/budget/new?year=${year}&month=${month}`);
   };
 
   return (

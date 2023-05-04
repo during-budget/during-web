@@ -20,8 +20,10 @@ function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
   const { title, date } = useAppSelector((state) => state.budget.current);
 
   // get location
-  const location = useLocation();
-  const from = location.state?.from?.pathname;
+  const locationState = useLocation().state?.from;
+  const prevPath = locationState
+    ? locationState.pathname + locationState.search
+    : undefined;
 
   // for budget list
   const openBudgetList = () => {
@@ -34,7 +36,7 @@ function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
 
   // set button
   const defaultButton = (
-    <NavButton className={classes.back} to={from || '/user'} isNext={false} />
+    <NavButton className={classes.back} to={prevPath || '/user'} isNext={false} />
   );
 
   const calendarButton = (
