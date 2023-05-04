@@ -2,11 +2,11 @@ import React from "react";
 import Tabs from "../../components/Tabs";
 
 import BasicInfo from "./tab/BasicInfo";
-// import Categories from "./tab/Categories";
+import Categories from "./tab/Categories";
 // import BudgetList from "./tab/BudgetList";
-// import TransactionList from "./tab/TransactionList";
-// import AssetsAndCards from "./tab/AssetsAndCards";
-// import PaymentMethods from "./tab/PaymentMethods";
+import Assets from "./tab/Assets";
+import Cards from "./tab/Cards";
+import PaymentMethods from "./tab/PaymentMethods";
 
 function Index() {
   return (
@@ -15,21 +15,12 @@ function Index() {
         items={[
           { label: "info", child: <BasicInfo /> },
           { label: "budgets", child: <div>asdf</div> },
-          { label: "categories", child: <div>asdf</div> },
-          { label: "assets & cards", icon: "card", child: <div>asdf</div> },
-          { label: "payment methods", child: <div>asdf</div> },
+          { label: "categories", child: <Categories /> },
+          { label: "assets", child: <Assets /> },
+          { label: "cards", child: <Cards /> },
+          { label: "payment methods", child: <PaymentMethods /> },
         ]}
       />
-      {/* <Tabs
-        items={{
-          info: <BasicInfo />,
-          categories: <Categories />,
-          budgets: <BudgetList />,
-          transactions: <TransactionList />,
-          "assets & cards": <AssetsAndCards />,
-          "payment methods": <PaymentMethods />,
-        }}
-      /> */}
     </div>
   );
 }
