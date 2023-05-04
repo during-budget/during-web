@@ -587,9 +587,15 @@ export const find = async (req: Request, res: Response) => {
     if (req.params._id) {
       const budget = await Budget.findById(req.params._id);
       if (!budget) return res.status(404).send();
-      if (!budget.userId.equals(user._id)) return res.status(401).send();
+      if (!budget.userId.equals(user._id)) {
+        if (user.auth !== "admin") {
+          return res.status(401).send();
+        }
+      }
 
-      const transactions = await Transaction.find({ budgetId: budget._id });
+      const transactions = await Transaction.find({
+        budgetId: budget._id,
+      }).lean();
       return res.status(200).send({ budget, transactions });
 
       // return res.status(200).send({
@@ -649,6 +655,14 @@ export const find = async (req: Request, res: Response) => {
       });
       return res.status(200).send({ budgets });
     }
+    if ("userId" in req.query) {
+      if (user.auth !== "admin") {
+        return res.status(403).send({ message: "you have no permission" });
+      }
+      const budgets = await Budget.find({ userId: user._id }).lean();
+      return res.status(200).send({ budgets });
+    }
+
     const budgets = await Budget.find({ userId: user._id });
     return res.status(200).send({ budgets });
   } catch (err: any) {
@@ -664,10 +678,15 @@ export const find = async (req: Request, res: Response) => {
  */
 export const remove = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
+    const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send();
-    // if (!budget.userId.equals(user._id)) return res.status(401).send();
+
+    if (!budget.userId.equals(user._id)) {
+      if (user.auth !== "admin") {
+        return res.status(401).send();
+      }
+    }
 
     await Transaction.deleteMany({ budgetId: budget._id });
     await budget.remove();

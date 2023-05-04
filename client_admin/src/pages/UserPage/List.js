@@ -71,7 +71,7 @@ function List() {
             onClick: async (e) => {
               if (
                 window.confirm(
-                  "정말 삭제하시겠습니까? budgets와 transactions가 함께 삭제합니다."
+                  "정말 삭제하시겠습니까? budgets와 transactions가 함께 삭제됩니다."
                 ) === true
               ) {
                 await API.DELETE({ location: "users/" + e._id });

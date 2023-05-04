@@ -7,10 +7,7 @@ import LandingPage from "./LandingPage/Index.js";
 import LogInPage from "./LogInPage/Index.js";
 import UserList from "./UserPage/List.js";
 import UserPage from "./UserPage/Index.js";
-// import BudgetList from "./BudgetPage/List.js";
-// import BudgetPage from "./BudgetPage/Index.js";
-// import TransactionList from "./TransactionPage/List.js";
-// import TransactionPage from "./TransactionPage/Index.js";
+import BudgetPage from "./BudgetPage/Index.js";
 
 import useAPI from "../hooks/useAPI";
 import useStore from "../hooks/useStore";
@@ -51,15 +48,8 @@ function App() {
           />
           {RouteUser("/DB", <Navigate to="/DB/users" />)}
           {RouteUser("/DB/users", <UserList />)}
-          <Route exact path="/DB/users/:_id" element={<UserPage />} />
-          {/* <Route exact path="/budgets" element={<BudgetList />} />
-          <Route exact path="/budgets/:_id" element={<BudgetPage />} />
-          <Route exact path="/transactions" element={<TransactionList />} />
-          <Route
-            exact
-            path="/transactions/:_id"
-            element={<TransactionPage />}
-          /> */}
+          {RouteUser("/DB/users/:_id", <UserPage />)}
+          {RouteUser("/DB/users/:_id/budgets/:budgetId", <BudgetPage />)}
         </Routes>
       </div>
     </Suspense>
