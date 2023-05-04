@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
-import StatusHeader from './StatusHeader';
+import { budgetCategoryActions } from '../../../store/budget-category';
+import { uiActions } from '../../../store/ui';
+import { updateCategoryPlan } from '../../../util/api/budgetAPI';
+import IndexNav from '../../UI/IndexNav';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
-import IndexNav from '../../UI/IndexNav';
-import { updateCategoryPlan } from '../../../util/api/budgetAPI';
-import { uiActions } from '../../../store/ui';
-import ExpenseTab from '../UI/ExpenseTab';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import CategoryPlanButtons from '../UI/CategoryPlanButtons';
-import { budgetCategoryActions } from '../../../store/budget-category';
+import ExpenseTab from '../UI/ExpenseTab';
+import StatusHeader from './StatusHeader';
 
 function CategoryStatus(props: { budgetId: string }) {
   const dispatch = useAppDispatch();
@@ -71,9 +72,9 @@ function CategoryStatus(props: { budgetId: string }) {
       />
       <AmountDetail
         id="category"
-        amount={categories[currentCategoryIdx].amount}
+        amount={categories[currentCategoryIdx]?.amount || new Amount(0, 0, 0)}
         editPlanHandler={
-          !categories[currentCategoryIdx].isDefault ? updatePlan : undefined
+          !categories[currentCategoryIdx]?.isDefault ? updatePlan : undefined
         }
       />
       <IndexNav

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import BudgetList from '../components/Budget/List/BudgetList';
@@ -25,10 +26,12 @@ function Budget() {
   >;
 
   // set loaderData
-  dispatch(budgetActions.setCurrentBudget(data.budget));
-  dispatch(totalActions.setTotalFromBudgetData(data.budget));
-  dispatch(budgetCategoryActions.setCategoryFromData(data.budget.categories));
-  dispatch(transactionActions.setTransactions(data.transactions));
+  useEffect(() => {
+    dispatch(budgetActions.setCurrentBudget(data.budget));
+    dispatch(totalActions.setTotalFromBudgetData(data.budget));
+    dispatch(budgetCategoryActions.setCategoryFromData(data.budget.categories));
+    dispatch(transactionActions.setTransactions(data.transactions));
+  }, [data]);
 
   const statusCarousel = (
     <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
