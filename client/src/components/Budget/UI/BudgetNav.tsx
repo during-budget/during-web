@@ -16,12 +16,22 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
     try {
       const { budget } = await getBudgetByMonth(year, month);
 
-      // TODO: /budget/new로 이동하기 - id가 new인 경우를 처리! (같은 Budget 스크린 컴포넌트여야 깜빡임 없을 듯~)
-      if (!budget) throw Error('Budget not exists:', budget);
-      navigate(`/budget/${budget._id}`);
+      if (!budget) {
+        navigateToNewBudget(year, month);
+      } else {
+        navigate(`/budget/${budget._id}`);
+      }
     } catch (e) {
-      throwError(e);
+      if ((e as Response).status === 404) {
+        navigateToNewBudget(year, month);
+      } else {
+        throwError(e);
+      }
     }
+  };
+
+  const navigateToNewBudget = (year: number, month: number) => {
+    navigate(`/budget/new?year=${year}&month=${month - 1}`);
   };
 
   return (

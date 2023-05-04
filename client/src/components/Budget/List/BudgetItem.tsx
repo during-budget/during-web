@@ -69,12 +69,15 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
   );
 
   const addButton = (
-    <>
-      <button onClick={addBudget} className={classes.button}>
-        <div className={classes.add} />
-        {dateInfo}
-      </button>
-    </>
+    <Link
+      to={`/budget/new?year=${startDate.getFullYear()}&month=${startDate.getMonth()}`}
+      onClick={() => {
+        closeHandler();
+      }}
+    >
+      <div className={classes.add} />
+      {dateInfo}
+    </Link>
   );
 
   return <li className={classes.item}>{budget ? amountRing : addButton}</li>;
