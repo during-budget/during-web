@@ -13,8 +13,6 @@ interface BudgetItemProps {
 }
 
 const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProps) => {
-  const dispatch = useDispatch();
-
   // date
   const start = startDate.toLocaleDateString('ko-KR', {
     month: '2-digit',
