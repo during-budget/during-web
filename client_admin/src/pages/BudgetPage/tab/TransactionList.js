@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import useAPI from "../../../hooks/useAPI";
 import Table from "../../../components/Table";
-import Input from "../../../components/Input";
 import Detail from "../../../components/Detail";
 
 import _ from "lodash";
