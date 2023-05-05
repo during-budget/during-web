@@ -1,0 +1,33 @@
+.msg {
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  font-weight: 600;;
+}
+
+.msg strong {
+  font-size: 1rem;
+}
+
+.msg i {
+  color: inherit;
+}
+
+.error {
+  color: var(--error-text);
+  background-color: var(--error-background);
+}
+
+.inform {
+  color: var(--gray-3);
+  background-color: var(--gray-1);
+}
+
+.thin {
+  font-weight: 400;
+}
+
+.icon {
+  margin-right: 0.3rem;
+}
