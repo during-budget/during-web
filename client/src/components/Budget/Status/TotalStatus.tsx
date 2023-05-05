@@ -40,7 +40,7 @@ function TotalStatus(props: { budgetId?: string }) {
   // NOTE: Get dash for different font-size (match for rem)
   const mediumScreen = window.matchMedia('(max-width: 400px)');
   const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 475 : (mediumScreen.matches ? 555 : 635);
+  const dash = smallScreen.matches ? 475 : mediumScreen.matches ? 555 : 634;
 
   return (
     <>
