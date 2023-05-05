@@ -7,6 +7,7 @@ import LandingPage from "./LandingPage/Index.js";
 import LogInPage from "./LogInPage/Index.js";
 import UserList from "./UserPage/List.js";
 import UserPage from "./UserPage/Index.js";
+import BudgetList from "./BudgetPage/List.js";
 import BudgetPage from "./BudgetPage/Index.js";
 
 import useAPI from "../hooks/useAPI";
@@ -49,6 +50,7 @@ function App() {
           {RouteUser("/DB", <Navigate to="/DB/users" />)}
           {RouteUser("/DB/users", <UserList />)}
           {RouteUser("/DB/users/:_id", <UserPage />)}
+          {RouteUser("/DB/users/:_id/budgets", <BudgetList />)}
           {RouteUser("/DB/users/:_id/budgets/:budgetId", <BudgetPage />)}
         </Routes>
       </div>
