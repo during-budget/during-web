@@ -317,7 +317,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         )}
       </form>
       {/* msg */}
-      {isDefault && (
+      {isDefault && !mode.isExpand && (
         <p className={classes.info}>ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요</p>
       )}
       <BudgetCategorySetting
