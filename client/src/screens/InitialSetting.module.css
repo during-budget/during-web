@@ -6,3 +6,8 @@
   margin-top: 10vh;
   margin-bottom: 5vh;
 }
+
+.nav {
+  width: 85vw !important;
+  margin: 2vh auto;
+}
