@@ -28,8 +28,8 @@ function Carousel({
 
   useEffect(() => {
     // initiate scroll
-    scrollCarouselTo(initialIndex || 0);
-    const currentIdx = getNavIndexById(window.location.hash);
+    const currentIdx = initialIndex || 0;
+    scrollCarouselTo(currentIdx);
     toggleActive(currentIdx);
 
     // initiate observer

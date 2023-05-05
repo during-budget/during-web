@@ -45,7 +45,7 @@ function Budget() {
 
   return (
     <>
-      <BudgetHeader budgetId={id} isDefault={isDefaultBudget} />
+      <BudgetHeader isDefault={isDefaultBudget} />
       <main>
         {/* Status */}
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}

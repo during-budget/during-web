@@ -1,47 +1,53 @@
 .container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 2;
 }
 
 .overlay {
-    box-sizing: border-box;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    border-radius: 2rem 2rem 0 0;
-    box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
-    z-index: 3;
-    overflow: scroll;
-    transition: 0.3s var(--slow-in);
-    max-height: 0;
+  box-sizing: border-box;
+  position: fixed !important;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 95vh;
+  background-color: #fff;
+  border-radius: 2rem 2rem 0 0;
+  box-shadow: 0 0 0 0;
+  z-index: 3;
+  overflow: scroll;
+  transition: transform 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
+    box-shadow 0.3s var(--slow-in);
+  will-change: transform, clip-path, box-shadow;
+  transform: translateY(100%);
 }
 
 .backdrop {
-    visibility: hidden;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #000;
-    opacity: 0;
-    transition: 0.3s var(--slow-in);
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0;
+  transition: opacity 0.3s var(--slow-in), opacity 0.3s var(--slow-in);
+  will-change: opacity, visibility;
 }
 
 .open > .overlay {
-    max-height: 95vh;
+  transform: translateY(0);
+  box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
 }
 
 .open > .backdrop.show {
-    visibility: visible;
-    opacity: 0.6;
+  visibility: visible;
+  opacity: 0.6;
 }
 
 .clip > .overlay {
-    max-height: 100%;
+  max-height: 100%;
+  transform: translateY(0);
+  box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
 }

@@ -10,7 +10,7 @@ export interface CardStatusProps extends AssetProps {
 }
 
 const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
-  const [currentAssetId, setCurrentAssetId] = useState(assets[0]._id || '');
+  const [currentAssetId, setCurrentAssetId] = useState(assets[0]?._id || '');
 
   const assetTabValues = useMemo(
     () =>

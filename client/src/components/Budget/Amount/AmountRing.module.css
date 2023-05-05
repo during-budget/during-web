@@ -1,22 +1,26 @@
 .container {
-    position: relative;
+  position: relative;
 }
 
 .container > * {
-    position: absolute;
+  position: absolute;
+}
+
+.budget,
+.scheduled,
+.current {
+  transition: stroke-dasharray 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  will-change: stroke-dasharray, opacity;
 }
 
 .budget {
-    stroke: var(--gray-1);
-    transition: 0.5s var(--fast-in);
+  stroke: var(--gray-1);
 }
 
 .scheduled {
-    stroke: var(--secondary);
-    transition: 0.5s var(--fast-in);
+  stroke: var(--secondary);
 }
 
 .current {
-    stroke: var(--primary);
-    transition: 0.5s var(--fast-in);
+  stroke: var(--primary);
 }

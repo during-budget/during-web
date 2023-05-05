@@ -70,6 +70,7 @@ export const createTransaction = async (transaction: Transaction) => {
             categoryId,
             tags,
             memo,
+            updateAsset: false
         }),
         headers: {
             'Content-Type': 'application/json',
@@ -130,6 +131,7 @@ export const updateTransaction = async (transaction: Transaction) => {
             categoryId,
             tags,
             memo,
+            updateAsset: false
         }),
         headers: {
             'Content-Type': 'application/json',

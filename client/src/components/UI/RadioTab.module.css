@@ -1,5 +1,6 @@
 .tab {
   display: flex;
+  justify-content: center;
   overflow-x: scroll;
 }
 

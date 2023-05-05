@@ -12,6 +12,7 @@ import { getCurrentKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Overlay from '../../UI/Overlay';
+import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
@@ -23,7 +24,6 @@ import TitleInput from '../Input/TitleInput';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
-import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 
 function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();

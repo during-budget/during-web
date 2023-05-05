@@ -91,6 +91,11 @@ export const getBudgetByMonth = async (year: number, month: number) => {
     credentials: 'include',
   });
 
+  const status = response.status;
+  if (status === 404) {
+    return { budget: null };
+  }
+
   if (!response.ok) {
     const data = await response.json();
     throw new Response(

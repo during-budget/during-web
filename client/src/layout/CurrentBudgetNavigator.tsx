@@ -8,25 +8,28 @@ function CurrentBudgetNavigator() {
 
   const { budget } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-  if (!budget) {
-  }
-  dispatch(budgetActions.setCurrentBudget(budget));
+  budget && dispatch(budgetActions.setCurrentBudget(budget));
 
-  if (budget) {
-    return <Navigate to={`/budget/${budget._id}`} replace={true} />;
-  } else {
-    throw Error('Budget not exists:', budget);
-    // TODO: /budget/new로 이동하기 - id가 new인 경우를 처리! (같은 Budget 스크린 컴포넌트여야 깜빡임 없을 듯~)
-  }
+  const { year, month } = getCurrentYearMonth();
+
+  const path = budget
+    ? `/budget/${budget._id}`
+    : `/budget/new?year=${year}&month=${month}`;
+  return <Navigate to={path} replace={true} />;
 }
 
 export const loader = async () => {
+  const { year, month } = getCurrentYearMonth();
+  return getBudgetByMonth(year, month);
+};
+
+const getCurrentYearMonth = () => {
   const now = new Date();
 
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
 
-  return getBudgetByMonth(year, month);
+  return { year, month };
 };
 
 export default CurrentBudgetNavigator;
