@@ -7,10 +7,7 @@ function Index() {
   const items = [
     {
       href: "/DB",
-      title:
-        process.env.NODE_ENV.trim() === "development"
-          ? "/ DB_DEV"
-          : "/ DB_PROD",
+      title: "/ DB",
       color: "DarkOliveGreen",
     },
     { href: "/logs", title: "/ Logs", color: "DarkOliveGreen" },
