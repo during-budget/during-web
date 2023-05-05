@@ -7,6 +7,7 @@ declare namespace NodeJS {
     /** node environment */
     SERVER_PORT: string;
     CLIENT: string;
+    CLIENT_ADMIN: string;
     DB_URL: string;
 
     SALT_ROUNDS: string;

@@ -41,6 +41,7 @@ jobs:
           cd server
           echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env.production
           echo "CLIENT= ${{secrets.CLIENT}}" >> .env.production
+          echo "CLIENT_ADMIN= ${{secrets.CLIENT_ADMIN}}" >> .env.production
           echo "DB_URL= ${{secrets.DB_URL}}" >> .env.production
           echo "REDIS_URL = ${{secrets.REDIS_URL}}" >> .env.production
           echo "CRYPTO_KEY= ${{secrets.CRYPTO_KEY}}" >> .env.production
