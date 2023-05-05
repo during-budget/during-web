@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SERVER_URL = "http://localhost:5555/api/";
+const SERVER_URL = process.env.REACT_APP_DURING_SERVER + "/api/";
 
 export default function useAPI() {
   async function POST({ location, data }) {
