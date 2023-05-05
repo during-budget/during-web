@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import useAPI from "../../../hooks/useAPI";
 
-import Input from "../../../components/Input";
+import Detail from "../../../components/Detail";
 
 function Index() {
   const API = useAPI();
@@ -33,11 +33,7 @@ function Index() {
   }, [isLoading]);
 
   return !isLoading ? (
-    <div style={{ display: "flex", gap: "24px", flexDirection: "column" }}>
-      {Object.keys(user).map((key, idx) => (
-        <Input label={key} value={user[key]} disable />
-      ))}
-    </div>
+    Detail(user, { marginLeft: "0px", marginRight: "0px" })
   ) : (
     <div>loading...</div>
   );

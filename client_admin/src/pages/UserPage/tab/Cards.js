@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import useAPI from "../../../hooks/useAPI";
 import Table from "../../../components/Table";
-import Input from "../../../components/Input";
+import Detail from "../../../components/Detail";
 
 function Index() {
   const navigate = useNavigate();
@@ -38,23 +38,7 @@ function Index() {
     <div>
       <Table
         expandable={{
-          expandedRowRender: (record) => {
-            return (
-              <div
-                style={{
-                  marginLeft: "120px",
-                  marginRight: "120px",
-                  display: "flex",
-                  gap: "24px",
-                  flexDirection: "column",
-                }}
-              >
-                {Object.keys(record).map((key) => (
-                  <Input label={key} value={record[key]} disable />
-                ))}
-              </div>
-            );
-          },
+          expandedRowRender: Detail,
         }}
         columns={[
           {
