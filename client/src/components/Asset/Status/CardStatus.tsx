@@ -6,7 +6,7 @@ import CardList from '../List/CardList';
 import classes from '../Status/CardStatus.module.css';
 
 export interface CardStatusProps extends AssetProps {
-  openEditor: (payload: { isAsset: boolean }) => void;
+  openEditor?: (payload: { isAsset: boolean }) => void;
 }
 
 const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
@@ -36,7 +36,12 @@ const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
     <section className={classes.container}>
       <RadioTab name="asset-tab" values={assetTabValues} />
       <CardList className={classes.list} cards={currentCards} />
-      <EditButton label="카드 편집" onClick={openEditor.bind(null, { isAsset: false })} />
+      {openEditor && (
+        <EditButton
+          label="카드 편집"
+          onClick={openEditor.bind(null, { isAsset: false })}
+        />
+      )}
     </section>
   );
 };

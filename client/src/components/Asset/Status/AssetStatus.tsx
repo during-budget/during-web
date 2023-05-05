@@ -7,7 +7,7 @@ import classes from './AssetStatus.module.css';
 
 interface AssetStatusProps {
   assets: AssetDataType[];
-  openEditor: (payload: { isAsset: boolean }) => void;
+  openEditor?: (payload: { isAsset: boolean }) => void;
 }
 
 const AssetStatus = ({ assets, openEditor }: AssetStatusProps) => {
@@ -30,7 +30,12 @@ const AssetStatus = ({ assets, openEditor }: AssetStatusProps) => {
           };
         })}
       />
-      <EditButton label="자산 편집" onClick={openEditor.bind(null, { isAsset: true })} />
+      {openEditor && (
+        <EditButton
+          label="자산 편집"
+          onClick={openEditor.bind(null, { isAsset: true })}
+        />
+      )}
     </section>
   );
 };
