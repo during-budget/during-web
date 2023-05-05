@@ -12,7 +12,9 @@ export async function copyClipBoard(text) {
 
 const Index = ({ label, value, disable }) => {
   let _value = value;
-  if (Object.prototype.toString.call(value) === "[object Array]") {
+
+  const type = Object.prototype.toString.call(value);
+  if (type === "[object Array]" || type === "[object Object]") {
     _value = JSON.stringify(value);
   }
 
