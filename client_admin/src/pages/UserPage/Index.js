@@ -8,10 +8,16 @@ import Assets from "./tab/Assets";
 import Cards from "./tab/Cards";
 import PaymentMethods from "./tab/PaymentMethods";
 
+import useQueries from "../../hooks/useQueries";
+
 function Index() {
+  const query = new useQueries();
+  const tabIdx = query.no ?? 0;
+
   return (
     <div style={{ marginTop: "24px" }}>
       <Tabs
+        defaultActiveKey={tabIdx}
         items={[
           { label: "info", child: <BasicInfo /> },
           { label: "budgets", child: <BudgetList /> },

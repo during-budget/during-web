@@ -1,13 +1,13 @@
 import { Tabs } from "antd";
 
-const Index = ({ items }) => {
+const Index = ({ defaultActiveKey, items }) => {
   return (
     <Tabs
-      defaultActiveKey="1"
+      defaultActiveKey={defaultActiveKey ?? 0}
       items={items.map((item, i) => {
         return {
           label: item.label,
-          key: String(i + 1),
+          key: String(i),
           children: item.child,
         };
       })}
