@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "../middleware/auth";
+import { isAdmin, isLoggedIn } from "../middleware/auth";
 import * as budgets from "../controllers/budgets";
 
-router.get("/:_id/validate", budgets.validate);
-router.put("/:_id/fix", budgets.fix);
+router.get("/:_id/validate", isAdmin, budgets.validate);
+router.put("/:_id/fix", isAdmin, budgets.fix);
 
 router.post("/", isLoggedIn, budgets.create);
 router.post("/basic", isLoggedIn, budgets.createWithBasic);

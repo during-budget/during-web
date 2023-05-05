@@ -15,7 +15,6 @@ type budgetKeys =
 type categoryKeys = "amountPlanned" | "amountScheduled" | "amountCurrent";
 export const validate = async (req: Request, res: Response) => {
   try {
-    const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) {
       return res.status(404).send({ message: "budget not found" });
@@ -112,7 +111,14 @@ export const validate = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .send({ invalid, b, amountPlanned, amountScheduled, amountCurrent });
+      .send({
+        budget,
+        invalid,
+        b,
+        amountPlanned,
+        amountScheduled,
+        amountCurrent,
+      });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
@@ -120,7 +126,6 @@ export const validate = async (req: Request, res: Response) => {
 };
 export const fix = async (req: Request, res: Response) => {
   try {
-    const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) {
       return res.status(404).send({ message: "budget not found" });
