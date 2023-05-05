@@ -3,6 +3,7 @@ import Amount from '../../../models/Amount';
 import { AssetDataType } from '../../../util/api/assetAPI';
 import AmountBars from '../../Budget/Amount/AmountBars';
 import EditButton from '../../UI/EditButton';
+import Inform from '../../UI/Inform';
 import classes from './AssetStatus.module.css';
 
 interface AssetStatusProps {
@@ -20,16 +21,22 @@ const AssetStatus = ({ assets, openEditor }: AssetStatusProps) => {
     <section className={classes.container}>
       <h6>총자산</h6>
       <p className={classes.total}>{Amount.getAmountStr(total)}</p>
-      <AmountBars
-        className={classes.bars}
-        borderRadius="0.4rem"
-        amountData={assets.map((asset) => {
-          return {
-            label: asset.icon,
-            amount: asset.amount,
-          };
-        })}
-      />
+      {assets.length === 0 ? (
+        <Inform isError={false}>
+          계좌, 현금 등 현재 보유하고 있는 자산을 등록해주세요
+        </Inform>
+      ) : (
+        <AmountBars
+          className={classes.bars}
+          borderRadius="0.4rem"
+          amountData={assets.map((asset) => {
+            return {
+              label: asset.icon,
+              amount: asset.amount,
+            };
+          })}
+        />
+      )}
       {openEditor && (
         <EditButton
           label="자산 편집"
