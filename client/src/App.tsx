@@ -11,6 +11,7 @@ import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import NewBudget from './screens/NewBudget';
 import User from './screens/User';
+import InitialSetting from './screens/InitialSetting';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: '/auth',
         element: <Auth />,
         loader: AuthLoader,
+      },
+      {
+        path: '/init',
+        element: <InitialSetting />,
       },
       {
         path: '/budget',
