@@ -4,6 +4,7 @@ import AssetStatus from '../components/Asset/Status/AssetStatus';
 import CardStatus from '../components/Asset/Status/CardStatus';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
+import StepNav from '../components/UI/StepNav';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/redux-hook';
 import { budgetActions } from '../store/budget';
@@ -33,35 +34,49 @@ const InitialSetting = () => {
 
   const [currentIdx, setCurrentIdx] = useState(0);
 
-  const titles = ['자산 설정', '결제수단 설정', '기본예산 설정'];
-
-  const status = [
-    <AssetStatus assets={assets} />,
-    <CardStatus assets={assets} cards={cards} />,
-    <DefaultStatus budgetId={defaultBudgetId} />,
+  const data = [
+    { title: '자산 설정', status: <AssetStatus assets={assets} />, list: <section /> },
+    {
+      title: '결제수단 설정',
+      status: <CardStatus assets={assets} cards={cards} />,
+      list: <section />,
+    },
+    {
+      title: '기본예산 설정',
+      status: <DefaultStatus budgetId={defaultBudgetId} />,
+      list: (
+        <>
+          {/* Transactions */}
+          <TransactionLayout budgetId={defaultBudgetId} isDefault={true} />
+          {/* Overlays */}
+          <CategoryPlan budgetId={defaultBudgetId} />
+        </>
+      ),
+    },
   ];
 
-  const lists = [
-    <section />,
-    <section />,
-    <>
-      {/* Transactions */}
-      <TransactionLayout budgetId={defaultBudgetId} isDefault={true} />
-      {/* Overlays */}
-      <CategoryPlan budgetId={defaultBudgetId} />
-    </>,
-  ];
+  console.log(currentIdx, data[currentIdx]);
+
+  const { title, status, list } = data[currentIdx];
 
   return (
     <div className={classes.container}>
       <header>
-        <h1>{titles[currentIdx]}</h1>
+        <h1>{title}</h1>
       </header>
       <main>
-        {status[currentIdx]}
-        <nav></nav>
+        <div>{status}</div>
+        <StepNav
+          className={classes.nav}
+          idx={currentIdx}
+          setIdx={setCurrentIdx}
+          length={data.length}
+          onComplete={() => {
+            alert('완료!');
+          }}
+        />
         <hr />
-        {lists[currentIdx]}
+        {list}
       </main>
     </div>
   );
