@@ -92,7 +92,7 @@ function Index() {
           },
         ]}
         rows={categories.map((category) => {
-          return { ...category, key: category._id };
+          return { ...category, key: category.categoryId };
         })}
       />
     </div>
