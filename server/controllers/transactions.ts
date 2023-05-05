@@ -5,6 +5,7 @@ import { ITransaction, Transaction } from "../models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
 
 import { logger } from "../log/logger";
+import { User } from "../models/User";
 
 // transaction controller
 
@@ -605,12 +606,19 @@ export const remove = async (req: Request, res: Response) => {
         message: `parameter _id is required`,
       });
 
-    const user = req.user!;
+    let user = req.user!;
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction)
       return res.status(404).send({ message: "transaction not found" });
 
-    // if (!transaction.userId.equals(user._id)) return res.status(401).send();
+    if (!transaction.userId.equals(user._id)) {
+      if (user.auth !== "admin") {
+        return res.status(401).send();
+      }
+      const _user = await User.findById(transaction.userId);
+      if (!_user) return res.status(404).send({ message: "User not found" });
+      user = _user;
+    }
 
     const budget = await Budget.findById(transaction.budgetId);
     if (!budget)
