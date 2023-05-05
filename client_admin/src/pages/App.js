@@ -14,6 +14,8 @@ import BudgetList from "./BudgetPage/List.js";
 import BudgetPage from "./BudgetPage/Index.js";
 import TransactionList from "./TransactionPage/List.js";
 
+import LogList from "./LogPage/List.js";
+
 import useAPI from "../hooks/useAPI";
 import useStore from "../hooks/useStore";
 
@@ -59,6 +61,8 @@ function App() {
           {RouteUser("/DB/budgets", <BudgetList />)}
           {RouteUser("/DB/budgets/:budgetId", <BudgetPage />)}
           {RouteUser("/DB/transactions", <TransactionList />)}
+          {RouteUser("/logs", <LogList />)}
+          <Route path="*" element={<Navigate to="/" />}></Route>
         </Routes>
       </div>
     </Suspense>

@@ -18,43 +18,54 @@ const Navbar = () => {
     },
   ];
 
-  if (locationArr.length > 0 && locationArr[0] === "DB") {
-    let href = "/DB";
-    items.push({
-      href,
-      title: "DB",
-    });
-
-    if (locationArr.length > 1) {
-      href = href + "/" + locationArr[1];
+  if (locationArr.length > 0) {
+    if (locationArr[0] === "DB") {
+      let href = "/DB";
       items.push({
         href,
-        title: locationArr[1],
-        menu: {
-          items: [
-            {
-              title: "users",
-              onClick: () => {
-                navigate("/DB/users");
-              },
-            },
-            {
-              title: "budgets",
-              onClick: () => {
-                navigate("/DB/budgets");
-              },
-            },
-            {
-              title: "transactions",
-              onClick: () => {
-                navigate("/DB/transactions");
-              },
-            },
-          ],
-        },
+        title: "DB",
       });
 
-      for (let i = 2; i < locationArr.length; i++) {
+      if (locationArr.length > 1) {
+        href = href + "/" + locationArr[1];
+        items.push({
+          href,
+          title: locationArr[1],
+          menu: {
+            items: [
+              {
+                title: "users",
+                onClick: () => {
+                  navigate("/DB/users");
+                },
+              },
+              {
+                title: "budgets",
+                onClick: () => {
+                  navigate("/DB/budgets");
+                },
+              },
+              {
+                title: "transactions",
+                onClick: () => {
+                  navigate("/DB/transactions");
+                },
+              },
+            ],
+          },
+        });
+
+        for (let i = 2; i < locationArr.length; i++) {
+          href = href + "/" + locationArr[i];
+          items.push({
+            href,
+            title: locationArr[i],
+          });
+        }
+      }
+    } else if (locationArr[0] === "logs") {
+      let href = "";
+      for (let i = 0; i < locationArr.length; i++) {
         href = href + "/" + locationArr[i];
         items.push({
           href,
