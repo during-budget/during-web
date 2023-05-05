@@ -109,16 +109,14 @@ export const validate = async (req: Request, res: Response) => {
       }
     }
 
-    return res
-      .status(200)
-      .send({
-        budget,
-        invalid,
-        b,
-        amountPlanned,
-        amountScheduled,
-        amountCurrent,
-      });
+    return res.status(200).send({
+      budget,
+      invalid,
+      b,
+      amountPlanned,
+      amountScheduled,
+      amountCurrent,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
@@ -663,6 +661,10 @@ export const find = async (req: Request, res: Response) => {
     if ("userId" in req.query) {
       if (user.auth !== "admin") {
         return res.status(403).send({ message: "you have no permission" });
+      }
+      if (req.query.userId === "*") {
+        const budgets = await Budget.find({}).lean();
+        return res.status(200).send({ budgets });
       }
       const budgets = await Budget.find({ userId: user._id }).lean();
       return res.status(200).send({ budgets });

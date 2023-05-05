@@ -1,7 +1,7 @@
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button } from "antd";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import useStore from "../hooks/useStore";
 
 const Navbar = () => {
@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const location = useLocation();
   const locationArr = location.pathname.split("/").filter((x) => x !== "");
+  const navigate = useNavigate();
 
   const items = [
     {
@@ -16,13 +17,51 @@ const Navbar = () => {
       title: <HomeOutlined />,
     },
   ];
-  let href = "";
-  for (let loc of locationArr) {
-    href = href + "/" + loc;
+
+  if (locationArr.length > 0 && locationArr[0] === "DB") {
+    let href = "/DB";
     items.push({
       href,
-      title: loc,
+      title: "DB",
     });
+
+    if (locationArr.length > 1) {
+      href = href + "/" + locationArr[1];
+      items.push({
+        href,
+        title: locationArr[1],
+        menu: {
+          items: [
+            {
+              title: "users",
+              onClick: () => {
+                navigate("/DB/users");
+              },
+            },
+            {
+              title: "budgets",
+              onClick: () => {
+                navigate("/DB/budgets");
+              },
+            },
+            {
+              title: "transactions",
+              onClick: () => {
+                navigate("/DB/transactions");
+              },
+            },
+          ],
+        },
+      });
+
+      for (let i = 2; i < locationArr.length; i++) {
+        href = href + "/" + locationArr[i];
+        items.push({
+          href,
+          title: locationArr[i],
+        });
+      }
+    }
   }
 
   return (

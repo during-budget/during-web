@@ -579,6 +579,17 @@ export const find = async (req: Request, res: Response) => {
       const transactions = await Transaction.findById(req.params._id);
       return res.status(200).send({ transactions });
     }
+    if ("userId" in req.query) {
+      if (user.auth !== "admin") {
+        return res.status(403).send({ message: "you have no permission" });
+      }
+      if (req.query.userId === "*") {
+        const transactions = await Transaction.find({}).lean();
+        return res.status(200).send({ transactions });
+      }
+      const transactions = await Transaction.find({ userId: user._id }).lean();
+      return res.status(200).send({ transactions });
+    }
     if (!("budgetId" in req.query))
       return res.status(409).send({
         message: `query budgetId is required`,

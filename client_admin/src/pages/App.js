@@ -10,6 +10,10 @@ import UserPage from "./UserPage/Index.js";
 import UBudgetList from "./UserBudgetPage/List.js";
 import UBudgetPage from "./UserBudgetPage/Index.js";
 
+import BudgetList from "./BudgetPage/List.js";
+import BudgetPage from "./BudgetPage/Index.js";
+import TransactionList from "./TransactionPage/List.js";
+
 import useAPI from "../hooks/useAPI";
 import useStore from "../hooks/useStore";
 
@@ -52,6 +56,9 @@ function App() {
           {RouteUser("/DB/users/:_id", <UserPage />)}
           {RouteUser("/DB/users/:_id/budgets", <UBudgetList />)}
           {RouteUser("/DB/users/:_id/budgets/:budgetId", <UBudgetPage />)}
+          {RouteUser("/DB/budgets", <BudgetList />)}
+          {RouteUser("/DB/budgets/:budgetId", <BudgetPage />)}
+          {RouteUser("/DB/transactions", <TransactionList />)}
         </Routes>
       </div>
     </Suspense>
