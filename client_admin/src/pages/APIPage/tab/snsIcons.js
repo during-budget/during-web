@@ -14,7 +14,9 @@ const Index = () => {
                 <GoogleLoginButton
                   style={{ width: "250", type: "icon", shape: "circle" }}
                   callback={(res) => {
-                    alert("clicked");
+                    alert(
+                      "check console to check credential and call login API"
+                    );
                     console.log({ credential: res.credential });
                   }}
                 />
