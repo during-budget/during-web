@@ -60,6 +60,9 @@ function Index() {
           },
           {
             key: "detail",
+          },
+          {
+            key: "_detail",
             type: "expand-detail",
           },
         ]}

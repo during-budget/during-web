@@ -61,6 +61,7 @@ function Index() {
           {
             key: "title",
           },
+
           {
             key: "detail",
           },
@@ -76,7 +77,7 @@ function Index() {
             },
           },
           {
-            key: "detail",
+            key: "_detail",
             type: "expand-detail",
           },
         ]}
