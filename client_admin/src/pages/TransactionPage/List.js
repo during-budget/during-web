@@ -6,6 +6,7 @@ import useAPI from "../../hooks/useAPI";
 import Table from "../../components/Table";
 import Detail from "../../components/Detail";
 import HeaderRefresh from "../../components/HeaderRefresh";
+import Loading from "../../components/Loading";
 
 import _ from "lodash";
 import { Radio, Tag } from "antd";
@@ -212,7 +213,7 @@ function Index() {
       />
     </div>
   ) : (
-    <div>loading...</div>
+    <Loading />
   );
 }
 

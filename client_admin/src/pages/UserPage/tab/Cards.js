@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAPI from "../../../hooks/useAPI";
 import Table from "../../../components/Table";
 import Detail from "../../../components/Detail";
+import Loading from "../../../components/Loading";
 
 function Index() {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ function Index() {
       />
     </div>
   ) : (
-    <div>loading...</div>
+    <Loading />
   );
 }
 

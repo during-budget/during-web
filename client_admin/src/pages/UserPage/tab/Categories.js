@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAPI from "../../../hooks/useAPI";
 import Table from "../../../components/Table";
 import Detail from "../../../components/Detail";
+import Loading from "../../../components/Loading";
+
 import { Radio } from "antd";
 
 function Index() {
@@ -92,7 +94,7 @@ function Index() {
       />
     </div>
   ) : (
-    <div>loading...</div>
+    <Loading />
   );
 }
 

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useAPI from "../../hooks/useAPI";
 import Table from "../../components/Table";
 import HeaderRefresh from "../../components/HeaderRefresh";
+import Loading from "../../components/Loading";
 
 import _ from "lodash";
 
@@ -30,7 +31,7 @@ function List() {
     return () => {};
   }, [isLoading]);
 
-  return (
+  return !isLoading ? (
     <div style={{ marginTop: "24px" }}>
       <HeaderRefresh text="users" setIsLoading={setIsLoading} />
 
@@ -84,18 +85,9 @@ function List() {
         ]}
         rows={users}
       />
-      {/* <Snackbar
-        open={showSnackbar}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        <Alert oseverity="success" sx={{ width: "100%" }}>
-          {"deleted"}
-        </Alert>
-      </Snackbar> */}
     </div>
+  ) : (
+    <Loading />
   );
 }
 
