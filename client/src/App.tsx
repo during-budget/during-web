@@ -12,6 +12,17 @@ import Budget, { loader as budgetLoader } from './screens/Budget';
 import NewBudget from './screens/NewBudget';
 import User from './screens/User';
 import InitialSetting from './screens/InitialSetting';
+import * as Sentry from '@sentry/react';
+
+Sentry.init({
+  dsn: 'https://7447449226b942609c7f55f66d10d401@o4505136726605824.ingest.sentry.io/4505136729227264',
+  integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
+  // Session Replay
+  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+  replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+});
 
 const router = createBrowserRouter([
   {
