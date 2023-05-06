@@ -30,6 +30,7 @@ export const create = async (req: Request, res: Response) => {
       if (!asset) {
         return res.status(404).send({ message: "linked asset not found" });
       }
+      card.linkedAssetId = asset._id;
       card.linkedAssetIcon = asset.icon;
       card.linkedAssetTitle = asset.title;
     }
