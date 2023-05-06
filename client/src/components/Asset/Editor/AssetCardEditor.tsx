@@ -13,9 +13,11 @@ import CardFields from './CardFields';
 interface AssetCardEditorProps {
   isAsset: boolean;
   target?: AssetCardDataType;
-  updateTarget?: (target: AssetCardDataType) => void;
+  updateTarget?: (target: AssetCardDataType, isAsset?: boolean) => void;
   isOpen: boolean;
+  isAdd?: boolean;
   closeEditor: () => void;
+  openEditor?: () => void;
 }
 
 const AssetCardEditor = ({
@@ -24,6 +26,8 @@ const AssetCardEditor = ({
   updateTarget,
   isOpen,
   closeEditor,
+  openEditor,
+  isAdd,
 }: AssetCardEditorProps) => {
   const [targetState, setTargetState] = useState(target || getDefaultTarget(isAsset));
 
@@ -39,13 +43,17 @@ const AssetCardEditor = ({
 
     const updatingTarget = { ...targetState };
 
-    if (!updatingTarget.icon && updatingTarget.detail === 'cash') {
-      updatingTarget.icon = '💵';
-    } else {
-      updatingTarget.icon = '🏦';
+    if (!updatingTarget.icon) {
+      if (!isAsset) {
+        updatingTarget.icon = '💳';
+      } else if (updatingTarget.detail === 'cash') {
+        updatingTarget.icon = '💵';
+      } else {
+        updatingTarget.icon = '🏦';
+      }
     }
 
-    updateTarget && updateTarget(updatingTarget);
+    updateTarget && updateTarget(updatingTarget, isAsset);
     closeEditor();
   };
 
@@ -84,7 +92,18 @@ const AssetCardEditor = ({
   };
 
   return (
-    <Overlay isOpen={isOpen} closeHandler={closeEditor} className={classes.container}>
+    <Overlay
+      isOpen={isOpen}
+      closeHandler={closeEditor}
+      className={`${classes.container} ${isOpen ? classes.open : ''} ${
+        isAdd ? classes.add : ''
+      }`}
+    >
+      {isAdd && (
+        <Button className={classes.button} onClick={openEditor}>
+          {isAsset ? '자산' : '카드'} 추가하기
+        </Button>
+      )}
       <div className={classes.content}>
         {target && (
           <Button styleClass="extra" className={classes.remove}>
@@ -102,7 +121,7 @@ const AssetCardEditor = ({
             <EmojiInput
               value={targetState?.icon || ''}
               onChange={setIcon}
-              placeholder={targetState.detail === 'cash' ? '💵' : '🏦'}
+              placeholder={isAsset ? (targetState.detail === 'cash' ? '💵' : '🏦') : '💳'}
               style={{
                 width: '5rem',
                 height: '5rem',
@@ -130,7 +149,9 @@ const AssetCardEditor = ({
           )}
           <ConfirmCancelButtons
             onClose={closeEditor}
-            confirmMsg={`${isAsset ? '자산' : '카드'} 편집 완료`}
+            confirmMsg={`${isAsset ? '자산' : '카드'} ${
+              isAdd ? '추가 완료' : '편집 완료'
+            }`}
           />
         </form>
       </div>
@@ -149,10 +170,6 @@ const getDefaultTarget = (isAsset: boolean) => {
   }
 
   return target as AssetCardDataType;
-};
-
-const getDefaultIcon = (isAsset: boolean, target?: AssetCardDataType) => {
-  return isAsset ? (target?.detail === 'cash' ? '💵' : '🏦') : '🏦';
 };
 
 export default AssetCardEditor;

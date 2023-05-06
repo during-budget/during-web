@@ -1,3 +1,25 @@
+/* container - add mode */
+.add {
+  position: relative;
+  transform: translateY(calc(100% - 12vh));
+}
+
+/* container - open */
+.open .button {
+  position: absolute;
+  top: 0;
+  transform: translateY(-100%);
+}
+
+/* add button */
+.button {
+  height: 12vh;
+  font-size: var(--size-4);
+  transform: translateY(0);
+  transition: transform 0.3s var(--slow-in);
+  border-radius: 0;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -9,6 +31,7 @@
   height: 60vh;
 }
 
+/* title & emoji area */
 .data {
   display: flex;
   flex-direction: column;

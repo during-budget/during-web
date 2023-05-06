@@ -1,13 +1,13 @@
-.container {
+.header {
   text-align: center;
 }
 
-.container h1 {
+.header h1 {
   margin-top: 10vh;
   margin-bottom: 5vh;
 }
 
 .nav {
   width: 85vw !important;
-  margin: 2vh auto;
+  margin: 4vh auto;
 }
