@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import Category from '../../../models/Category';
-import EmojiInput from '../../Budget/Input/EmojiInput';
 import Button from '../../UI/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
+import EmojiInput from '../../UI/EmojiInput';
 import classes from './UserCategoryList.module.css';
 
 function UserCategoryList(props: {

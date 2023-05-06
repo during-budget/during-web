@@ -8,9 +8,9 @@ import {
   removeAssetById,
   removeCardById,
 } from '../../../util/api/assetAPI';
-import EmojiInput from '../../Budget/Input/EmojiInput';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
+import EmojiInput from '../../UI/EmojiInput';
 import Overlay from '../../UI/Overlay';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import classes from './AssetCardEditor.module.css';

@@ -8,6 +8,7 @@ import TotalStatus from '../components/Budget/Status/TotalStatus';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
+import EmojiOverlay from '../components/UI/EmojiOverlay';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/redux-hook';
 import { budgetActions } from '../store/budget';
@@ -55,6 +56,7 @@ function Budget() {
         {/* Overlays */}
         <CategoryPlan budgetId={id} />
         <BudgetList />
+        <EmojiOverlay />
       </main>
     </>
   );
