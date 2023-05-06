@@ -73,6 +73,12 @@ interface IUser {
   _id: Types.ObjectId;
   userName: string;
   email: string;
+  snsId: {
+    google: string | undefined;
+    apple: string | undefined;
+    naver: string | undefined;
+    kakao: string | undefined;
+  };
   isGuest: boolean;
   categories: ICategory[];
   birthdate?: Date;
@@ -82,7 +88,7 @@ interface IUser {
   assets: IAsset[];
   cards: ICard[];
   paymentMethods: IPaymentMethod[];
-  auth?:string;
+  auth?: string;
 }
 
 interface IUserProps {
@@ -126,6 +132,10 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
       type: String,
       unique: true,
     },
+    snsId: {
+      type: Object,
+      default: {},
+    },
     isGuest: {
       type: Boolean,
       default: false,
@@ -148,9 +158,9 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     paymentMethods: {
       type: [paymentMethodSchema],
     },
-    auth:{
-      type:String
-    }
+    auth: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
