@@ -1,8 +1,8 @@
 import React from 'react';
 import Category from '../../../models/Category';
-import classes from './BudgetCategorySettingItem.module.css';
-import EmojiInput from '../Input/EmojiInput';
 import Button from '../../UI/Button';
+import EmojiInput from '../../UI/EmojiInput';
+import classes from './BudgetCategorySettingItem.module.css';
 
 interface CategoryEditItemProps {
   idx: number;

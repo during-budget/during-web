@@ -16,7 +16,7 @@
   border-radius: 2rem 2rem 0 0;
   box-shadow: 0 0 0 0;
   z-index: 3;
-  overflow: scroll;
+  overflow: hidden;
   transition: transform 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
     box-shadow 0.3s var(--slow-in);
   will-change: transform, clip-path, box-shadow;

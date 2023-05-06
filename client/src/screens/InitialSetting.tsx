@@ -7,6 +7,7 @@ import AssetStatus from '../components/Asset/Status/AssetStatus';
 import CardStatus from '../components/Asset/Status/CardStatus';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
+import EmojiOverlay from '../components/UI/EmojiOverlay';
 import StepNav from '../components/UI/StepNav';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/redux-hook';
@@ -149,6 +150,7 @@ const InitialSetting = () => {
         <hr />
         {list}
       </main>
+      {/* Overlays */}
       {currentIdx < 2 && (
         <AssetCardEditor
           isAsset={currentIdx === 0}
@@ -159,6 +161,7 @@ const InitialSetting = () => {
           updateTarget={targetState ? updateHandler : createHandler}
         />
       )}
+      <EmojiOverlay />
     </>
   );
 };
