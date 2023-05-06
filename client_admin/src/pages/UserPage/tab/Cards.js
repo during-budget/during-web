@@ -63,6 +63,9 @@ function Index() {
           { key: "linkedAssetTitle", width: "140px" },
           {
             key: "detail",
+          },
+          {
+            key: "_detail",
             type: "expand-detail",
           },
         ]}
