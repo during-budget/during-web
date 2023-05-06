@@ -7,7 +7,52 @@ import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
 
-export const update = async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+
+    if (!("title" in req.body)) {
+      return res.status(400).send({ message: "field 'title' is required" });
+    }
+
+    const card = {
+      _id: new Types.ObjectId(),
+      icon: req.body.icon ?? "",
+      title: req.body.title,
+      detail: req.body.detail ?? "",
+    } as ICard;
+
+    if ("linkedAssetId" in req.body) {
+      const asset = _.find(user.assets, {
+        _id: new Types.ObjectId(req.body.linkedAssetId),
+      });
+
+      if (!asset) {
+        return res.status(404).send({ message: "linked asset not found" });
+      }
+      card.linkedAssetIcon = asset.icon;
+      card.linkedAssetTitle = asset.title;
+    }
+
+    user.cards.push(card);
+    user.paymentMethods.push({
+      type: "card",
+      ...card,
+      isChecked: true,
+    });
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      cards: user.cards,
+      paymentMethods: user.paymentMethods,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("cards" in req.body))
@@ -149,12 +194,10 @@ export const update = async (req: Request, res: Response) => {
       user.paymentMethods = new Types.DocumentArray([...pmCard, ...pmAsset]);
     }
     await user.saveReqUser();
-    return res
-      .status(200)
-      .send({
-        cards: user.cards,
-        paymentMethods: isUpdatedPM ? user.paymentMethods : undefined,
-      });
+    return res.status(200).send({
+      cards: user.cards,
+      paymentMethods: isUpdatedPM ? user.paymentMethods : undefined,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
