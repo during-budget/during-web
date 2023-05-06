@@ -1,5 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Button from './Button';
+import Inform from './Inform';
 import classes from './Select.module.css';
 
 // TODO: defaultValue를 그냥 value로 바꿔야할 거 같지 아마..? 일단 놔둬보자
@@ -68,6 +69,7 @@ const Select = React.forwardRef(
           {!props.disabled && (
             <ul>
               <div className={classes.list}>
+                {props.data.length === 0 && <Inform>목록이 비어있습니다.</Inform>}
                 {props.data.map((item, i) => {
                   if (item.element) {
                     return item.element;

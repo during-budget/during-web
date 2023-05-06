@@ -1,33 +1,37 @@
 import Button from './Button';
 import classes from './ConfirmCancelButtons.module.css';
 
-function ConfirmCancelButtons(props: {
-    onClose?: () => void;
-    onConfirm?: () => {};
-    closeMsg?: string;
-    confirmMsg?: string;
-    className?: string;
-    disabled?: boolean;
-}) {
-    return (
-        <div className={`${classes.container} ${props.className}`}>
-            <Button
-                className={classes.cancel}
-                styleClass="extra"
-                onClick={props.onClose}
-            >
-                {props.closeMsg || '취소'}
-            </Button>
-            <Button
-                type="submit"
-                styleClass="primary"
-                onClick={props.onConfirm}
-                disabled={props.disabled}
-            >
-                {props.confirmMsg || '완료'}
-            </Button>
-        </div>
-    );
+interface ConfirmCancelButtonsProps {
+  onClose?: () => void;
+  onConfirm?: () => {};
+  closeMsg?: string;
+  confirmMsg?: string;
+  className?: string;
+  disabled?: boolean;
+  hideCancle?: boolean;
+}
+
+function ConfirmCancelButtons({
+  onClose,
+  onConfirm,
+  closeMsg,
+  confirmMsg,
+  className,
+  disabled,
+  hideCancle,
+}: ConfirmCancelButtonsProps) {
+  return (
+    <div className={`${classes.container} ${className}`}>
+      {!hideCancle && (
+        <Button className={classes.cancel} styleClass="extra" onClick={onClose}>
+          {closeMsg || '취소'}
+        </Button>
+      )}
+      <Button type="submit" styleClass="primary" onClick={onConfirm} disabled={disabled}>
+        {confirmMsg || '완료'}
+      </Button>
+    </div>
+  );
 }
 
 export default ConfirmCancelButtons;

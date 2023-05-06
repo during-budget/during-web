@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import classes from './Inform.module.css';
 
 interface InfomProps {
-  isError: boolean;
+  isError?: boolean;
   className?: string;
   hideIcon?: boolean;
   isThin?: boolean;

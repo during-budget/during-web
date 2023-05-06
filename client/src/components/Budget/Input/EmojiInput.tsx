@@ -1,11 +1,6 @@
 import Picker from '@emoji-mart/react';
 import data from 'emoji_data_kr';
-import React, {
-    CSSProperties,
-    useImperativeHandle,
-    useRef,
-    useState
-} from 'react';
+import React, { CSSProperties, useImperativeHandle, useRef, useState } from 'react';
 import { BiEraser } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
 import Overlay from '../../UI/Overlay';
@@ -16,6 +11,7 @@ interface EmojiInputProps {
   className?: string;
   value?: string;
   defaultValue?: string;
+  onClick?: () => void;
   onChange?: (value: string) => void;
   placeholder?: string;
   required?: boolean;
@@ -55,6 +51,7 @@ const EmojiInput = React.forwardRef((props: EmojiInputProps, ref) => {
   /** 이모지 팝업 오픈 함수 */
   const handleEmojiPopup = () => {
     setOpen(!open);
+    props.onClick && props.onClick();
   };
 
   //   useEffect(() => {

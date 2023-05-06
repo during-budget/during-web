@@ -1,6 +1,8 @@
 const { DURING_SERVER } = import.meta.env;
 
-const BASE_URL = `${DURING_SERVER}/api`;
+const ASSET_URL = `${DURING_SERVER}/api/assets`;
+const CARD_URL = `${DURING_SERVER}/api/cards`;
+const PAYMENTS_URL = `${DURING_SERVER}/api/paymentMethods`;
 
 export type AssetDetailType = 'account' | 'cash' | 'etc';
 export type CardDetailType = 'debit' | 'credit' | 'prepaid';
@@ -34,8 +36,7 @@ export interface PaymentDataType {
 
 /** 자산 가져오기 */
 export const getAssets = async () => {
-  const url = `${BASE_URL}/assets`;
-  const response = await fetch(url, {
+  const response = await fetch(ASSET_URL, {
     credentials: 'include',
   });
 
@@ -50,8 +51,7 @@ export const getAssets = async () => {
 
 /** 카드 가져오기 */
 export const getCards = async () => {
-  const url = `${BASE_URL}/cards`;
-  const response = await fetch(url, {
+  const response = await fetch(CARD_URL, {
     credentials: 'include',
   });
 
@@ -66,8 +66,7 @@ export const getCards = async () => {
 
 /** 결제수단(자산 + 카드) 가져오기 */
 export const getpaymentMethods = async () => {
-  const url = `${BASE_URL}/paymentMethods`;
-  const response = await fetch(url, {
+  const response = await fetch(PAYMENTS_URL, {
     credentials: 'include',
   });
 
@@ -80,11 +79,29 @@ export const getpaymentMethods = async () => {
   return response.json() as Promise<{ paymentMethods: PaymentDataType[] }>;
 };
 
+/** 자산 추가 */
+export const createAsset = async (asset: Omit<AssetDataType, '_id'>) => {
+  const response = await fetch(ASSET_URL, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(asset),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to create asset\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ assets: AssetDataType[] }>;
+};
+
 /** 자산 업데이트 */
 export const updateAssets = async ({ assets }: { assets: Partial<AssetDataType>[] }) => {
-  const url = `${BASE_URL}/assets`;
-
-  const response = await fetch(url, {
+  const response = await fetch(ASSET_URL, {
     method: 'PUT',
     credentials: 'include',
     body: JSON.stringify({ assets }),
@@ -96,17 +113,80 @@ export const updateAssets = async ({ assets }: { assets: Partial<AssetDataType>[
   if (!response.ok) {
     const data = await response.json();
 
-    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+    throw new Error(`Failed to update assets.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ assets: AssetDataType[] }>;
 };
 
-/** 카드 업데이트 */
-export const updateCards = async ({ cards }: { cards: Partial<CardDataType>[] }) => {
-  const url = `${BASE_URL}/cards`;
+/** 자산 개별업데이트 */
+export const updateAssetById = async (asset: Partial<AssetDataType>) => {
+  const url = `${ASSET_URL}/${asset._id}`;
 
   const response = await fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify(asset),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(
+      `Failed to update asset: ${asset._id}\n${data.message ? data.message : ''}`
+    );
+  }
+
+  return response.json() as Promise<{ assets: AssetDataType[] }>;
+};
+
+/** 자산 삭제 */
+export const removeAssetById = async (id: string) => {
+  const url = `${ASSET_URL}/${id}`;
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to remove asset: ${id}\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ assets: AssetDataType[] }>;
+};
+
+/** 카드 추가 */
+export const createCard = async (card: Omit<CardDataType, '_id'>) => {
+  const response = await fetch(CARD_URL, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(card),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to create card.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ cards: CardDataType[] }>;
+};
+
+/** 카드 업데이트 */
+export const updateCards = async ({ cards }: { cards: Partial<CardDataType>[] }) => {
+  const response = await fetch(CARD_URL, {
     method: 'PUT',
     credentials: 'include',
     body: JSON.stringify({ cards }),
@@ -118,7 +198,52 @@ export const updateCards = async ({ cards }: { cards: Partial<CardDataType>[] })
   if (!response.ok) {
     const data = await response.json();
 
-    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+    throw new Error(`Failed to update cards.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ cards: CardDataType[] }>;
+};
+
+/** 카드 개별업데이트 */
+export const updateCardById = async (card: Partial<CardDataType>) => {
+  const url = `${CARD_URL}/${card._id}`;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify(card),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(
+      `Failed to update card: ${card._id}\n${data.message ? data.message : ''}`
+    );
+  }
+
+  return response.json() as Promise<{ cards: CardDataType[] }>;
+};
+
+/** 카드 삭제 */
+export const removeCardById = async (id: string) => {
+  const url = `${CARD_URL}/${id}`;
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to delete card: ${id}.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ cards: CardDataType[] }>;

@@ -1,13 +1,13 @@
 import { useAppSelector } from '../../../hooks/redux-hook';
-import Select from '../../UI/Select';
 import classes from './CardFields.module.css';
 
 interface CardFieldsProps {
   assetId?: string;
   setAssetId?: (value: string) => void;
+  className?: string;
 }
 
-const CardFields = ({ assetId, setAssetId }: CardFieldsProps) => {
+const CardFields = ({ assetId, setAssetId, className }: CardFieldsProps) => {
   const assets = useAppSelector((state) => state.asset.assets);
 
   const data = assets.map((item) => {
@@ -17,17 +17,22 @@ const CardFields = ({ assetId, setAssetId }: CardFieldsProps) => {
     };
   });
 
-  const changeHandler = (value?: string) => {
-    setAssetId && setAssetId(value!);
+  const changeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setAssetId && setAssetId(event.target.value);
   };
 
   return (
-    <Select
-      className={classes.select}
-      data={data}
+    <select
+      className={`${classes.select} ${className || ''}`}
       value={assetId}
       onChange={changeHandler}
-    />
+    >
+      {data.map((item, i) => (
+        <option key={i} value={item.value}>
+          {item.label}
+        </option>
+      ))}
+    </select>
   );
 };
 
