@@ -123,7 +123,7 @@ const AssetCardEditor = ({
       isOpen={isOpen}
       closeHandler={closeEditor}
       className={`${classes.container} ${isOpen ? classes.open : ''} ${
-        target ? '' : classes.add
+        target ? classes.add : ''
       }`}
     >
       {!target && (
