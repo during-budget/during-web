@@ -11,22 +11,35 @@ export interface CardStatusProps extends AssetProps {
 }
 
 const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
-  const [currentAssetId, setCurrentAssetId] = useState(assets[0]?._id || '');
+  const [currentAssetId, setCurrentAssetId] = useState(assets[0]?._id || undefined);
 
-  const assetTabValues = useMemo(
-    () =>
-      assets.map((asset) => {
-        return {
-          label: asset.title,
-          value: asset._id,
-          checked: asset._id === currentAssetId,
-          onChange: () => {
-            setCurrentAssetId(asset._id);
-          },
-        };
-      }),
-    [assets, currentAssetId]
-  );
+  const assetTabValues = useMemo(() => {
+    const assetList = assets.map((asset) => {
+      return {
+        label: asset.title,
+        value: asset._id,
+        checked: asset._id === currentAssetId,
+        onChange: () => {
+          setCurrentAssetId(asset._id);
+        },
+      };
+    });
+
+    const unlinkedAssetIdExists = cards.find((card) => !card.linkedAssetId);
+
+    if (unlinkedAssetIdExists) {
+      assetList.push({
+        label: '연결자산 없음',
+        value: '',
+        checked: !currentAssetId,
+        onChange: () => {
+          setCurrentAssetId(undefined);
+        },
+      });
+    }
+
+    return assetList;
+  }, [assets, cards, currentAssetId]);
 
   const currentCards = useMemo(
     () => cards.filter((card) => card.linkedAssetId === currentAssetId),
@@ -36,15 +49,17 @@ const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
   return (
     <section className={classes.container}>
       <RadioTab name="asset-tab" values={assetTabValues} />
-      {assets.length === 0 ? (
-        <Inform isError={false}>계좌에 연결된 카드가 있다면 등록해주세요.</Inform>
+      {cards.length === 0 ? (
+        <Inform isError={false} className={classes.inform}>
+          계좌에 연결된 카드가 있다면 등록해주세요.
+        </Inform>
       ) : (
         <CardList className={classes.list} cards={currentCards} />
       )}
       {openEditor && (
         <EditButton
           label="카드 편집"
-          onClick={openEditor.bind(null, { isAsset: false })}
+          onClick={openEditor.bind(undefined, { isAsset: false })}
         />
       )}
     </section>

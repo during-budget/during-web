@@ -27,6 +27,7 @@ const CardFields = ({ assetId, setAssetId, className }: CardFieldsProps) => {
       value={assetId}
       onChange={changeHandler}
     >
+      <option>연결 자산 없음</option>
       {data.map((item, i) => (
         <option key={i} value={item.value}>
           {item.label}

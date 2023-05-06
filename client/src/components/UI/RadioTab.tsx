@@ -11,7 +11,7 @@ interface RadioTabProps {
 
 export interface RadioTabValueType {
   label: string;
-  value: string;
+  value?: string;
   checked?: boolean;
   onChange?: () => void;
   disabled?: boolean;

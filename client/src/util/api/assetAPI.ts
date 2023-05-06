@@ -100,7 +100,7 @@ export const createAsset = async (asset: Omit<AssetDataType, '_id'>) => {
 };
 
 /** 자산 업데이트 */
-export const updateAssets = async ({ assets }: { assets: Partial<AssetDataType>[] }) => {
+export const updateAssets = async (assets: AssetDataType[]) => {
   const response = await fetch(ASSET_URL, {
     method: 'PUT',
     credentials: 'include',
@@ -120,7 +120,7 @@ export const updateAssets = async ({ assets }: { assets: Partial<AssetDataType>[
 };
 
 /** 자산 개별업데이트 */
-export const updateAssetById = async (asset: Partial<AssetDataType>) => {
+export const updateAssetById = async (asset: AssetDataType) => {
   const url = `${ASSET_URL}/${asset._id}`;
 
   const response = await fetch(url, {
@@ -140,7 +140,11 @@ export const updateAssetById = async (asset: Partial<AssetDataType>) => {
     );
   }
 
-  return response.json() as Promise<{ assets: AssetDataType[] }>;
+  return response.json() as Promise<{
+    assets: AssetDataType[];
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 자산 삭제 */
@@ -161,7 +165,11 @@ export const removeAssetById = async (id: string) => {
     throw new Error(`Failed to remove asset: ${id}\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ assets: AssetDataType[] }>;
+  return response.json() as Promise<{
+    assets: AssetDataType[];
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 카드 추가 */
@@ -185,7 +193,7 @@ export const createCard = async (card: Omit<CardDataType, '_id'>) => {
 };
 
 /** 카드 업데이트 */
-export const updateCards = async ({ cards }: { cards: Partial<CardDataType>[] }) => {
+export const updateCards = async (cards: CardDataType[]) => {
   const response = await fetch(CARD_URL, {
     method: 'PUT',
     credentials: 'include',
@@ -225,7 +233,11 @@ export const updateCardById = async (card: Partial<CardDataType>) => {
     );
   }
 
-  return response.json() as Promise<{ cards: CardDataType[] }>;
+  return response.json() as Promise<{
+    assets?: AssetDataType[]; // 반환 X, 타입 에러를 위해 추가한 필드
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 카드 삭제 */
@@ -246,5 +258,9 @@ export const removeCardById = async (id: string) => {
     throw new Error(`Failed to delete card: ${id}.\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ cards: CardDataType[] }>;
+  return response.json() as Promise<{
+    assets?: AssetDataType[]; // 반환 X, 타입 에러를 위해 추가한 필드
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
