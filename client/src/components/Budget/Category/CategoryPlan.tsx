@@ -188,7 +188,9 @@ function CategoryPlan(props: { budgetId: string }) {
             <DraggableList
               id="category-plan-draggable-list"
               list={categoryState}
-              setList={setCategoryState}
+              setList={(list: any[]) => {
+                setCategoryState(list);
+              }}
             >
               {categoryState.map((item: any, i: number) => (
                 <CategoryPlanItem

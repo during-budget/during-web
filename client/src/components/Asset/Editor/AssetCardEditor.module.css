@@ -46,5 +46,17 @@
 }
 
 .remove {
+  display: flex;
   justify-content: end;
+  width: 100%;
+}
+
+.remove button {
+  width: 10vw;
+}
+
+.remove button::before {
+  content: '\f2ed';
+  font: var(--fa-font-solid);
+  font-size: var(--size-7);
 }

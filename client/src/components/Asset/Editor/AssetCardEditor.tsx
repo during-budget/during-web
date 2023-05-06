@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { AssetDataType, CardDataType, DetailType } from '../../../util/api/assetAPI';
+import { useDispatch } from 'react-redux';
+import { assetActions } from '../../../store/asset';
+import {
+  AssetDataType,
+  CardDataType,
+  DetailType,
+  removeAssetById,
+  removeCardById,
+} from '../../../util/api/assetAPI';
 import EmojiInput from '../../Budget/Input/EmojiInput';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
@@ -15,7 +23,6 @@ interface AssetCardEditorProps {
   target?: AssetCardDataType;
   updateTarget?: (target: AssetCardDataType, isAsset?: boolean) => void;
   isOpen: boolean;
-  isAdd?: boolean;
   closeEditor: () => void;
   openEditor?: () => void;
 }
@@ -27,8 +34,9 @@ const AssetCardEditor = ({
   isOpen,
   closeEditor,
   openEditor,
-  isAdd,
 }: AssetCardEditorProps) => {
+  const dispatch = useDispatch();
+
   const [targetState, setTargetState] = useState(target || getDefaultTarget(isAsset));
 
   useEffect(() => {
@@ -54,6 +62,25 @@ const AssetCardEditor = ({
     }
 
     updateTarget && updateTarget(updatingTarget, isAsset);
+    closeEditor();
+  };
+
+  /** 자산/카드 삭제 */
+  const removeHandler = async (id: string) => {
+    const { assets, paymentMethods, cards } = isAsset
+      ? await removeAssetById(id)
+      : await removeCardById(id);
+
+    if (assets) {
+      dispatch(assetActions.setAssets(assets));
+    }
+    if (paymentMethods) {
+      dispatch(assetActions.setPaymentMethods(paymentMethods));
+    }
+    if (cards) {
+      dispatch(assetActions.setCards(cards));
+    }
+
     closeEditor();
   };
 
@@ -96,19 +123,24 @@ const AssetCardEditor = ({
       isOpen={isOpen}
       closeHandler={closeEditor}
       className={`${classes.container} ${isOpen ? classes.open : ''} ${
-        isAdd ? classes.add : ''
+        target ? '' : classes.add
       }`}
     >
-      {isAdd && (
+      {!target && (
         <Button className={classes.button} onClick={openEditor}>
           {isAsset ? '자산' : '카드'} 추가하기
         </Button>
       )}
       <div className={classes.content}>
         {target && (
-          <Button styleClass="extra" className={classes.remove}>
-            삭제
-          </Button>
+          <div className={classes.remove}>
+            <Button
+              styleClass="extra"
+              onClick={() => {
+                removeHandler(target._id);
+              }}
+            />
+          </div>
         )}
         <DetailTypeTab
           id={`${isAsset ? 'asset' : 'card'}-detail-type-tab`}
@@ -150,7 +182,7 @@ const AssetCardEditor = ({
           <ConfirmCancelButtons
             onClose={closeEditor}
             confirmMsg={`${isAsset ? '자산' : '카드'} ${
-              isAdd ? '추가 완료' : '편집 완료'
+              target ? '편집 완료' : '추가 완료'
             }`}
           />
         </form>

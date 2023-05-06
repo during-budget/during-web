@@ -1,0 +1,27 @@
+.list {
+  margin: 2vh 5vw;
+  margin-bottom: 20vh;
+}
+
+.data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-right: 8vw;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+}
+
+.title {
+  font-size: 1.25rem;
+}
+
+.amount {
+  font-size: 0.875rem;
+  font-weight: 700;
+}

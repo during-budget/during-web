@@ -52,9 +52,9 @@ function Auth() {
       })
     );
     dispatch(userCategoryActions.setCategories(categories));
-    dispatch(assetActions.setAssets({ assets }));
-    dispatch(assetActions.setCards({ cards }));
-    dispatch(assetActions.setPaymentMethods({ paymentMethods }));
+    dispatch(assetActions.setAssets(assets));
+    dispatch(assetActions.setCards(cards));
+    dispatch(assetActions.setPaymentMethods(paymentMethods));
 
     // set default budget data
     const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);

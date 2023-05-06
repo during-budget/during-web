@@ -5,7 +5,8 @@ interface DraggableListProps {
   id: string;
   className?: string;
   list: any[];
-  setList: React.Dispatch<any[]>;
+  setList: (list: any[]) => void;
+  onDragEnd?: (list: any[]) => void;
 }
 
 const DraggableList = ({
@@ -14,13 +15,17 @@ const DraggableList = ({
   children,
   list,
   setList,
+  onDragEnd,
 }: PropsWithChildren<DraggableListProps>) => {
   const sortHandler: OnDragEndResponder = (result) => {
     if (!result.destination) return;
     const items = [...list!];
+
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
+
     setList!(items);
+    onDragEnd && onDragEnd(items);
   };
 
   return (

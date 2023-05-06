@@ -73,7 +73,9 @@ function UserCategoryList(props: {
         id="user-category-setting-list"
         className={classes.list}
         list={props.categories}
-        setList={props.setCategories}
+        setList={(list: any[]) => {
+          props.setCategories(list);
+        }}
       >
         {props.categories.map((item, i) => (
           <DraggableItem
