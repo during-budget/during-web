@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAPI from "../../../hooks/useAPI";
 
 import Detail from "../../../components/Detail";
+import Loading from "../../../components/Loading";
 
 function Index() {
   const API = useAPI();
@@ -35,7 +36,7 @@ function Index() {
   return !isLoading ? (
     Detail(budget, { marginLeft: "0px", marginRight: "0px" })
   ) : (
-    <div>loading...</div>
+    <Loading />
   );
 }
 
