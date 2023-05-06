@@ -52,6 +52,104 @@ export const create = async (req: Request, res: Response) => {
   }
 };
 
+export const update = async (req: Request, res: Response) => {
+  try {
+    for (let field of ["icon", "title", "detail"]) {
+      if (!(field in req.body)) {
+        return res.status(400).send({
+          message: "fields  ['icon','title','detail'] are required",
+          missing: field,
+        });
+      }
+    }
+
+    const user = req.user!;
+
+    /* update card */
+    const cardIdx = _.findIndex(user.cards, {
+      _id: new Types.ObjectId(req.params._id),
+    });
+    if (cardIdx === -1)
+      return res.status(404).send({ message: "card not found" });
+
+    let shouldUpdatePM =
+      user.cards[cardIdx].icon !== req.body.icon ||
+      user.cards[cardIdx].title !== req.body.title ||
+      user.cards[cardIdx].detail !== req.body.detail;
+
+    user.cards[cardIdx].icon = req.body.icon;
+    user.cards[cardIdx].title = req.body.title;
+    user.cards[cardIdx].detail = req.body.detail;
+
+    // linkedAssetId1 -> undefined | linkedAssetId2
+    if (user.cards[cardIdx].linkedAssetId) {
+      // linkedAssetId -> undefined
+      if (!("linkedAssetId" in req.body)) {
+        user.cards[cardIdx].linkedAssetId = undefined;
+        user.cards[cardIdx].linkedAssetIcon = undefined;
+        user.cards[cardIdx].linkedAssetTitle = undefined;
+      }
+      // linkedAssetId1 -> linkedAssetId2
+      else if (
+        !user.cards[cardIdx].linkedAssetId!.equals(
+          new Types.ObjectId(req.body.linkedAssetId)
+        )
+      ) {
+        const asset = _.find(user.assets, {
+          _id: new Types.ObjectId(req.body.linkedAssetId),
+        });
+        if (!asset)
+          return res.status(404).send({ message: "linked asset not found" });
+        user.cards[cardIdx].linkedAssetId = asset._id;
+        user.cards[cardIdx].linkedAssetIcon = asset.icon;
+        user.cards[cardIdx].linkedAssetTitle = asset.title;
+      }
+    }
+    // undefined -> linkedAssetId
+    else if ("linkedAssetId" in req.body) {
+      const asset = _.find(user.assets, {
+        _id: new Types.ObjectId(req.body.linkedAssetId),
+      });
+      if (!asset)
+        return res.status(404).send({ message: "linked asset not found" });
+      user.cards[cardIdx].linkedAssetId = asset._id;
+      user.cards[cardIdx].linkedAssetIcon = asset.icon;
+      user.cards[cardIdx].linkedAssetTitle = asset.title;
+    }
+
+    if (shouldUpdatePM) {
+      const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+        _id: user.cards[cardIdx]._id,
+      });
+      if (paymentMethodIdx !== -1) {
+        user.paymentMethods[paymentMethodIdx].icon = user.cards[cardIdx].icon;
+        user.paymentMethods[paymentMethodIdx].title = user.cards[cardIdx].title;
+        user.paymentMethods[paymentMethodIdx].detail =
+          user.cards[cardIdx].detail;
+
+        /* update transactions */
+        await Transaction.updateMany(
+          { linkedPaymentMethodId: user.cards[cardIdx]._id },
+          {
+            linkedPaymentMethodIcon: user.cards[cardIdx].icon,
+            linkedPaymentMethodTitle: user.cards[cardIdx].title,
+            linkedPaymentMethodDetail: user.cards[cardIdx].detail,
+          }
+        );
+      }
+    }
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      cards: user.cards,
+      paymentMethods: shouldUpdatePM ? user.paymentMethods : undefined,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
