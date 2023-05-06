@@ -666,7 +666,7 @@ export const find = async (req: Request, res: Response) => {
         const budgets = await Budget.find({}).lean();
         return res.status(200).send({ budgets });
       }
-      const budgets = await Budget.find({ userId: user._id }).lean();
+      const budgets = await Budget.find({ userId: req.query.userId }).lean();
       return res.status(200).send({ budgets });
     }
 
