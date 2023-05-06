@@ -203,11 +203,43 @@ export const updateAll = async (req: Request, res: Response) => {
           title: _card.title ?? exCard.title,
           detail: _card.detail ?? exCard.detail,
         } as ICard;
-        if (exCard.linkedAssetId === _card.linkedAssetId) {
-          card.linkedAssetId = exCard.linkedAssetId;
-          card.linkedAssetIcon = exCard.linkedAssetIcon;
-          card.linkedAssetTitle = exCard.linkedAssetTitle;
-        } else if (_card.linkedAssetId) {
+
+        // linkedAssetId1 -> linkedAssetId1 | linkedAssetId2 | undefined
+        if (exCard.linkedAssetId) {
+          if (_card.linkedAssetId) {
+            // linkedAssetId1 -> linkedAssetId1
+            if (
+              exCard.linkedAssetId.equals(
+                new Types.ObjectId(_card.linkedAssetId)
+              )
+            ) {
+              card.linkedAssetId = exCard.linkedAssetId;
+              card.linkedAssetIcon = exCard.linkedAssetIcon;
+              card.linkedAssetTitle = exCard.linkedAssetTitle;
+            }
+            // linkedAssetId1 -> linkedAssetId2
+            else {
+              const asset = _.find(user.assets, {
+                _id: new Types.ObjectId(_card.linkedAssetId),
+              });
+              if (!asset)
+                return res
+                  .status(404)
+                  .send({ message: "linked asset not found" });
+              card.linkedAssetId = asset._id;
+              card.linkedAssetIcon = asset.icon;
+              card.linkedAssetTitle = asset.title;
+            }
+          }
+          // linkedAssetId1 ->  undefined
+          else {
+            card.linkedAssetId = undefined;
+            card.linkedAssetIcon = undefined;
+            card.linkedAssetTitle = undefined;
+          }
+        }
+        // undefined -> linkedAssetId
+        else if (_card.linkedAssetId) {
           const asset = _.find(user.assets, {
             _id: new Types.ObjectId(_card.linkedAssetId),
           });
@@ -308,6 +340,35 @@ export const find = async (req: Request, res: Response) => {
 
     return res.status(200).send({
       cards: user.cards,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+
+    const cardIdx = _.findIndex(user.cards, {
+      _id: new Types.ObjectId(req.params._id),
+    });
+    if (cardIdx === -1)
+      return res.status(404).send({ message: "card not found" });
+
+    const paymentMethodIdx = _.findIndex(user.paymentMethods, {
+      _id: user.cards[cardIdx]._id,
+    });
+    if (paymentMethodIdx !== -1) {
+      user.paymentMethods.splice(paymentMethodIdx, 1);
+    }
+    user.cards.splice(cardIdx, 1);
+
+    await user.saveReqUser();
+    return res.status(200).send({
+      cards: user.cards,
+      paymentMethods: user.paymentMethods,
     });
   } catch (err: any) {
     logger.error(err.message);
