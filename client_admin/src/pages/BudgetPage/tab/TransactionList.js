@@ -37,7 +37,14 @@ function Index() {
       };
     });
     _setTransactions(_transactions);
-    setTransactions(_transactions.filter((tr) => !tr.isCurrent));
+
+    if (type === "isCurrent") {
+      setTransactions(_transactions.filter((tr) => tr.isCurrent));
+    } else if (type === "isScheduled") {
+      setTransactions(_transactions.filter((tr) => !tr.isCurrent));
+    } else {
+      setTransactions(_transactions);
+    }
 
     const dates = new Set(_transactions.map((tr) => tr.date.split("T")[0]));
     setDateFilters(
