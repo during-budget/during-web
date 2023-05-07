@@ -22,7 +22,12 @@ export const NaverLoginButton = ({ callback, style, icon }) => {
   return (
     <button
       type={"button"}
-      style={{ border: "none", backgroundColor: "transparent", ...style }}
+      style={{
+        cursor: "pointer",
+        border: "none",
+        backgroundColor: "transparent",
+        ...style,
+      }}
     >
       {
         <img
@@ -31,6 +36,34 @@ export const NaverLoginButton = ({ callback, style, icon }) => {
             icon
               ? `${process.env.PUBLIC_URL}/assets/images/naver_bttnG_icon.png`
               : `${process.env.PUBLIC_URL}/assets/images/naver_bttnG_standard.png`
+          }
+          alt="asdf"
+        />
+      }
+    </button>
+  );
+};
+
+// resource: https://developers.kakao.com/tool/resource/login
+export const KakaoLoginButton = ({ callback, style, icon }) => {
+  return (
+    <button
+      onClick={() => {}}
+      type={"button"}
+      style={{
+        cursor: "pointer",
+        border: "none",
+        backgroundColor: "transparent",
+        ...style,
+      }}
+    >
+      {
+        <img
+          width={style?.width ?? "240px"}
+          src={
+            icon
+              ? `${process.env.PUBLIC_URL}/assets/images/kakao_login_icon.png`
+              : `${process.env.PUBLIC_URL}/assets/images/kakao_login_medium_narrow.png`
           }
           alt="asdf"
         />

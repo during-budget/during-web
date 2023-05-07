@@ -6,6 +6,7 @@ import { Button, Card, Col, Divider, Row } from "antd";
 import {
   GoogleLoginButton,
   NaverLoginButton,
+  KakaoLoginButton,
 } from "../../../components/SocialLoginButton";
 
 import useAPI from "../../../hooks/useAPI";
@@ -192,7 +193,9 @@ const Index = () => {
                 </div>
               ) : (
                 <div style={{ margin: "24px" }}>
-                  <button disabled>connect</button>
+                  <a href="http://localhost:5555/api/snsId/naver">
+                    <KakaoLoginButton style={{ width: "180px" }} />
+                  </a>
                 </div>
               )}
             </Card>
