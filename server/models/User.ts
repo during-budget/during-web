@@ -76,7 +76,14 @@ interface IUser {
   snsId: {
     google: string | undefined;
     apple: string | undefined;
-    naver: string | undefined;
+    naver:
+      | {
+          id: string;
+          email: string;
+          nickname: string;
+          profileImage: string;
+        }
+      | undefined;
     kakao: string | undefined;
   };
   isGuest: boolean;

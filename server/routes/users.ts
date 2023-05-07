@@ -8,6 +8,8 @@ import {
   isAdmin,
 } from "../middleware/auth";
 
+import passport from "passport";
+
 /* regiser */
 router.post("/register", isNotLoggedIn, users.register);
 router.post("/register/verify", isNotLoggedIn, users.verify);
@@ -18,6 +20,15 @@ router.post("/login/guest", forceNotLoggedIn, users.loginGuest);
 /* login local */
 router.post("/login/local", forceNotLoggedIn, users.loginLocal);
 router.post("/login/local/verify", forceNotLoggedIn, users.loginVerify);
+
+/* social login */
+// router.post("/login/google", forceNotLoggedIn, users.loginGoogle);
+
+router.get(
+  "/login/naver",
+  passport.authenticate("naver", { authType: "reprompt" })
+);
+router.get("/login/naver/callback", users.loginNaver);
 
 /* logout */
 router.get("/logout", isLoggedIn, users.logout);
