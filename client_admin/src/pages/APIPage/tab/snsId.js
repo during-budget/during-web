@@ -1,11 +1,15 @@
 // reference: https://velog.io/@jiseong/ProPro-%EA%B5%AC%EA%B8%80-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EB%B3%80%EA%B2%BD
 
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, Divider, Row } from "antd";
 
-import { GoogleLoginButton } from "../../../components/SocialLoginButton";
+import {
+  GoogleLoginButton,
+  NaverLoginButton,
+} from "../../../components/SocialLoginButton";
 
 import useAPI from "../../../hooks/useAPI";
+import Detail from "../../../components/Detail";
 
 const Index = () => {
   const API = useAPI();
@@ -123,14 +127,18 @@ const Index = () => {
             <Card title="Naver" bordered={false}>
               {snsId?.naver ? (
                 <div>
-                  <span>{`Connected to ${snsId.naver}`}</span>
+                  {Detail(snsId.naver, {
+                    marginLeft: "0px",
+                    marginRight: "0px",
+                  })}
+                  <Divider />
                   <Button
                     onClick={async (e) => {
                       try {
-                        // const { snsId } = await API.DELETE({
-                        //   location: "snsId/google",
-                        // });
-                        // setSnsId(snsId ?? {});
+                        const { snsId } = await API.DELETE({
+                          location: "snsId/naver",
+                        });
+                        setSnsId(snsId ?? {});
                       } catch (err) {
                         alert(
                           err.response.data?.message
@@ -146,7 +154,9 @@ const Index = () => {
                 </div>
               ) : (
                 <div style={{ margin: "24px" }}>
-                  <button disabled>connect</button>
+                  <a href="http://localhost:5555/api/snsId/naver">
+                    <NaverLoginButton style={{ width: "180px" }} />
+                  </a>
                 </div>
               )}
             </Card>
