@@ -84,7 +84,7 @@ interface IUser {
     google: TypeSnsId | undefined;
     apple: string | undefined;
     naver: TypeSnsId | undefined;
-    kakao: string | undefined;
+    kakao: TypeSnsId | undefined;
   };
   isGuest: boolean;
   categories: ICategory[];
