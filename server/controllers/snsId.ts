@@ -43,7 +43,7 @@ export const connectGoogle = async (req: Request, res: Response) => {
     }
 
     const exUser1 = await User.findOne({
-      "snsId.google": payload.email,
+      "snsId.google.id": payload.sub,
     }).lean();
     if (exUser1) {
       return res.status(409).send({ message: "snsId in use" });
@@ -57,7 +57,15 @@ export const connectGoogle = async (req: Request, res: Response) => {
       return res.status(409).send({ message: "email in use" });
     }
 
-    user.snsId = { ...user.snsId, google: payload.email };
+    user.snsId = {
+      ...user.snsId,
+      google: {
+        id: payload.sub,
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture,
+      },
+    };
     await user.saveReqUser();
 
     return res.status(200).send({
@@ -106,7 +114,6 @@ export const connectNaver = async (
     ) => {
       try {
         if (authError) throw authError;
-        const { id, email, nickname, profileImage } = profile;
 
         const user = req.user!;
         if (user.snsId?.naver) {
@@ -115,14 +122,17 @@ export const connectNaver = async (
           );
         }
 
-        const exUser1 = await User.findOne({ "snsId.naver.id": id });
+        const exUser1 = await User.findOne({ "snsId.naver.id": profile.id });
         if (exUser1) {
           return res.redirect(
             redirectUrl + "?error=" + encodeURIComponent("snsId in use")
           );
         }
 
-        const exUser2 = await User.findOne({ email, _id: { $ne: user._id } });
+        const exUser2 = await User.findOne({
+          email: profile.email,
+          _id: { $ne: user._id },
+        });
         if (exUser2) {
           return res.redirect(
             redirectUrl + "?error=" + encodeURIComponent("email in use")
@@ -131,7 +141,12 @@ export const connectNaver = async (
 
         user.snsId = {
           ...user.snsId,
-          naver: { id, email, nickname, profileImage },
+          naver: {
+            id: profile.id,
+            email: profile.email,
+            name: profile.nickname,
+            picture: profile.profileImage,
+          },
         };
         await user.saveReqUser();
 

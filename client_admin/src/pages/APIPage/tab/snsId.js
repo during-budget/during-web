@@ -44,7 +44,11 @@ const Index = () => {
             <Card title="Google" bordered={false}>
               {snsId?.google ? (
                 <div>
-                  <h3>{snsId.google}</h3>
+                  {Detail(snsId.google, {
+                    marginLeft: "0px",
+                    marginRight: "0px",
+                  })}
+                  <Divider />
                   <Button
                     onClick={async (e) => {
                       try {

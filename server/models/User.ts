@@ -69,21 +69,21 @@ const categorySchema = new Schema<ICategory>({
   icon: String,
 });
 
+type TypeSnsId = {
+  id: string;
+  email: string | undefined;
+  name: string | undefined;
+  picture: string | undefined;
+};
+
 interface IUser {
   _id: Types.ObjectId;
   userName: string;
   email: string;
   snsId: {
-    google: string | undefined;
+    google: TypeSnsId | undefined;
     apple: string | undefined;
-    naver:
-      | {
-          id: string;
-          email: string;
-          nickname: string;
-          profileImage: string;
-        }
-      | undefined;
+    naver: TypeSnsId | undefined;
     kakao: string | undefined;
   };
   isGuest: boolean;
