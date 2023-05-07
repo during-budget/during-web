@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 import { userActions } from '../store/user';
 import { logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
+import EmojiOverlay from '../components/UI/EmojiOverlay';
 
 function User() {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ function User() {
           <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
         </section>
       </main>
+      <EmojiOverlay />
     </>
   );
 }
