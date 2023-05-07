@@ -4,6 +4,7 @@ import { Card, Col, Row } from "antd";
 import {
   GoogleLoginButton,
   NaverLoginButton,
+  KakaoLoginButton,
 } from "../../../components/SocialLoginButton";
 
 const Index = () => {
@@ -43,7 +44,7 @@ const Index = () => {
           <Col span={6}>
             <Card title="KaKao" bordered={false}>
               <div style={{ margin: "24px" }}>
-                <button disabled>K</button>
+                <KakaoLoginButton style={{ width: "48px" }} icon={true} />
               </div>
             </Card>
           </Col>
