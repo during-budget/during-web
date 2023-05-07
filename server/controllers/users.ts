@@ -112,11 +112,6 @@ export const loginGuest = async (req: Request, res: Response) => {
  * @body {email: 'user00001'}
  */
 export const loginLocal = async (req: Request, res: Response) => {
-  console.log({
-    email: req.body.email,
-    auth: req.body.auth,
-  });
-
   const filter: { [key: string]: string } = { email: req.body.email };
   if ("auth" in req.body) filter["auth"] = req.body.auth;
   const user = await User.findOne(filter);
@@ -168,6 +163,77 @@ export const loginVerify = async (
           return res.status(200).send({ user });
         });
       } catch (err: any) {
+        return res.status(err.status || 500).send({ message: err.message });
+      }
+    }
+  )(req, res, next);
+};
+
+/**
+ * Social Login (google)
+ */
+export const loginGoogle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passport.authenticate(
+    "google",
+    (
+      authError: Error,
+      user: HydratedDocument<IUser, IUserProps>,
+      isNew: boolean
+    ) => {
+      try {
+        if (authError) throw authError;
+        console.log("DEBUG: authentication is over");
+        return req.login(user, (loginError) => {
+          if (loginError) throw loginError;
+          console.log("DEBUG: login is over");
+          /* set maxAge as 1 year if auto login is requested */
+          if (req.body.persist === true) {
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
+          }
+          console.log("DEBUG: sending response");
+          return res.status(200).send({ user, isNew });
+        });
+      } catch (err: any) {
+        return res.status(err.status || 500).send({ message: err.message });
+      }
+    }
+  )(req, res, next);
+};
+
+/**
+ * Social Login (naver)
+ */
+export const loginNaver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passport.authenticate(
+    "naver",
+    (
+      authError: Error,
+      user: HydratedDocument<IUser, IUserProps>,
+      isNew: boolean
+    ) => {
+      try {
+        if (authError) throw authError;
+        console.log("DEBUG: authentication is over");
+        return req.login(user, (loginError) => {
+          if (loginError) throw loginError;
+          console.log("DEBUG: login is over");
+          /* set maxAge as 1 year if auto login is requested */
+          if (req.body.persist === true) {
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
+          }
+          console.log("DEBUG: sending response");
+          res.redirect("/");
+        });
+      } catch (err: any) {
+        res.redirect("http://localhost:3001");
         return res.status(err.status || 500).send({ message: err.message });
       }
     }
