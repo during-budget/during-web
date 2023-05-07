@@ -170,14 +170,18 @@ const Index = () => {
             <Card title="KaKao" bordered={false}>
               {snsId?.kakao ? (
                 <div>
-                  <span>{`Connected to ${snsId.kakao}`}</span>
+                  {Detail(snsId.kakao, {
+                    marginLeft: "0px",
+                    marginRight: "0px",
+                  })}
+                  <Divider />
                   <Button
                     onClick={async (e) => {
                       try {
-                        // const { snsId } = await API.DELETE({
-                        //   location: "snsId/google",
-                        // });
-                        // setSnsId(snsId ?? {});
+                        const { snsId } = await API.DELETE({
+                          location: "snsId/kakao",
+                        });
+                        setSnsId(snsId ?? {});
                       } catch (err) {
                         alert(
                           err.response.data?.message
@@ -193,7 +197,7 @@ const Index = () => {
                 </div>
               ) : (
                 <div style={{ margin: "24px" }}>
-                  <a href="http://localhost:5555/api/snsId/naver">
+                  <a href="http://localhost:5555/api/snsId/kakao">
                     <KakaoLoginButton style={{ width: "180px" }} />
                   </a>
                 </div>
