@@ -17,3 +17,24 @@ export const GoogleLoginButton = ({ callback, style }) => {
 
   return <div id="login-bttn-google" />;
 };
+
+export const NaverLoginButton = ({ callback, style, icon }) => {
+  return (
+    <button
+      type={"button"}
+      style={{ border: "none", backgroundColor: "transparent", ...style }}
+    >
+      {
+        <img
+          width={style?.width ?? "240px"}
+          src={
+            icon
+              ? `${process.env.PUBLIC_URL}/assets/images/naver_bttnG_icon.png`
+              : `${process.env.PUBLIC_URL}/assets/images/naver_bttnG_standard.png`
+          }
+          alt="asdf"
+        />
+      }
+    </button>
+  );
+};

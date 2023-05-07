@@ -1,7 +1,10 @@
 import React from "react";
 import { Card, Col, Row } from "antd";
 
-import { GoogleLoginButton } from "../../../components/SocialLoginButton";
+import {
+  GoogleLoginButton,
+  NaverLoginButton,
+} from "../../../components/SocialLoginButton";
 
 const Index = () => {
   return (
@@ -33,7 +36,7 @@ const Index = () => {
           <Col span={6}>
             <Card title="Naver" bordered={false}>
               <div style={{ margin: "24px" }}>
-                <button disabled>N</button>
+                <NaverLoginButton style={{ width: "48px" }} icon={true} />
               </div>
             </Card>
           </Col>
