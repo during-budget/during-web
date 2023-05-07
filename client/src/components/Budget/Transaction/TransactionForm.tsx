@@ -260,66 +260,70 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   ].join(' ');
 
   return (
-    <Overlay
-      className={containerClass}
-      isOpen={mode.isExpand}
-      isClip={true}
-      closeHandler={closeHandler}
-    >
-      <form onSubmit={submitHandler}>
-        {/* shortField */}
-        {amountField}
-        {/* expandFields */}
-        {mode.isExpand && (
-          <>
-            {/* fields */}
-            <DateInput
-              ref={dateRef}
-              className={classes.field}
-              defaultValue={defaultValue.date}
-              required={true}
-            />
-            {selectField} {/* category, payment */}
-            {noteField} {/* emoji, title */}
-            <TagInput
-              ref={tagsRef}
-              className={classes.field}
-              defaultValue={defaultValue.tags}
-            />
-            <MemoInput
-              ref={memoRef}
-              className={classes.field}
-              defaultValue={defaultValue.memo}
-            />
-            {/* types */}
-            {!mode.isDone && (
-              <div className={classes.types}>
-                <ExpenseTab
-                  id="transaction-form-expense"
-                  isExpense={isExpense}
-                  setIsExpense={setIsExpense}
-                  disabled={mode.isDone}
-                />
-                {!isDefault && (
-                  <>
-                    <span>|</span>
-                    <TransactionNav
-                      id="transaction-form-current"
-                      disabled={mode.isDone}
-                    />
-                  </>
-                )}
-              </div>
-            )}
-            {/* buttons */}
-            <ConfirmCancelButtons className={classes.buttons} onClose={closeHandler} />
-          </>
+    <>
+      <Overlay
+        className={containerClass}
+        isOpen={mode.isExpand}
+        isClip={true}
+        closeHandler={closeHandler}
+      >
+        <form onSubmit={submitHandler}>
+          {/* shortField */}
+          {amountField}
+          {/* expandFields */}
+          {mode.isExpand && (
+            <>
+              {/* fields */}
+              <DateInput
+                ref={dateRef}
+                className={classes.field}
+                defaultValue={defaultValue.date}
+                required={true}
+              />
+              {selectField} {/* category, payment */}
+              {noteField} {/* emoji, title */}
+              <TagInput
+                ref={tagsRef}
+                className={classes.field}
+                defaultValue={defaultValue.tags}
+              />
+              <MemoInput
+                ref={memoRef}
+                className={classes.field}
+                defaultValue={defaultValue.memo}
+              />
+              {/* types */}
+              {!mode.isDone && (
+                <div className={classes.types}>
+                  <ExpenseTab
+                    id="transaction-form-expense"
+                    isExpense={isExpense}
+                    setIsExpense={setIsExpense}
+                    disabled={mode.isDone}
+                  />
+                  {!isDefault && (
+                    <>
+                      <span>|</span>
+                      <TransactionNav
+                        id="transaction-form-current"
+                        disabled={mode.isDone}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+              {/* buttons */}
+              <ConfirmCancelButtons className={classes.buttons} onClose={closeHandler} />
+            </>
+          )}
+        </form>
+        {/* msg */}
+        {isDefault && !mode.isExpand && (
+          <p className={classes.info}>
+            ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
+          </p>
         )}
-      </form>
-      {/* msg */}
-      {isDefault && !mode.isExpand && (
-        <p className={classes.info}>ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요</p>
-      )}
+      </Overlay>
       <BudgetCategorySetting
         budgetId={props.budgetId}
         isExpense={isExpense}
@@ -327,7 +331,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         setIsOpen={setIsEditSetting}
         sendRequest={true}
       />
-    </Overlay>
+    </>
   );
 }
 
