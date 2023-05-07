@@ -122,8 +122,9 @@ const AssetCardListEditor = ({
     setShowEditor(true);
   };
 
-  const closeEditorHandler = () => {
-    setShowEditor(false);
+  const closeEditorHandler = async () => {
+    await setShowEditor(false);
+    setCurrentEditTarget(undefined);
   };
 
   return (

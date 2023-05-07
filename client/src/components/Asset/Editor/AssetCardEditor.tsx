@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router';
 import { assetActions } from '../../../store/asset';
 import {
   AssetDataType,
@@ -36,6 +37,9 @@ const AssetCardEditor = ({
   openEditor,
 }: AssetCardEditorProps) => {
   const dispatch = useDispatch();
+
+  const location = useLocation();
+  const isInit = location.pathname.includes('/init');
 
   const [targetState, setTargetState] = useState(target || getDefaultTarget(isAsset));
 
@@ -123,10 +127,10 @@ const AssetCardEditor = ({
       isOpen={isOpen}
       closeHandler={closeEditor}
       className={`${classes.container} ${isOpen ? classes.open : ''} ${
-        target ? classes.add : ''
+        isInit ? classes.add : ''
       }`}
     >
-      {!target && (
+      {isInit && (
         <Button className={classes.button} onClick={openEditor}>
           {isAsset ? '자산' : '카드'} 추가하기
         </Button>
