@@ -74,6 +74,7 @@ const EmojiInput = React.forwardRef((props: EmojiInputProps, ref) => {
         value={props.value}
         defaultValue={props.defaultValue}
         required={props.required}
+        readOnly
       />
     </div>
   );
