@@ -1,18 +1,50 @@
 import React, { useImperativeHandle, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../../hooks/redux-hook';
+import Select from '../../UI/Select';
 
-const PaymentInput = React.forwardRef((props: { className: string }, ref) => {
+interface PaymentInputProps {
+  budgetId: string;
+  className?: string;
+  defaultValue?: string;
+  disabled?: boolean;
+  setIsEditSetting: (isEdit: boolean) => void;
+}
+
+const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
   useImperativeHandle(ref, () => {
     return {
-      value: () => paymentRef.current!.value,
+      value: () => paymentRef.current!.value(),
     };
   });
 
-  const paymentRef = useRef<HTMLSelectElement>(null);
+  const dispatch = useDispatch();
+  const paymentRef = useRef<any>(null);
+
+  const paymentMethods = useAppSelector((state) => state.asset.paymentMethods);
+
+  const paymentOptions = [
+    { value: '', label: '결제수단 없음' },
+    ...paymentMethods.map((item) => {
+      return {
+        value: item._id,
+        label: `${item.icon} ${item.title}`,
+      };
+    }),
+  ];
 
   return (
-    <select ref={paymentRef} className={props.className}>
-      <option>연결계좌 없음</option>
-    </select>
+    <Select
+      ref={paymentRef}
+      className={props.className}
+      data={paymentOptions}
+      // showEdit={() => {
+      //   dispatch(uiActions.setIsExpense(isExpense));
+      //   props.setIsEditSetting(true);
+      // }}
+      defaultValue={props.defaultValue}
+      disabled={props.disabled}
+    />
   );
 });
 

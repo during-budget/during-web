@@ -8,7 +8,7 @@ const Select = React.forwardRef(
   (
     props: {
       className?: string;
-      data: { element?: React.ReactNode; value: string; label: string }[];
+      data: { element?: React.ReactNode; value?: string; label: string }[];
       defaultValue?: string;
       value?: string;
       onChange?: (value?: string) => void;
@@ -42,7 +42,7 @@ const Select = React.forwardRef(
       setIsExpand(false);
     };
 
-    const changeHandler = async (value: string) => {
+    const changeHandler = async (value?: string) => {
       await setSelectState(value);
       props.onChange && props.onChange(value);
     };
@@ -50,7 +50,7 @@ const Select = React.forwardRef(
     const expandClass = isExpand ? classes.expand : '';
 
     return (
-      <div className={`${classes.container} ${expandClass} ${props.className}`}>
+      <div className={`${classes.select} ${expandClass} ${props.className}`}>
         {isExpand && <div className={classes.backdrop} onClick={closeList} />}
         <div className={classes.wrapper}>
           <div className={classes.clickable} onClick={toggleList} />

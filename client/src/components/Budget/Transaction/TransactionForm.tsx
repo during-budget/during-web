@@ -47,7 +47,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
 
   const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
   const [iconState, setIconState] = useState('');
-  const [isEditSetting, setIsEditSetting] = useState(false);
+  const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
 
   const titlesRef = useRef<any>(null);
   const dateRef = useRef<any>(null);
@@ -55,6 +55,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const excludeAssetRef = useRef<HTMLInputElement>(null);
   const excludeBudgetRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<any>(null);
+  const paymentRef = useRef<any>(null);
   const iconRef = useRef<any>(null);
   const tagsRef = useRef<any>(null);
   const memoRef = useRef<any>(null);
@@ -76,6 +77,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       date: new Date(dateRef.current!.value()),
       amount: +amountRef.current!.value(),
       categoryId: categoryRef.current!.value(),
+      linkedPaymentMethodId: paymentRef.current!.value() || '',
       tags: tagsRef.current!.value(),
       memo: memoRef.current!.value(),
       linkId: defaultValue.linkId || undefined,
@@ -235,7 +237,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         budgetId={budgetId}
         isExpense={isExpense}
         setIsExpense={setIsExpense}
-        setIsEditSetting={setIsEditSetting}
+        setIsEditSetting={setIsOpenCategorySetting}
         className={`${classes.field} ${classes.select}`}
         defaultValue={defaultValue.categoryId}
         onChange={() => {
@@ -243,7 +245,13 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         }}
         disabled={mode.isDone}
       />
-      <PaymentInput className={`${classes.field} ${classes.select}`} />
+      <PaymentInput
+        ref={paymentRef}
+        budgetId={budgetId}
+        className={`${classes.field} ${classes.select}`}
+        defaultValue={defaultValue.linkedPaymentMethodId}
+        setIsEditSetting={(isEdit: boolean) => {}}
+      />
     </div>
   );
 
@@ -340,8 +348,8 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       <BudgetCategorySetting
         budgetId={props.budgetId}
         isExpense={isExpense}
-        isOpen={isEditSetting}
-        setIsOpen={setIsEditSetting}
+        isOpen={isOpenCategorySetting}
+        setIsOpen={setIsOpenCategorySetting}
         sendRequest={true}
       />
     </>

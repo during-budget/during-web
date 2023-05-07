@@ -46,6 +46,7 @@ const initialState: {
       amount: 0,
       categoryId: '',
       date: null, // yyyy-mm-dd
+      linkedPaymentMethodId: '',
       icon: '',
       title: [''],
       tags: [],
@@ -80,7 +81,7 @@ const transactionSlice = createSlice({
       const transactionData = action.payload;
 
       // sort by created (desc)
-      transactionData.sort((prev: any, next: any) =>
+      transactionData.sort((prev, next) =>
         new Date(prev.createdAt) < new Date(next.createdAt) ? 1 : -1
       );
 
