@@ -12,15 +12,11 @@ router.get(
     scope: ["profile", "email"],
   })
 );
-router.get("/google/callback", auth.google);
-router.delete("/google", isLoggedIn, auth.disconnectGoogle);
-
 router.get("/naver", passport.authenticate("naver"));
-router.get("/naver/callback", auth.naver);
-router.delete("/naver", isLoggedIn, auth.disconnectNaver);
-
 router.get("/kakao", passport.authenticate("kakao"));
-router.get("/kakao/callback", auth.kakao);
-router.delete("/kakao", isLoggedIn, auth.disconnectKakao);
+
+router.get("/:sns/callback", auth.callback);
+
+router.delete("/:sns", isLoggedIn, auth.disconnect);
 
 module.exports = router;
