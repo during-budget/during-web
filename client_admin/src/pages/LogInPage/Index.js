@@ -4,6 +4,12 @@ import useStore from "../../hooks/useStore";
 import { useState } from "react";
 import useAPI from "../../hooks/useAPI";
 
+import {
+  GoogleLoginButton,
+  NaverLoginButton,
+  KakaoLoginButton,
+} from "../../components/SocialLoginButton";
+
 const Index = () => {
   const { logIn } = useStore((state) => state);
   const API = useAPI();
@@ -139,13 +145,13 @@ const Index = () => {
         }}
       >
         <a href="http://localhost:5555/api/auth/google">
-          <Button>CONTINUE WITH GOOGLE</Button>
+          <GoogleLoginButton />
         </a>
         <a href="http://localhost:5555/api/auth/naver">
-          <Button>CONTINUE WITH NAVER</Button>
+          <NaverLoginButton />
         </a>
         <a href="http://localhost:5555/api/auth/kakao">
-          <Button>CONTINUE WITH KAKAO</Button>
+          <KakaoLoginButton />
         </a>
       </div>
     </div>
