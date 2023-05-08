@@ -8,8 +8,8 @@ const naver = () => {
     "naver",
     new NaverStrategy(
       {
-        clientID: process.env.NAVER_CLIENT_ID?.trim() ?? "",
-        clientSecret: process.env.NAVER_CLIENT_SECRET?.trim() ?? "",
+        clientID: process.env.NAVER_CLIENT_ID.trim() ?? "",
+        clientSecret: process.env.NAVER_CLIENT_SECRET.trim() ?? "",
         callbackURL: "/api/auth/naver/callback",
         passReqToCallback: true,
       },

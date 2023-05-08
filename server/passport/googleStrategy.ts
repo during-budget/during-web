@@ -8,8 +8,8 @@ const google = () => {
     "google",
     new GogoleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID?.trim() ?? "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim() ?? "",
+        clientID: process.env.GOOGLE_CLIENT_ID.trim() ?? "",
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim() ?? "",
         callbackURL: "/api/auth/google/callback",
         passReqToCallback: true,
       },

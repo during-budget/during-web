@@ -10,6 +10,12 @@ declare namespace NodeJS {
     CLIENT_ADMIN: string;
     DB_URL: string;
 
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
+    NAVER_CLIENT_ID: string;
+    NAVER_CLIENT_SECRET: string;
+    KAKAO_CLIENT_ID: string;
+
     SALT_ROUNDS: string;
     SESSION_KEY: string;
 
