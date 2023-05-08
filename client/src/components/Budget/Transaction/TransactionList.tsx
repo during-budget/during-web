@@ -1,5 +1,6 @@
+import { DEFAULT_DATE_PREFIX, DEFAULT_DATE_SUFFIX } from '../../../constants/date';
 import { useAppSelector } from '../../../hooks/redux-hook';
-import Transaction from '../../../models/Transaction';
+import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
 import TransactionItem from './TransactionItem';
 import classes from './TransactionList.module.css';
@@ -14,7 +15,7 @@ function TransactionList({ isDefault }: Props) {
   const isCurrent = isDefault
     ? false
     : useAppSelector((state) => state.ui.budget.isCurrent);
-  const dateTransactionData = Transaction.getTransacitonsFilteredByDate({
+  const dateTransactionData = getTransacitonsFilteredByDate({
     transactions,
     isCurrent,
     isDefault,
@@ -36,7 +37,11 @@ function TransactionList({ isDefault }: Props) {
               </h5>
               {/* Transactions */}
               {dateTransactionData[date].map((item) => (
-                <TransactionItem key={item.id} transaction={item} isDefault={isDefault} />
+                <TransactionItem
+                  key={item._id}
+                  transaction={item}
+                  isDefault={isDefault}
+                />
               ))}
             </ol>
           </li>
@@ -45,5 +50,41 @@ function TransactionList({ isDefault }: Props) {
     </ol>
   );
 }
+
+const getTransacitonsFilteredByDate = (data: {
+  transactions: TransactionType[];
+  isCurrent: boolean;
+  isDefault?: boolean;
+}) => {
+  const { transactions, isCurrent, isDefault } = data;
+
+  const filteredTransactions = transactions.filter((item) =>
+    isCurrent ? item.isCurrent : !item.isCurrent
+  );
+
+  const dateTransactions: {
+    [date: string]: TransactionType[];
+  } = {};
+
+  filteredTransactions.forEach((transaction: TransactionType) => {
+    let key;
+
+    if (!transaction.date) {
+      key = '날짜 미정';
+    } else if (isDefault) {
+      key = DEFAULT_DATE_PREFIX + transaction.date.getDate() + DEFAULT_DATE_SUFFIX;
+    } else {
+      key = new Date(transaction.date).toLocaleDateString();
+    }
+
+    if (dateTransactions[key]) {
+      dateTransactions[key].push(transaction);
+    } else {
+      dateTransactions[key] = [transaction];
+    }
+  });
+
+  return dateTransactions;
+};
 
 export default TransactionList;

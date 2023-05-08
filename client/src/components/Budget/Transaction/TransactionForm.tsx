@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
-import Transaction from '../../../models/Transaction';
+import { assetActions } from '../../../store/asset';
+import { budgetActions } from '../../../store/budget';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
-import { createTransaction, updateTransaction } from '../../../util/api/transactionAPI';
+import { AssetDataType } from '../../../util/api/assetAPI';
+import { BudgetDataType } from '../../../util/api/budgetAPI';
+import {
+  TransactionType,
+  createTransaction,
+  updateTransaction,
+} from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
-import { getCurrentKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import EmojiInput from '../../UI/EmojiInput';
@@ -58,13 +64,13 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     event.preventDefault();
 
     // set transaction
-    const transaction = new Transaction({
-      id: defaultValue.id || uuid(),
+    const transaction: TransactionType = {
+      _id: defaultValue._id || uuid(),
       budgetId,
       isCurrent,
       isExpense,
       icon: iconRef.current!.value() || '',
-      titles: titlesRef.current!.value(),
+      title: titlesRef.current!.value(),
       date: new Date(dateRef.current!.value()),
       amount: +amountRef.current!.value(),
       categoryId: categoryRef.current!.value(),
@@ -72,79 +78,55 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       memo: memoRef.current!.value(),
       linkId: defaultValue.linkId || undefined,
       overAmount: defaultValue.overAmount,
-    });
-
-    if (mode.isDone) {
-      transaction.overAmount = transaction.amount - defaultValue.amount;
-    }
+    };
 
     // send request
     if (mode.isEdit) {
-      const { transaction: transactionData } = await updateTransaction(transaction);
+      const {
+        transaction: transactionData,
+        transactionLinked,
+        budget,
+        assets,
+      } = await updateTransaction(transaction);
+
       await dispatch(
         transactionActions.updateTransactionFromData({
           id: transactionData._id,
           transactionData,
         })
       ); // NOTE: await for scroll
+
+      dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
+      dispatchAmount(budget, assets);
     } else {
-      const { transaction: createdTransaction } = await createTransaction(transaction);
-      transaction.id = createdTransaction._id;
-      transaction.linkId = createdTransaction.linkId || undefined;
-      await dispatch(transactionActions.addTransaction(transaction)); // NOTE: await for scroll
-    }
+      const {
+        transaction: createdTransaction,
+        transactionScheduled,
+        budget,
+        assets,
+      } = await createTransaction(transaction);
 
-    // add linkId to scheduled
-    if (mode.isDone) {
-      dispatch(
-        transactionActions.addLink({
-          targetId: transaction.linkId!,
-          linkId: transaction.id,
-        })
-      );
-    }
+      await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
 
-    dispatchAmount(transaction);
+      console.log('scheduled', transactionScheduled);
+
+      dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
+      dispatchAmount(budget, assets);
+    }
 
     // scroll
     document
-      .getElementById(transaction.id)
+      .getElementById(transaction._id)
       ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
     clearForm();
   };
 
-  const dispatchAmount = (transaction: Transaction) => {
-    const { id, amount, categoryId, linkId } = transaction;
-
-    const key = getCurrentKey(isCurrent);
-    const updatedAmount = mode.isEdit ? amount - defaultValue.amount : amount;
-
-    // update amount status chart
-    dispatch(
-      totalActions.updateTotalAmount({
-        isExpense,
-        [key]: updatedAmount,
-      })
-    );
-
-    dispatch(
-      budgetCategoryActions.updateCategoryAmount({
-        categoryId,
-        isExpense,
-        [key]: updatedAmount,
-      })
-    );
-
-    // update overAmount
-    if (mode.isEdit && linkId) {
-      dispatch(
-        transactionActions.updateOverAmount({
-          id: isCurrent ? id : linkId,
-          amount: isCurrent ? updatedAmount : -updatedAmount,
-        })
-      );
-    }
+  const dispatchAmount = (budget: BudgetDataType, assets: AssetDataType[]) => {
+    dispatch(budgetActions.setCurrentBudget(budget));
+    dispatch(totalActions.setTotalFromBudgetData(budget));
+    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+    dispatch(assetActions.setAssets(assets));
   };
 
   const expandHandler = () => {
@@ -152,21 +134,10 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       transactionActions.setForm({
         mode: { isExpand: true },
         default: {
-          date: date ? getDefaultDate() : undefined,
+          date: date ? getDefaultDate(date) : null,
         },
       })
     );
-  };
-
-  const getDefaultDate = () => {
-    const { start, end } = date!;
-    const now = new Date();
-
-    if ((!start && !end) || (start <= now && now <= end)) {
-      return getNumericHypenDateString(now);
-    } else {
-      return getNumericHypenDateString(start);
-    }
   };
 
   const closeHandler = () => {
@@ -248,7 +219,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       <TitleInput
         ref={titlesRef}
         className={`${classes.field} ${classes.title}`}
-        defaultValue={defaultValue.titles}
+        defaultValue={defaultValue.title}
       />
     </div>
   );
@@ -277,7 +248,9 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
               <DateInput
                 ref={dateRef}
                 className={classes.field}
-                defaultValue={defaultValue.date}
+                defaultValue={
+                  defaultValue.date ? getNumericHypenDateString(defaultValue.date) : ''
+                }
                 required={true}
               />
               {selectField} {/* category, payment */}
@@ -334,5 +307,16 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     </>
   );
 }
+
+const getDefaultDate = (date: { start: Date; end: Date }) => {
+  const { start, end } = date;
+  const now = new Date();
+
+  if ((!start && !end) || (start <= now && now <= end)) {
+    return now;
+  } else {
+    return start;
+  }
+};
 
 export default TransactionForm;

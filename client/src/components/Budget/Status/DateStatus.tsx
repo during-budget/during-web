@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hooks/redux-hook';
-import Transaction from '../../../models/Transaction';
+import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
 import MonthlyStatus from '../Date/MonthlyStatus';
 import WeeklyStatus from '../Date/WeeklyStatus';
@@ -62,12 +62,12 @@ function DateStatus(props: { budgetId: string }) {
   );
 }
 
-const getDailyAmountObj = (transactions: Transaction[]) => {
+const getDailyAmountObj = (transactions: TransactionType[]) => {
   const amounts: any = {};
 
   transactions.forEach((item) => {
     const { date, isExpense, amount } = item;
-    const dateStr = getNumericHypenDateString(date);
+    const dateStr = date ? getNumericHypenDateString(date) : '';
     const key = isExpense ? 'expense' : 'income';
 
     if (isExcept(item)) {
@@ -90,16 +90,24 @@ const getDailyAmountObj = (transactions: Transaction[]) => {
 export default DateStatus;
 
 // 합산 제외
-const isExcept = (transaction: Transaction) => {
+const isExcept = (transaction: TransactionType) => {
   const { date, isCurrent, linkId } = transaction;
   const now = new Date();
 
-  const beforeToday = date <= now && !isCurrent; // 오늘 이전 날짜의 예정내역
-  const isDone = !isCurrent && linkId; // 완료된 예정 내역
-
-  if (beforeToday || isDone) {
+  // 날짜 미정일 경우
+  if (!date) {
     return true;
-  } else {
-    return false;
   }
+
+  // 오늘 이전 날짜의 예정내역일 경우
+  if (date <= now && !isCurrent) {
+    return true;
+  }
+
+  // 완료된 예정 내역일 경우
+  if (!isCurrent && linkId) {
+    return true;
+  }
+
+  return false;
 };

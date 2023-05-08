@@ -1,15 +1,18 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Category from '../models/Category';
-import Transaction from '../models/Transaction';
-import { TransactionDataType } from '../util/api/transactionAPI';
+import {
+  TransactionDataType,
+  TransactionType,
+  convertTransactionFromData,
+} from '../util/api/transactionAPI';
 
 interface TransactionFormType {
   mode: TransactionModeType;
-  default: TransactionDefaultType;
+  default: TransactionType;
 }
 interface TransactionDetailType {
   isOpen: boolean;
-  transaction?: Transaction;
+  transaction?: TransactionType;
   category?: Category;
 }
 
@@ -18,27 +21,13 @@ interface TransactionModeType {
   isEdit: boolean;
   isDone: boolean;
 }
-export interface TransactionDefaultType {
-  id: string;
-  linkId?: string;
-  isCurrent: boolean;
-  isExpense: boolean;
-  amount: number;
-  overAmount: number;
-  categoryId: string;
-  date: string;
-  icon: string;
-  titles: string[];
-  tags: string[];
-  memo: string;
-}
 interface TransactionFormPayloadType {
   mode: Partial<TransactionModeType>;
-  default: Partial<TransactionDefaultType>;
+  default: Partial<TransactionType>;
 }
 
 const initialState: {
-  data: Transaction[];
+  data: TransactionType[];
   form: TransactionFormType;
   detail: TransactionDetailType;
 } = {
@@ -50,18 +39,19 @@ const initialState: {
       isDone: false,
     },
     default: {
-      id: '',
-      linkId: '',
+      _id: '',
+      budgetId: '',
       isCurrent: true,
       isExpense: true,
       amount: 0,
-      overAmount: 0,
       categoryId: '',
-      date: '', // yyyy-mm-dd
+      date: null, // yyyy-mm-dd
       icon: '',
-      titles: [''],
+      title: [''],
       tags: [],
       memo: '',
+      linkId: '',
+      overAmount: 0,
     },
   },
   detail: {
@@ -93,27 +83,27 @@ const transactionSlice = createSlice({
       );
 
       // convert
-      const transactions: Transaction[] = transactionData.map((item: any) =>
-        Transaction.getTransactionFromData(item)
+      const transactions: TransactionType[] = transactionData.map((item) =>
+        convertTransactionFromData(item)
       );
 
       // sort by date
-      transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+      sortTransactionDesc(transactions); // sort by date (desc)
 
       state.data = transactions;
     },
-    addTransaction(state, action: PayloadAction<Transaction>) {
+    addTransactionFromData(state, action: PayloadAction<TransactionDataType>) {
       const transaction = action.payload;
 
       const transactions = state.data;
 
-      transactions.unshift(transaction);
-      transactions.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+      transactions.unshift(convertTransactionFromData(transaction));
+      sortTransactionDesc(transactions);
     },
     removeTransaction(state, action: PayloadAction<string>) {
       const id = action.payload;
 
-      const idx = state.data.findIndex((item: any) => item.id === id);
+      const idx = state.data.findIndex((item) => item._id === id);
       state.data.splice(idx, 1);
     },
     updateTransactionFromData(
@@ -125,54 +115,26 @@ const transactionSlice = createSlice({
     ) {
       const { id, transactionData } = action.payload;
 
-      const idx = state.data.findIndex((item) => item.id === id);
-      state.data[idx] = Transaction.getTransactionFromData(transactionData);
+      const idx = state.data.findIndex((item) => item._id === id);
+      state.data[idx] = convertTransactionFromData(transactionData);
 
-      state.data.sort((prev, next) => +next.date - +prev.date); // sort by date (desc)
+      sortTransactionDesc(state.data);
     },
-    addLink(state, action: PayloadAction<{ targetId: string; linkId: string }>) {
-      const { targetId, linkId } = action.payload;
+    replaceTransactionFromData(state, action: PayloadAction<TransactionDataType>) {
+      const data = action.payload;
 
-      const transactions = state.data;
-
-      const idx = transactions.findIndex((item) => item.id === targetId);
-      const target = transactions[idx];
-
-      if (target) {
-        target.linkId = linkId;
-        transactions[idx] = target;
+      if (!data) {
+        return;
       }
-    },
-    removeLink(state, action: PayloadAction<string>) {
-      const linkId = action.payload;
 
-      const transactions = state.data;
-      const idx = transactions.findIndex((item: any) => item.id === linkId);
+      const idx = state.data.findIndex((item) => item._id === data._id);
 
-      const target = transactions[idx];
-
-      if (target) {
-        target.linkId = undefined;
-        transactions[idx] = target;
-      }
-    },
-    updateOverAmount(state, action: PayloadAction<{ id: string; amount: number }>) {
-      const { id, amount } = action.payload;
-
-      const transactions = state.data;
-      const idx = transactions.findIndex((item: any) => item.id === id);
-
-      const target = transactions[idx];
-
-      if (target) {
-        target.overAmount += amount;
-        transactions[idx] = target;
-      }
+      state.data[idx] = convertTransactionFromData(data);
     },
     openDetail(
       state,
       action: PayloadAction<{
-        transaction: Transaction;
+        transaction: TransactionType;
         category: Category;
       }>
     ) {
@@ -184,7 +146,7 @@ const transactionSlice = createSlice({
 
       const transactions = state.data;
 
-      const transaction = transactions.find((item) => item.id === id);
+      const transaction = transactions.find((item) => item._id === id);
       state.detail = { isOpen: true, transaction, category };
     },
     closeDetail(state) {
@@ -192,6 +154,20 @@ const transactionSlice = createSlice({
     },
   },
 });
+
+const sortTransactionDesc = (transactions: TransactionType[]) => {
+  transactions.sort((prev, next) => {
+    if (prev.date && next.date) {
+      return +next.date - +prev.date;
+    } else if (next.date) {
+      return 1;
+    } else if (prev.date) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+};
 
 export const transactionActions = transactionSlice.actions;
 export default transactionSlice.reducer;
