@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import Category from '../models/Category';
+import { PaymentDataType } from '../util/api/assetAPI';
 import {
   TransactionDataType,
   TransactionType,
@@ -14,6 +15,7 @@ interface TransactionDetailType {
   isOpen: boolean;
   transaction?: TransactionType;
   category?: Category;
+  payment?: PaymentDataType;
 }
 
 interface TransactionModeType {
@@ -61,6 +63,7 @@ const initialState: {
     isOpen: false,
     transaction: undefined,
     category: undefined,
+    payment: undefined,
   },
 };
 
@@ -134,15 +137,9 @@ const transactionSlice = createSlice({
 
       state.data[idx] = convertTransactionFromData(data);
     },
-    openDetail(
-      state,
-      action: PayloadAction<{
-        transaction: TransactionType;
-        category: Category;
-      }>
-    ) {
-      const { transaction, category } = action.payload;
-      state.detail = { isOpen: true, transaction, category };
+    openDetail(state, action: PayloadAction<Omit<TransactionDetailType, 'isOpen'>>) {
+      const { transaction, category, payment } = action.payload;
+      state.detail = { isOpen: true, transaction, category, payment };
     },
     openLink(state, action: PayloadAction<{ id: string; category: Category }>) {
       const { id, category } = action.payload;

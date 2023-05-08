@@ -17,7 +17,7 @@ interface Props {
 function TransactionDetail({ isDefault }: Props) {
   const dispatch = useAppDispatch();
 
-  const { isOpen, transaction, category } = useAppSelector(
+  const { isOpen, transaction, category, payment } = useAppSelector(
     (state) => state.transaction.detail
   );
 
@@ -30,7 +30,19 @@ function TransactionDetail({ isDefault }: Props) {
     return <p>내역이 존재하지 않습니다.</p>;
   }
 
-  const { isCurrent, isExpense, date, amount, linkId, overAmount, icon, title, tags, memo } = transaction;
+  const {
+    isCurrent,
+    isExpense,
+    date,
+    amount,
+    linkId,
+    linkedPaymentMethodId,
+    overAmount,
+    icon,
+    title,
+    tags,
+    memo,
+  } = transaction;
 
   return (
     <Overlay
@@ -69,16 +81,20 @@ function TransactionDetail({ isDefault }: Props) {
             ))}
           </ul>
         </div>
-        {false && ( // TODO: 결제수단, 이벤트 개발 후 작업
+        {payment && (
           <dl className={classes.detail}>
-            <div>
-              <dt>결제수단</dt>
-              <dd>삼성카드</dd>
-            </div>
-            <div>
-              <dt>이벤트</dt>
-              <dd>ㅇㅇ 약속</dd>
-            </div>
+            {payment && (
+              <div>
+                <dt>결제수단</dt>
+                <dd>{payment.title}</dd>
+              </div>
+            )}
+            {false && ( // TODO: 이벤트 개발 후 작업
+              <div>
+                <dt>이벤트</dt>
+                <dd>ㅇㅇ 약속</dd>
+              </div>
+            )}
           </dl>
         )}
         {memo && (

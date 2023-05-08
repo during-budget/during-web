@@ -21,6 +21,7 @@ function TransactionItem(props: { transaction: TransactionType; isDefault?: bool
     title,
     amount,
     categoryId,
+    linkedPaymentMethodId,
     tags,
     overAmount,
   } = props.transaction;
@@ -29,6 +30,10 @@ function TransactionItem(props: { transaction: TransactionType; isDefault?: bool
     isExpense ? state.budgetCategory.expense : state.budgetCategory.income
   );
   const category = storedCategories.find((item) => item.id === categoryId);
+
+  const storedPayments = useAppSelector((state) => state.asset.paymentMethods);
+  const payment = storedPayments.find((item) => item._id === linkedPaymentMethodId);
+
   const liClass = [classes.container, linkId && !isCurrent ? classes.done : ''];
 
   const openDetail = (event: React.MouseEvent<HTMLLIElement>) => {
@@ -36,6 +41,7 @@ function TransactionItem(props: { transaction: TransactionType; isDefault?: bool
       transactionActions.openDetail({
         transaction: props.transaction,
         category: category ?? Category.getEmptyCategory(),
+        payment,
       })
     );
   };
