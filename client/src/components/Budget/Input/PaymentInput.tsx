@@ -6,6 +6,8 @@ import Select from '../../UI/Select';
 interface PaymentInputProps {
   budgetId: string;
   className?: string;
+  value?: string;
+  onChange?: (value?: string) => void;
   defaultValue?: string;
   disabled?: boolean;
   setIsEditSetting: (isEdit: boolean) => void;
@@ -42,6 +44,8 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
       //   dispatch(uiActions.setIsExpense(isExpense));
       //   props.setIsEditSetting(true);
       // }}
+      onChange={props.onChange}
+      value={props.value}
       defaultValue={props.defaultValue}
       disabled={props.disabled}
     />
