@@ -199,62 +199,37 @@ export const disconnectNaver = async (req: Request, res: Response) => {
   }
 };
 
-export const connectKakao = async (
+export const kakao = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   passport.authenticate(
-    "kakaoConnect",
+    "kakao",
     async (
       authError: Error,
-      profile: {
-        id: string;
-        _json?: {
-          kakao_account_email: string;
-        };
-        displayName: string;
-        nickname: string;
-        profileImage: string;
-      }
+      user: HydratedDocument<IUser, IUserProps>,
+      type: "login" | "register" | "connect"
     ) => {
       try {
         if (authError) throw authError;
 
-        const user = req.user!;
-        if (user.snsId?.kakao) {
-          return res.redirect(
-            redirectUrl + "?error=" + encodeURIComponent("already connected")
-          );
-        }
-
-        const exUser1 = await User.findOne({ "snsId.kakao.id": profile.id });
-        if (exUser1) {
-          return res.redirect(
-            redirectUrl + "?error=" + encodeURIComponent("snsId in use")
-          );
-        }
-
-        // const exUser2 = await User.findOne({
-        //   email: profile.email,
-        //   _id: { $ne: user._id },
-        // });
-        // if (exUser2) {
-        //   return res.redirect(
-        //     redirectUrl + "?error=" + encodeURIComponent("email in use")
-        //   );
-        // }
-
-        user.snsId = {
-          ...user.snsId,
-          kakao: {
-            id: profile.id,
-            email: profile._json && profile._json.kakao_account_email,
-            name: profile.displayName,
-            picture: profile.profileImage,
+        console.log({
+          user: {
+            _id: user._id,
+            email: user.email,
+            snsId: user.snsId,
           },
-        };
-        await user.saveReqUser();
+          type,
+        });
+        if (type === "login") {
+          return req.login(user, (loginError) => {
+            if (loginError) throw loginError;
+            return res.redirect(redirectUrl + "/login/redirect");
+          });
+        } else if (type === "register") {
+        } else if (type === "connect") {
+        }
 
         return res.redirect(redirectUrl);
       } catch (err: any) {

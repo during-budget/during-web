@@ -1,23 +1,55 @@
 import passport from "passport";
 import { Strategy as KakaoStrategy } from "passport-kakao";
 import { User } from "../models/User";
+import { Request } from "express";
 
-const kakaoConnect = () => {
+const kakao = () => {
   passport.use(
-    "kakaoConnect",
+    "kakao",
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_CLIENT_ID?.trim() ?? "",
-        callbackURL: "/api/snsId/kakao/callback",
+        callbackURL: "/api/auth/kakao/callback",
+        passReqToCallback: true,
       },
       async (
+        req: Request,
         accessToken: string,
         refreshToken: string,
         profile: any,
         done: any
       ) => {
         try {
-          return done(null, profile);
+          /* isNotLoggedIn - login or register */
+          if (!req.isAuthenticated()) {
+            /* login */
+            const user = await User.findOne({ "snsId.kakao": profile.id });
+            if (user) {
+              return done(null, user, "login");
+            }
+
+            /* register */
+            const newUser = new User({ snsId: { google: profile.id } });
+            // await newUser.save();
+            return done(null, newUser, "register");
+          }
+          /* if user is logged in - connect */
+          const user = req.user!;
+
+          if (user.snsId?.["kakao"]) {
+            const err = new Error("Already connected");
+            return done(err, null, null);
+          }
+
+          const exUser = await User.findOne({ "snsId.kakao": profile.id });
+          if (exUser) {
+            const err = new Error("SnsId in use");
+            return done(err, null, null);
+          }
+
+          user.snsId = { ...user.snsId, kakao: profile.id };
+          await user.saveReqUser();
+          return done(null, user, "connect");
         } catch (error) {
           console.error(error);
           done(error);
@@ -27,4 +59,4 @@ const kakaoConnect = () => {
   );
 };
 
-export { kakaoConnect };
+export { kakao };
