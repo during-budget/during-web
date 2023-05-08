@@ -5,7 +5,7 @@ import { register } from "./registerStrategy";
 import { guest } from "./guestStrategy";
 import { google } from "./googleStrategy";
 import { naver } from "./naverStrategy";
-import { kakaoConnect } from "./kakaoStrategy";
+import { kakao } from "./kakaoStrategy";
 import { User, IUser, IUserProps } from "../models/User";
 
 const config = () => {
@@ -29,8 +29,7 @@ const config = () => {
 
   google();
   naver();
-  // naverConnect();
-  // kakaoConnect();
+  kakao();
 };
 
 export { config };

@@ -144,6 +144,9 @@ const Index = () => {
         <a href="http://localhost:5555/api/auth/naver">
           <Button>CONTINUE WITH NAVER</Button>
         </a>
+        <a href="http://localhost:5555/api/auth/kakao">
+          <Button>CONTINUE WITH KAKAO</Button>
+        </a>
       </div>
     </div>
   );
