@@ -49,6 +49,8 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const [iconState, setIconState] = useState('');
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
 
+  const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
+
   const titlesRef = useRef<any>(null);
   const dateRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
@@ -77,7 +79,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       date: new Date(dateRef.current!.value()),
       amount: +amountRef.current!.value(),
       categoryId: categoryRef.current!.value(),
-      linkedPaymentMethodId: paymentRef.current!.value() || '',
+      linkedPaymentMethodId: paymentState || '',
       tags: tagsRef.current!.value(),
       memo: memoRef.current!.value(),
       linkId: defaultValue.linkId || undefined,
@@ -200,7 +202,17 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
 
   const amountOptionFields = (
     <div className={classes.options}>
-      {isCurrent && (
+      <div className={classes.option}>
+        <input
+          ref={excludeBudgetRef}
+          id={`check-exclude-budget`}
+          className={classes.check}
+          type="checkbox"
+          defaultChecked={!defaultValue.updateBudget}
+        />
+        <label htmlFor={`check-exclude-budget`}>예산 합계에서 제외</label>
+      </div>
+      {isCurrent && paymentState && (
         <div className={classes.option}>
           <input
             ref={excludeAssetRef}
@@ -212,16 +224,6 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
           <label htmlFor={`check-exclude-asset`}>자산 합계에서 제외</label>
         </div>
       )}
-      <div className={classes.option}>
-        <input
-          ref={excludeBudgetRef}
-          id={`check-exclude-budget`}
-          className={classes.check}
-          type="checkbox"
-          defaultChecked={!defaultValue.updateBudget}
-        />
-        <label htmlFor={`check-exclude-budget`}>예산 합계에서 제외</label>
-      </div>
       {/* <div className={classes.option}>
         <input
           ref={autoConvertRef}
@@ -254,6 +256,10 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         ref={paymentRef}
         budgetId={budgetId}
         className={`${classes.field} ${classes.select}`}
+        value={paymentState || ''}
+        onChange={(value?: string) => {
+          setPaymentState(value);
+        }}
         defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={(isEdit: boolean) => {}}
       />
