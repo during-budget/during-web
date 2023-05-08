@@ -118,16 +118,11 @@ const Index = () => {
             <Card title="Naver" bordered={false}>
               {snsId?.naver ? (
                 <div>
-                  {Detail(snsId.naver, {
-                    marginLeft: "0px",
-                    marginRight: "0px",
-                  })}
-                  <Divider />
                   <Button
                     onClick={async (e) => {
                       try {
                         const { snsId } = await API.DELETE({
-                          location: "snsId/naver",
+                          location: "auth/naver",
                         });
                         setSnsId(snsId ?? {});
                       } catch (err) {
@@ -145,7 +140,7 @@ const Index = () => {
                 </div>
               ) : (
                 <div style={{ margin: "24px" }}>
-                  <a href="http://localhost:5555/api/snsId/naver">
+                  <a href="http://localhost:5555/api/auth/naver">
                     <NaverLoginButton style={{ width: "180px" }} />
                   </a>
                 </div>

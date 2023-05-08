@@ -15,12 +15,9 @@ router.get(
 router.get("/google/callback", auth.google);
 router.delete("/google", isLoggedIn, auth.disconnectGoogle);
 
-// router.get(
-//   "/naver",
-//   passport.authenticate("naverConnect", { authType: "reprompt" })
-// );
-// router.get("/naver/callback", auth.connectNaver);
-// router.delete("/naver", isLoggedIn, auth.disconnectNaver);
+router.get("/naver", passport.authenticate("naver"));
+router.get("/naver/callback", auth.naver);
+router.delete("/naver", isLoggedIn, auth.disconnectNaver);
 
 // router.get("/kakao", passport.authenticate("kakaoConnect"));
 // router.get("/kakao/callback", auth.connectKakao);
