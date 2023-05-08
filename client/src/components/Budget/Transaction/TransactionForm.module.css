@@ -1,23 +1,23 @@
-.container {
+.transaction-form {
   padding: var(--size-5);
   height: 85vh;
   clip-path: inset(-100% -100% calc(100% - 5.75rem) -100%);
   transform: translateY(calc(100% - (5.8rem + 9vh))) !important;
 }
 
-.container input,
-.container .select,
-.container textarea {
+.transaction-form input,
+.transaction-form .select,
+.transaction-form textarea {
   margin-bottom: var(--size-9);
 }
 
-.container.expand {
+.transaction-form.expand {
   clip-path: inset(-100% -100% 0 -100%);
   transform: translateY(0) !important;
 }
 
-.container.expand .buttons,
-.container.expand .types {
+.transaction-form.expand .buttons,
+.transaction-form.expand .types {
   visibility: visible;
   opacity: 1;
 }
@@ -56,16 +56,35 @@
   transition: 0.3s var(--fast-in);
 }
 
-.container.expand .amount {
+.transaction-form.expand .amount {
   gap: 0;
 }
 
-.container.expand .amount input {
+.transaction-form.expand .amount input {
   margin-bottom: var(--size-9);
 }
 
-.container.expand .amount button {
+.transaction-form.expand .amount button {
   width: 0;
+}
+
+.options,
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.options {
+  justify-content: space-between;
+  margin: 0 5vw;
+  flex-wrap: wrap;
+}
+
+.option input {
+  width: 1rem;
+  height: auto;
+  margin-bottom: 0;
 }
 
 .note,
@@ -90,6 +109,10 @@
 
 .emoji input::placeholder {
   opacity: 0.5;
+}
+
+.memo {
+  height: auto;
 }
 
 .buttons {

@@ -52,6 +52,8 @@ const initialState: {
       memo: '',
       linkId: '',
       overAmount: 0,
+      updateAsset: true,
+      updateBudget: true,
     },
   },
   detail: {

@@ -10,5 +10,10 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
-  envPrefix: 'DURING'
+  envPrefix: 'DURING',
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly'
+    }
+  }
 })

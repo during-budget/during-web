@@ -52,6 +52,8 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const titlesRef = useRef<any>(null);
   const dateRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
+  const excludeAssetRef = useRef<HTMLInputElement>(null);
+  const excludeBudgetRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<any>(null);
   const iconRef = useRef<any>(null);
   const tagsRef = useRef<any>(null);
@@ -78,6 +80,8 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       memo: memoRef.current!.value(),
       linkId: defaultValue.linkId || undefined,
       overAmount: defaultValue.overAmount,
+      updateAsset: !excludeAssetRef.current!.checked,
+      updateBudget: !excludeBudgetRef.current!.checked,
     };
 
     // send request
@@ -107,8 +111,6 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       } = await createTransaction(transaction);
 
       await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
-
-      console.log('scheduled', transactionScheduled);
 
       dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
       dispatchAmount(budget, assets);
@@ -189,6 +191,43 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     </div>
   );
 
+  const amountOptionFields = (
+    <div className={classes.options}>
+      {isCurrent && (
+        <div className={classes.option}>
+          <input
+            ref={excludeAssetRef}
+            id={`check-exclude-asset`}
+            className={classes.check}
+            type="checkbox"
+            defaultChecked={!defaultValue.updateAsset}
+          />
+          <label htmlFor={`check-exclude-asset`}>자산 합계에서 제외</label>
+        </div>
+      )}
+      <div className={classes.option}>
+        <input
+          ref={excludeBudgetRef}
+          id={`check-exclude-budget`}
+          className={classes.check}
+          type="checkbox"
+          defaultChecked={!defaultValue.updateBudget}
+        />
+        <label htmlFor={`check-exclude-budget`}>예산 합계에서 제외</label>
+      </div>
+      {/* <div className={classes.option}>
+        <input
+          ref={autoConvertRef}
+          id={`auto-convert-to-current`}
+          className={classes.check}
+          type="checkbox"
+          defaultChecked={false}
+        />
+        <label htmlFor={`auto-convert-to-current`}>거래 내역으로 자동 전환</label>
+      </div> */}
+    </div>
+  );
+
   const selectField = (
     <div className={classes.selects}>
       <CategoryInput
@@ -225,7 +264,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   );
 
   const containerClass = [
-    classes.container,
+    classes.transactionForm,
     isDefault ? classes.basic : '',
     mode.isExpand ? classes.expand : '',
   ].join(' ');
@@ -262,9 +301,10 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
               />
               <MemoInput
                 ref={memoRef}
-                className={classes.field}
+                className={`${classes.field} ${classes.memo}`}
                 defaultValue={defaultValue.memo}
               />
+              {amountOptionFields}
               {/* types */}
               {!mode.isDone && (
                 <div className={classes.types}>
