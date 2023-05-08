@@ -20,7 +20,7 @@ const Index = () => {
 
   useEffect(() => {
     if (isLoading) {
-      API.GET({ location: "snsId" })
+      API.GET({ location: "auth" })
         .then((res) => {
           if (res.snsId) {
             setSnsId(res.snsId);
@@ -44,17 +44,18 @@ const Index = () => {
           <Col span={6}>
             <Card title="Google" bordered={false}>
               {snsId?.google ? (
-                <div>
-                  {Detail(snsId.google, {
-                    marginLeft: "0px",
-                    marginRight: "0px",
-                  })}
-                  <Divider />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
+                  }}
+                >
                   <Button
                     onClick={async (e) => {
                       try {
                         const { snsId } = await API.DELETE({
-                          location: "snsId/google",
+                          location: "auth/google",
                         });
                         setSnsId(snsId ?? {});
                         setIsLoading(true);
@@ -73,25 +74,10 @@ const Index = () => {
                 </div>
               ) : (
                 <div style={{ margin: "24px" }}>
-                  <GoogleLoginButton
-                    style={{ text: "continue_with" }}
-                    callback={async (res) => {
-                      try {
-                        const { snsId } = await API.POST({
-                          location: "snsId/google",
-                          data: { credential: res.credential },
-                        });
-                        setSnsId(snsId);
-                        setIsLoading(true);
-                      } catch (err) {
-                        alert(
-                          err.response.data?.message
-                            ? err.response.data?.message
-                            : "ERROR!"
-                        );
-                      }
-                    }}
-                  />
+                  <a href="http://localhost:5555/api/auth/google">
+                    <button>connect</button>
+                    {/* <GoogleLoginButton style={{ text: "continue_with" }} /> */}
+                  </a>
                 </div>
               )}
             </Card>

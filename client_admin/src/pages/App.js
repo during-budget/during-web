@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 // pages for this product
 import LandingPage from "./LandingPage/Index.js";
 import LogInPage from "./LogInPage/Index.js";
+import LogInRedirectPage from "./LogInPage/Redirect.js";
 import UserList from "./UserPage/List.js";
 import UserPage from "./UserPage/Index.js";
 import UBudgetList from "./UserBudgetPage/List.js";
@@ -55,6 +56,7 @@ function App() {
             path="/login"
             element={!user ? <LogInPage /> : <Navigate to="/" />}
           />
+          <Route exact path="/login/redirect" element={<LogInRedirectPage />} />
           {RouteUser("/DB", <Navigate to="/DB/users" />)}
           {RouteUser("/DB/users", <UserList />)}
           {RouteUser("/DB/users/:_id", <UserPage />)}

@@ -130,6 +130,11 @@ const Index = () => {
       <h1>Welcome to Admin Page!</h1>
       <div style={{ marginTop: "24px" }} />
       {!sent ? form1 : form2}
+      <div style={{ margin: "24px" }}>
+        <a href="http://localhost:5555/api/auth/google">
+          <Button>CONTINUE WITH GOOGLE</Button>
+        </a>
+      </div>
     </div>
   );
 };
