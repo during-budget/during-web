@@ -25,19 +25,12 @@ function TransactionDetail({ isDefault }: Props) {
     dispatch(transactionActions.closeDetail());
   };
 
-  let isCurrent, isExpense, date, amount, linkId, overAmount, icon, titles, tags, memo;
-  if (transaction) {
-    isCurrent = transaction.isCurrent;
-    isExpense = transaction.isExpense;
-    date = transaction.date;
-    amount = transaction.amount;
-    linkId = transaction.linkId;
-    overAmount = transaction.overAmount;
-    icon = transaction.icon;
-    titles = transaction.titles;
-    tags = transaction.tags;
-    memo = transaction.memo;
+  // TODO: 에러 처리 제대로
+  if (!transaction) {
+    return <p>내역이 존재하지 않습니다.</p>;
   }
+
+  const { isCurrent, isExpense, date, amount, linkId, overAmount, icon, title, tags, memo } = transaction;
 
   return (
     <Overlay
@@ -67,7 +60,7 @@ function TransactionDetail({ isDefault }: Props) {
             {icon || category?.icon}
           </Icon>
           <span className={classes.category}>{category?.title}</span>
-          <span className={classes.titles}>{titles?.join(' | ')}</span>
+          <span className={classes.titles}>{title?.join(' | ')}</span>
           <ul className={classes.tags}>
             {tags?.map((item: any, i: number) => (
               <li key={i}>

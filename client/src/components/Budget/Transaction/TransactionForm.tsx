@@ -127,10 +127,15 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   };
 
   const dispatchAmount = (budget: BudgetDataType, assets: AssetDataType[]) => {
-    dispatch(budgetActions.setCurrentBudget(budget));
-    dispatch(totalActions.setTotalFromBudgetData(budget));
-    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
-    dispatch(assetActions.setAssets(assets));
+    if (budget) {
+      dispatch(budgetActions.setCurrentBudget(budget));
+      dispatch(totalActions.setTotalFromBudgetData(budget));
+      dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+    }
+
+    if (assets) {
+      dispatch(assetActions.setAssets(assets));
+    }
   };
 
   const expandHandler = () => {
