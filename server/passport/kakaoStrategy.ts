@@ -8,7 +8,7 @@ const kakao = () => {
     "kakao",
     new KakaoStrategy(
       {
-        clientID: process.env.KAKAO_CLIENT_ID?.trim() ?? "",
+        clientID: process.env.KAKAO_CLIENT_ID.trim() ?? "",
         callbackURL: "/api/auth/kakao/callback",
         passReqToCallback: true,
       },
