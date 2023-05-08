@@ -14,8 +14,6 @@ function Index() {
     { href: "/API", title: "/ API (test)", color: "DarkOliveGreen" },
   ];
 
-  console.log();
-
   return (
     <div>
       <div

@@ -3,10 +3,12 @@ import { Breadcrumb, Button } from "antd";
 import React from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import useStore from "../hooks/useStore";
+import useAPI from "../hooks/useAPI";
 
 const Navbar = () => {
   const { user, logOut } = useStore((state) => state);
 
+  const API = useAPI();
   const location = useLocation();
   const locationArr = location.pathname.split("/").filter((x) => x !== "");
   const navigate = useNavigate();
@@ -87,7 +89,13 @@ const Navbar = () => {
       {user ? (
         <div>
           {user.email}
-          <Button type="link" onClick={() => logOut()}>
+          <Button
+            type="link"
+            onClick={async () => {
+              await API.GET({ location: "users/logout" });
+              logOut();
+            }}
+          >
             logout
           </Button>
         </div>
