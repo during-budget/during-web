@@ -21,6 +21,8 @@ export interface TransactionType {
   memo: string;
   linkId?: string;
   overAmount?: number;
+  updateAsset?: boolean;
+  updateBudget?: boolean;
 }
 
 export interface TransactionDataType extends TransactionType {
@@ -65,10 +67,7 @@ export const createTransaction = async (transaction: TransactionType) => {
   const response = await fetch(url, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify({
-      ...transaction,
-      updateAsset: false,
-    }),
+    body: JSON.stringify(transaction),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -117,10 +116,7 @@ export const updateTransaction = async (transaction: TransactionType) => {
   const response = await fetch(url, {
     method: 'PUT',
     credentials: 'include',
-    body: JSON.stringify({
-      ...transaction,
-      updateAsset: false,
-    }),
+    body: JSON.stringify(transaction),
     headers: {
       'Content-Type': 'application/json',
     },
