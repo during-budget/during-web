@@ -68,7 +68,8 @@ export const create = async (req: Request, res: Response) => {
     if (transaction.isCurrent && transaction?.linkId) {
       transactionScheduled = await Transaction.findByIdAndUpdate(
         { _id: transaction.linkId },
-        { linkId: transaction._id }
+        { linkId: transaction._id },
+        { new: true }
       );
       if (!transactionScheduled) return res.status(404).send({});
       transaction.overAmount = transaction.amount - transactionScheduled.amount;
