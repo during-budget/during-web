@@ -1,24 +1,24 @@
-import classes from './TransactionItem.module.css';
-import Amount from '../../../models/Amount';
-import Transaction from '../../../models/Transaction';
-import Tag from '../../UI/Tag';
-import Icon from '../../UI/Icon';
-import TransactionOption from './TransactionOption';
-import OverAmountMsg from './OverAmountMsg';
-import { transactionActions } from '../../../store/transaction';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
+import { transactionActions } from '../../../store/transaction';
+import { TransactionType } from '../../../util/api/transactionAPI';
+import Icon from '../../UI/Icon';
+import Tag from '../../UI/Tag';
+import OverAmountMsg from './OverAmountMsg';
+import classes from './TransactionItem.module.css';
+import TransactionOption from './TransactionOption';
 
-function TransactionItem(props: { transaction: Transaction; isDefault?: boolean }) {
+function TransactionItem(props: { transaction: TransactionType; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
 
   const {
-    id,
+    _id,
     linkId,
     icon,
     isCurrent,
     isExpense,
-    titles,
+    title,
     amount,
     categoryId,
     tags,
@@ -41,7 +41,7 @@ function TransactionItem(props: { transaction: Transaction; isDefault?: boolean 
   };
 
   return (
-    <li id={id} className={liClass.join(' ')} onClick={openDetail}>
+    <li id={_id} className={liClass.join(' ')} onClick={openDetail}>
       {/* icon */}
       <Icon className={classes.icon}>{icon || category?.icon}</Icon>
       <div className={classes.data}>
@@ -50,7 +50,7 @@ function TransactionItem(props: { transaction: Transaction; isDefault?: boolean 
             {/* category */}
             <p className={classes.category}>{category?.title}</p>
             {/* title */}
-            <p className={classes.title}>{titles?.join(' | ')}</p>
+            <p className={classes.title}>{title?.join(' | ')}</p>
           </div>
           {/* amount */}
           <div className={classes.right}>
@@ -59,7 +59,8 @@ function TransactionItem(props: { transaction: Transaction; isDefault?: boolean 
                 {isExpense ? '-' : '+'}
                 {Amount.getAmountStr(amount)}
               </p>
-              {isCurrent && linkId && (
+              {/* CHECK: isCurrent && linkId && 라는 조건이 원래 있었는데, 필요할까? 백에서 알아서 처리해줬을 거 같기도.. */}
+              {overAmount !== undefined && (
                 <OverAmountMsg className={classes.over} overAmount={overAmount} />
               )}
             </div>

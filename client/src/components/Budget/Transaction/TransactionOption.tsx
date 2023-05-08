@@ -1,62 +1,44 @@
 import { useAppDispatch } from '../../../hooks/redux-hook';
 import Category from '../../../models/Category';
-import Transaction from '../../../models/Transaction';
+import { assetActions } from '../../../store/asset';
+import { budgetActions } from '../../../store/budget';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
-import { deleteTransaction } from '../../../util/api/transactionAPI';
-import { getNumericHypenDateString } from '../../../util/date';
-import { getCurrentKey } from '../../../util/filter';
+import { TransactionType, deleteTransaction } from '../../../util/api/transactionAPI';
 import OptionButton from '../../UI/OptionButton';
 
-function TransactionOption(props: {
-  transaction: Transaction;
+interface TransactionOptionProps {
+  transaction: TransactionType;
   category: Category;
   onSelect?: () => void;
   onClick?: (event?: React.MouseEvent) => void;
   isDefault?: boolean;
   className?: string;
   contextStyle?: any;
-}) {
-  const {
-    id,
-    linkId,
-    icon,
-    isCurrent,
-    isExpense,
-    titles,
-    date,
-    amount,
-    categoryId,
-    budgetId,
-    tags,
-    memo,
-    overAmount,
-  } = props.transaction;
+}
 
+function TransactionOption({
+  transaction,
+  category,
+  onSelect,
+  onClick,
+  isDefault,
+  className,
+  contextStyle,
+}: TransactionOptionProps) {
   const dispatch = useAppDispatch();
 
-  const edit = (isCurrent || !linkId) && {
+  const { _id, linkId, isCurrent } = transaction;
+
+  const edit = (transaction.isCurrent || !transaction.linkId) && {
     name: '내역 수정',
     action: () => {
       dispatch(
         transactionActions.setForm({
           mode: { isExpand: true, isEdit: true },
-          default: {
-            id,
-            linkId,
-            icon,
-            isCurrent,
-            isExpense,
-            titles,
-            date: getNumericHypenDateString(date),
-            amount,
-            categoryId,
-            tags,
-            memo,
-            overAmount,
-          },
+          default: { ...transaction },
         })
       );
     },
@@ -74,14 +56,14 @@ function TransactionOption(props: {
       dispatch(
         transactionActions.openLink({
           id: linkId,
-          category: props.category,
+          category,
         })
       );
     },
   };
 
   const getDone = !isCurrent &&
-    !props.isDefault &&
+    !isDefault &&
     !linkId && {
       name: '거래내역으로 등록',
       action: () => {
@@ -90,16 +72,9 @@ function TransactionOption(props: {
           transactionActions.setForm({
             mode: { isExpand: true, isDone: true },
             default: {
-              linkId: id,
-              icon,
+              ...transaction,
+              linkId: _id,
               isCurrent: true,
-              isExpense,
-              titles,
-              date: getNumericHypenDateString(date),
-              amount,
-              categoryId,
-              tags,
-              memo,
             },
           })
         );
@@ -108,34 +83,18 @@ function TransactionOption(props: {
 
   const remove = (isCurrent || !linkId) && {
     name: '내역 삭제',
-    action: () => {
-      // remove
-      if (isCurrent && linkId) {
-        dispatch(transactionActions.removeLink(linkId));
-      }
+    action: async () => {
+      const { transactionLinked, budget, assets } = await deleteTransaction(_id);
 
-      dispatch(transactionActions.removeTransaction(id));
-      deleteTransaction(id);
+      // remove transaction
+      dispatch(transactionActions.removeTransaction(_id));
+      dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
 
-      // get key
-      const key = getCurrentKey(isCurrent);
-
-      // update total
-      dispatch(
-        totalActions.updateTotalAmount({
-          isExpense,
-          [key]: -amount,
-        })
-      );
-
-      // update category
-      dispatch(
-        budgetCategoryActions.updateCategoryAmount({
-          categoryId,
-          isExpense,
-          [key]: -amount,
-        })
-      );
+      // dispatch updated amount
+      dispatch(budgetActions.setCurrentBudget(budget));
+      dispatch(totalActions.setTotalFromBudgetData(budget));
+      dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+      dispatch(assetActions.setAssets(assets));
     },
   };
 
@@ -149,9 +108,9 @@ function TransactionOption(props: {
   return (
     <OptionButton
       menu={options}
-      onSelect={props.onSelect}
-      className={props.className}
-      contextStyle={props.contextStyle}
+      onSelect={onSelect}
+      className={className}
+      contextStyle={contextStyle}
     />
   );
 }

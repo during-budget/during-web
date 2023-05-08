@@ -27,12 +27,8 @@ export interface BudgetCategoryType extends CategoryBaisis {
   amountScheduled: number;
 }
 
-export interface TransactionCategoryType extends CategoryBaisis {
-  _id: never;
+export interface TransactionCategoryType extends Omit<CategoryBaisis, 'isDefault'> {
   categoryId: string;
-  amountCurrent: never;
-  amountPlanned: never;
-  amountScheduled: never;
 }
 
 export interface UpdatedBudgetCategoryType {

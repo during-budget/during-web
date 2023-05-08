@@ -15,6 +15,7 @@ export const getCurrentKey = (isCurrent: boolean) => {
   return isCurrent ? 'current' : 'scheduled';
 };
 
+// DefaultStatus에서 사용중인데 검토해보자
 export const getFilteredCategories = (params: {
   categories: Category[];
   isExpense: boolean;
