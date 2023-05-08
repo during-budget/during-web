@@ -81,8 +81,7 @@ interface IUser {
   userName: string;
   email: string;
   snsId: {
-    google: TypeSnsId | undefined;
-    apple: string | undefined;
+    google: string | undefined;
     naver: TypeSnsId | undefined;
     kakao: TypeSnsId | undefined;
   };
@@ -137,7 +136,6 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     },
     email: {
       type: String,
-      unique: true,
     },
     snsId: {
       type: Object,

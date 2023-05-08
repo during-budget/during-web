@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/morgan": "^1.9.4",
+    "@types/passport-google-oauth20": "^2.0.11",
     "@types/winston": "^2.4.4",
     "bcrypt": "^5.1.0",
     "connect-redis": "^6.1.3",
@@ -29,7 +30,7 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.1",
     "passport": "^0.6.0",
-    "passport-custom": "^1.1.1",
+    "passport-google-oauth20": "^2.0.0",
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-naver-v2": "^2.0.8",
