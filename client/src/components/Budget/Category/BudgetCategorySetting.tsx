@@ -16,12 +16,22 @@ import CategoryEditItem from './CategoryEditItem';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 
+// TODO: DraggableList 활용하여 개선
+
+// setCheckedPaymentIds((prev) => {
+//   if (prev.includes(id)) {
+//     return prev.filter((item) => item !== id);
+//   } else {
+//     return [...prev, id];
+//   }
+// });
+
 interface BudgetCategorySettingProps {
   budgetId: string;
   budgetCategories?: Category[];
   isExpense: boolean;
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  closeHandler: () => void;
   sendRequest?: boolean;
   setCategoryPlans?: React.Dispatch<React.SetStateAction<Category[]>>;
   setDefaultPlan?: React.Dispatch<React.SetStateAction<Category | undefined>>;
@@ -32,7 +42,7 @@ function BudgetCategorySetting({
   budgetCategories: propsBudgetCategories,
   isExpense,
   isOpen,
-  setIsOpen,
+  closeHandler,
   sendRequest,
   setCategoryPlans,
 }: BudgetCategorySettingProps) {
@@ -167,11 +177,6 @@ function BudgetCategorySetting({
         }
       }
     }
-  };
-
-  /** Close overlay */
-  const closeHandler = () => {
-    setIsOpen(false);
   };
 
   /** Set isEdit & Submit */

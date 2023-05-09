@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable, DraggableChildrenFn } from 'react-beautiful-dnd';
 import Button from './Button';
 import classes from './DraggableItem.module.css';
 
@@ -8,6 +8,8 @@ interface DraggableItemProps {
   idx: number;
   onRemove?: (idx: number) => void;
   onEdit?: (idx: number) => void;
+  onCheck?: (idx: number) => void;
+  checked?: boolean;
   className?: string;
 }
 
@@ -16,6 +18,8 @@ const DraggableItem = ({
   idx,
   onRemove,
   onEdit,
+  onCheck,
+  checked,
   className,
   children,
 }: PropsWithChildren<DraggableItemProps>) => {
@@ -25,6 +29,10 @@ const DraggableItem = ({
 
   const editHandler = () => {
     onEdit && onEdit(idx);
+  };
+
+  const checkHandler = () => {
+    onCheck && onCheck(idx);
   };
 
   let buttonAreaClass = classes.sm;
@@ -43,11 +51,30 @@ const DraggableItem = ({
             key={idx}
             {...lockedProvided.draggableProps}
             ref={lockedProvided.innerRef}
-            className={`${classes.container} ${
+            className={`${classes.draggableItem} ${
               snapshot.isDragging ? classes.dragging : ''
             } ${className}`}
           >
-            {children}
+            <div className={classes.head}>
+              {onCheck && (
+                <input
+                  id={`draggable-check-${id}`}
+                  className={classes.check}
+                  type="checkbox"
+                  name="category-setting"
+                  checked={checked}
+                  onChange={checkHandler}
+                  value={id}
+                />
+              )}
+              {onCheck ? (
+                <label htmlFor={`draggable-check-${id}`} className={classes.info}>
+                  {children}
+                </label>
+              ) : (
+                <div>{children}</div>
+              )}
+            </div>
             <div className={`${classes.buttons} ${buttonAreaClass}`}>
               {onEdit && (
                 <Button
@@ -72,7 +99,7 @@ const DraggableItem = ({
   );
 };
 
-const lockXAxis = (provided: any) => {
+export const lockXAxis = (provided: any) => {
   const transform = provided.draggableProps!.style!.transform;
   if (transform) {
     var t = transform.split(',')[1];

@@ -57,7 +57,7 @@ export const getTransactions = async (budgetId: string) => {
     );
   }
 
-  return response.json() as Promise<{ transactions: TransactionType[] }>;
+  return response.json() as Promise<{ transactions: TransactionDataType[] }>;
 };
 
 /** request - CREATE */

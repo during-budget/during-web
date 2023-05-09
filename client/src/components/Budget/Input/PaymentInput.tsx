@@ -26,13 +26,13 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
   const paymentMethods = useAppSelector((state) => state.asset.paymentMethods);
 
   const paymentOptions = [
-    { value: '', label: '결제수단 없음' },
     ...paymentMethods.map((item) => {
       return {
         value: item._id,
         label: `${item.icon} ${item.title}`,
       };
     }),
+    { value: '', label: '결제수단 없음' },
   ];
 
   return (
@@ -40,10 +40,9 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
       ref={paymentRef}
       className={props.className}
       data={paymentOptions}
-      // showEdit={() => {
-      //   dispatch(uiActions.setIsExpense(isExpense));
-      //   props.setIsEditSetting(true);
-      // }}
+      showEdit={() => {
+        props.setIsEditSetting(true);
+      }}
       onChange={props.onChange}
       value={props.value}
       defaultValue={props.defaultValue}

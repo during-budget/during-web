@@ -234,7 +234,9 @@ function CategoryPlan(props: { budgetId: string }) {
         budgetCategories={categoryState}
         isExpense={isExpense}
         isOpen={isEditSetting}
-        setIsOpen={setIsEditSetting}
+        closeHandler={() => {
+          setIsEditSetting(false);
+        }}
         setCategoryPlans={setCategoryState}
       />
     </>
