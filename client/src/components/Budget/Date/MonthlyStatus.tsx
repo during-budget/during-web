@@ -40,7 +40,7 @@ function MonthlyStatus(props: {
             dispatch(
                 transactionActions.setForm({
                     mode: { isExpand: true },
-                    default: { date },
+                    default: { date: new Date(date) },
                 })
             );
         }
