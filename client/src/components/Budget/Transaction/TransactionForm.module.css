@@ -121,10 +121,6 @@
 
 .buttons {
   visibility: hidden;
-  position: absolute;
-  left: var(--size-5);
-  right: var(--size-5);
-  bottom: 6vh;
 }
 
 .types {

@@ -72,7 +72,7 @@ const PaymentEditor = ({ isOpen, closeHandler }: PaymentEditorProps) => {
             </DraggableItem>
           ))}
         </DraggableList>
-        <ConfirmCancelButtons onClose={closeHandler} />
+        <ConfirmCancelButtons isClose={!isOpen} onClose={closeHandler} />
       </form>
     </Overlay>
   );

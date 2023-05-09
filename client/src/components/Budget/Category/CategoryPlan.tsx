@@ -226,7 +226,11 @@ function CategoryPlan(props: { budgetId: string }) {
           >
             카테고리 목록 편집
           </Button>
-          <ConfirmCancelButtons onClose={closeHandler} confirmMsg="목표 설정 완료" />
+          <ConfirmCancelButtons
+            isClose={!isOpen}
+            onClose={closeHandler}
+            confirmMsg="목표 설정 완료"
+          />
         </form>
       </Overlay>
       <BudgetCategorySetting

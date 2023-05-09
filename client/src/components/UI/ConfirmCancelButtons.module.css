@@ -1,7 +1,18 @@
-.container {
+.confirm-cancel {
+  position: absolute;
+  left: var(--size-5);
+  right: var(--size-5);
+  bottom: 6vh;
   display: flex;
+  transform: translateY(0);
+  transition: transform 0.3s var(--fast-in);
+  will-change: transform;
 }
 
-.container .cancel {
+.close {
+  transform: translateY(300%);
+}
+
+.confirm-cancel .cancel {
   width: 50%;
 }

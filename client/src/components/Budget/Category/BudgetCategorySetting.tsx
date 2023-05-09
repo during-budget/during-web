@@ -238,6 +238,7 @@ function BudgetCategorySetting({
         )}
         {/* Confirm & Cancel */}
         <ConfirmCancelButtons
+          isClose={!isOpen}
           onClose={closeHandler}
           confirmMsg={isEdit ? '수정 완료' : '카테고리 설정 완료'}
         />

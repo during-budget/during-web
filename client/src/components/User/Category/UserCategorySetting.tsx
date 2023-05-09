@@ -84,7 +84,11 @@ function UserCategorySetting(props: {
           defaultCategory={defaultCategory}
           setDefaultCategory={setDefaultCategory}
         />
-        <ConfirmCancelButtons onClose={closeHandler} confirmMsg="완료" />
+        <ConfirmCancelButtons
+          isClose={!props.isOpen}
+          onClose={closeHandler}
+          confirmMsg="완료"
+        />
       </form>
     </Overlay>
   );

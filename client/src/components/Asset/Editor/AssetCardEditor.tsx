@@ -184,6 +184,7 @@ const AssetCardEditor = ({
             />
           )}
           <ConfirmCancelButtons
+            isClose={!isOpen}
             onClose={closeEditor}
             confirmMsg={`${isAsset ? '자산' : '카드'} ${
               target ? '편집 완료' : '추가 완료'

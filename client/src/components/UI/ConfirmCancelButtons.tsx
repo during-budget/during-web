@@ -9,6 +9,7 @@ interface ConfirmCancelButtonsProps {
   className?: string;
   disabled?: boolean;
   hideCancle?: boolean;
+  isClose?: boolean;
 }
 
 function ConfirmCancelButtons({
@@ -19,9 +20,12 @@ function ConfirmCancelButtons({
   className,
   disabled,
   hideCancle,
+  isClose,
 }: ConfirmCancelButtonsProps) {
   return (
-    <div className={`${classes.container} ${className}`}>
+    <div
+      className={`${classes.confirmCancel} ${isClose ? classes.close : ''} ${className}`}
+    >
       {!hideCancle && (
         <Button className={classes.cancel} styleClass="extra" onClick={onClose}>
           {closeMsg || '취소'}

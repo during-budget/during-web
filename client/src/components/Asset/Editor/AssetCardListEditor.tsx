@@ -175,7 +175,7 @@ const AssetCardListEditor = ({
           <Button className={classes.add} styleClass="extra" onClick={openAddHandler}>
             자산 및 결제수단 추가하기
           </Button>
-          <ConfirmCancelButtons onClose={closeEditor} />
+          <ConfirmCancelButtons isClose={!isOpen} onClose={closeEditor} />
         </form>
       </Overlay>
       <AssetCardEditor

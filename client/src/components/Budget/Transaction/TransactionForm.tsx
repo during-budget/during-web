@@ -88,7 +88,9 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       linkId: defaultValue.linkId || undefined,
       overAmount: defaultValue.overAmount,
       updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : undefined,
-      updateBudget: excludeBudgetRef.current ? !excludeBudgetRef.current.checked : undefined,
+      updateBudget: excludeBudgetRef.current
+        ? !excludeBudgetRef.current.checked
+        : undefined,
     };
 
     // send request
@@ -348,7 +350,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
                 </div>
               )}
               {/* buttons */}
-              <ConfirmCancelButtons className={classes.buttons} onClose={closeHandler} />
+              <ConfirmCancelButtons  isClose={!mode.isExpand} className={classes.buttons} onClose={closeHandler} />
             </>
           )}
         </form>
