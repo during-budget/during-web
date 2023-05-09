@@ -1,8 +1,10 @@
 .transaction-form {
   padding: var(--size-5);
-  height: 85vh;
-  clip-path: inset(-100% -100% calc(100% - 5.75rem) -100%);
+  height: calc(5.8rem + 9vh);
+  clip-path: inset(-100% -100% calc(9vh + 0.05rem) -100%);
+  /* clip-path: inset(-100% -100% calc(100% - 5.75rem) -100%);
   transform: translateY(calc(100% - (5.8rem + 9vh))) !important;
+  height: calc(5.8rem + 9vh); */
 }
 
 .transaction-form input,
@@ -13,7 +15,8 @@
 
 .transaction-form.expand {
   clip-path: inset(-100% -100% 0 -100%);
-  transform: translateY(0) !important;
+  height: 85vh;
+  /* transform: translateY(0) !important; */
 }
 
 .transaction-form.expand .buttons,
@@ -23,8 +26,9 @@
 }
 
 .basic {
-  transform: translateY(5.8rem + 4vh);
+  height: calc(5.8rem + 4vh);
   clip-path: none;
+  /* transform: translateY(5.8rem + 4vh); */
 }
 
 .info {
@@ -117,6 +121,10 @@
 
 .buttons {
   visibility: hidden;
+  position: absolute;
+  left: var(--size-5);
+  right: var(--size-5);
+  bottom: 6vh;
 }
 
 .types {
