@@ -7,7 +7,7 @@ interface PaymentInputProps {
   budgetId: string;
   className?: string;
   value?: string;
-  onChange?: (value?: string) => void;
+  onChange?: (value?: string, isCredit?: boolean) => void;
   defaultValue?: string;
   disabled?: boolean;
   setIsEditSetting: (isEdit: boolean) => void;
@@ -19,8 +19,6 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
       value: () => paymentRef.current!.value(),
     };
   });
-
-  const dispatch = useDispatch();
   const paymentRef = useRef<any>(null);
 
   const paymentMethods = useAppSelector((state) => state.asset.paymentMethods);
@@ -43,7 +41,10 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
       showEdit={() => {
         props.setIsEditSetting(true);
       }}
-      onChange={props.onChange}
+      onChange={(value?: string) => {
+        const payment = paymentMethods.find((item) => item._id === value);
+        props.onChange && props.onChange(value, payment?.detail === 'credit');
+      }}
       value={props.value}
       defaultValue={props.defaultValue}
       disabled={props.disabled}

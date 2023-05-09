@@ -262,8 +262,10 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         budgetId={budgetId}
         className={`${classes.field} ${classes.select}`}
         value={paymentState || ''}
-        onChange={(value?: string) => {
+        onChange={(value?: string, isCredit?: boolean) => {
           setPaymentState(value);
+          if (excludeAssetRef.current)
+            excludeAssetRef.current.checked = isCredit ? true : false;
         }}
         defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={setIsOpenPaymentEditor}
@@ -350,7 +352,11 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
                 </div>
               )}
               {/* buttons */}
-              <ConfirmCancelButtons  isClose={!mode.isExpand} className={classes.buttons} onClose={closeHandler} />
+              <ConfirmCancelButtons
+                isClose={!mode.isExpand}
+                className={classes.buttons}
+                onClose={closeHandler}
+              />
             </>
           )}
         </form>
