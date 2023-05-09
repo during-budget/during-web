@@ -21,6 +21,7 @@ const local = () => {
       async function (email: string, code: string, done: any) {
         const user = await User.findOne({
           email,
+          isLocal: true,
         });
         if (!user) {
           const err = new Error("User not found");
@@ -72,6 +73,7 @@ const register = () => {
 
         const user = new User({
           email,
+          isLocal: true,
         });
         await user.initialize();
 

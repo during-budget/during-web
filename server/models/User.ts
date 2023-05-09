@@ -72,14 +72,15 @@ const categorySchema = new Schema<ICategory>({
 
 interface IUser {
   _id: Types.ObjectId;
-  userName: string | undefined;
   email: string | undefined;
+  userName: string | undefined;
+  picture: string | undefined;
+  isLocal: boolean;
   snsId: {
     google: string | undefined;
     naver: string | undefined;
     kakao: string | undefined;
   };
-  profile: string | undefined;
   isGuest: boolean;
   categories: ICategory[];
   birthdate?: Date;
@@ -125,12 +126,17 @@ interface IUserModel extends Model<IUser, {}, IUserProps> {}
 const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   {
     // user fields
-    userName: {
-      type: String,
-    },
     email: {
       type: String,
     },
+    isLocal: {
+      type: Boolean,
+      default: false,
+    },
+    userName: {
+      type: String,
+    },
+    picture: { type: String },
     snsId: {
       type: Object,
       default: {},

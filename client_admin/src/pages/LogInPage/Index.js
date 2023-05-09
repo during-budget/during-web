@@ -144,7 +144,10 @@ const Index = () => {
           gap: "24px",
         }}
       >
-        <a href="http://localhost:5555/api/auth/google">
+        <a href="http://localhost:5555/api/auth/google/admin">
+          <GoogleLoginButton />
+        </a>
+        {/* <a href="http://localhost:5555/api/auth/google">
           <GoogleLoginButton />
         </a>
         <a href="http://localhost:5555/api/auth/naver">
@@ -152,7 +155,7 @@ const Index = () => {
         </a>
         <a href="http://localhost:5555/api/auth/kakao">
           <KakaoLoginButton />
-        </a>
+        </a> */}
       </div>
     </div>
   );
