@@ -30,8 +30,12 @@ const google = () => {
             }
 
             /* register */
-            const newUser = new User({ snsId: { google: profile.id } });
-            // await newUser.save();
+            const newUser = new User({
+              userName: profile.displayName,
+              snsId: { google: profile.id },
+            });
+            await newUser.initialize();
+
             return done(null, newUser, "register");
           }
           /* if user is logged in - connect */

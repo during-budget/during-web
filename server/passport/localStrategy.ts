@@ -1,12 +1,14 @@
+import { Request } from "express";
+
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as CustomStrategy } from "passport-custom";
+
 import { User } from "../models/User";
+
 import { client } from "../redis";
 import { decipher } from "../utils/crypto";
-import { Budget } from "../models/Budget";
 import { generateRandomString } from "../utils/randomString";
-import { Strategy as CustomStrategy } from "passport-custom";
-import { Request } from "express";
 
 const local = () => {
   passport.use(
@@ -71,31 +73,8 @@ const register = () => {
         const user = new User({
           email,
         });
-        user.setDefaultCategories();
+        await user.initialize();
 
-        const defaultExpenseCategory = user.findDefaultExpenseCategory();
-        const defaultIncomeCategory = user.findDefaultIncomeCategory();
-
-        const budget = new Budget({
-          userId: user._id,
-          title: "기본 예산",
-          categories: [
-            {
-              ...defaultExpenseCategory,
-              categoryId: defaultExpenseCategory._id,
-              amountPlanned: 0,
-            },
-            {
-              ...defaultIncomeCategory,
-              categoryId: defaultIncomeCategory._id,
-              amountPlanned: 0,
-            },
-          ],
-        });
-
-        user.basicBudgetId = budget._id;
-        await budget.save();
-        await user.save();
         await client.del(email);
 
         return done(null, user);
@@ -112,31 +91,7 @@ const guest = () => {
         userName: "guest-" + generateRandomString(5),
         isGuest: true,
       });
-      user.setDefaultCategories();
-
-      const defaultExpenseCategory = user.findDefaultExpenseCategory();
-      const defaultIncomeCategory = user.findDefaultIncomeCategory();
-
-      const budget = new Budget({
-        userId: user._id,
-        title: "기본 예산",
-        categories: [
-          {
-            ...defaultExpenseCategory,
-            categoryId: defaultExpenseCategory._id,
-            amountPlanned: 0,
-          },
-          {
-            ...defaultIncomeCategory,
-            categoryId: defaultIncomeCategory._id,
-            amountPlanned: 0,
-          },
-        ],
-      });
-
-      user.basicBudgetId = budget._id;
-      await budget.save();
-      await user.save();
+      user.initialize();
 
       return done(null, user);
     })

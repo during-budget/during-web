@@ -2,6 +2,7 @@ import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 
 import bcrypt from "bcrypt";
 import _ from "lodash";
+import { Budget } from "./Budget";
 
 interface IAsset {
   _id: Types.ObjectId;
@@ -69,22 +70,16 @@ const categorySchema = new Schema<ICategory>({
   icon: String,
 });
 
-type TypeSnsId = {
-  id: string;
-  email: string | undefined;
-  name: string | undefined;
-  picture: string | undefined;
-};
-
 interface IUser {
   _id: Types.ObjectId;
   userName: string | undefined;
   email: string | undefined;
   snsId: {
     google: string | undefined;
-    naver: TypeSnsId | undefined;
-    kakao: TypeSnsId | undefined;
+    naver: string | undefined;
+    kakao: string | undefined;
   };
+  profile: string | undefined;
   isGuest: boolean;
   categories: ICategory[];
   birthdate?: Date;
@@ -104,8 +99,8 @@ interface IUserProps {
   cards: Types.DocumentArray<ICard>;
   paymentMethods: Types.DocumentArray<IPaymentMethod>;
   /* methods */
+  initialize: () => Promise<void>;
   saveReqUser: () => Promise<void>;
-  setDefaultCategories: () => void;
   findCategory: (categoryId: string) => ICategory | undefined;
   findCategoryIdx: (categoryId: string) => number;
   findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
@@ -169,132 +164,158 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   { timestamps: true }
 );
 
-userSchema.methods.saveReqUser = async function () {
+const defaultCategories = [
+  // 지출 카테고리
+  {
+    isExpense: true,
+    title: "식비",
+    icon: "🍚",
+  },
+  {
+    isExpense: true,
+    title: "간식",
+    icon: "🍫",
+  },
+  {
+    isExpense: true,
+    title: "생활",
+    icon: "💸",
+  },
+  {
+    isExpense: true,
+    title: "교통",
+    icon: "🚉",
+  },
+  {
+    isExpense: true,
+    title: "교육",
+    icon: "🎓",
+  },
+  {
+    isExpense: true,
+    title: "문화/여가",
+    icon: "🎬",
+  },
+  {
+    isExpense: true,
+    title: "의료/건강",
+    icon: "💊",
+  },
+  {
+    isExpense: true,
+    title: "주거/통신",
+    icon: "🏠",
+  },
+  {
+    isExpense: true,
+    title: "의류/미용",
+    icon: "🛍️",
+  },
+  {
+    isExpense: true,
+    title: "기부/후원",
+    icon: "🕊️",
+  },
+  {
+    isExpense: true,
+    title: "경조사비",
+    icon: "💌",
+  },
+  {
+    isExpense: true,
+    title: "선물",
+    icon: "🎁",
+  },
+  {
+    isExpense: true,
+    title: "이체",
+    icon: "🍎",
+  },
+  {
+    isExpense: true,
+    title: "채무",
+    icon: "🥭",
+  },
+  // 수입 카테고리
+  {
+    isIncome: true,
+    title: "월급",
+    icon: "💙",
+  },
+  {
+    isIncome: true,
+    title: "보너스",
+    icon: "💜",
+  },
+  {
+    isIncome: true,
+    title: "용돈",
+    icon: "💚",
+  },
+  {
+    isIncome: true,
+    title: "이체",
+    icon: "🍏",
+  },
+  {
+    isIncome: true,
+    title: "채무",
+    icon: "🍋",
+  },
+  // 기본 카테고리
+  {
+    isExpense: true,
+    isDefault: true,
+    title: "기타",
+    icon: "",
+  },
+  {
+    isIncome: true,
+    isDefault: true,
+    title: "기타",
+    icon: "",
+  },
+];
+
+userSchema.methods.initialize = async function () {
   try {
+    const user = this;
+
+    user.categories = new Types.DocumentArray(defaultCategories);
+
+    const defaultExpenseCategory = user.findDefaultExpenseCategory();
+    const defaultIncomeCategory = user.findDefaultIncomeCategory();
+
+    const budget = new Budget({
+      userId: user._id,
+      title: "기본 예산",
+      categories: [
+        {
+          ...defaultExpenseCategory,
+          categoryId: defaultExpenseCategory._id,
+          amountPlanned: 0,
+        },
+        {
+          ...defaultIncomeCategory,
+          categoryId: defaultIncomeCategory._id,
+          amountPlanned: 0,
+        },
+      ],
+    });
+
+    user.basicBudgetId = budget._id;
+    await budget.save();
+    await user.save();
+
     return await this.save();
   } catch (err: any) {
     return err;
   }
 };
 
-userSchema.methods.setDefaultCategories = async function () {
+userSchema.methods.saveReqUser = async function () {
   try {
-    const categories = [
-      // 지출 카테고리
-      {
-        isExpense: true,
-        title: "식비",
-        icon: "🍚",
-      },
-      {
-        isExpense: true,
-        title: "간식",
-        icon: "🍫",
-      },
-      {
-        isExpense: true,
-        title: "생활",
-        icon: "💸",
-      },
-      {
-        isExpense: true,
-        title: "교통",
-        icon: "🚉",
-      },
-      {
-        isExpense: true,
-        title: "교육",
-        icon: "🎓",
-      },
-      {
-        isExpense: true,
-        title: "문화/여가",
-        icon: "🎬",
-      },
-      {
-        isExpense: true,
-        title: "의료/건강",
-        icon: "💊",
-      },
-      {
-        isExpense: true,
-        title: "주거/통신",
-        icon: "🏠",
-      },
-      {
-        isExpense: true,
-        title: "의류/미용",
-        icon: "🛍️",
-      },
-      {
-        isExpense: true,
-        title: "기부/후원",
-        icon: "🕊️",
-      },
-      {
-        isExpense: true,
-        title: "경조사비",
-        icon: "💌",
-      },
-      {
-        isExpense: true,
-        title: "선물",
-        icon: "🎁",
-      },
-      {
-        isExpense: true,
-        title: "이체",
-        icon: "🍎",
-      },
-      {
-        isExpense: true,
-        title: "채무",
-        icon: "🥭",
-      },
-      // 수입 카테고리
-      {
-        isIncome: true,
-        title: "월급",
-        icon: "💙",
-      },
-      {
-        isIncome: true,
-        title: "보너스",
-        icon: "💜",
-      },
-      {
-        isIncome: true,
-        title: "용돈",
-        icon: "💚",
-      },
-      {
-        isIncome: true,
-        title: "이체",
-        icon: "🍏",
-      },
-      {
-        isIncome: true,
-        title: "채무",
-        icon: "🍋",
-      },
-      // 기본 카테고리
-      {
-        isExpense: true,
-        isDefault: true,
-        title: "기타",
-        icon: "",
-      },
-      {
-        isIncome: true,
-        isDefault: true,
-        title: "기타",
-        icon: "",
-      },
-    ];
-    for (let category of categories) {
-      this.categories.push(category);
-    }
-    return;
+    return await this.save();
   } catch (err: any) {
     return err;
   }

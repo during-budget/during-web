@@ -9,7 +9,7 @@ router.get("/", isLoggedIn, auth.find);
 router.get(
   "/google",
   passport.authenticate("google", {
-    scope: ["profile", "email"],
+    scope: ["profile"],
   })
 );
 router.get("/naver", passport.authenticate("naver"));
