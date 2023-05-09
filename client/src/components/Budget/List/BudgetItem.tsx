@@ -24,8 +24,8 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
   });
 
   // title
-  const startMonth = getMonthName(startDate, navigator.language);
-  const endMonth = getMonthName(endDate, navigator.language);
+  const startMonth = getMonthName(startDate, 'ko-KR');
+  const endMonth = getMonthName(endDate, 'ko-KR');
   const defaultTitle =
     startMonth === endMonth ? startMonth : `${startMonth} - ${endMonth}`;
   const title = budget ? budget.title : defaultTitle;

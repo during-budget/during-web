@@ -1,4 +1,4 @@
-const locale: 'ko-KR' | 'en-US' = navigator.language === 'ko-KR' ? 'ko-KR' : 'en-US';
+const locale: 'ko-KR' | 'en-US' = 'ko-KR'; //navigator.language === 'ko-KR' ? 'ko-KR' : 'en-US';
 const amountUnit = {
   'en-US': {
     prefix: '$',
