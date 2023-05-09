@@ -24,10 +24,15 @@
   width: 30%;
 }
 
+.childrenWrapper {
+  width: 100%;
+}
+
 .head {
   display: flex;
   align-items: center;
   gap: 3vw;
+  width: 100%;
 }
 
 .check {

@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { Draggable, DraggableChildrenFn } from 'react-beautiful-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 import Button from './Button';
 import classes from './DraggableItem.module.css';
 
@@ -72,7 +72,7 @@ const DraggableItem = ({
                   {children}
                 </label>
               ) : (
-                <div>{children}</div>
+                <div className={classes.childrenWrapper}>{children}</div>
               )}
             </div>
             <div className={`${classes.buttons} ${buttonAreaClass}`}>
