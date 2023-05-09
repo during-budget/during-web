@@ -30,6 +30,7 @@ import TitleInput from '../Input/TitleInput';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
+import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 
 function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
@@ -47,7 +48,9 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
 
   const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
   const [iconState, setIconState] = useState('');
+
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
+  const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
 
   const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
 
@@ -261,7 +264,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
           setPaymentState(value);
         }}
         defaultValue={defaultValue.linkedPaymentMethodId}
-        setIsEditSetting={(isEdit: boolean) => {}}
+        setIsEditSetting={setIsOpenPaymentEditor}
       />
     </div>
   );
@@ -360,8 +363,16 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         budgetId={props.budgetId}
         isExpense={isExpense}
         isOpen={isOpenCategorySetting}
-        setIsOpen={setIsOpenCategorySetting}
+        closeHandler={() => {
+          setIsOpenCategorySetting(false);
+        }}
         sendRequest={true}
+      />
+      <PaymentEditor
+        isOpen={isOpenPaymentEditor}
+        closeHandler={() => {
+          setIsOpenPaymentEditor(false);
+        }}
       />
     </>
   );

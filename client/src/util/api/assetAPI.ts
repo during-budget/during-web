@@ -2,7 +2,7 @@ const { DURING_SERVER } = import.meta.env;
 
 const ASSET_URL = `${DURING_SERVER}/api/assets`;
 const CARD_URL = `${DURING_SERVER}/api/cards`;
-const PAYMENTS_URL = `${DURING_SERVER}/api/paymentMethods`;
+const PAYMENT_URL = `${DURING_SERVER}/api/paymentMethods`;
 
 export type AssetDetailType = 'account' | 'cash' | 'etc';
 export type CardDetailType = 'debit' | 'credit' | 'prepaid';
@@ -32,6 +32,7 @@ export interface PaymentDataType {
   icon: string;
   title: string;
   detail: DetailType;
+  isChecked: boolean;
 }
 
 /** 자산 가져오기 */
@@ -66,7 +67,7 @@ export const getCards = async () => {
 
 /** 결제수단(자산 + 카드) 가져오기 */
 export const getpaymentMethods = async () => {
-  const response = await fetch(PAYMENTS_URL, {
+  const response = await fetch(PAYMENT_URL, {
     credentials: 'include',
   });
 
@@ -263,4 +264,24 @@ export const removeCardById = async (id: string) => {
     cards: CardDataType[];
     paymentMethods: PaymentDataType[];
   }>;
+};
+
+/** 결제수단 업데이트 */
+export const updatePayments = async (payments: PaymentDataType[]) => {
+  const response = await fetch(PAYMENT_URL, {
+    method: 'PUT',
+    credentials: 'include',
+    body: JSON.stringify({ paymentMethods: payments }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(`Failed to update payments.\n${data.message ? data.message : ''}`);
+  }
+
+  return response.json() as Promise<{ paymentMethods: PaymentDataType[] }>;
 };

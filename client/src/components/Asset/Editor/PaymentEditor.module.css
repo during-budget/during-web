@@ -1,0 +1,27 @@
+.payment-editor {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list {
+  height: 50vh;
+}
+
+.data {
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+  width: 100%;
+}
+
+.form {
+  width: calc(100% - 4rem);
+  height: calc(100% - 4rem);
+  margin: 0 auto;
+}
+
+.form h5 {
+  margin-bottom: 2vh;
+}
