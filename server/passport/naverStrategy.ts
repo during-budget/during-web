@@ -49,6 +49,7 @@ const naver = () => {
           }
 
           user.snsId = { ...user.snsId, naver: profile.id };
+          if (user.isGuest) user.isGuest = false;
           await user.saveReqUser();
           return done(null, user, "connect");
         } catch (error) {

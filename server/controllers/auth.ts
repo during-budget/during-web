@@ -78,10 +78,15 @@ export const disconnect = async (req: Request, res: Response) => {
     }
 
     user.snsId = { ...user.snsId, [sns]: undefined };
+    if (!user.email && Object.keys(user.snsId).length === 0) {
+      return res
+        .status(409)
+        .send({ message: "At least one login method is required." });
+    }
     await user.saveReqUser();
 
     return res.status(200).send({
-      snsId: user.snsId ?? {},
+      snsId: user.snsId,
     });
   } catch (err: any) {
     logger.error(err.message);
