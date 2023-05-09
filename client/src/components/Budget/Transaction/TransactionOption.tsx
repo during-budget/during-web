@@ -84,6 +84,7 @@ function TransactionOption({
   const remove = (isCurrent || !linkId) && {
     name: '내역 삭제',
     action: async () => {
+      if (confirm('정말 삭제할까요?') === false) return;
       const { transactionLinked, budget, assets } = await deleteTransaction(_id);
 
       // remove transaction

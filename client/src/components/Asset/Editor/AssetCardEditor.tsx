@@ -71,6 +71,7 @@ const AssetCardEditor = ({
 
   /** 자산/카드 삭제 */
   const removeHandler = async (id: string) => {
+    if (confirm('정말 삭제할까요?') === false) return;
     const { assets, paymentMethods, cards } = isAsset
       ? await removeAssetById(id)
       : await removeCardById(id);

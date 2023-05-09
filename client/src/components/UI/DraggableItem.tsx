@@ -24,6 +24,7 @@ const DraggableItem = ({
   children,
 }: PropsWithChildren<DraggableItemProps>) => {
   const removeHandler = () => {
+    if (confirm('정말 삭제할까요?') === false) return;
     onRemove && onRemove(idx);
   };
 
