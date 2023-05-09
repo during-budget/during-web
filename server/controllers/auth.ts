@@ -8,8 +8,8 @@ import { NextFunction } from "express-serve-static-core";
 import passport from "passport";
 import { HydratedDocument } from "mongoose";
 
-// const redirectUrl = process.env.CLIENT?.trim() ?? "/";
-const redirectUrl = process.env.CLIENT_ADMIN?.trim() ?? "/";
+const clientUrl = process.env.CLIENT.trim();
+const clientAdminUrl = process.env.CLIENT_ADMIN.trim();
 
 export const find = async (req: Request, res: Response) => {
   try {
@@ -24,6 +24,31 @@ export const find = async (req: Request, res: Response) => {
   }
 };
 
+export const callbackAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passport.authenticate(
+    "googleAdmin",
+    async (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
+      try {
+        if (authError) throw authError;
+        return req.login(user, (loginError) => {
+          if (loginError) throw loginError;
+          return res.redirect(clientAdminUrl + "/login/redirect");
+        });
+      } catch (err: any) {
+        return res.redirect(
+          clientAdminUrl +
+            "?error=" +
+            encodeURIComponent(err.message ?? "unknown error occured")
+        );
+      }
+    }
+  )(req, res, next);
+};
+
 export const callback = async (
   req: Request,
   res: Response,
@@ -32,7 +57,7 @@ export const callback = async (
   const sns = req.params.sns;
   if (sns !== "google" && sns !== "naver" && sns !== "kakao") {
     return res.redirect(
-      redirectUrl + "?error=" + encodeURIComponent("invalid sns")
+      clientUrl + "?error=" + encodeURIComponent("invalid sns")
     );
   }
 
@@ -49,21 +74,19 @@ export const callback = async (
         if (type === "login") {
           return req.login(user, (loginError) => {
             if (loginError) throw loginError;
-            return res.redirect(redirectUrl + "/login/redirect");
+            return res.redirect(clientUrl + "/login/redirect");
           });
         } else if (type === "register") {
           return req.login(user, (loginError) => {
             if (loginError) throw loginError;
-            return res.redirect(redirectUrl + "/login/redirect?isNew=true");
+            return res.redirect(clientUrl + "/register/redirect");
           });
-        } else if (type === "connect") {
         }
-
-        return res.redirect(redirectUrl);
+        return res.redirect(clientUrl + "/connect/redirect");
       } catch (err: any) {
         return res.redirect(
-          redirectUrl +
-            "?error=" +
+          clientUrl +
+            "/error?message=" +
             encodeURIComponent(err.message ?? "unknown error occured")
         );
       }
@@ -85,7 +108,7 @@ export const disconnect = async (req: Request, res: Response) => {
 
     user.snsId = { ...user.snsId, [sns]: undefined };
     if (
-      !user.email &&
+      !user.isLocal &&
       !user.snsId.google &&
       !user.snsId.naver &&
       !user.snsId.kakao

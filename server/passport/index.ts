@@ -1,7 +1,7 @@
 import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
 import { local, register, guest } from "./localStrategy";
-import { google } from "./googleStrategy";
+import { google, googleAdmin } from "./googleStrategy";
 import { naver } from "./naverStrategy";
 import { kakao } from "./kakaoStrategy";
 import { User, IUser, IUserProps } from "../models/User";
@@ -26,6 +26,8 @@ const config = () => {
   guest();
 
   google();
+  googleAdmin();
+
   naver();
   kakao();
 };

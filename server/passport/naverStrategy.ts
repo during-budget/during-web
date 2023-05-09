@@ -3,6 +3,17 @@ import passport, { Profile } from "passport";
 import { Strategy as NaverStrategy } from "passport-naver";
 import { User } from "../models/User";
 
+const getEmail = (profile: Profile): string | undefined => {
+  if (profile.emails && profile.emails.length > 0) {
+    return profile.emails[0].value;
+  }
+  return undefined;
+};
+
+const getPicture = (profile: any): string | undefined => {
+  return profile._json?.profile_image;
+};
+
 const naver = () => {
   passport.use(
     "naver",
@@ -30,7 +41,18 @@ const naver = () => {
             }
 
             /* register */
+            const email = getEmail(profile);
+            if (email) {
+              const exUser = await User.findOne({ email });
+              if (exUser) {
+                const err = new Error("email in use");
+                return done(err, null, null);
+              }
+            }
+
             const newUser = new User({
+              email: getEmail(profile),
+              picture: getPicture(profile),
               userName: profile.displayName,
               snsId: { naver: profile.id },
             });

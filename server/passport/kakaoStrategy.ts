@@ -3,6 +3,14 @@ import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { User } from "../models/User";
 import { Request } from "express";
 
+const getEmail = (profile: Profile): string | undefined => {
+  return profile._json.kakao_account?.email;
+};
+
+const getPicture = (profile: Profile): string | undefined => {
+  return profile._json.properties.thumbnail_image;
+};
+
 const kakao = () => {
   passport.use(
     "kakao",
@@ -29,7 +37,18 @@ const kakao = () => {
             }
 
             /* register */
+            const email = getEmail(profile);
+            if (email) {
+              const exUser = await User.findOne({ email });
+              if (exUser) {
+                const err = new Error("email in use");
+                return done(err, null, null);
+              }
+            }
+
             const newUser = new User({
+              email,
+              picture: getPicture(profile),
               userName: profile.displayName,
               snsId: { kakao: profile.id },
             });
