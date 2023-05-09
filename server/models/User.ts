@@ -78,8 +78,8 @@ type TypeSnsId = {
 
 interface IUser {
   _id: Types.ObjectId;
-  userName: string;
-  email: string;
+  userName: string | undefined;
+  email: string | undefined;
   snsId: {
     google: string | undefined;
     naver: TypeSnsId | undefined;
@@ -131,7 +131,6 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   {
     // user fields
     userName: {
-      //deprecated
       type: String,
     },
     email: {

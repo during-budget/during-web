@@ -1,8 +1,6 @@
 import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
-import { local } from "./localStrategy";
-import { register } from "./registerStrategy";
-import { guest } from "./guestStrategy";
+import { local, register, guest } from "./localStrategy";
 import { google } from "./googleStrategy";
 import { naver } from "./naverStrategy";
 import { kakao } from "./kakaoStrategy";
