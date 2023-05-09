@@ -52,13 +52,19 @@ export const callback = async (
             return res.redirect(redirectUrl + "/login/redirect");
           });
         } else if (type === "register") {
+          return req.login(user, (loginError) => {
+            if (loginError) throw loginError;
+            return res.redirect(redirectUrl + "/login/redirect?isNew=true");
+          });
         } else if (type === "connect") {
         }
 
         return res.redirect(redirectUrl);
       } catch (err: any) {
         return res.redirect(
-          redirectUrl + "?error=" + encodeURIComponent("unknown error occured")
+          redirectUrl +
+            "?error=" +
+            encodeURIComponent(err.message ?? "unknown error occured")
         );
       }
     }
@@ -78,7 +84,12 @@ export const disconnect = async (req: Request, res: Response) => {
     }
 
     user.snsId = { ...user.snsId, [sns]: undefined };
-    if (!user.email && Object.keys(user.snsId).length === 0) {
+    if (
+      !user.email &&
+      !user.snsId.google &&
+      !user.snsId.naver &&
+      !user.snsId.kakao
+    ) {
       return res
         .status(409)
         .send({ message: "At least one login method is required." });

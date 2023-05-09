@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as KakaoStrategy } from "passport-kakao";
+import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { User } from "../models/User";
 import { Request } from "express";
 
@@ -16,7 +16,7 @@ const kakao = () => {
         req: Request,
         accessToken: string,
         refreshToken: string,
-        profile: any,
+        profile: Profile,
         done: any
       ) => {
         try {
@@ -29,8 +29,11 @@ const kakao = () => {
             }
 
             /* register */
-            const newUser = new User({ snsId: { google: profile.id } });
-            // await newUser.save();
+            const newUser = new User({
+              userName: profile.displayName,
+              snsId: { kakao: profile.id },
+            });
+            await newUser.save();
             return done(null, newUser, "register");
           }
           /* if user is logged in - connect */

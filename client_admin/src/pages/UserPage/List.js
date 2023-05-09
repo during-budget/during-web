@@ -8,6 +8,7 @@ import HeaderRefresh from "../../components/HeaderRefresh";
 import Loading from "../../components/Loading";
 
 import _ from "lodash";
+import { Tag } from "antd";
 
 function List() {
   const API = useAPI();
@@ -19,16 +20,22 @@ function List() {
   const [userNameFilters, setUserNameFilters] = useState([]);
 
   const updateDocuments = async () => {
-    const { users } = await API.GET({ location: "users" });
+    try {
+      const { users } = await API.GET({ location: "users" });
 
-    const userNames = new Set(users.map((b) => b.userName));
-    setUserNameFilters(
-      _.orderBy(Array.from(userNames)).map((userName) => {
-        return { text: userName, value: userName };
-      })
-    );
+      const userNames = new Set(users.map((b) => b.userName));
+      setUserNameFilters(
+        _.orderBy(Array.from(userNames)).map((userName) => {
+          return { text: userName, value: userName };
+        })
+      );
 
-    setUsers(_.orderBy(users, ["createdAt"]));
+      setUsers(_.orderBy(users, ["createdAt"]));
+    } catch (err) {
+      alert(err.response.data?.message ?? "error!");
+      console.error(err);
+      navigate("/");
+    }
   };
 
   useEffect(() => {
@@ -75,6 +82,17 @@ function List() {
             filters: userNameFilters,
             onFilter: (value, record) => record.userName.startsWith(value),
             filterSearch: true,
+          },
+          {
+            key: "snsId",
+            render: (e) => {
+              const tags = [];
+              if (e?.google) tags.push(<Tag color={"grey"}>Google</Tag>);
+              if (e?.naver) tags.push(<Tag color={"green"}>Naver</Tag>);
+              if (e?.kakao) tags.push(<Tag color={"yellow"}>Kakao</Tag>);
+
+              return <div>{tags}</div>;
+            },
           },
           {
             key: "createdAt",

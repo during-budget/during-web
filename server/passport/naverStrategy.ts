@@ -1,5 +1,5 @@
 import { Request } from "express";
-import passport from "passport";
+import passport, { Profile } from "passport";
 import { Strategy as NaverStrategy } from "passport-naver";
 import { User } from "../models/User";
 
@@ -17,7 +17,7 @@ const naver = () => {
         req: Request,
         accessToken: string,
         refreshToken: string,
-        profile: any,
+        profile: Profile,
         done: any
       ) => {
         try {
@@ -30,8 +30,11 @@ const naver = () => {
             }
 
             /* register */
-            const newUser = new User({ snsId: { google: profile.id } });
-            // await newUser.save();
+            const newUser = new User({
+              userName: profile.displayName,
+              snsId: { naver: profile.id },
+            });
+            await newUser.save();
             return done(null, newUser, "register");
           }
           /* if user is logged in - connect */

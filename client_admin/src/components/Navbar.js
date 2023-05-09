@@ -88,7 +88,7 @@ const Navbar = () => {
       <Breadcrumb items={items} />
       {user ? (
         <div>
-          {user.email}
+          {user.email ?? user.userName}
           <Button
             type="link"
             onClick={async () => {
