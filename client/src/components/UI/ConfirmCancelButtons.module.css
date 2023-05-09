@@ -1,11 +1,7 @@
 .container {
-    position: absolute;
-    left: var(--size-5);
-    right: var(--size-5);
-    bottom: 6vh;
-    display: flex;
+  display: flex;
 }
 
 .container .cancel {
-    width: 50%;
+  width: 50%;
 }

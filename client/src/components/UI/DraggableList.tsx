@@ -1,10 +1,5 @@
 import { PropsWithChildren } from 'react';
-import {
-  DragDropContext,
-  DraggableChildrenFn,
-  Droppable,
-  OnDragEndResponder,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
 
 interface DraggableListProps {
   id: string;
@@ -12,7 +7,6 @@ interface DraggableListProps {
   list: any[];
   setList: (list: any[]) => void;
   onDragEnd?: (list: any[]) => void;
-  isInOverlay?: boolean;
 }
 
 const DraggableList = ({
@@ -22,7 +16,6 @@ const DraggableList = ({
   list,
   setList,
   onDragEnd,
-  isInOverlay,
 }: PropsWithChildren<DraggableListProps>) => {
   const sortHandler: OnDragEndResponder = (result) => {
     if (!result.destination) return;
@@ -35,11 +28,9 @@ const DraggableList = ({
     onDragEnd && onDragEnd(items);
   };
 
-  const renderItem = getRenderItem(list);
-
   return (
     <DragDropContext onDragEnd={sortHandler}>
-      <Droppable droppableId={id} renderClone={isInOverlay ? renderItem : undefined}>
+      <Droppable droppableId={id}>
         {(provided) => (
           <ul
             ref={provided.innerRef}
@@ -54,17 +45,5 @@ const DraggableList = ({
     </DragDropContext>
   );
 };
-
-const getRenderItem: (items: any[]) => DraggableChildrenFn =
-  (items) => (provided, snapshot, rubric) =>
-    (
-      <div
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-        ref={provided.innerRef}
-      >
-        Item id: {items[rubric.source.index].id}
-      </div>
-    );
 
 export default DraggableList;
