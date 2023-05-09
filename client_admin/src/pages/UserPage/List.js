@@ -16,8 +16,17 @@ function List() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [userNameFilters, setUserNameFilters] = useState([]);
+
   const updateDocuments = async () => {
     const { users } = await API.GET({ location: "users" });
+
+    const userNames = new Set(users.map((b) => b.userName));
+    setUserNameFilters(
+      _.orderBy(Array.from(userNames)).map((userName) => {
+        return { text: userName, value: userName };
+      })
+    );
 
     setUsers(_.orderBy(users, ["createdAt"]));
   };
@@ -54,6 +63,17 @@ function List() {
               return { text: user.email, value: user.email };
             }),
             onFilter: (value, record) => record.email.startsWith(value),
+            filterSearch: true,
+          },
+          {
+            key: "userName",
+            type: "button-detail",
+            onClick: (e) => {
+              navigate(e._id);
+            },
+            sorter: (a, b) => a.userName > b.userName,
+            filters: userNameFilters,
+            onFilter: (value, record) => record.userName.startsWith(value),
             filterSearch: true,
           },
           {

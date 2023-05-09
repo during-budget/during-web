@@ -248,7 +248,7 @@ export const list = async (req: Request, res: Response) => {
   try {
     const users = await User.find({})
       .lean()
-      .select(["email", "createdAt", "updatedAt"]);
+      .select(["email", "userName", "createdAt", "updatedAt"]);
     return res.status(200).send({ users });
   } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
