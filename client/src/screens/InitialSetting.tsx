@@ -111,11 +111,17 @@ const InitialSetting = () => {
 
   const createHandler = async (target: AssetCardDataType, isAsset?: boolean) => {
     if (isAsset) {
-      const { assets } = await createAsset(target as Omit<AssetDataType, '_id'>);
+      const { assets, paymentMethods } = await createAsset(
+        target as Omit<AssetDataType, '_id'>
+      );
       dispatch(assetActions.setAssets(assets));
+      dispatch(assetActions.setPaymentMethods(paymentMethods));
     } else {
-      const { cards } = await createCard(target as Omit<CardDataType, '_id'>);
+      const { cards, paymentMethods } = await createCard(
+        target as Omit<CardDataType, '_id'>
+      );
       dispatch(assetActions.setCards(cards));
+      dispatch(assetActions.setPaymentMethods(paymentMethods));
     }
   };
 
