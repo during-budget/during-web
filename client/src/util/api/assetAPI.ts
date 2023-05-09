@@ -97,7 +97,10 @@ export const createAsset = async (asset: Omit<AssetDataType, '_id'>) => {
     throw new Error(`Failed to create asset\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ assets: AssetDataType[] }>;
+  return response.json() as Promise<{
+    assets: AssetDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 자산 업데이트 */
@@ -117,7 +120,11 @@ export const updateAssets = async (assets: AssetDataType[]) => {
     throw new Error(`Failed to update assets.\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ assets: AssetDataType[] }>;
+  return response.json() as Promise<{
+    assets: AssetDataType[];
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 자산 개별업데이트 */
@@ -190,7 +197,10 @@ export const createCard = async (card: Omit<CardDataType, '_id'>) => {
     throw new Error(`Failed to create card.\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ cards: CardDataType[] }>;
+  return response.json() as Promise<{
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 카드 업데이트 */
@@ -210,7 +220,10 @@ export const updateCards = async (cards: CardDataType[]) => {
     throw new Error(`Failed to update cards.\n${data.message ? data.message : ''}`);
   }
 
-  return response.json() as Promise<{ cards: CardDataType[] }>;
+  return response.json() as Promise<{
+    cards: CardDataType[];
+    paymentMethods: PaymentDataType[];
+  }>;
 };
 
 /** 카드 개별업데이트 */

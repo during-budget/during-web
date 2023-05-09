@@ -6,8 +6,12 @@ import {
   AssetDataType,
   CardDataType,
   DetailType,
+  createAsset,
+  createCard,
   removeAssetById,
   removeCardById,
+  updateAssetById,
+  updateCardById,
 } from '../../../util/api/assetAPI';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
@@ -50,7 +54,7 @@ const AssetCardEditor = ({
   }, [isOpen, isAsset, target]);
 
   /** 자산/카드 수정/생성 정보 제출 */
-  const submitHandler = (event: React.FormEvent) => {
+  const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const updatingTarget = { ...targetState };
@@ -65,6 +69,44 @@ const AssetCardEditor = ({
       }
     }
 
+    let assets, cards, payments;
+
+    // 개별 업데이트
+    if (isAsset) {
+      const updatingAsset = updatingTarget as AssetDataType;
+      if (target) {
+        const { assets: updatedAssets, paymentMethods: updatedPayments } =
+          await updateAssetById(updatingAsset);
+        assets = updatedAssets;
+        payments = updatedPayments;
+      } else {
+        const { assets: updatedAssets, paymentMethods: updatedPayments } =
+          await createAsset(updatingAsset);
+        assets = updatedAssets;
+        payments = updatedPayments;
+      }
+    } else {
+      const updatingCard = updatingTarget as CardDataType;
+      if (target) {
+        const { cards: updatedCards, paymentMethods: updatedPayments } =
+          await updateCardById(updatingCard);
+        cards = updatedCards;
+        payments = updatedPayments;
+      } else {
+        const { cards: updatedCards, paymentMethods: updatedPayments } = await createCard(
+          updatingCard
+        );
+        cards = updatedCards;
+        payments = updatedPayments;
+      }
+    }
+
+    // 업데이트 상태관리
+    assets && dispatch(assetActions.setAssets(assets));
+    cards && dispatch(assetActions.setCards(cards));
+    payments && dispatch(assetActions.setPaymentMethods(payments));
+
+    // 편집목록에 데이터 전달
     updateTarget && updateTarget(updatingTarget, isAsset);
     closeEditor();
   };

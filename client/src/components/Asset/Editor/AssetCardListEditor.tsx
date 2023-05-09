@@ -73,11 +73,13 @@ const AssetCardListEditor = ({
     event.preventDefault();
 
     if (isAsset) {
-      const { assets } = await updateAssets(listState as AssetDataType[]);
+      const { assets, paymentMethods } = await updateAssets(listState as AssetDataType[]);
       dispatch(assetActions.setAssets(assets));
+      dispatch(assetActions.setPaymentMethods(paymentMethods));
     } else {
-      const { cards } = await updateCards(listState as CardDataType[]);
+      const { cards, paymentMethods } = await updateCards(listState as CardDataType[]);
       dispatch(assetActions.setCards(cards));
+      dispatch(assetActions.setPaymentMethods(paymentMethods));
     }
 
     closeEditor();
