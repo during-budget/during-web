@@ -24,8 +24,10 @@
   width: 30%;
 }
 
-.childrenWrapper {
+.children-wrapper {
   width: 100%;
+  display: flex;
+  gap: 3vw;
 }
 
 .head {
@@ -46,7 +48,7 @@
 }
 
 .buttons > * {
-  font-size: var(--size-10);
+  font-size: var(--size-8);
 }
 
 .buttons .pencil::before {
