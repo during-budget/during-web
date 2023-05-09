@@ -30,6 +30,7 @@ interface AssetCardEditorProps {
   isOpen: boolean;
   closeEditor: () => void;
   openEditor?: () => void;
+  defaultDetail?: DetailType | 'all';
 }
 
 const AssetCardEditor = ({
@@ -39,6 +40,7 @@ const AssetCardEditor = ({
   isOpen,
   closeEditor,
   openEditor,
+  defaultDetail
 }: AssetCardEditorProps) => {
   const dispatch = useDispatch();
 
@@ -49,7 +51,7 @@ const AssetCardEditor = ({
 
   useEffect(() => {
     if (isOpen) {
-      setTargetState(target || getDefaultTarget(isAsset));
+      setTargetState(target || getDefaultTarget(isAsset, defaultDetail));
     }
   }, [isOpen, isAsset, target]);
 
@@ -240,13 +242,13 @@ const AssetCardEditor = ({
 };
 
 /** 새로운 예산 생성을 위한 기본 자산/카드 객체 반환 */
-const getDefaultTarget = (isAsset: boolean) => {
+const getDefaultTarget = (isAsset: boolean, detail?: DetailType | 'all') => {
   let target;
 
   if (isAsset) {
-    target = { title: '', detail: 'account', amount: 0 };
+    target = { title: '', detail: detail || 'account', amount: 0 };
   } else {
-    target = { title: '', detail: 'debit' };
+    target = { title: '', detail: detail || 'debit' };
   }
 
   return target as AssetCardDataType;

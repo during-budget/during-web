@@ -182,6 +182,7 @@ const AssetCardListEditor = ({
       </Overlay>
       <AssetCardEditor
         isAsset={isAsset}
+        defaultDetail={detailState}
         target={currentEditTarget}
         updateTarget={setUpdatedList}
         isOpen={showEditor}
