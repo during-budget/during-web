@@ -10,6 +10,7 @@ export type DetailType = AssetDetailType | CardDetailType;
 
 export interface AssetDataType {
   _id: string;
+  id?: string;
   icon: string;
   title: string;
   amount: number;
@@ -18,6 +19,7 @@ export interface AssetDataType {
 
 export interface CardDataType {
   _id: string;
+  id?: string;
   icon: string;
   title: string;
   detail: CardDetailType;

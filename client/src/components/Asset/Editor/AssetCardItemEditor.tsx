@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
+import { v4 as uuid } from 'uuid';
 import { assetActions } from '../../../store/asset';
 import {
   AssetDataType,
@@ -18,12 +19,12 @@ import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import EmojiInput from '../../UI/EmojiInput';
 import Overlay from '../../UI/Overlay';
 import DetailTypeTab from '../UI/DetailTypeTab';
-import classes from './AssetCardEditor.module.css';
+import classes from './AssetCardItemEditor.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
 import AssetFields from './AssetFields';
 import CardFields from './CardFields';
 
-interface AssetCardEditorProps {
+interface AssetCardItemEditorProps {
   isAsset: boolean;
   target?: AssetCardDataType;
   updateTarget?: (target: AssetCardDataType, isAsset?: boolean) => void;
@@ -31,17 +32,19 @@ interface AssetCardEditorProps {
   closeEditor: () => void;
   openEditor?: () => void;
   defaultDetail?: DetailType | 'all';
+  preventSubmit?: boolean;
 }
 
-const AssetCardEditor = ({
+const AssetCardItemEditor = ({
   isAsset,
   target,
   updateTarget,
   isOpen,
   closeEditor,
   openEditor,
-  defaultDetail
-}: AssetCardEditorProps) => {
+  defaultDetail,
+  preventSubmit,
+}: AssetCardItemEditorProps) => {
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -69,6 +72,18 @@ const AssetCardEditor = ({
       } else {
         updatingTarget.icon = '🏦';
       }
+    }
+
+    if (!updatingTarget._id && !updatingTarget.id) {
+      updatingTarget.id = uuid();
+    }
+
+    // 편집목록에 데이터 전달
+    updateTarget && updateTarget(updatingTarget, isAsset);
+
+    if (preventSubmit) {
+      closeEditor();
+      return;
     }
 
     let assets, cards, payments;
@@ -108,8 +123,6 @@ const AssetCardEditor = ({
     cards && dispatch(assetActions.setCards(cards));
     payments && dispatch(assetActions.setPaymentMethods(payments));
 
-    // 편집목록에 데이터 전달
-    updateTarget && updateTarget(updatingTarget, isAsset);
     closeEditor();
   };
 
@@ -254,4 +267,4 @@ const getDefaultTarget = (isAsset: boolean, detail?: DetailType | 'all') => {
   return target as AssetCardDataType;
 };
 
-export default AssetCardEditor;
+export default AssetCardItemEditor;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import AssetCardEditItemList from '../components/Asset/Editor/AssetCardEditItemList';
-import AssetCardEditor from '../components/Asset/Editor/AssetCardEditor';
+import AssetCardItemEditor from '../components/Asset/Editor/AssetCardItemEditor';
 import { AssetCardDataType } from '../components/Asset/Editor/AssetCardListEditor';
 import AssetStatus from '../components/Asset/Status/AssetStatus';
 import CardStatus from '../components/Asset/Status/CardStatus';
@@ -158,7 +158,7 @@ const InitialSetting = () => {
       </main>
       {/* Overlays */}
       {currentIdx < 2 && (
-        <AssetCardEditor
+        <AssetCardItemEditor
           isAsset={currentIdx === 0}
           isOpen={openEditor}
           target={targetState}
