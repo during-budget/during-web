@@ -15,6 +15,7 @@ import {
   updateTransaction,
 } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
+import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import EmojiInput from '../../UI/EmojiInput';
@@ -30,7 +31,6 @@ import TitleInput from '../Input/TitleInput';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
-import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 
 function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dispatch = useAppDispatch();
@@ -58,7 +58,6 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   const dateRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
   const excludeAssetRef = useRef<HTMLInputElement>(null);
-  const excludeBudgetRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<any>(null);
   const paymentRef = useRef<any>(null);
   const iconRef = useRef<any>(null);
@@ -88,9 +87,6 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       linkId: defaultValue.linkId || undefined,
       overAmount: defaultValue.overAmount,
       updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : undefined,
-      updateBudget: excludeBudgetRef.current
-        ? !excludeBudgetRef.current.checked
-        : undefined,
     };
 
     // send request
@@ -207,17 +203,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
 
   const amountOptionFields = (
     <div className={classes.options}>
-      <div className={classes.option}>
-        <input
-          ref={excludeBudgetRef}
-          id={`check-exclude-budget`}
-          className={classes.check}
-          type="checkbox"
-          defaultChecked={!defaultValue.updateBudget}
-        />
-        <label htmlFor={`check-exclude-budget`}>예산 합계에서 제외</label>
-      </div>
-      {isCurrent && paymentState && (
+      {isCurrent && (paymentState || defaultValue.linkedPaymentMethodId) && (
         <div className={classes.option}>
           <input
             ref={excludeAssetRef}
@@ -312,7 +298,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
               {/* fields */}
               <DateInput
                 ref={dateRef}
-                className={classes.field}
+                className={classes.dateField}
                 defaultValue={
                   defaultValue.date ? getNumericHypenDateString(defaultValue.date) : ''
                 }
