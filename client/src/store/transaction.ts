@@ -56,7 +56,6 @@ const initialState: {
       linkId: '',
       overAmount: 0,
       updateAsset: true,
-      updateBudget: true,
     },
   },
   detail: {

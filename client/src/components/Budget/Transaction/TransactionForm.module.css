@@ -44,6 +44,10 @@
   width: 100%;
 }
 
+.date-field {
+  min-width: calc(100% - var(--size-5));
+}
+
 .amount {
   display: flex;
   width: 100%;
@@ -76,17 +80,22 @@
 .option {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .options {
   justify-content: space-between;
-  margin: 0 5vw;
+  margin: 0 2vw;
   flex-wrap: wrap;
+}
+
+.option {
+  font-size: var(--size-7);
+  justify-content: start;
 }
 
 .option input {
   width: 1rem;
+  transform: scale(0.5, 0.5);
   height: auto;
   margin-bottom: 0;
 }

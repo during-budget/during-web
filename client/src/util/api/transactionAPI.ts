@@ -22,7 +22,6 @@ export interface TransactionType {
   linkId?: string;
   overAmount?: number;
   updateAsset?: boolean;
-  updateBudget?: boolean;
 }
 
 export interface TransactionDataType extends TransactionType {
