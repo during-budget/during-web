@@ -18,6 +18,7 @@ import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
 import Overlay from '../../UI/Overlay';
 import DetailTypeTab from '../UI/DetailTypeTab';
+import AssetCardItemEditor from './AssetCardItemEditor';
 import classes from './AssetCardListEditor.module.css';
 interface AssetCardListEditorProps {
   isAsset: boolean;
@@ -41,9 +42,10 @@ const AssetCardListEditor = ({
   const [detailState, setDetailState] = useState<DetailType | 'all'>('all');
   const [listState, setListState] = useState(list);
   const [showEditor, setShowEditor] = useState(false);
-  const [currentEditTarget, setCurrentEditTarget] = useState<
-    AssetCardDataType | undefined
-  >(undefined);
+  const [itemEditorData, setItemEditorData] = useState<{
+    isOpen: boolean;
+    target: AssetCardDataType | null;
+  }>({ isOpen: false, target: null });
 
   // Set detail state
   useEffect(() => {
@@ -52,6 +54,10 @@ const AssetCardListEditor = ({
       setListState(list);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setListState(list);
+  }, [list]);
 
   // Set list data
   useEffect(() => {
@@ -85,23 +91,38 @@ const AssetCardListEditor = ({
   };
 
   /** 해당 자산/카드 편집 오버레이 열기 */
-  const openEditHandler = async (idx: number) => {
-    await setCurrentEditTarget(listState[idx]);
-    openEditorHandler();
+  const openEditHandler = (idx: number) => {
+    setItemEditorData({ isOpen: true, target: listState[idx] });
   };
 
-  const openAddHandler = async () => {
-    await setCurrentEditTarget(undefined);
-    openEditorHandler();
+  const openAddHandler = () => {
+    setItemEditorData({ isOpen: true, target: null });
+  };
+
+  useEffect(() => {
+    if (itemEditorData.isOpen) {
+      setShowEditor(true);
+    } else {
+      setShowEditor(false);
+    }
+  }, [itemEditorData.isOpen]);
+
+  const closeItemEditorHandler = () => {
+    setItemEditorData({ isOpen: false, target: null });
+  };
+
+  /** 해당 자산/카드 삭제하여 paymentState에 반영 */
+  const removeHandler = (idx: number) => {
+    setListState((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)]);
   };
 
   /** 자산/카드 편집 내용 기반 리스트 업데이트 */
   const setUpdatedList = (target: AssetCardDataType) => {
     setListState((prev) => {
       const next = [...prev];
-      const idx = prev.findIndex(
-        (item) => item._id !== undefined && item._id === target._id
-      );
+      const idx = prev.findIndex((item) => {
+        return target._id === undefined ? item.id === target.id : item._id === target._id;
+      });
 
       if (idx === -1) {
         next.push(target);
@@ -111,21 +132,6 @@ const AssetCardListEditor = ({
 
       return next;
     });
-  };
-
-  /** 해당 자산/카드 삭제하여 paymentState에 반영 */
-  const removeHandler = (idx: number) => {
-    setListState((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)]);
-  };
-
-  /** 개별 자산/카드 편집창 핸들러 */
-  const openEditorHandler = () => {
-    setShowEditor(true);
-  };
-
-  const closeEditorHandler = async () => {
-    await setShowEditor(false);
-    setCurrentEditTarget(undefined);
   };
 
   return (
@@ -179,6 +185,15 @@ const AssetCardListEditor = ({
           <ConfirmCancelButtons isClose={!isOpen} onClose={closeEditor} />
         </form>
       </Overlay>
+      <AssetCardItemEditor
+        isAsset={isAsset}
+        defaultDetail={detailState}
+        target={itemEditorData.target ? itemEditorData.target : undefined}
+        updateTarget={setUpdatedList}
+        isOpen={showEditor}
+        closeEditor={closeItemEditorHandler}
+        preventSubmit={true}
+      />
     </>
   );
 };
