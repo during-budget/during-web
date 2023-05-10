@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AssetProps } from '../../../screens/Asset';
 import EditButton from '../../UI/EditButton';
 import Inform from '../../UI/Inform';
