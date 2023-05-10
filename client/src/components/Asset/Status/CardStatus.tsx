@@ -7,10 +7,11 @@ import CardList from '../List/CardList';
 import classes from '../Status/CardStatus.module.css';
 
 export interface CardStatusProps extends AssetProps {
+  openListEditor?: (payload: { isAsset: boolean }) => void;
   openEditor?: (payload: { isAsset: boolean }) => void;
 }
 
-const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
+const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusProps) => {
   const [currentAssetId, setCurrentAssetId] = useState(assets[0]?._id || undefined);
 
   const assetTabValues = useMemo(() => {
@@ -56,12 +57,22 @@ const CardStatus = ({ assets, cards, openEditor }: CardStatusProps) => {
       ) : (
         <CardList className={classes.list} cards={currentCards} />
       )}
-      {openEditor && (
-        <EditButton
-          label="카드 편집"
-          onClick={openEditor.bind(undefined, { isAsset: false })}
-        />
-      )}
+
+      <div className={classes.buttons}>
+        {openListEditor && (
+          <EditButton
+            label="카드 편집"
+            onClick={openListEditor.bind(undefined, { isAsset: false })}
+          />
+        )}
+        {openEditor && (
+          <EditButton
+            label="카드 추가"
+            isAdd={true}
+            onClick={openEditor.bind(undefined, { isAsset: false })}
+          />
+        )}
+      </div>
     </section>
   );
 };

@@ -18,7 +18,6 @@ import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
 import Overlay from '../../UI/Overlay';
 import DetailTypeTab from '../UI/DetailTypeTab';
-import AssetCardEditor from './AssetCardEditor';
 import classes from './AssetCardListEditor.module.css';
 interface AssetCardListEditorProps {
   isAsset: boolean;
@@ -180,14 +179,6 @@ const AssetCardListEditor = ({
           <ConfirmCancelButtons isClose={!isOpen} onClose={closeEditor} />
         </form>
       </Overlay>
-      <AssetCardEditor
-        isAsset={isAsset}
-        defaultDetail={detailState}
-        target={currentEditTarget}
-        updateTarget={setUpdatedList}
-        isOpen={showEditor}
-        closeEditor={closeEditorHandler}
-      />
     </>
   );
 };

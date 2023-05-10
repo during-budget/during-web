@@ -4,12 +4,15 @@ import classes from './EditButton.module.css';
 interface EditButton {
   onClick: () => void;
   label: string;
+  isAdd?: boolean;
 }
 
-const EditButton = ({ onClick, label }: EditButton) => {
+const EditButton = ({ onClick, label, isAdd }: EditButton) => {
   return (
     <Button styleClass="extra" onClick={onClick}>
-      <span className={classes.edit}>{label}</span>
+      <span className={`${classes.button} ${isAdd ? classes.add : classes.edit}`}>
+        {label}
+      </span>
     </Button>
   );
 };

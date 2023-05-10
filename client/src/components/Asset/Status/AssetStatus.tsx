@@ -8,10 +8,11 @@ import classes from './AssetStatus.module.css';
 
 interface AssetStatusProps {
   assets: AssetDataType[];
+  openListEditor?: (payload: { isAsset: boolean }) => void;
   openEditor?: (payload: { isAsset: boolean }) => void;
 }
 
-const AssetStatus = ({ assets, openEditor }: AssetStatusProps) => {
+const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) => {
   const total = useMemo(
     () => assets.reduce((acc, curr) => acc + curr.amount, 0),
     [assets]
@@ -37,12 +38,21 @@ const AssetStatus = ({ assets, openEditor }: AssetStatusProps) => {
           })}
         />
       )}
-      {openEditor && (
-        <EditButton
-          label="자산 편집"
-          onClick={openEditor.bind(null, { isAsset: true })}
-        />
-      )}
+      <div className={classes.buttons}>
+        {openListEditor && (
+          <EditButton
+            label="자산 편집"
+            onClick={openListEditor.bind(undefined, { isAsset: true })}
+          />
+        )}
+        {openEditor && (
+          <EditButton
+            label="자산 추가"
+            isAdd={true}
+            onClick={openEditor.bind(null, { isAsset: true })}
+          />
+        )}
+      </div>
     </section>
   );
 };

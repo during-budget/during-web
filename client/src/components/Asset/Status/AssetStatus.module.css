@@ -13,3 +13,8 @@
   padding: 10vw;
   border-radius: 0.4rem;
 }
+
+.buttons {
+  display: flex;
+  gap: 5vw;
+}
