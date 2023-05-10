@@ -6,7 +6,8 @@
 }
 
 .list {
-  height: 50vh;
+  height: 45vh;
+  overflow: scroll;
 }
 
 .data {
