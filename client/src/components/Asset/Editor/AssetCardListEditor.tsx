@@ -134,6 +134,14 @@ const AssetCardListEditor = ({
     });
   };
 
+  const getItemEditorDetailState = () => {
+    if (detailState === 'all') {
+      return isAsset ? 'account' : 'credit';
+    } else {
+      return detailState;
+    }
+  }
+
   return (
     <>
       <Overlay isOpen={isOpen} closeHandler={closeEditor} className={classes.container}>
@@ -187,7 +195,7 @@ const AssetCardListEditor = ({
       </Overlay>
       <AssetCardItemEditor
         isAsset={isAsset}
-        defaultDetail={detailState}
+        defaultDetail={detailState === 'all' ? undefined : detailState}
         target={itemEditorData.target ? itemEditorData.target : undefined}
         updateTarget={setUpdatedList}
         isOpen={showEditor}
