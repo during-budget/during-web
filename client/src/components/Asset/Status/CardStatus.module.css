@@ -12,3 +12,8 @@
 .inform {
   margin-top: 2vh;
 }
+
+.buttons {
+  display: flex;
+  gap: 5vw;
+}
