@@ -18,9 +18,9 @@ const Asset = () => {
         <h1>자산 및 결제수단</h1>
       </header>
       <main>
-        {assets && cards && <AssetCardStatus assets={assets} cards={cards} />}
+        {<AssetCardStatus assets={assets} cards={cards} />}
         <hr />
-        {assets && cards && <AssetList assets={assets} cards={cards} />}
+        {<AssetList assets={assets} cards={cards} />}
       </main>
       <EmojiOverlay />
     </>
