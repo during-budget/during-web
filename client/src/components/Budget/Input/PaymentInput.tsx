@@ -24,12 +24,14 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
   const paymentMethods = useAppSelector((state) => state.asset.paymentMethods);
 
   const paymentOptions = [
-    ...paymentMethods.map((item) => {
-      return {
-        value: item._id,
-        label: `${item.icon} ${item.title}`,
-      };
-    }),
+    ...paymentMethods
+      .filter((item) => item.isChecked)
+      .map((item) => {
+        return {
+          value: item._id,
+          label: `${item.icon} ${item.title}`,
+        };
+      }),
     { value: '', label: '결제수단 없음' },
   ];
 
