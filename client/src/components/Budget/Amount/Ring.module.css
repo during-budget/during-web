@@ -35,6 +35,7 @@
 .cap,
 .skin {
   transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  transition-delay: 0.035s;
   will-change: transform, opacity;
 }
 

@@ -41,8 +41,8 @@ function AmountRing(props: {
   const currentRatio = amount.getCurrentRatio();
   const scheduledRatio = amount.getScheduledRatio();
 
-  const currentDeg = currentRatio * 360;
-  const scheduledDeg = scheduledRatio * 360;
+  const currentDeg = currentRatio <= 1 ? currentRatio * 360 : 360;
+  const scheduledDeg = scheduledRatio <= 1 ? scheduledRatio * 360 : 360;
 
   const getDash = (ratio: number) => {
     const dash = ratio * props.dash;
@@ -63,8 +63,10 @@ function AmountRing(props: {
   };
 
   let hideRounded =
-    skinData &&
-    (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg);
+    (skinData &&
+      (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg)) ||
+    currentDeg === 360 ||
+    scheduledDeg === 360;
 
   const rings = [
     { className: classes.budget, dash: getDash(1), r },
@@ -75,7 +77,7 @@ function AmountRing(props: {
       r,
       showCap: scheduledDeg < 350 && scheduledDeg > 0,
       showEyes: scheduledDeg > 10,
-      isBigger: scheduledRatio > currentRatio,
+      isBigger: scheduledDeg >= currentDeg,
     },
     {
       className: classes.current,
@@ -84,7 +86,7 @@ function AmountRing(props: {
       r,
       showCap: currentDeg < 350 && currentDeg > 0,
       showEyes: currentDeg > 10,
-      isBigger: currentRatio > scheduledRatio,
+      isBigger: currentDeg >= scheduledDeg,
     },
   ];
 
