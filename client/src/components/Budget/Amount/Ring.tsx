@@ -43,13 +43,13 @@ function Ring({
         <div className={`${classes.skin}`} style={rotate}>
           <Mask
             className={`${className} ${classes.ears}`}
-            mask={`url('/src/assets/svg/${skin}_ears.svg`}
+            mask={`url('/assets/svg/${skin}_ears.svg`}
           />
           <div className={classes.eyes} style={{ opacity: showEyes ? 1 : 0 }} />
           <Mask
             className={classes.line}
             style={{ opacity: isBigger ? 1 : 0 }}
-            mask={`url('/src/assets/svg/${skin}_line.svg`}
+            mask={`url('/assets/svg/${skin}_line.svg`}
           />
         </div>
       )}

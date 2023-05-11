@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import classes from './SNSForm.module.css';
-import logo from '../../assets/png/logo.png';
 import Button from '../UI/Button';
 
 function SNSForm(props: {
@@ -13,7 +12,7 @@ function SNSForm(props: {
 
     return (
         <div className={classes.container}>
-            <img src={logo} alt="듀링 가계부 로고" />
+            <img src="/assets/png/logo.png" alt="듀링 가계부 로고" />
             <h2>{isLogin ? '로그인' : '회원가입'}</h2>
             <form>
                 <Button styleClass="extra" onClick={props.changeAuthType}>

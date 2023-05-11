@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import classes from './EmailForm.module.css';
-import logo from '../../assets/png/logo.png';
 import InputField from '../UI/InputField';
 import Button from '../UI/Button';
 import CodeField from '../Auth/CodeField';
@@ -70,7 +69,7 @@ function EmailForm(props: {
 
     return (
         <div className={classes.container}>
-            <img src={logo} alt="듀링 가계부 로고" />
+            <img src="/assets/png/logo.png" alt="듀링 가계부 로고" />
             <h2>{isLogin ? '로그인' : '회원가입'}</h2>
             <form className={classes.form}>
                 <InputField
