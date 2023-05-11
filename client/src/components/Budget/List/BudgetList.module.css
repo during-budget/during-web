@@ -1,5 +1,6 @@
 .container {
   text-align: left;
+  overflow: scroll;
 }
 
 .container > .year {

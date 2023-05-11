@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Budget from '../../../models/Budget';
 import { getMonthName } from '../../../util/date';
@@ -48,11 +47,11 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
         {/* TODO: 수입/지출 선택 */}
         <AmountRing
           amount={budget.total.expense}
-          size="8rem"
+          size="7.25rem"
           r="2.5rem"
           dash={dash}
           thickness="1.125rem"
-          blur={2.6}
+          skinScale={0.858}
         />{' '}
         {dateInfo}
       </Link>
