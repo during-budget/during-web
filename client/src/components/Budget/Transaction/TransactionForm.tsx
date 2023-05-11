@@ -86,7 +86,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
       memo: memoRef.current!.value(),
       linkId: defaultValue.linkId || undefined,
       overAmount: defaultValue.overAmount,
-      updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : undefined,
+      updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : false,
     };
 
     // send request
