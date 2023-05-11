@@ -24,7 +24,7 @@ const userSlice = createSlice({
       state = initialState;
     },
     setUserInfo(state, action) {
-      state.info = { ...action.payload, chartSkin: 'CAT' };
+      state.info = { ...action.payload, chartSkin: '' };
     },
     setChartSkin(state, action: PayloadAction<string>) {
       state.info.chartSkin = action.payload;
