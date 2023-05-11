@@ -1,15 +1,60 @@
 .ring {
-    height: 100%;
-    width: 100%;
-    display: inline-block;
-    overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
 }
 
 .ring > * {
-    fill: none; /* NOTE: fill 없이 stroke로 처리 */
-    transform: rotate(-90deg);
+  fill: none; /* NOTE: fill 없이 stroke로 처리 */
+  transform: rotate(-90deg);
 }
 
 .rounded {
-    filter: url('#rounded');
+  filter: url('#rounded');
+}
+
+.cap,
+.skin,
+.ears,
+.eyes,
+.line {
+  width: 100%;
+  height: 100%;
+}
+
+.cap {
+  -webkit-mask: url('../../../assets/svg/ring_rounded_cap.svg') no-repeat center;
+  mask: url(../../../assets/svg/ring_rounded_cap.svg) no-repeat center;
+}
+
+.skin {
+  position: absolute;
+}
+
+.cap,
+.skin {
+  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  will-change: transform, opacity;
+}
+
+.ears,
+.eyes {
+  position: absolute;
+}
+
+.line,
+.eyes {
+  transition: opacity 0.5s var(--fast-in);
+  will-change: opacity;
+}
+
+.eyes {
+  background-color: #fff;
+  -webkit-mask: url('../../../assets/svg/eyes.svg') no-repeat center;
+  mask: url(../../../assets/svg/eyes.svg) no-repeat center;
+}
+
+.line {
+  background-color: var(--gray-1);
 }
