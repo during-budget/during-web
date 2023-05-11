@@ -1,8 +1,13 @@
+import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import classes from './AmountRing.module.css';
 import Ring from './Ring';
 
-const SKIN_DATA = {
+interface SkinDataType {
+  [key: string]: { path: string; hideRoundedDeg: number };
+}
+
+export const SKIN_DATA: SkinDataType = {
   CAT: {
     path: 'cat',
     hideRoundedDeg: 352,
@@ -25,7 +30,11 @@ function AmountRing(props: {
   amount: Amount;
   skinScale: number;
 }) {
-  const skinData = SKIN_DATA.CAT;
+  const skin = useAppSelector((state) => state.user.info.chartSkin);
+  const skinKey = skin.toUpperCase();
+  const skinData = Object.keys(SKIN_DATA).includes(skinKey)
+    ? SKIN_DATA[skinKey]
+    : undefined;
 
   const { amount, r } = props;
 
@@ -53,8 +62,9 @@ function AmountRing(props: {
     return { transform: `rotate(${deg}deg) scale(${props.skinScale})`, opacity };
   };
 
-  const hideRounded =
-    currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg;
+  let hideRounded =
+    skinData &&
+    (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg);
 
   const rings = [
     { className: classes.budget, dash: getDash(1), r },
@@ -87,7 +97,7 @@ function AmountRing(props: {
           dash={data.dash}
           rotate={data.rotate}
           r={data.r}
-          skin={skinData.path}
+          skin={skinData && skinData.path}
           showCap={data.showCap}
           isBigger={data.isBigger}
           showEyes={data.showEyes}

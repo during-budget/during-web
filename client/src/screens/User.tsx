@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import Button from '../components/UI/Button';
+import EmojiOverlay from '../components/UI/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import UserHeader from '../components/User/Profile/UserHeader';
 import SettingList from '../components/User/Setting/SettingList';
+import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 import { userActions } from '../store/user';
 import { logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
-import EmojiOverlay from '../components/UI/EmojiOverlay';
 
 function User() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [showCategory, setShowCategory] = useState(false);
+  const [showChartSkin, setShowChartSkin] = useState(false);
   const { email, userName, defaultBudgetId } = useAppSelector((state) => state.user.info);
 
   const settings = [
@@ -29,15 +31,17 @@ function User() {
           },
         },
         {
-          icon: '📅',
-          label: '월 시작일 설정',
-          onClick: () => {},
-        },
-        {
           icon: '🔖',
           label: '카테고리 설정',
           onClick: () => {
             setShowCategory(true);
+          },
+        },
+        {
+          icon: '💍',
+          label: '차트 캐릭터 설정',
+          onClick: () => {
+            setShowChartSkin(true);
           },
         },
       ],
@@ -95,6 +99,7 @@ function User() {
         </section>
         <section>
           <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
+          <ChartSkinSetting isOpen={showChartSkin} setIsOpen={setShowChartSkin} />
         </section>
       </main>
       <EmojiOverlay />
