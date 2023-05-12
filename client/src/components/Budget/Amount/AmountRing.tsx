@@ -42,7 +42,7 @@ function AmountRing(props: {
   const skinKey = skin.toUpperCase();
   const skinData = Object.keys(SKIN_DATA).includes(skinKey)
     ? SKIN_DATA[skinKey]
-    : undefined;
+    : SKIN_DATA.BASIC;
 
   const { amount, r } = props;
 
@@ -67,20 +67,22 @@ function AmountRing(props: {
     // }
     const deg = ratio <= 1 ? ratio * 360 : 360;
     const opacity = deg > 1 ? 1 : 0;
-    return { transform: `rotate(${deg}deg) scale(${props.skinScale})`, opacity };
+    return {
+      transform: `rotate(${deg}deg) scale(${props.skinScale}) translate3d(0, 0, 0)`,
+      opacity,
+    };
   };
 
-  const isBasic = !skinData || skinData.path === 'basic';
+  const isBasic = skinData.path === 'basic';
 
   const hideRounded =
-    (skinData &&
-      (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg)) ||
+    currentDeg > skinData.hideRoundedDeg ||
+    scheduledDeg > skinData.hideRoundedDeg ||
     currentDeg === 360 ||
     scheduledDeg === 360;
 
-  const hideCover = skinData
-    ? currentDeg > skinData?.hideCoverDeg || scheduledDeg > skinData?.hideCoverDeg
-    : 1;
+  const hideCover =
+    currentDeg > skinData.hideCoverDeg || scheduledDeg > skinData.hideCoverDeg;
 
   const rings = [
     { className: classes.budget, dash: getDash(1), r },
@@ -90,7 +92,7 @@ function AmountRing(props: {
       rotate: getRotate(scheduledRatio),
       r,
       showEyes: !isBasic && scheduledDeg > 10,
-      isFront: scheduledDeg >= currentDeg && scheduledDeg >= 350, // almostFull
+      isFront: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
     },
     {
       className: classes.current,
@@ -98,7 +100,7 @@ function AmountRing(props: {
       rotate: getRotate(currentRatio),
       r,
       showEyes: !isBasic && currentDeg > 10,
-      showLine: !isBasic && (currentDeg >= scheduledDeg && currentDeg >= 350), // almostFull
+      showLine: !isBasic && currentDeg >= scheduledDeg && currentDeg >= 350, // almostFull
     },
   ];
 

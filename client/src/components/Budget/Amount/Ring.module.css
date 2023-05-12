@@ -10,6 +10,11 @@
   transform: rotate(-90deg);
 }
 
+.ring circle {
+  transition: stroke-dasharray 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  will-change: stroke-dasharray, opacity;
+}
+
 .rounded {
   filter: url('#rounded');
 }
@@ -23,21 +28,10 @@
   height: 100%;
 }
 
-.cap {
-  -webkit-mask: url('../../../assets/svg/ring_rounded_cap.svg') no-repeat center;
-  mask: url(../../../assets/svg/ring_rounded_cap.svg) no-repeat center;
-}
-
 .skin {
   position: absolute;
-  transition-delay: 0.035s;
-}
-
-.cap,
-.skin {
-  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in),
-    backgroundColor 0.5s var(--fast-in);
-  will-change: transform, opacity, backgroundColor;
+  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  will-change: transform, opacity;
 }
 
 .ears,

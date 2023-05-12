@@ -6,13 +6,6 @@
   position: absolute;
 }
 
-.budget,
-.scheduled,
-.current {
-  transition: stroke-dasharray 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
-  will-change: stroke-dasharray, opacity;
-}
-
 .budget {
   stroke: var(--gray-1);
 }
