@@ -35,8 +35,9 @@
 
 .cap,
 .skin {
-  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
-  will-change: transform, opacity;
+  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in),
+    backgroundColor 0.5s var(--fast-in);
+  will-change: transform, opacity, backgroundColor;
 }
 
 .ears,

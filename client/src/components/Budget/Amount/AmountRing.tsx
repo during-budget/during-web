@@ -23,6 +23,11 @@ export const SKIN_DATA: SkinDataType = {
     hideRoundedDeg: 351,
     hideCoverDeg: 340,
   },
+  BASIC: {
+    path: 'basic',
+    hideRoundedDeg: 360,
+    hideCoverDeg: 340,
+  },
 };
 
 function AmountRing(props: {
@@ -42,7 +47,7 @@ function AmountRing(props: {
   const { amount, r } = props;
 
   const currentRatio = amount.getCurrentRatio();
-  const scheduledRatio = amount.getScheduledRatio();
+  const scheduledRatio = currentRatio + amount.getScheduledRatio();
 
   const currentDeg = currentRatio <= 1 ? currentRatio * 360 : 360;
   const scheduledDeg = scheduledRatio <= 1 ? scheduledRatio * 360 : 360;
@@ -65,6 +70,8 @@ function AmountRing(props: {
     return { transform: `rotate(${deg}deg) scale(${props.skinScale})`, opacity };
   };
 
+  const isBasic = !skinData || skinData.path === 'basic';
+
   const hideRounded =
     (skinData &&
       (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg)) ||
@@ -82,20 +89,16 @@ function AmountRing(props: {
       dash: getDash(scheduledRatio),
       rotate: getRotate(scheduledRatio),
       r,
-      showCap: scheduledDeg < 350 && scheduledDeg > 0,
-      showEyes: scheduledDeg > 10,
-      isBigger: scheduledDeg >= currentDeg,
-      almostFull: scheduledDeg >= 350,
+      showEyes: !isBasic && scheduledDeg > 10,
+      isFront: scheduledDeg >= currentDeg && scheduledDeg >= 350, // almostFull
     },
     {
       className: classes.current,
       dash: getDash(currentRatio),
       rotate: getRotate(currentRatio),
       r,
-      showCap: currentDeg < 350 && currentDeg > 0,
-      showEyes: currentDeg > 10,
-      isBigger: currentDeg >= scheduledDeg,
-      almostFull: currentDeg >= 350,
+      showEyes: !isBasic && currentDeg > 10,
+      showLine: !isBasic && (currentDeg >= scheduledDeg && currentDeg >= 350), // almostFull
     },
   ];
 
@@ -104,15 +107,15 @@ function AmountRing(props: {
       {rings.map((data, i) => (
         <Ring
           key={i}
+          idx={i}
           className={data.className}
           dash={data.dash}
           rotate={data.rotate}
           r={data.r}
-          skin={skinData && skinData.path}
-          showCap={data.showCap}
-          isBigger={data.isBigger}
+          skin={skinData ? skinData.path : 'basic'}
           showEyes={data.showEyes}
-          almostFull={data.almostFull}
+          showLine={data.showLine}
+          isFront={data.isFront}
         />
       ))}
       <div className={classes.rounded} style={{ opacity: hideRounded ? 0 : 1 }} />

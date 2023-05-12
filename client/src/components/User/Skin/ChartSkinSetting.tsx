@@ -43,20 +43,22 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
         <ul className={classes.list}>
           {Object.values(SKIN_DATA).map((item) => {
             return (
-              <li
-                key={item.path}
-                className={`${classes.option} ${
-                  skinState === item.path ? classes.selected : ''
-                }`}
-                onClick={() => {
-                  setSkinState(item.path);
-                }}
-              >
-                <Mask
-                  className={classes.profile}
-                  mask={`/assets/svg/${item.path}_profile.svg`}
-                />
-              </li>
+              item.path !== 'basic' && (
+                <li
+                  key={item.path}
+                  className={`${classes.option} ${
+                    skinState === item.path ? classes.selected : ''
+                  }`}
+                  onClick={() => {
+                    setSkinState(item.path);
+                  }}
+                >
+                  <Mask
+                    className={classes.profile}
+                    mask={`/assets/svg/${item.path}_profile.svg`}
+                  />
+                </li>
+              )
             );
           })}
         </ul>

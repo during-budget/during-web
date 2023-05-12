@@ -34,7 +34,7 @@ function AmountDetail(props: {
 
   const details = [
     {
-      label: isLeft ? '남은 예정' : '예정 금액',
+      label: isLeft ? '예정 가능' : '예정 금액',
       amountStr: amount.getScheduledStr(isLeft),
       labelColor: 'var(--secondary)',
       fontColor: 'var(--gray-3)',

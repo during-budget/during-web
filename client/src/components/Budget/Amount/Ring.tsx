@@ -2,27 +2,27 @@ import Mask from '../../UI/Mask';
 import classes from './Ring.module.css';
 
 interface RingProps {
+  idx?: number;
   className?: string;
   r: string;
   dash: React.CSSProperties;
-  skin?: string;
+  skin: string;
   rotate?: React.CSSProperties;
-  isBigger?: boolean;
   showEyes?: boolean;
-  showCap?: boolean;
-  almostFull?: boolean;
+  showLine?: boolean;
+  isFront?: boolean;
 }
 
 function Ring({
+  idx,
   className,
   r,
   dash,
   skin,
   rotate,
-  showCap,
   showEyes,
-  isBigger,
-  almostFull,
+  showLine,
+  isFront,
 }: RingProps) {
   return (
     <>
@@ -31,30 +31,22 @@ function Ring({
           <circle className={className} r={r} cx="50%" cy="50%" style={dash}></circle>
         </svg>
       </div>
-      {!skin && (
-        <div
-          className={classes.cap}
-          style={{
-            ...rotate,
-            opacity: showCap ? 1 : 0,
-            backgroundColor: isBigger ? 'var(--gray-1)' : 'var(--secondary)',
-          }}
+      <div className={`${classes.skin}`} style={{ ...rotate, zIndex: isFront ? 1 : 0 }}>
+        <Mask
+          className={`${className} ${classes.ears}`}
+          mask={`/assets/svg/${skin}_ears.svg`}
         />
-      )}
-      {skin && (
-        <div className={`${classes.skin}`} style={rotate}>
-          <Mask
-            className={`${className} ${classes.ears}`}
-            mask={`/assets/svg/${skin}_ears.svg`}
-          />
+        {showEyes && (
           <div className={classes.eyes} style={{ opacity: showEyes ? 1 : 0 }} />
+        )}
+        {showLine && (
           <Mask
             className={classes.line}
-            style={{ opacity: isBigger && almostFull ? 1 : 0 }}
+            style={{ opacity: showLine ? 1 : 0 }}
             mask={`/assets/svg/${skin}_line.svg`}
           />
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }

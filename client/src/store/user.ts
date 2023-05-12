@@ -9,7 +9,7 @@ const initialState = {
     assets: '',
     cards: '',
     paymentMethods: '',
-    chartSkin: '',
+    chartSkin: 'basic',
   },
 };
 
@@ -24,7 +24,7 @@ const userSlice = createSlice({
       state = initialState;
     },
     setUserInfo(state, action) {
-      state.info = { ...action.payload, chartSkin: '' };
+      state.info = { ...action.payload, chartSkin: 'basic' };
     },
     setChartSkin(state, action: PayloadAction<string>) {
       state.info.chartSkin = action.payload;

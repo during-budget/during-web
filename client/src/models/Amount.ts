@@ -77,12 +77,11 @@ class Amount {
   }
 
   getLeftScheduled = () => {
-    return this._scheduled - this._current;
+    return this.planned - this._scheduled;
   };
 
   getLeftPlanned = () => {
-    const bigger = this._scheduled > this._current ? this._scheduled : this._current;
-    return this._planned - bigger;
+    return this._planned - this._current;
   };
 
   getCurrentStr = () => {
