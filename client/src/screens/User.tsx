@@ -17,7 +17,7 @@ function User() {
 
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
-  const { email, userName, defaultBudgetId } = useAppSelector((state) => state.user.info);
+  const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
 
   const settings = [
     {
@@ -46,36 +46,36 @@ function User() {
         },
       ],
     },
-    {
-      title: '기본 설정',
-      items: [
-        {
-          icon: '➕',
-          label: '크기 설정',
-          onClick: () => {},
-        },
-        {
-          icon: '🎨',
-          label: '색상 설정',
-          onClick: () => {},
-        },
-        {
-          icon: '🌏',
-          label: '언어 설정',
-          onClick: () => {},
-        },
-      ],
-    },
-    {
-      title: '회원 설정',
-      items: [
-        {
-          icon: '👤',
-          label: '회원 정보 수정하기',
-          onClick: () => {},
-        },
-      ],
-    },
+    // {
+    //   title: '기본 설정',
+    //   items: [
+    //     {
+    //       icon: '➕',
+    //       label: '크기 설정',
+    //       onClick: () => {},
+    //     },
+    //     {
+    //       icon: '🎨',
+    //       label: '색상 설정',
+    //       onClick: () => {},
+    //     },
+    //     {
+    //       icon: '🌏',
+    //       label: '언어 설정',
+    //       onClick: () => {},
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: '회원 설정',
+    //   items: [
+    //     {
+    //       icon: '👤',
+    //       label: '회원 정보 수정하기',
+    //       onClick: () => {},
+    //     },
+    //   ],
+    // },
   ];
 
   const logoutHandler = () => {
@@ -87,7 +87,7 @@ function User() {
   return (
     <>
       <ScrollRestoration />
-      <UserHeader userName={userName} email={email} />
+      <UserHeader email={email} svg="/assets/svg/basic_profile.svg" />
       <main className={classes.container}>
         <section>
           {settings.map((data, i) => (

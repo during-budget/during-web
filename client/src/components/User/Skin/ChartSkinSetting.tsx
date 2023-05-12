@@ -54,7 +54,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
               >
                 <Mask
                   className={classes.profile}
-                  mask={`url('/assets/svg/${item.path}_profile.svg`}
+                  mask={`/assets/svg/${item.path}_profile.svg`}
                 />
               </li>
             );

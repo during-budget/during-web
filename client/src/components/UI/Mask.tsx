@@ -11,8 +11,10 @@ const Mask = ({ mask, className, style, children }: PropsWithChildren<MaskProps>
     <div
       className={className}
       style={{
-        WebkitMaskImage: mask,
-        maskImage: mask,
+        WebkitMaskImage: `url('${mask}')`,
+        maskImage: `url('${mask}')`,
+        width: '100%',
+        height: '100%',
         ...style,
       }}
     >

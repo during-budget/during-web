@@ -22,7 +22,7 @@ function Ring({
   showCap,
   showEyes,
   isBigger,
-  almostFull
+  almostFull,
 }: RingProps) {
   return (
     <>
@@ -45,13 +45,13 @@ function Ring({
         <div className={`${classes.skin}`} style={rotate}>
           <Mask
             className={`${className} ${classes.ears}`}
-            mask={`url('/assets/svg/${skin}_ears.svg`}
+            mask={`/assets/svg/${skin}_ears.svg`}
           />
           <div className={classes.eyes} style={{ opacity: showEyes ? 1 : 0 }} />
           <Mask
             className={classes.line}
             style={{ opacity: isBigger && almostFull ? 1 : 0 }}
-            mask={`url('/assets/svg/${skin}_line.svg`}
+            mask={`/assets/svg/${skin}_line.svg`}
           />
         </div>
       )}
