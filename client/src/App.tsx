@@ -30,7 +30,14 @@ const router = createBrowserRouter([
       },
       {
         path: '/init',
-        element: <InitialSetting />,
+        element: <Nav />,
+        errorElement: <ErrorBoundary />,
+        children: [
+          {
+            path: '/init',
+            element: <InitialSetting />,
+          },
+        ],
       },
       {
         path: '/budget',

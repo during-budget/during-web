@@ -25,7 +25,7 @@ function Auth() {
   const from = location.state?.from?.pathname;
 
   useEffect(() => {
-    if (loaderData) {
+    if (loaderData && 'user' in loaderData) {
       getUserLogin(loaderData.user);
     }
   }, [loaderData]);
