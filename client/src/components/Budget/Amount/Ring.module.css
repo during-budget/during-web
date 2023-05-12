@@ -30,7 +30,7 @@
 
 .skin {
   position: absolute;
-  transition: transform 0.5s var(--fast-in), opacity 0.5s var(--fast-in);
+  transition: transform 0.5s var(--fast-in) 0.035s, opacity 0.5s var(--fast-in);
   will-change: transform, opacity;
 }
 
