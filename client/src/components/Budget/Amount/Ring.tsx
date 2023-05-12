@@ -10,6 +10,7 @@ interface RingProps {
   isBigger?: boolean;
   showEyes?: boolean;
   showCap?: boolean;
+  almostFull?: boolean;
 }
 
 function Ring({
@@ -21,6 +22,7 @@ function Ring({
   showCap,
   showEyes,
   isBigger,
+  almostFull
 }: RingProps) {
   return (
     <>
@@ -48,7 +50,7 @@ function Ring({
           <div className={classes.eyes} style={{ opacity: showEyes ? 1 : 0 }} />
           <Mask
             className={classes.line}
-            style={{ opacity: isBigger ? 1 : 0 }}
+            style={{ opacity: isBigger && almostFull ? 1 : 0 }}
             mask={`url('/assets/svg/${skin}_line.svg`}
           />
         </div>

@@ -4,21 +4,24 @@ import classes from './AmountRing.module.css';
 import Ring from './Ring';
 
 interface SkinDataType {
-  [key: string]: { path: string; hideRoundedDeg: number };
+  [key: string]: { path: string; hideRoundedDeg: number; hideCoverDeg: number };
 }
 
 export const SKIN_DATA: SkinDataType = {
   CAT: {
     path: 'cat',
     hideRoundedDeg: 352,
+    hideCoverDeg: 340,
   },
   BUNNY: {
     path: 'bunny',
     hideRoundedDeg: 338,
+    hideCoverDeg: 320,
   },
   BEAR: {
     path: 'bear',
     hideRoundedDeg: 351,
+    hideCoverDeg: 340,
   },
 };
 
@@ -62,11 +65,15 @@ function AmountRing(props: {
     return { transform: `rotate(${deg}deg) scale(${props.skinScale})`, opacity };
   };
 
-  let hideRounded =
+  const hideRounded =
     (skinData &&
       (currentDeg > skinData.hideRoundedDeg || scheduledDeg > skinData.hideRoundedDeg)) ||
     currentDeg === 360 ||
     scheduledDeg === 360;
+
+  const hideCover = skinData
+    ? currentDeg > skinData?.hideCoverDeg || scheduledDeg > skinData?.hideCoverDeg
+    : 1;
 
   const rings = [
     { className: classes.budget, dash: getDash(1), r },
@@ -78,6 +85,7 @@ function AmountRing(props: {
       showCap: scheduledDeg < 350 && scheduledDeg > 0,
       showEyes: scheduledDeg > 10,
       isBigger: scheduledDeg >= currentDeg,
+      almostFull: scheduledDeg >= 350,
     },
     {
       className: classes.current,
@@ -87,6 +95,7 @@ function AmountRing(props: {
       showCap: currentDeg < 350 && currentDeg > 0,
       showEyes: currentDeg > 10,
       isBigger: currentDeg >= scheduledDeg,
+      almostFull: currentDeg >= 350,
     },
   ];
 
@@ -103,9 +112,11 @@ function AmountRing(props: {
           showCap={data.showCap}
           isBigger={data.isBigger}
           showEyes={data.showEyes}
+          almostFull={data.almostFull}
         />
       ))}
       <div className={classes.rounded} style={{ opacity: hideRounded ? 0 : 1 }} />
+      <div className={classes.cover} style={{ opacity: hideCover ? 0 : 1 }} />
     </div>
   );
 }
