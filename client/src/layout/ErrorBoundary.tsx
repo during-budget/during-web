@@ -1,16 +1,21 @@
-import { Navigate, useLocation, useRouteError } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate, useRouteError } from 'react-router-dom';
 
 function ErrorBoundary() {
-    const routeError: any = useRouteError();
-    const location = useLocation();
+  const routeError: any = useRouteError();
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  useEffect(() => {
     if (routeError.status === 403) {
-        return <Navigate to="/auth" state={{ from: location }} replace />;
+      navigate(`/auth`, { replace: true, state: { from: location } });
+    } else {
+      // TODO: 에러 페이지 보완
+      console.log(routeError);
     }
+  }, [routeError.status]);
 
-    // TODO: 에러 페이지 보완
-    console.log(routeError);
-    return <>{routeError}</>;
+  return <div>error!</div>;
 }
 
 export default ErrorBoundary;
