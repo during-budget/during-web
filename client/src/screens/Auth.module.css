@@ -1,6 +1,12 @@
 .full {
   width: 100vw;
-  height: 100vh;
+  height: 90vh;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .email {
