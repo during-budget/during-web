@@ -188,28 +188,29 @@ const defaultCategories = [
   },
   {
     isExpense: true,
-    title: "간식",
-    icon: "🍫",
-  },
-  {
-    isExpense: true,
-    title: "생활",
-    icon: "💸",
-  },
-  {
-    isExpense: true,
-    title: "교통",
+    title: "교통비",
     icon: "🚉",
   },
   {
     isExpense: true,
-    title: "교육",
-    icon: "🎓",
+    title: "생활",
+    icon: "🛒",
+  },
+  {
+    isExpense: true,
+    title: "쇼핑",
+    icon: "🛍️",
   },
   {
     isExpense: true,
     title: "문화/여가",
     icon: "🎬",
+  },
+
+  {
+    isExpense: true,
+    title: "주거/통신",
+    icon: "🏠",
   },
   {
     isExpense: true,
@@ -218,64 +219,34 @@ const defaultCategories = [
   },
   {
     isExpense: true,
-    title: "주거/통신",
-    icon: "🏠",
-  },
-  {
-    isExpense: true,
-    title: "의류/미용",
-    icon: "🛍️",
-  },
-  {
-    isExpense: true,
-    title: "기부/후원",
-    icon: "🕊️",
-  },
-  {
-    isExpense: true,
-    title: "경조사비",
+    title: "경조사",
     icon: "💌",
-  },
-  {
-    isExpense: true,
-    title: "선물",
-    icon: "🎁",
-  },
-  {
-    isExpense: true,
-    title: "이체",
-    icon: "🍎",
-  },
-  {
-    isExpense: true,
-    title: "채무",
-    icon: "🥭",
   },
   // 수입 카테고리
   {
     isIncome: true,
     title: "월급",
-    icon: "💙",
-  },
-  {
-    isIncome: true,
-    title: "보너스",
-    icon: "💜",
+    icon: "💰",
   },
   {
     isIncome: true,
     title: "용돈",
-    icon: "💚",
+    icon: "💵",
   },
   {
     isIncome: true,
-    title: "이체",
-    icon: "🍏",
+    title: "이자",
+    icon: "🏦",
   },
   {
     isIncome: true,
-    title: "채무",
-    icon: "🍋",
+    title: "혜택",
+    icon: "👍",
+  },
+  {
+    isIncome: true,
+    title: "중고",
+    icon: "🥕",
   },
   // 기본 카테고리
   {
