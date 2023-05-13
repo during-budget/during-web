@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="skin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: none;
-        stroke: #000;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 5px;
-      }
-    </style>
-  </defs>
-  <g id="bear">
-    <path class="cls-1" d="m496.92,212.33c32.71-3.16,140.16-4.31,118.13-66-9.8-27.44-65.22-12.99-55.78-57.23,6.82-19.4,42.1-18.82,41.78-49.58C600.64.15,557.9-.95,531.8,1.53c-17.75-.27-62.9,4.91-62.9,4.91"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><path d="M497 212c33-3 140-4 118-66-10-27-65-13-56-57 7-19 42-19 42-49 0-40-43-41-69-38-18-1-63 4-63 4" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:5px"/></svg>

@@ -24,7 +24,6 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
     event?.preventDefault();
 
     dispatch(userActions.setChartSkin(skinState));
-    console.log(skinState);
     closeSetting();
   };
 

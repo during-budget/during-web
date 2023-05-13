@@ -1,11 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="rounded_base" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #ddd;
-      }
-    </style>
-  </defs>
-  <path class="cls-1" d="m468.07,4.86l28.86,207.47s28.9-2.81,41.61-2.64V.08s-58.31.91-70.46,4.78Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><path d="m468 5 29 207 42-2V0s-59 1-71 5Z" style="fill:#ddd"/></svg>
