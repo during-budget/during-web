@@ -32,24 +32,32 @@ import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import TransactionNav from './TransactionNav';
 
-function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
+function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean }) {
   const dispatch = useAppDispatch();
 
-  // get budget Data
+  // get data from store
   const { date } = useAppSelector((state) => state.budget.current);
 
-  const isExpenseUI = useAppSelector((state) => state.ui.budget.isExpense);
   const { mode, default: defaultValue } = useAppSelector(
     (state) => state.transaction.form
   );
-  const isCurrent = props.isDefault
+
+  const isCurrent = props.isDefaultBudget
     ? false
     : useAppSelector((state) => state.ui.budget.isCurrent);
-  const isDefault = props.isDefault;
 
-  const [isExpense, setIsExpense] = useState(defaultValue.isExpense);
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
+  const setIsExpense = (isExpense: boolean) => {
+    dispatch(uiActions.setIsExpense(isExpense));
+  };
+
+  const isDefaultBudget = props.isDefaultBudget;
+
+  useEffect(() => {
+    setIsExpense(defaultValue.isExpense);
+  }, [defaultValue.isExpense]);
+
   const [iconState, setIconState] = useState('');
-
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
 
@@ -148,7 +156,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         mode: { isExpand: true },
         default: {
           date: date ? getDefaultDate(date) : null,
-          isExpense: isExpenseUI,
+          isExpense,
         },
       })
     );
@@ -162,7 +170,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   };
 
   const clearForm = () => {
-    dispatch(transactionActions.clearForm());
+    dispatch(transactionActions.clearForm({ isExpense }));
     amountRef.current!.clear();
   };
 
@@ -203,7 +211,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     </div>
   );
 
-  const amountOptionFields = (
+  const optionFields = (
     <div className={classes.options}>
       {isCurrent && (paymentState || defaultValue.linkedPaymentMethodId) && (
         <div className={classes.option}>
@@ -234,15 +242,12 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
     <div className={classes.selects}>
       <CategoryInput
         ref={categoryRef}
-        budgetId={budgetId}
         isExpense={isExpense}
         setIsExpense={setIsExpense}
         setIsEditSetting={setIsOpenCategorySetting}
         className={`${classes.field} ${classes.select}`}
-        defaultValue={defaultValue.categoryId}
-        onChange={() => {
-          setIconState(categoryRef.current!.icon());
-        }}
+        categoryId={defaultValue.categoryId}
+        setIcon={setIconState}
         disabled={mode.isDone}
       />
       <PaymentInput
@@ -279,7 +284,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
 
   const containerClass = [
     classes.transactionForm,
-    isDefault ? classes.basic : '',
+    isDefaultBudget ? classes.basic : '',
     mode.isExpand ? classes.expand : '',
   ].join(' ');
 
@@ -318,7 +323,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
                 className={`${classes.field} ${classes.memo}`}
                 defaultValue={defaultValue.memo}
               />
-              {amountOptionFields}
+              {optionFields}
               {/* types */}
               {!mode.isDone && (
                 <div className={classes.types}>
@@ -328,7 +333,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
                     setIsExpense={setIsExpense}
                     disabled={mode.isDone}
                   />
-                  {!isDefault && (
+                  {!isDefaultBudget && (
                     <>
                       <span>|</span>
                       <TransactionNav
@@ -349,7 +354,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
           )}
         </form>
         {/* msg */}
-        {isDefault && !mode.isExpand && (
+        {isDefaultBudget && !mode.isExpand && (
           <p className={classes.info}>
             ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
           </p>

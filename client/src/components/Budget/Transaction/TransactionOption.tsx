@@ -14,7 +14,7 @@ interface TransactionOptionProps {
   category: Category;
   onSelect?: () => void;
   onClick?: (event?: React.MouseEvent) => void;
-  isDefault?: boolean;
+  isDefaultBudget?: boolean;
   className?: string;
   contextStyle?: any;
 }
@@ -24,7 +24,7 @@ function TransactionOption({
   category,
   onSelect,
   onClick,
-  isDefault,
+  isDefaultBudget,
   className,
   contextStyle,
 }: TransactionOptionProps) {
@@ -63,7 +63,7 @@ function TransactionOption({
   };
 
   const getDone = !isCurrent &&
-    !isDefault &&
+    !isDefaultBudget &&
     !linkId && {
       name: '거래내역으로 등록',
       action: () => {
