@@ -70,8 +70,9 @@ const transactionSlice = createSlice({
   initialState,
   name: 'transaction',
   reducers: {
-    clearForm(state) {
-      state.form = initialState.form;
+    clearForm(state, action) {
+      state.form.mode = initialState.form.mode;
+      state.form.default = { ...initialState.form.default, ...action.payload };
     },
     setForm(state, action: PayloadAction<TransactionFormPayloadType>) {
       const setData = action.payload;

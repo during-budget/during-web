@@ -11,11 +11,12 @@ import EditInput from '../../Budget/Input/EditInput';
 import CategoryPlanButtons from '../../Budget/UI/CategoryPlanButtons';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import classes from './DefaultStatus.module.css';
+import { uiActions } from '../../../store/ui';
 
 const DefaultStatus = (props: { budgetId: string }) => {
   const dispatch = useDispatch();
 
-  const [isExpense, setIsExpense] = useState(true);
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
   const total = useAppSelector((state) => state.total);
   const totalAmount = isExpense ? total.expense : total.income;
@@ -33,7 +34,10 @@ const DefaultStatus = (props: { budgetId: string }) => {
     }
 
     categories.forEach((item) => {
+      if (item.isDefault) return;
+
       const amount = item.amount;
+
       if (amount.planned < amount.scheduled) {
         updateCategoryPlan(props.budgetId, item.id, amount.scheduled);
         dispatch(
@@ -75,7 +79,9 @@ const DefaultStatus = (props: { budgetId: string }) => {
         id="default-type"
         className={classes.tab}
         isExpense={isExpense}
-        setIsExpense={setIsExpense}
+        setIsExpense={(isExpense: boolean) => {
+          dispatch(uiActions.setIsExpense(isExpense));
+        }}
       />
       <div className={classes.container}>
         {/* Scheduled amount */}
