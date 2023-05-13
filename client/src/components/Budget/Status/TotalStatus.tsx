@@ -60,6 +60,7 @@ function TotalStatus(props: { budgetId?: string }) {
         thickness="3rem"
         dash={dash}
         skinScale={0.87}
+        showMsg={isExpense}
       />
       {budgetId && (
         <AmountDetail id="total" amount={currentTotal} editPlanHandler={updatePlan} />

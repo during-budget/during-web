@@ -3,7 +3,13 @@
   text-align: center;
   font-size: 0.9rem;
   border-radius: 0.5rem;
-  font-weight: 600;;
+  font-weight: 600;
+  transition: transform 0.15s var(--fast-in);
+  will-change: transform;
+}
+
+.msg * {
+  color: inherit;
 }
 
 .msg strong {
@@ -12,6 +18,9 @@
 
 .msg i {
   color: inherit;
+}
+.hide {
+  transform: scaleY(0) translateY(100%);
 }
 
 .error {
