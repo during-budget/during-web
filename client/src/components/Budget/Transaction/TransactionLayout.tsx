@@ -10,8 +10,8 @@ function TransactionLayout(props: { budgetId: string; isDefault?: boolean }) {
     <section>
       {!isDefault && <TransactionNav id="layout" isLine={true} />}
       <TransactionList isDefault={isDefault} />
-      <TransactionForm budgetId={budgetId} isDefault={isDefault} />
-      <TransactionDetail isDefault={isDefault} />
+      <TransactionForm budgetId={budgetId} isDefaultBudget={isDefault} />
+      <TransactionDetail isDefaultBudget={isDefault} />
     </section>
   );
 }

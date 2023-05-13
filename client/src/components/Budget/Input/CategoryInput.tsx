@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
@@ -6,24 +6,37 @@ import Select from '../../UI/Select';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryInput.module.css';
 
+interface CategoryInputProps {
+  isExpense: boolean;
+  setIsExpense: React.Dispatch<boolean>;
+  categoryId?: string;
+  className?: string;
+  setIcon?: React.Dispatch<string>;
+  disabled?: boolean;
+  setIsEditSetting: (isEdit: boolean) => void;
+}
+
 const CategoryInput = React.forwardRef(
   (
-    props: {
-      budgetId: string;
-      isExpense: boolean;
-      setIsExpense: React.Dispatch<boolean>;
-      defaultValue: string;
-      className?: string;
-      onChange?: (value?: string) => void;
-      disabled?: boolean;
-      setIsEditSetting: (isEdit: boolean) => void;
-    },
+    {
+      isExpense,
+      setIsExpense,
+      categoryId,
+      className,
+      setIcon,
+      disabled,
+      setIsEditSetting,
+    }: CategoryInputProps,
     ref
   ) => {
     const dispatch = useAppDispatch();
     const categoryRef = useRef<any>(null);
 
-    const [isExpense, setIsExpense] = useState(props.isExpense);
+    useImperativeHandle(ref, () => {
+      return {
+        value: () => categoryRef.current!.value(),
+      };
+    });
 
     // Set category data
     const storedCategories = useAppSelector((state) => state.budgetCategory);
@@ -32,98 +45,88 @@ const CategoryInput = React.forwardRef(
       [storedCategories, isExpense]
     );
 
-    // Set state
-    const [categories, setCategories] = useState<Category[]>(filteredCategories);
-    const [defaultValue, setDefaultValue] = useState(
-      props.defaultValue || categories[categories.length - 1]?.id
+    const categoryOptions = useMemo(
+      () => getCategoryOptions(filteredCategories, isExpense, setIsExpense),
+      [filteredCategories]
     );
 
-    useImperativeHandle(ref, () => {
-      return {
-        value: () => categoryRef.current!.value(),
-        icon: () => {
-          const currentId = categoryRef.current!.value();
-          const currentCategory = categories.find(
-            (item: Category) => item.id === currentId
-          );
-          return currentCategory?.icon || '';
-        },
-      };
-    });
+    const defaultCategory = useMemo(
+      () => filteredCategories.find((item) => item.isDefault) || filteredCategories[0],
+      [filteredCategories]
+    );
 
-    // NOTE: 수입/지출 변경 시 카테고리 업데이트
+    const currentCategory = useMemo(
+      () =>
+        filteredCategories.find(
+          (item) => item.id === categoryId || item.id === defaultCategory.id
+        ),
+      [categoryId]
+    );
+
+    // NOTE: 카테고리 목록 변경 시 기본 카테고리 아이콘으로 업데이트
     useEffect(() => {
-      const defaultValue = filteredCategories[filteredCategories.length - 1]?.id;
+      setIcon && setIcon(defaultCategory.icon);
+    }, [categoryOptions]);
 
-      setDefaultValue(defaultValue);
-      setCategories(filteredCategories);
-      setCategoryList(getCategoryList(filteredCategories));
-    }, [isExpense, filteredCategories]);
-
-    // NOTE: TransactionForm의 수입/지출 변경 반영
+    // NOTE: 현재 카테고리 변경 시 아이콘 업데이트 (주의: 카테고리 목록 변경 - 기본 아이콘 업데이트 이후 동작해야 함)
     useEffect(() => {
-      setIsExpense(props.isExpense);
-    }, [props.isExpense]);
+      setIcon && setIcon(currentCategory?.icon || defaultCategory.icon);
+    }, [currentCategory]);
 
-    // NOTE: TransactionForm의 defaultValue 반영
-    useEffect(() => {
-      setDefaultValue(props.defaultValue || categories[categories.length - 1]?.id);
-    }, [props.defaultValue]);
-
-    const typeChangeHandler = (isExpense: boolean) => {
-      props.setIsExpense(isExpense);
-      setIsExpense(isExpense);
+    /** 카테고리 선택 시 아이콘 업데이트: 이모지 인풋 플레이스홀더 업데이트를 위한 핸들러 */
+    const iconHandler = (selectedCategoryId?: string) => {
+      const selectedCategory = filteredCategories.find(
+        (item: Category) => item.id === selectedCategoryId
+      );
+      setIcon && setIcon(selectedCategory?.icon || '');
     };
-
-    const getCategoryList = (categories: Category[]) => {
-      // Data for select list
-      const categoryList: any = categories.map((item: Category) => {
-        return {
-          value: item.id,
-          label: `${item.icon} ${item.title}`,
-        };
-      });
-
-      return [
-        {
-          element: (
-            <ExpenseTab
-              className={classes.tab}
-              key="category-input-expense-tab"
-              id="category-input-expense-tab"
-              isExpense={isExpense}
-              setIsExpense={typeChangeHandler}
-            />
-          ),
-        },
-        ...categoryList,
-      ];
-    };
-
-    const [categoryList, setCategoryList] = useState(getCategoryList(categories));
-
-    // NOTE: 카테고리 목록 변경 이후 change(아이콘 placeholder 세팅) 실행 - select 목록에서 찾을 수 있도록
-    useEffect(() => {
-      props.onChange && props.onChange();
-    }, [categoryList]);
 
     return (
       <>
         <Select
           ref={categoryRef}
-          className={props.className}
-          data={categoryList}
-          defaultValue={defaultValue}
-          onChange={props.onChange}
+          className={className}
+          data={categoryOptions}
+          defaultValue={categoryId || defaultCategory.id}
+          onChange={iconHandler}
           showEdit={() => {
             dispatch(uiActions.setIsExpense(isExpense));
-            props.setIsEditSetting(true);
+            setIsEditSetting(true);
           }}
-          disabled={props.disabled}
+          disabled={disabled}
         />
       </>
     );
   }
 );
+
+/** 카테고리 Select의 Options 엘리먼트를 반환 */
+const getCategoryOptions = (
+  categories: Category[],
+  isExpense: boolean,
+  setIsExpense: React.Dispatch<boolean>
+) => {
+  const categoryOptions: any = categories.map((item: Category) => {
+    return {
+      value: item.id,
+      label: `${item.icon} ${item.title}`,
+    };
+  });
+
+  return [
+    {
+      element: (
+        <ExpenseTab
+          className={classes.tab}
+          key="category-input-expense-tab"
+          id="category-input-expense-tab"
+          isExpense={isExpense}
+          setIsExpense={setIsExpense}
+        />
+      ),
+    },
+    ...categoryOptions,
+  ];
+};
 
 export default CategoryInput;

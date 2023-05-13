@@ -11,10 +11,10 @@ import classes from './TransactionDetail.module.css';
 import TransactionOption from './TransactionOption';
 
 interface Props {
-  isDefault?: boolean;
+  isDefaultBudget?: boolean;
 }
 
-function TransactionDetail({ isDefault }: Props) {
+function TransactionDetail({ isDefaultBudget }: Props) {
   const dispatch = useAppDispatch();
 
   const { isOpen, transaction, category, payment } = useAppSelector(
@@ -57,7 +57,9 @@ function TransactionDetail({ isDefault }: Props) {
         <div>
           <p className={classes.date}>
             {date &&
-              (isDefault ? `매월 ${date.getDate()}일` : getNumericDotDateString(date))}
+              (isDefaultBudget
+                ? `매월 ${date.getDate()}일`
+                : getNumericDotDateString(date))}
           </p>
           <p className={classes.amount}>
             {transaction && (isExpense ? '-' : '+')}
@@ -109,7 +111,7 @@ function TransactionDetail({ isDefault }: Props) {
             transaction={transaction}
             category={category}
             onSelect={closeHandler}
-            isDefault={isDefault}
+            isDefaultBudget={isDefaultBudget}
             className={classes.option}
             contextStyle={{
               bottom: '0.5rem',
