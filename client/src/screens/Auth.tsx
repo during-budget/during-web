@@ -86,7 +86,7 @@ function Auth() {
 
   if (isFirstLoad) {
     return (
-      <div className={classes.full}>
+      <div className={`${classes.full} ${classes.center}`}>
         <LoadingSpinner />
       </div>
     );
