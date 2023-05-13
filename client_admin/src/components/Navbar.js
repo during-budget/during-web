@@ -92,8 +92,11 @@ const Navbar = () => {
           <Button
             type="link"
             onClick={async () => {
-              await API.GET({ location: "users/logout" });
-              logOut();
+              try {
+                await API.GET({ location: "users/logout" });
+              } finally {
+                logOut();
+              }
             }}
           >
             logout
