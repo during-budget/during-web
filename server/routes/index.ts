@@ -7,6 +7,7 @@ const routers = [
   "cards",
   "paymentMethods",
   "auth",
+  "settings",
 ];
 
 if (process.env.NODE_ENV?.trim() == "development") {
