@@ -11,11 +11,13 @@ import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
+import LoadingSpinner from '../components/UI/LoadingSpinner';
 
 function Auth() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isEmailAuth, setIsEmailAuth] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
 
@@ -27,6 +29,8 @@ function Auth() {
   useEffect(() => {
     if (loaderData && 'user' in loaderData) {
       getUserLogin(loaderData.user);
+    } else {
+      setIsFirstLoad(false);
     }
   }, [loaderData]);
 
@@ -80,25 +84,33 @@ function Auth() {
     setIsLogin((prev) => !prev);
   };
 
-  return (
-    <Overlay className={isEmailAuth ? classes.email : classes.sns} isOpen={true}>
-      {isEmailAuth ? (
-        <EmailForm
-          isLogin={isLogin}
-          toggleIsLogin={toggleIsLogin}
-          changeAuthType={setSNSAuth}
-          getUserLogin={getUserLogin}
-        />
-      ) : (
-        <SNSForm
-          isLogin={isLogin}
-          toggleIsLogin={toggleIsLogin}
-          changeAuthType={setEmailAuth}
-          getUserLogin={getUserLogin}
-        />
-      )}
-    </Overlay>
-  );
+  if (isFirstLoad) {
+    return (
+      <div className={classes.full}>
+        <LoadingSpinner />
+      </div>
+    );
+  } else {
+    return (
+      <Overlay className={isEmailAuth ? classes.email : classes.sns} isOpen={true}>
+        {isEmailAuth ? (
+          <EmailForm
+            isLogin={isLogin}
+            toggleIsLogin={toggleIsLogin}
+            changeAuthType={setSNSAuth}
+            getUserLogin={getUserLogin}
+          />
+        ) : (
+          <SNSForm
+            isLogin={isLogin}
+            toggleIsLogin={toggleIsLogin}
+            changeAuthType={setEmailAuth}
+            getUserLogin={getUserLogin}
+          />
+        )}
+      </Overlay>
+    );
+  }
 }
 
 export const loader = async () => {

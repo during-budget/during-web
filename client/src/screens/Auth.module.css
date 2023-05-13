@@ -1,7 +1,12 @@
+.full {
+  width: 100vw;
+  height: 100vh;
+}
+
 .email {
-    height: 95vh;
+  height: 95vh;
 }
 
 .sns {
-    height: 70vh;
+  height: 70vh;
 }
