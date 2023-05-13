@@ -269,24 +269,16 @@ userSchema.methods.initialize = async function () {
 
     user.categories = new Types.DocumentArray(defaultCategories);
 
-    const defaultExpenseCategory = user.findDefaultExpenseCategory();
-    const defaultIncomeCategory = user.findDefaultIncomeCategory();
-
     const budget = new Budget({
       userId: user._id,
       title: "기본 예산",
-      categories: [
-        {
-          ...defaultExpenseCategory,
-          categoryId: defaultExpenseCategory._id,
+      categories: user.categories.map((category) => {
+        return {
+          ...category,
+          categoryId: category._id,
           amountPlanned: 0,
-        },
-        {
-          ...defaultIncomeCategory,
-          categoryId: defaultIncomeCategory._id,
-          amountPlanned: 0,
-        },
-      ],
+        };
+      }),
     });
 
     user.basicBudgetId = budget._id;
