@@ -68,7 +68,7 @@ function Index() {
         }}
         columns={[
           {
-            key: "_id",
+            key: "categoryId",
             type: "button-copy",
             width: "112px",
           },
