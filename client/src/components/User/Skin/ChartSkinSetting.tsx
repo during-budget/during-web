@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
-import { userActions } from '../../../store/user';
-import { SKIN_DATA } from '../../Budget/Amount/AmountRing';
+import { settingActions } from '../../../store/setting';
+import { updateChartSkin } from '../../../util/api/settingAPI';
+import { ChartSkinType, SKIN_DATA } from '../../Budget/Amount/AmountRing';
 import Button from '../../UI/Button';
 import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import Mask from '../../UI/Mask';
@@ -15,15 +16,17 @@ interface ChartSkinSettingProps {
 }
 
 const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
-  const skin = useAppSelector((state) => state.user.info.chartSkin);
+  const skin = useAppSelector((state) => state.setting.data.chartSkin);
   const dispatch = useDispatch();
 
-  const [skinState, setSkinState] = useState(skin);
+  const [skinState, setSkinState] = useState<ChartSkinType>(skin);
 
   const submitHandler = (event: React.FormEvent) => {
     event?.preventDefault();
 
-    dispatch(userActions.setChartSkin(skinState));
+    dispatch(settingActions.setChartSkin(skinState));
+    updateChartSkin(skinState);
+
     closeSetting();
   };
 
@@ -64,7 +67,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
         <Button
           styleClass="extra"
           onClick={() => {
-            setSkinState('');
+            setSkinState('basic');
           }}
         >
           기본 모양으로 설정

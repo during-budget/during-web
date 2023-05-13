@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isAuth: false,
@@ -6,10 +6,6 @@ const initialState = {
     email: '',
     userName: '',
     defaultBudgetId: '',
-    assets: '',
-    cards: '',
-    paymentMethods: '',
-    chartSkin: 'basic',
   },
 };
 
@@ -25,9 +21,6 @@ const userSlice = createSlice({
     },
     setUserInfo(state, action) {
       state.info = { ...action.payload, chartSkin: 'basic' };
-    },
-    setChartSkin(state, action: PayloadAction<string>) {
-      state.info.chartSkin = action.payload;
     },
   },
 });

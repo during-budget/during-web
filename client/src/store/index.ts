@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+import assetReducer from './asset';
 import budgetReducer from './budget';
 import budgetCategoryReducer from './budget-category';
+import settingReducer from './setting';
+import totalCategoryReducer from './total';
 import transactionReducer from './transaction';
 import uiReducer from './ui';
 import userReducer from './user';
 import userCategoryReducer from './user-category';
-import totalCategoryReducer from './total';
-import assetReducer from './asset';
 
 const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
     budgetCategory: budgetCategoryReducer,
     transaction: transactionReducer,
     asset: assetReducer,
+    setting: settingReducer,
     ui: uiReducer,
   },
   middleware: (getDefaultMiddleware) =>

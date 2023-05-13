@@ -1,5 +1,6 @@
 import { AssetDataType, CardDataType, PaymentDataType } from './assetAPI';
 import { UserCategoryType } from './categoryAPI';
+import { SettingType } from './settingAPI';
 
 const { DURING_SERVER } = import.meta.env;
 
@@ -17,6 +18,7 @@ export interface UserDataType {
   assets: AssetDataType[];
   cards: CardDataType[];
   paymentMethods: PaymentDataType[];
+  settings: SettingType;
 }
 
 export const sendCodeRegister = async (email: string) => {

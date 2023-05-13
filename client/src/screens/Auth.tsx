@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import { useLoaderData, useLocation, useNavigate } from 'react-router';
 import EmailForm from '../components/Auth/EmailForm';
 import SNSForm from '../components/Auth/SNSForm';
+import LoadingSpinner from '../components/UI/LoadingSpinner';
 import Overlay from '../components/UI/Overlay';
 import { useAppDispatch } from '../hooks/redux-hook';
 import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
+import { settingActions } from '../store/setting';
 import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
 
 function Auth() {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ function Auth() {
       assets,
       cards,
       paymentMethods,
+      settings,
     } = user;
 
     // set user data
@@ -53,12 +55,14 @@ function Auth() {
         userName,
         email,
         defaultBudgetId,
+        settings,
       })
     );
     dispatch(userCategoryActions.setCategories(categories));
     dispatch(assetActions.setAssets(assets));
     dispatch(assetActions.setCards(cards));
     dispatch(assetActions.setPaymentMethods(paymentMethods));
+    dispatch(settingActions.setSettings(settings));
 
     // set default budget data
     const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);
