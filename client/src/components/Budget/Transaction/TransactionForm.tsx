@@ -38,6 +38,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
   // get budget Data
   const { date } = useAppSelector((state) => state.budget.current);
 
+  const isExpenseUI = useAppSelector((state) => state.ui.budget.isExpense);
   const { mode, default: defaultValue } = useAppSelector(
     (state) => state.transaction.form
   );
@@ -147,6 +148,7 @@ function TransactionForm(props: { budgetId: string; isDefault?: boolean }) {
         mode: { isExpand: true },
         default: {
           date: date ? getDefaultDate(date) : null,
+          isExpense: isExpenseUI,
         },
       })
     );
