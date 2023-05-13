@@ -29,12 +29,14 @@ class Amount {
   private _scheduled: number;
   private _planned: number;
   private _state: {
+    id: string;
     target: string;
-    over: string;
+    overTarget: string;
     isOver: boolean;
     amount: number;
   }[];
   private _overPlanned: boolean;
+  private _allOverPlanned: boolean;
 
   constructor(current: number, scheduled: number, planned: number) {
     this._current = current;
@@ -42,6 +44,7 @@ class Amount {
     this._planned = planned;
     this._state = this.getState();
     this._overPlanned = this.getOverPlanned();
+    this._allOverPlanned = this.getAllOverPlanned();
   }
 
   get current() {
@@ -62,6 +65,10 @@ class Amount {
 
   get overPlanned() {
     return this._overPlanned;
+  }
+
+  get allOverPlanned() {
+    return this._allOverPlanned;
   }
 
   set current(amount: number) {
@@ -138,39 +145,45 @@ class Amount {
     return formatCurrent(amount);
   };
 
-  private getEachState = (target: string, over: string, overAmount: number) => {
+  private getEachState = (
+    id: string,
+    target: string,
+    overTarget: string,
+    overAmount: number
+  ) => {
     const isOver = overAmount < 0;
     return {
+      id,
       target,
-      over,
+      overTarget,
       isOver,
       amount: isOver ? -overAmount : 0,
     };
   };
 
   private getState = () => {
-    const currentOverSchedule = this.getEachState(
-      '현재 내역',
-      '예정',
-      this._scheduled - this._current
-    );
     const currentOverPlanned = this.getEachState(
-      '현재 내역',
+      'current',
+      '현재내역',
       '목표',
       this._planned - this._current
     );
     const scheduledOverplanned = this.getEachState(
-      '예정 내역',
+      'scheduled',
+      '예정내역',
       '목표',
       this._planned - this.scheduled
     );
 
-    return [currentOverSchedule, currentOverPlanned, scheduledOverplanned];
+    return [currentOverPlanned, scheduledOverplanned];
   };
 
   private getOverPlanned = () => {
-    // overPlanned
     return this._planned - this._current < 0 || this._planned - this.scheduled < 0;
+  };
+
+  private getAllOverPlanned = () => {
+    return this._planned - this._current < 0 && this._planned - this.scheduled < 0;
   };
 }
 

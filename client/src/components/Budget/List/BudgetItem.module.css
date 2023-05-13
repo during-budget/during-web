@@ -1,7 +1,7 @@
 .item .info {
   text-align: center;
   color: var(--primary);
-  transform: translateY(-1vh);
+  transform: translateY(-0.5vh);
 }
 
 .item .info p {

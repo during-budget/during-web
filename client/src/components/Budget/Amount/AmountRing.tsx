@@ -1,5 +1,6 @@
 import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
+import Inform from '../../UI/Inform';
 import classes from './AmountRing.module.css';
 import Ring from './Ring';
 
@@ -37,6 +38,7 @@ function AmountRing(props: {
   dash: number;
   amount: Amount;
   skinScale: number;
+  showMsg?: boolean;
 }) {
   const skin = useAppSelector((state) => state.user.info.chartSkin);
   const skinKey = skin.toUpperCase();
@@ -44,13 +46,16 @@ function AmountRing(props: {
     ? SKIN_DATA[skinKey]
     : SKIN_DATA.BASIC;
 
-  const { amount, r } = props;
+  const { size, amount, r, showMsg } = props;
 
-  const currentRatio = amount.getCurrentRatio();
-  const scheduledRatio = currentRatio + amount.getScheduledRatio();
+  const rawCurrentRatio = amount.getCurrentRatio();
+  const rawScheduledRatio = rawCurrentRatio + amount.getScheduledRatio();
 
-  const currentDeg = currentRatio <= 1 ? currentRatio * 360 : 360;
-  const scheduledDeg = scheduledRatio <= 1 ? scheduledRatio * 360 : 360;
+  const currentRatio = rawCurrentRatio <= 1 ? rawCurrentRatio : 1;
+  const scheduledRatio = rawScheduledRatio <= 1 ? rawScheduledRatio : 1;
+
+  const currentDeg = currentRatio * 360;
+  const scheduledDeg = scheduledRatio * 360;
 
   const getDash = (ratio: number) => {
     const dash = ratio * props.dash;
@@ -105,23 +110,51 @@ function AmountRing(props: {
   ];
 
   return (
-    <div className={classes.container} style={{ width: props.size, height: props.size }}>
-      {rings.map((data, i) => (
-        <Ring
-          key={i}
-          idx={i}
-          className={data.className}
-          dash={data.dash}
-          rotate={data.rotate}
-          r={data.r}
-          skin={skinData ? skinData.path : 'basic'}
-          showEyes={data.showEyes}
-          showLine={data.showLine}
-          isFront={data.isFront}
-        />
-      ))}
-      <div className={classes.rounded} style={{ opacity: hideRounded ? 0 : 1 }} />
-      <div className={classes.cover} style={{ opacity: hideCover ? 0 : 1 }} />
+    <div className={classes.amountRing} style={{ width: size, height: size }}>
+      <div
+        className={`${classes.rings} ${
+          showMsg && amount.overPlanned ? classes.opacity : ''
+        }`}
+      >
+        {rings.map((data, i) => (
+          <Ring
+            key={i}
+            idx={i}
+            className={data.className}
+            dash={data.dash}
+            rotate={data.rotate}
+            r={data.r}
+            skin={skinData ? skinData.path : 'basic'}
+            showEyes={data.showEyes}
+            showLine={data.showLine}
+            isFront={data.isFront}
+          />
+        ))}
+        <div className={classes.rounded} style={{ opacity: hideRounded ? 0 : 1 }} />
+        <div className={classes.cover} style={{ opacity: hideCover ? 0 : 1 }} />
+      </div>
+      {}
+      <div className={classes.informs}>
+        {amount.state.map((state) => (
+          <Inform
+            className={
+              showMsg && !amount.allOverPlanned && state.isOver
+                ? state.id === 'scheduled'
+                  ? classes.halfUp
+                  : classes.halfDown
+                : ''
+            }
+            isError={true}
+            isHide={!showMsg || !state.isOver || !amount.overPlanned}
+          >
+            <p>
+              <b>{state.target}</b>이 목표보다
+              <strong>{' ' + Amount.getAmountStr(state.amount) + ' '}</strong>
+              많습니다.
+            </p>
+          </Inform>
+        ))}
+      </div>
     </div>
   );
 }
