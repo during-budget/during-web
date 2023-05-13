@@ -5,8 +5,10 @@ import classes from './AmountRing.module.css';
 import Ring from './Ring';
 
 interface SkinDataType {
-  [key: string]: { path: string; hideRoundedDeg: number; hideCoverDeg: number };
+  [key: string]: { path: ChartSkinType; hideRoundedDeg: number; hideCoverDeg: number };
 }
+
+export type ChartSkinType = 'basic' | 'cat' | 'bunny' | 'bear';
 
 export const SKIN_DATA: SkinDataType = {
   CAT: {
@@ -40,7 +42,7 @@ function AmountRing(props: {
   skinScale: number;
   showMsg?: boolean;
 }) {
-  const skin = useAppSelector((state) => state.user.info.chartSkin);
+  const skin = useAppSelector((state) => state.setting.data.chartSkin);
   const skinKey = skin.toUpperCase();
   const skinData = Object.keys(SKIN_DATA).includes(skinKey)
     ? SKIN_DATA[skinKey]
@@ -137,6 +139,7 @@ function AmountRing(props: {
       <div className={classes.informs}>
         {amount.state.map((state) => (
           <Inform
+            key={state.id}
             className={
               showMsg && !amount.allOverPlanned && state.isOver
                 ? state.id === 'scheduled'
