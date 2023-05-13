@@ -91,6 +91,9 @@ interface IUser {
   cards: ICard[];
   paymentMethods: IPaymentMethod[];
   auth?: string;
+  settings: {
+    chartSkin: string;
+  };
 }
 
 interface IUserProps {
@@ -165,6 +168,12 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     },
     auth: {
       type: String,
+    },
+    settings: {
+      type: Object,
+      default: {
+        chartSkin: "basic",
+      },
     },
   },
   { timestamps: true }
