@@ -35,7 +35,7 @@ const BudgetList = () => {
   };
 
   return (
-    <Overlay isOpen={isOpen} closeHandler={closeHandler} className={classes.container}>
+    <Overlay isOpen={isOpen} onClose={closeHandler} className={classes.container}>
       <YearPicker
         className={classes.year}
         fontSize="2.5rem"
@@ -62,7 +62,7 @@ const BudgetList = () => {
                   budget={budget}
                   startDate={startDate}
                   endDate={endDate}
-                  closeHandler={closeHandler}
+                  onClose={closeHandler}
                 />
               );
             })}

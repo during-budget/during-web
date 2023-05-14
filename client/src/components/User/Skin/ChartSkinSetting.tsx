@@ -37,7 +37,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
   return (
     <Overlay
       isOpen={isOpen}
-      closeHandler={closeSetting}
+      onClose={closeSetting}
       className={classes.chartSkinSetting}
     >
       <form className={classes.form} onSubmit={submitHandler}>

@@ -8,10 +8,10 @@ interface BudgetItemProps {
   budget?: Budget;
   startDate: Date;
   endDate: Date;
-  closeHandler: () => void;
+  onClose: () => void;
 }
 
-const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProps) => {
+const BudgetItem = ({ budget, startDate, endDate, onClose }: BudgetItemProps) => {
   // date
   const start = startDate.toLocaleDateString('ko-KR', {
     month: '2-digit',
@@ -43,7 +43,7 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
 
   const amountRing = budget && (
     <>
-      <Link to={`/budget/${budget.id}`} onClick={closeHandler}>
+      <Link to={`/budget/${budget.id}`} onClick={onClose}>
         {/* TODO: 수입/지출 선택 */}
         <AmountRing
           amount={budget.total.expense}
@@ -62,7 +62,7 @@ const BudgetItem = ({ budget, startDate, endDate, closeHandler }: BudgetItemProp
     <Link
       to={`/budget/new?year=${startDate.getFullYear()}&month=${startDate.getMonth() + 1}`}
       onClick={() => {
-        closeHandler();
+        onClose();
       }}
     >
       <div className={classes.add} />

@@ -183,7 +183,7 @@ const AssetCardItemEditor = ({
   return (
     <Overlay
       isOpen={isOpen}
-      closeHandler={closeEditor}
+      onClose={closeEditor}
       className={`${classes.container} ${isOpen ? classes.open : ''} ${
         isInit ? classes.add : ''
       }`}

@@ -12,10 +12,10 @@ import { assetActions } from '../../../store/asset';
 
 interface PaymentEditorProps {
   isOpen: boolean;
-  closeHandler: () => void;
+  onClose: () => void;
 }
 
-const PaymentEditor = ({ isOpen, closeHandler }: PaymentEditorProps) => {
+const PaymentEditor = ({ isOpen, onClose }: PaymentEditorProps) => {
   const dispatch = useDispatch();
 
   const payments = useAppSelector((state) => state.asset.paymentMethods);
@@ -28,7 +28,7 @@ const PaymentEditor = ({ isOpen, closeHandler }: PaymentEditorProps) => {
     const { paymentMethods } = await updatePayments(listState);
     dispatch(assetActions.setPaymentMethods(paymentMethods));
 
-    closeHandler();
+    onClose();
   };
 
   const checkHandler = (idx: number) => {
@@ -46,7 +46,7 @@ const PaymentEditor = ({ isOpen, closeHandler }: PaymentEditorProps) => {
   return (
     <Overlay
       isOpen={isOpen}
-      closeHandler={closeHandler}
+      onClose={onClose}
       className={classes.paymentEditor}
     >
       <form onSubmit={submitHandler} className={classes.form}>
@@ -72,7 +72,7 @@ const PaymentEditor = ({ isOpen, closeHandler }: PaymentEditorProps) => {
             </DraggableItem>
           ))}
         </DraggableList>
-        <ConfirmCancelButtons isClose={!isOpen} onClose={closeHandler} />
+        <ConfirmCancelButtons isClose={!isOpen} onClose={onClose} />
       </form>
     </Overlay>
   );

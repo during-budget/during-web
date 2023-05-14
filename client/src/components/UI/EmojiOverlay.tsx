@@ -12,7 +12,7 @@ const EmojiOverlay = () => {
   );
 
   return (
-    <Overlay className={classes.overlay} isOpen={isOpen} closeHandler={onClose}>
+    <Overlay className={classes.overlay} isOpen={isOpen} onClose={onClose}>
       <div className={classes.header}>
         <BiEraser className={classes.icon} onClick={onClear} />
         <MdOutlineCancel className={classes.icon} onClick={onClose} />
