@@ -11,11 +11,10 @@ function Overlay(props: {
 }) {
     // NOTE: disable body scroll
     useEffect(() => {
-        const body = document.querySelector('body');
         if (props.isOpen) {
-            body?.style.setProperty('overflow', 'hidden');
+            document.body.style.setProperty('overflow', 'hidden');
         } else {
-            body?.style.setProperty('overflow', 'scroll');
+            document.body.style.setProperty('overflow', 'scroll');
         }
     }, [props.isOpen]);
 

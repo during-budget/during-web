@@ -151,6 +151,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   };
 
   const expandHandler = () => {
+    // set form expand
     dispatch(
       transactionActions.setForm({
         mode: { isExpand: true },
@@ -160,6 +161,9 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         },
       })
     );
+
+    // prevent scroll for scroll down when resizing
+    document.getElementById('transaction-form-amount')?.focus({ preventScroll: true });
   };
 
   const closeHandler = () => {
@@ -174,40 +178,25 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     amountRef.current!.clear();
   };
 
-  // NOTE: For scroll on focus
-  useEffect(() => {
-    const inputs: NodeListOf<HTMLElement> = document.querySelectorAll(
-      `.${classes.field}`
-    );
-    const selects: NodeListOf<HTMLElement> = document.querySelectorAll(
-      `.${classes.select}`
-    );
-
-    inputs.forEach((input) => {
-      input.addEventListener('focus', () => {
-        input.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      });
-    });
-
-    selects.forEach((select) => {
-      select.addEventListener('click', () => {
-        select.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      });
-    });
-  });
-
   // fields
   const amountField = (
     <div className={classes.amount}>
       <AmountInput
+        id="transaction-form-amount"
         ref={amountRef}
         className={classes.field}
+        style={{
+          width: mode.isExpand ? '100%' : 0,
+          padding: mode.isExpand ? 'var(--size-6)' : 0,
+        }}
         onFocus={expandHandler}
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
       />
-      <Button onClick={expandHandler}>내역 추가</Button>
+      <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '100%' }}>
+        내역 추가
+      </Button>
     </div>
   );
 
