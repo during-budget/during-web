@@ -1,26 +1,63 @@
-.container {
+/* contiainer */
+.overlay-container {
   position: fixed;
   left: 0;
   right: 0;
   z-index: 2;
 }
 
+/* overlay */
 .overlay {
   box-sizing: border-box;
   position: fixed !important;
   bottom: 0;
   left: 0;
   right: 0;
-  max-height: 0;
   background-color: #fff;
   border-radius: 2rem 2rem 0 0;
   box-shadow: 0 0 0 0;
   z-index: 3;
-  transition: max-height 0.3s var(--slow-in), height 0.3s var(--slow-in),
-    clip-path 0.3s var(--slow-in), box-shadow 0.3s var(--slow-in);
-  will-change: max-height, height, clip-path, box-shadow;
 }
 
+.open > .overlay, 
+.clip > .overlay {
+  box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
+}
+
+.clip > .overlay {
+  max-height: 100%;
+}
+
+/* height transition - for dnd */
+.height {
+  max-height: 0;
+  transition: max-height 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
+    box-shadow 0.3s var(--slow-in);
+  will-change: max-height, clip-path, box-shadow;
+}
+
+.open > .height {
+  max-height: 95vh;
+}
+
+.clip > .height {
+  max-height: 100%;
+}
+
+/* transform transition - for optimization */
+.transform {
+  transform: translateY(100%);
+  transition: transform 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
+    box-shadow 0.3s var(--slow-in);
+  will-change: transform, clip-path, box-shadow;
+}
+
+.open > .transform,
+.clip > .transform {
+  transform: translateY(0);
+}
+
+/* backdrop */
 .backdrop {
   visibility: hidden;
   position: fixed;
@@ -34,17 +71,7 @@
   will-change: opacity, visibility;
 }
 
-.open > .overlay {
-  max-height: 95vh;
-  box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
-}
-
 .open > .backdrop.show {
   visibility: visible;
   opacity: 0.6;
-}
-
-.clip > .overlay {
-  max-height: 100%;
-  box-shadow: 0px 4px 60px rgba(99, 99, 99, 0.2);
 }

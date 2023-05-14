@@ -285,6 +285,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         className={containerClass}
         isOpen={mode.isExpand}
         isClip={true}
+        noTransition={true}
         onClose={closeHandler}
       >
         <form onSubmit={submitHandler}>

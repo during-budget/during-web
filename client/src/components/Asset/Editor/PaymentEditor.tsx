@@ -47,6 +47,7 @@ const PaymentEditor = ({ isOpen, onClose }: PaymentEditorProps) => {
     <Overlay
       isOpen={isOpen}
       onClose={onClose}
+      noTransform={true}
       className={classes.paymentEditor}
     >
       <form onSubmit={submitHandler} className={classes.form}>
