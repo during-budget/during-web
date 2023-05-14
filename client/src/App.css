@@ -108,6 +108,12 @@ button {
   cursor: pointer;
   border: 0;
   background-color: transparent;
+  transition: opacity 0.3s var(--fast-in);
+  will-change: opacity;
+}
+
+button:disabled {
+  opacity: 0.2;
 }
 
 ul,
