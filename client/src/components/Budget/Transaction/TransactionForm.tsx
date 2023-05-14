@@ -285,7 +285,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         className={containerClass}
         isOpen={mode.isExpand}
         isClip={true}
-        closeHandler={closeHandler}
+        onClose={closeHandler}
       >
         <form onSubmit={submitHandler}>
           {/* shortField */}
@@ -356,14 +356,14 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         budgetId={props.budgetId}
         isExpense={isExpense}
         isOpen={isOpenCategorySetting}
-        closeHandler={() => {
+        onClose={() => {
           setIsOpenCategorySetting(false);
         }}
         sendRequest={true}
       />
       <PaymentEditor
         isOpen={isOpenPaymentEditor}
-        closeHandler={() => {
+        onClose={() => {
           setIsOpenPaymentEditor(false);
         }}
       />

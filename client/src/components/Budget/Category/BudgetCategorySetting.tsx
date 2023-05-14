@@ -31,7 +31,7 @@ interface BudgetCategorySettingProps {
   budgetCategories?: Category[];
   isExpense: boolean;
   isOpen: boolean;
-  closeHandler: () => void;
+  onClose: () => void;
   sendRequest?: boolean;
   setCategoryPlans?: React.Dispatch<React.SetStateAction<Category[]>>;
   setDefaultPlan?: React.Dispatch<React.SetStateAction<Category | undefined>>;
@@ -42,7 +42,7 @@ function BudgetCategorySetting({
   budgetCategories: propsBudgetCategories,
   isExpense,
   isOpen,
-  closeHandler,
+  onClose,
   sendRequest,
   setCategoryPlans,
 }: BudgetCategorySettingProps) {
@@ -100,7 +100,7 @@ function BudgetCategorySetting({
       submitEditData();
     } else {
       submitCheckedData();
-      closeHandler();
+      onClose();
     }
   };
 
@@ -193,7 +193,7 @@ function BudgetCategorySetting({
     <Overlay
       className={`${classes.container} ${isEdit ? classes.edit : ''}`}
       isOpen={isOpen}
-      closeHandler={closeHandler}
+      onClose={onClose}
     >
       <form id="budget-category-setting-form" onSubmit={submitHandler}>
         {/* Header */}
@@ -239,7 +239,7 @@ function BudgetCategorySetting({
         {/* Confirm & Cancel */}
         <ConfirmCancelButtons
           isClose={!isOpen}
-          onClose={closeHandler}
+          onClose={onClose}
           confirmMsg={isEdit ? '수정 완료' : '카테고리 설정 완료'}
         />
       </form>

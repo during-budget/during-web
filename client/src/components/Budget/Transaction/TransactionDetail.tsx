@@ -48,7 +48,7 @@ function TransactionDetail({ isDefaultBudget }: Props) {
     <Overlay
       className={`${classes.container} ${isOpen ? classes.open : ''}`}
       isOpen={isOpen}
-      closeHandler={closeHandler}
+      onClose={closeHandler}
     >
       <span className={classes.type}>
         {transaction && (isCurrent ? '거래내역' : '예정내역')}

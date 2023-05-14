@@ -160,7 +160,7 @@ function CategoryPlan(props: { budgetId: string }) {
       <Overlay
         className={`${classes.container} ${isOpen ? classes.open : ''}`}
         isOpen={isOpen}
-        closeHandler={closeHandler}
+        onClose={closeHandler}
       >
         <form className={classes.content} onSubmit={submitHandler}>
           {/* total - edit input */}
@@ -238,7 +238,7 @@ function CategoryPlan(props: { budgetId: string }) {
         budgetCategories={categoryState}
         isExpense={isExpense}
         isOpen={isEditSetting}
-        closeHandler={() => {
+        onClose={() => {
           setIsEditSetting(false);
         }}
         setCategoryPlans={setCategoryState}
