@@ -60,8 +60,8 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const [iconState, setIconState] = useState('');
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
-
   const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
+  const [isPending, setIsPending] = useState(false);
 
   const titlesRef = useRef<any>(null);
   const dateRef = useRef<any>(null);
@@ -78,6 +78,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   // handlers
   const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsPending(true);
 
     // set transaction
     const transaction: TransactionType = {
@@ -136,6 +137,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
       ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
     clearForm();
+    setIsPending(false);
   };
 
   const dispatchAmount = (budget: BudgetDataType, assets: AssetDataType[]) => {
@@ -338,6 +340,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
                 isClose={!mode.isExpand}
                 className={classes.buttons}
                 onClose={closeHandler}
+                isPending={isPending}
               />
             </>
           )}

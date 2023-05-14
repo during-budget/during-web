@@ -9,6 +9,10 @@
   will-change: transform;
 }
 
+.confirm-cancel button:disabled {
+  opacity: 1;
+}
+
 .close {
   transform: translateY(300%);
 }

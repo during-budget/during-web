@@ -1,5 +1,6 @@
 import Button from './Button';
 import classes from './ConfirmCancelButtons.module.css';
+import LoadingSpinner from './LoadingSpinner';
 
 interface ConfirmCancelButtonsProps {
   onClose?: () => void;
@@ -10,6 +11,7 @@ interface ConfirmCancelButtonsProps {
   disabled?: boolean;
   hideCancle?: boolean;
   isClose?: boolean;
+  isPending?: boolean;
 }
 
 function ConfirmCancelButtons({
@@ -21,18 +23,29 @@ function ConfirmCancelButtons({
   disabled,
   hideCancle,
   isClose,
+  isPending,
 }: ConfirmCancelButtonsProps) {
   return (
     <div
       className={`${classes.confirmCancel} ${isClose ? classes.close : ''} ${className}`}
     >
       {!hideCancle && (
-        <Button className={classes.cancel} styleClass="extra" onClick={onClose}>
+        <Button
+          className={classes.cancel}
+          styleClass="extra"
+          onClick={onClose}
+          disabled={isPending}
+        >
           {closeMsg || '취소'}
         </Button>
       )}
-      <Button type="submit" styleClass="primary" onClick={onConfirm} disabled={disabled}>
-        {confirmMsg || '완료'}
+      <Button
+        type="submit"
+        styleClass="primary"
+        onClick={onConfirm}
+        disabled={isPending || disabled}
+      >
+        {isPending ? <LoadingSpinner size="1.5rem" /> : confirmMsg || '완료'}
       </Button>
     </div>
   );

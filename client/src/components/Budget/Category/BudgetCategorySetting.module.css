@@ -49,6 +49,3 @@
   display: none;
 }
 
-.container button:disabled {
-  opacity: 0.2;
-}
