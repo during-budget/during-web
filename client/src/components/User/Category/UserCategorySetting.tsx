@@ -66,6 +66,7 @@ function UserCategorySetting(props: {
     <Overlay
       className={classes.container}
       isOpen={props.isOpen}
+      noTransform={true}
       onClose={closeHandler}
     >
       <form onSubmit={submitHandler}>

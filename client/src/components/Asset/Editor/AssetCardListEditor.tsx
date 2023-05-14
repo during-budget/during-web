@@ -140,11 +140,16 @@ const AssetCardListEditor = ({
     } else {
       return detailState;
     }
-  }
+  };
 
   return (
     <>
-      <Overlay isOpen={isOpen} onClose={closeEditor} className={classes.container}>
+      <Overlay
+        isOpen={isOpen}
+        onClose={closeEditor}
+        noTransform={true}
+        className={classes.container}
+      >
         <h2>{isAsset ? '자산' : '카드'} 편집</h2>
         <DetailTypeTab
           id={isAsset ? 'asset-list-detail-type-tab' : 'card-list-detail-type-tab'}
