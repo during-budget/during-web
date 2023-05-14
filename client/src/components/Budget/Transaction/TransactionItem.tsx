@@ -75,7 +75,7 @@ function TransactionItem(props: { transaction: TransactionType; isDefault?: bool
               className={classes.option}
               transaction={props.transaction}
               category={category!}
-              isDefault={props.isDefault}
+              isDefaultBudget={props.isDefault}
             />
           </div>
         </div>
