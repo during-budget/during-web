@@ -1,3 +1,5 @@
+import { throwError } from '../error';
+
 const { DURING_SERVER } = import.meta.env;
 
 const ASSET_URL = `${DURING_SERVER}/api/assets`;
@@ -45,8 +47,7 @@ export const getAssets = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Failed to get assets.\n${data.message ? data.message : ''}`);
-    return null;
+    throwError(`Failed to get assets.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ assets: AssetDataType[] }>;
@@ -60,8 +61,7 @@ export const getCards = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Failed to get cards.\n${data.message ? data.message : ''}`);
-    return null;
+    throwError(`Failed to get cards.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ cards: CardDataType[] }>;
@@ -75,8 +75,7 @@ export const getpaymentMethods = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Failed to get payment mehotds.\n${data.message ? data.message : ''}`);
-    return null;
+    throwError(`Failed to get payment mehotds.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ paymentMethods: PaymentDataType[] }>;
@@ -95,8 +94,7 @@ export const createAsset = async (asset: Omit<AssetDataType, '_id'>) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to create asset\n${data.message ? data.message : ''}`);
+    throwError(`Failed to create asset\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -118,8 +116,7 @@ export const updateAssets = async (assets: AssetDataType[]) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to update assets.\n${data.message ? data.message : ''}`);
+    throwError(`Failed to update assets.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -144,8 +141,7 @@ export const updateAssetById = async (asset: AssetDataType) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(
+    throwError(
       `Failed to update asset: ${asset._id}\n${data.message ? data.message : ''}`
     );
   }
@@ -171,8 +167,7 @@ export const removeAssetById = async (id: string) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to remove asset: ${id}\n${data.message ? data.message : ''}`);
+    throwError(`Failed to remove asset: ${id}\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -195,8 +190,7 @@ export const createCard = async (card: Omit<CardDataType, '_id'>) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to create card.\n${data.message ? data.message : ''}`);
+    throwError(`Failed to create card.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -218,8 +212,7 @@ export const updateCards = async (cards: CardDataType[]) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to update cards.\n${data.message ? data.message : ''}`);
+    throwError(`Failed to update cards.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -243,10 +236,7 @@ export const updateCardById = async (card: Partial<CardDataType>) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(
-      `Failed to update card: ${card._id}\n${data.message ? data.message : ''}`
-    );
+    throwError(`Failed to update card: ${card._id}\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -270,8 +260,7 @@ export const removeCardById = async (id: string) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to delete card: ${id}.\n${data.message ? data.message : ''}`);
+    throwError(`Failed to delete card: ${id}.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{
@@ -294,8 +283,7 @@ export const updatePayments = async (payments: PaymentDataType[]) => {
 
   if (!response.ok) {
     const data = await response.json();
-
-    throw new Error(`Failed to update payments.\n${data.message ? data.message : ''}`);
+    throwError(`Failed to update payments.\n${data.message ? data.message : ''}`);
   }
 
   return response.json() as Promise<{ paymentMethods: PaymentDataType[] }>;
