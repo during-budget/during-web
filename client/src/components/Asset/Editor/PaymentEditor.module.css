@@ -1,13 +1,19 @@
 .payment-editor {
-  height: 70vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 75vh;
+}
+
+.payment-editor h5 {
+  margin-bottom: 2vh;
 }
 
 .list {
   height: 45vh;
   overflow: scroll;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
 }
 
 .data {
@@ -15,14 +21,4 @@
   align-items: center;
   gap: 3vw;
   width: 100%;
-}
-
-.form {
-  width: calc(100% - 4rem);
-  height: calc(100% - 4rem);
-  margin: 0 auto;
-}
-
-.form h5 {
-  margin-bottom: 2vh;
 }

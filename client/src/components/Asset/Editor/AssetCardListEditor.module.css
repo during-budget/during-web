@@ -1,5 +1,5 @@
 .container h2 {
-  padding-top: 5vh;
+  padding-top: 1.5vh;
   padding-bottom: 2vh;
   text-align: center;
 }
@@ -11,9 +11,13 @@
 }
 
 .list {
-  padding: 0 10vw;
-  height: 50vh;
+  height: 40vh;
   overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
 }
 
 .data {
@@ -36,5 +40,6 @@
 }
 
 .add {
+  margin-top: 2vh;
   margin-bottom: 15vh;
 }

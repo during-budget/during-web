@@ -61,7 +61,6 @@
 
 .list {
   margin-top: 4rem;
-  max-height: 45vh;
   overflow: scroll;
 }
 

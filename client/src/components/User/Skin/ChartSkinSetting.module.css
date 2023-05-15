@@ -1,15 +1,3 @@
-.chartSkinSetting {
-  height: 45vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.form {
-  width: calc(100% - 4rem);
-  height: calc(100% - 4rem);
-}
-
 .list {
   display: flex;
   justify-content: space-between;

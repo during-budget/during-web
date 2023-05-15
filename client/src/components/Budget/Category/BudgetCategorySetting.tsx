@@ -4,17 +4,16 @@ import Category from '../../../models/Category';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { transactionActions } from '../../../store/transaction';
 import { userCategoryActions } from '../../../store/user-category';
+import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { updateCategoriesPartially } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
 import Button from '../../UI/Button';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
 import CategoryAddButton from './CategoryAddButton';
 import CategoryCheckItem from './CategoryCheckItem';
 import CategoryEditItem from './CategoryEditItem';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
-import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 
 // TODO: DraggableList 활용하여 개선
 
@@ -94,8 +93,7 @@ function BudgetCategorySetting({
   }, [currentUserCategories, budgetCategories, isExpense, isOpen]);
 
   // Form handlers
-  const submitHandler = async (event?: React.FormEvent) => {
-    event?.preventDefault();
+  const submitHandler = async () => {
     if (isEdit) {
       submitEditData();
     } else {
@@ -190,60 +188,58 @@ function BudgetCategorySetting({
   };
 
   return (
-    <Overlay
+    <OverlayForm
+      onSubmit={submitHandler}
+      overlayOptions={{
+        isOpen,
+        onClose,
+      }}
+      confirmCancelOptions={{
+        confirmMsg: isEdit ? '수정 완료' : '카테고리 설정 완료',
+      }}
       className={`${classes.container} ${isEdit ? classes.edit : ''}`}
-      isOpen={isOpen}
-      onClose={onClose}
     >
-      <form id="budget-category-setting-form" onSubmit={submitHandler}>
-        {/* Header */}
-        <div className={classes.header}>
-          <h5>카테고리 목록 편집</h5>
-          <Button
-            styleClass="extra"
-            className={isEdit ? classes.confirm : classes.pencil}
-            onClick={editHandler}
-          ></Button>
-        </div>
-        {/* List */}
-        <ul className={classes.list}>
-          {categories.map((item, i) =>
-            isEdit ? (
-              <CategoryEditItem
-                key={item.id}
-                idx={i}
-                category={item}
-                setCategories={setCategories}
-                setCheckedCategoryIds={setCheckedCategoryIds}
-              />
-            ) : (
-              <CategoryCheckItem
-                key={item.id}
-                category={item}
-                checkedCategoryIds={checkedCategoryIds}
-                setCheckedCategoryIds={setCheckedCategoryIds}
-              />
-            )
-          )}
-        </ul>
-        {/* Add category & Edit default category */}
-        {isEdit && (
-          <>
-            <CategoryAddButton isExpense={isExpense} setCategories={setCategories} />
-            <DefaultCategoryEdit
-              defaultCategory={defaultCategory}
-              setDefaultCategory={setDefaultCategory}
+      {/* Header */}
+      <div className={classes.header}>
+        <h5>카테고리 목록 편집</h5>
+        <Button
+          styleClass="extra"
+          className={isEdit ? classes.confirm : classes.pencil}
+          onClick={editHandler}
+        ></Button>
+      </div>
+      {/* List */}
+      <ul className={classes.list}>
+        {categories.map((item, i) =>
+          isEdit ? (
+            <CategoryEditItem
+              key={item.id}
+              idx={i}
+              category={item}
+              setCategories={setCategories}
+              setCheckedCategoryIds={setCheckedCategoryIds}
             />
-          </>
+          ) : (
+            <CategoryCheckItem
+              key={item.id}
+              category={item}
+              checkedCategoryIds={checkedCategoryIds}
+              setCheckedCategoryIds={setCheckedCategoryIds}
+            />
+          )
         )}
-        {/* Confirm & Cancel */}
-        <ConfirmCancelButtons
-          isClose={!isOpen}
-          onClose={onClose}
-          confirmMsg={isEdit ? '수정 완료' : '카테고리 설정 완료'}
-        />
-      </form>
-    </Overlay>
+      </ul>
+      {/* Add category & Edit default category */}
+      {isEdit && (
+        <>
+          <CategoryAddButton isExpense={isExpense} setCategories={setCategories} />
+          <DefaultCategoryEdit
+            defaultCategory={defaultCategory}
+            setDefaultCategory={setDefaultCategory}
+          />
+        </>
+      )}
+    </OverlayForm>
   );
   return <></>;
 }

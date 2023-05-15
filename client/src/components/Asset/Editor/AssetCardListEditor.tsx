@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { ASSET_CARD_DETAIL_TYPE } from '../../../constants/type';
@@ -12,11 +12,10 @@ import {
   updateCards,
 } from '../../../util/api/assetAPI';
 import Button from '../../UI/Button';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import AssetCardItemEditor from './AssetCardItemEditor';
 import classes from './AssetCardListEditor.module.css';
@@ -74,9 +73,7 @@ const AssetCardListEditor = ({
   }, [detailState]);
 
   /** 자산/카드 목록 수정사항 제출 */
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const submitHandler = async () => {
     if (isAsset) {
       const { assets, paymentMethods } = await updateAssets(listState as AssetDataType[]);
       dispatch(assetActions.setAssets(assets));
@@ -144,10 +141,14 @@ const AssetCardListEditor = ({
 
   return (
     <>
-      <Overlay
-        isOpen={isOpen}
-        onClose={closeEditor}
-        noTransform={true}
+      <OverlayForm
+        onSubmit={submitHandler}
+        overlayOptions={{
+          isOpen,
+          onClose: closeEditor,
+          noTransform: true,
+        }}
+        formPadding="lg"
         className={classes.container}
       >
         <h2>{isAsset ? '자산' : '카드'} 편집</h2>
@@ -159,45 +160,39 @@ const AssetCardListEditor = ({
           detailState={detailState}
           setDetailState={setDetailState}
         />
-        <form onSubmit={submitHandler}>
-          <div className={classes.content}>
-            <DraggableList
-              id="payment-editor-list"
-              list={listState}
-              setList={setListState}
-              className={classes.list}
+        <DraggableList
+          id="payment-editor-list"
+          list={listState}
+          setList={setListState}
+          className={classes.list}
+        >
+          {/* TODO: filter by item.type */}
+          {listState.map((item, i) => (
+            <DraggableItem
+              key={item._id || uuid()}
+              id={item._id || uuid()}
+              idx={i}
+              onEdit={openEditHandler}
+              onRemove={removeHandler}
             >
-              {/* TODO: filter by item.type */}
-              {listState.map((item, i) => (
-                <DraggableItem
-                  key={item._id || uuid()}
-                  id={item._id || uuid()}
-                  idx={i}
-                  className={classes.item}
-                  onEdit={openEditHandler}
-                  onRemove={removeHandler}
-                >
-                  <div className={classes.data}>
-                    <Icon className={classes.icon} isSquare={true}>
-                      {item.icon}
-                    </Icon>
-                    <div className={classes.info}>
-                      <span className={classes.detail}>
-                        {ASSET_CARD_DETAIL_TYPE[item.detail]}
-                      </span>
-                      <span className={classes.title}>{item.title}</span>
-                    </div>
-                  </div>
-                </DraggableItem>
-              ))}
-            </DraggableList>
-          </div>
-          <Button className={classes.add} styleClass="extra" onClick={openAddHandler}>
-            자산 및 결제수단 추가하기
-          </Button>
-          <ConfirmCancelButtons isClose={!isOpen} onClose={closeEditor} />
-        </form>
-      </Overlay>
+              <div className={classes.data}>
+                <Icon className={classes.icon} isSquare={true}>
+                  {item.icon}
+                </Icon>
+                <div className={classes.info}>
+                  <span className={classes.detail}>
+                    {ASSET_CARD_DETAIL_TYPE[item.detail]}
+                  </span>
+                  <span className={classes.title}>{item.title}</span>
+                </div>
+              </div>
+            </DraggableItem>
+          ))}
+        </DraggableList>
+        <Button className={classes.add} styleClass="extra" onClick={openAddHandler}>
+          자산 및 결제수단 추가하기
+        </Button>
+      </OverlayForm>
       <AssetCardItemEditor
         isAsset={isAsset}
         defaultDetail={detailState === 'all' ? undefined : detailState}
