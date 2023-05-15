@@ -3,27 +3,8 @@
   height: 95vh;
 }
 
-.container.open {
-  padding: 2rem;
-}
-
-.container form {
-  scrollbar-width: 0;
-  -ms-overflow-style: none;
-}
-
-.container form::-webkit-scrollbar {
-  display: none;
-}
-
-.container > form > h5 {
+.container h5 {
   margin-bottom: 2vh;
-}
-
-.content {
-  height: 80vh;
-  overflow: scroll;
-  overflow-x: hidden;
 }
 
 .total {

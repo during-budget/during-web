@@ -13,7 +13,7 @@ export default defineConfig({
   envPrefix: 'DURING',
   css: {
     modules: {
-      localsConvention: 'camelCaseOnly'
+      localsConvention: 'camelCase'
     }
   }
 })

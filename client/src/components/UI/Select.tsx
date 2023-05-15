@@ -14,6 +14,7 @@ const Select = React.forwardRef(
       onChange?: (value?: string) => void;
       showEdit?: () => void;
       disabled?: boolean;
+      listHeight?: string;
     },
     ref
   ) => {
@@ -68,7 +69,10 @@ const Select = React.forwardRef(
           </select>
           {!props.disabled && (
             <ul>
-              <div className={classes.list}>
+              <div
+                className={classes.list}
+                style={{ maxHeight: props.listHeight || '28vh' }}
+              >
                 {props.data.length === 0 && <Inform>목록이 비어있습니다.</Inform>}
                 {props.data.map((item, i) => {
                   if (item.element) {

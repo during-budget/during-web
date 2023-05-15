@@ -1,0 +1,20 @@
+.container {
+  overflow: scroll;
+  scrollbar-width: none;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.padding-lg {
+  padding: 2.875rem;
+}
+
+.padding-md {
+  padding: 2rem;
+}
+
+.padding-sm {
+  padding: 1.125rem;
+}

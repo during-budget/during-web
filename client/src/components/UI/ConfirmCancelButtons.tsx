@@ -2,7 +2,7 @@ import Button from './Button';
 import classes from './ConfirmCancelButtons.module.css';
 import LoadingSpinner from './LoadingSpinner';
 
-interface ConfirmCancelButtonsProps {
+export interface ConfirmCancelButtonsProps {
   onClose?: () => void;
   onConfirm?: () => {};
   closeMsg?: string;
@@ -27,7 +27,9 @@ function ConfirmCancelButtons({
 }: ConfirmCancelButtonsProps) {
   return (
     <div
-      className={`${classes.confirmCancel} ${isClose ? classes.close : ''} ${className}`}
+      className={`${classes.confirmCancel} ${isClose ? classes.close : ''} ${
+        className || ''
+      }`}
     >
       {!hideCancle && (
         <Button

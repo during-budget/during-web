@@ -15,9 +15,8 @@ import {
   updateCardById,
 } from '../../../util/api/assetAPI';
 import Button from '../../UI/Button';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import EmojiInput from '../../UI/EmojiInput';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import classes from './AssetCardItemEditor.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
@@ -48,7 +47,7 @@ const AssetCardItemEditor = ({
   const dispatch = useDispatch();
 
   const location = useLocation();
-  const isInit = location.pathname.includes('/init');
+  // const isInit = location.pathname.includes('/init');
 
   const [targetState, setTargetState] = useState(target || getDefaultTarget(isAsset));
 
@@ -59,9 +58,7 @@ const AssetCardItemEditor = ({
   }, [isOpen, isAsset, target]);
 
   /** 자산/카드 수정/생성 정보 제출 */
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const submitHandler = async () => {
     const updatingTarget = { ...targetState };
 
     if (!updatingTarget.icon) {
@@ -181,18 +178,11 @@ const AssetCardItemEditor = ({
   };
 
   return (
-    <Overlay
-      isOpen={isOpen}
-      onClose={closeEditor}
-      className={`${classes.container} ${isOpen ? classes.open : ''} ${
-        isInit ? classes.add : ''
-      }`}
+    <OverlayForm
+      onSubmit={submitHandler}
+      overlayOptions={{ isOpen, onClose: closeEditor }}
+      className={`${classes.container} ${isOpen ? classes.open : ''} `}
     >
-      {isInit && (
-        <Button className={classes.button} onClick={openEditor}>
-          {isAsset ? '자산' : '카드'} 추가하기
-        </Button>
-      )}
       <div className={classes.content}>
         {target && (
           <div className={classes.remove}>
@@ -210,47 +200,38 @@ const AssetCardItemEditor = ({
           detailState={targetState.detail}
           setDetailState={setDetail}
         />
-        <form onSubmit={submitHandler} className={classes.form}>
-          <div className={classes.data}>
-            <EmojiInput
-              value={targetState?.icon || ''}
-              onChange={setIcon}
-              placeholder={isAsset ? (targetState.detail === 'cash' ? '💵' : '🏦') : '💳'}
-              style={{
-                width: '5rem',
-                height: '5rem',
-                fontSize: '2.5rem',
-                borderRadius: '0.75rem',
-              }}
-            />
-            <input
-              className={classes.title}
-              value={targetState?.title || ''}
-              onChange={setTitle}
-              placeholder="이름을 입력하세요"
-            />
-          </div>
-          {isAsset ? (
-            <AssetFields
-              amount={(targetState as AssetDataType)?.amount || 0}
-              setAmount={setAmount}
-            />
-          ) : (
-            <CardFields
-              assetId={(targetState as CardDataType)?.linkedAssetId || ''}
-              setAssetId={setLinkedAssetId}
-            />
-          )}
-          <ConfirmCancelButtons
-            isClose={!isOpen}
-            onClose={closeEditor}
-            confirmMsg={`${isAsset ? '자산' : '카드'} ${
-              target ? '편집 완료' : '추가 완료'
-            }`}
+        <div className={classes.data}>
+          <EmojiInput
+            value={targetState?.icon || ''}
+            onChange={setIcon}
+            placeholder={isAsset ? (targetState.detail === 'cash' ? '💵' : '🏦') : '💳'}
+            style={{
+              width: '5rem',
+              height: '5rem',
+              fontSize: '2.5rem',
+              borderRadius: '0.75rem',
+            }}
           />
-        </form>
+          <input
+            className={classes.title}
+            value={targetState?.title || ''}
+            onChange={setTitle}
+            placeholder="이름을 입력하세요"
+          />
+        </div>
+        {isAsset ? (
+          <AssetFields
+            amount={(targetState as AssetDataType)?.amount || 0}
+            setAmount={setAmount}
+          />
+        ) : (
+          <CardFields
+            assetId={(targetState as CardDataType)?.linkedAssetId || ''}
+            setAssetId={setLinkedAssetId}
+          />
+        )}
       </div>
-    </Overlay>
+    </OverlayForm>
   );
 };
 

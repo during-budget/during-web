@@ -10,9 +10,8 @@ import { updateBudgetCategories, updateBudgetFields } from '../../../util/api/bu
 import { getTransactions } from '../../../util/api/transactionAPI';
 import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
 import Button from '../../UI/Button';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import DraggableList from '../../UI/DraggableList';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import AmountBars from '../Amount/AmountBars';
 import EditInput from '../Input/EditInput';
 import BudgetCategorySetting from './BudgetCategorySetting';
@@ -81,9 +80,7 @@ function CategoryPlan(props: { budgetId: string }) {
     dispatch(uiActions.showCategoryPlanEditor({ isExpense, showEditPlan: false }));
   };
 
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const submitHandler = async () => {
     // total - request
     // NOTE: total 업데이트로 인한 defaultCategory 연산 -> 해당 결과 기반 카테고리 예산 업데이트 결과를 위한 await
     await updateBudgetFields(props.budgetId, {
@@ -157,83 +154,83 @@ function CategoryPlan(props: { budgetId: string }) {
 
   return (
     <>
-      <Overlay
+      <OverlayForm
+        onSubmit={submitHandler}
+        overlayOptions={{
+          isOpen,
+          noTransform: true,
+          onClose: closeHandler,
+        }}
+        confirmCancelOptions={{
+          confirmMsg: '목표 설정 완료',
+        }}
+        formHeight="80vh"
         className={`${classes.container} ${isOpen ? classes.open : ''}`}
-        isOpen={isOpen}
-        noTransform={true}
-        onClose={closeHandler}
       >
-        <form className={classes.content} onSubmit={submitHandler}>
-          {/* total - edit input */}
-          <h5>{`${title} 카테고리별 ${isExpense ? '지출' : '수입'} 목표`}</h5>
-          <EditInput
-            className={classes.total}
-            editClass={classes.totalEdit}
-            cancelClass={classes.totalCancel}
-            value={Amount.getAmountStr(totalPlanState)}
-            confirmHandler={confirmTotalHandler}
-            convertDefaultValue={convertTotalHandler}
-          />
-          {/* total - plan amount bars */}
-          <AmountBars
-            className={classes.bars}
-            borderRadius="0.4rem"
-            // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
-            amountData={[...categoryState, defaultCategory].map((item) => {
-              return { label: item?.icon || '', amount: item?.amount.planned || 0 };
-            })}
-          />
-          {/* category - plan editors (with current, scheudled amount) */}
-          <ul className={classes.list}>
-            <h5>목표 예산</h5>
-            <DraggableList
-              id="category-plan-draggable-list"
-              list={categoryState}
-              setList={(list: any[]) => {
-                setCategoryState(list);
-              }}
-            >
-              {categoryState.map((item: any, i: number) => (
-                <CategoryPlanItem
-                  key={item.id}
-                  idx={i}
-                  id={item.id}
-                  icon={item.icon}
-                  title={item.title}
-                  amount={item.amount}
-                  onChange={updateCategoryPlanHandler}
-                  hideCurrent={isDefaultBudget}
-                />
-              ))}
-            </DraggableList>
-          </ul>
-          {/* category - default amount (left amount) */}
-          <div className={classes.left}>
-            <h6>{
-              // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
-              `${defaultCategory?.icon || ''} 
-                ${defaultCategory?.title || ''} 
-                (남은 금액)`
-            }</h6>
-            <p>{Amount.getAmountStr(defaultCategory?.amount.planned || 0)}</p>
-          </div>
-          {/* buttons */}
-          <Button
-            className={classes.edit}
-            styleClass="extra"
-            onClick={() => {
-              setIsEditSetting(true);
+        {/* total - edit input */}
+        <h5>{`${title} 카테고리별 ${isExpense ? '지출' : '수입'} 목표`}</h5>
+        <EditInput
+          className={classes.total}
+          editClass={classes.totalEdit}
+          cancelClass={classes.totalCancel}
+          value={Amount.getAmountStr(totalPlanState)}
+          confirmHandler={confirmTotalHandler}
+          convertDefaultValue={convertTotalHandler}
+        />
+        {/* total - plan amount bars */}
+        <AmountBars
+          className={classes.bars}
+          borderRadius="0.4rem"
+          // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
+          amountData={[...categoryState, defaultCategory].map((item) => {
+            return { label: item?.icon || '', amount: item?.amount.planned || 0 };
+          })}
+        />
+        {/* category - plan editors (with current, scheudled amount) */}
+        <ul className={classes.list}>
+          <h5>목표 예산</h5>
+          <DraggableList
+            id="category-plan-draggable-list"
+            list={categoryState}
+            setList={(list: any[]) => {
+              setCategoryState(list);
             }}
           >
-            카테고리 목록 편집
-          </Button>
-          <ConfirmCancelButtons
-            isClose={!isOpen}
-            onClose={closeHandler}
-            confirmMsg="목표 설정 완료"
-          />
-        </form>
-      </Overlay>
+            {categoryState.map((item: any, i: number) => (
+              <CategoryPlanItem
+                key={item.id}
+                idx={i}
+                id={item.id}
+                icon={item.icon}
+                title={item.title}
+                amount={item.amount}
+                onChange={updateCategoryPlanHandler}
+                hideCurrent={isDefaultBudget}
+              />
+            ))}
+          </DraggableList>
+        </ul>
+        {/* category - default amount (left amount) */}
+        <div className={classes.left}>
+          <h6>{
+            // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
+            `${defaultCategory?.icon || ''} 
+                ${defaultCategory?.title || ''} 
+                (남은 금액)`
+          }</h6>
+          <p>{Amount.getAmountStr(defaultCategory?.amount.planned || 0)}</p>
+        </div>
+        {/* buttons */}
+        <Button
+          className={classes.edit}
+          styleClass="extra"
+          onClick={() => {
+            setIsEditSetting(true);
+          }}
+        >
+          카테고리 목록 편집
+        </Button>
+      </OverlayForm>
       <BudgetCategorySetting
         budgetId={props.budgetId}
         budgetCategories={categoryState}

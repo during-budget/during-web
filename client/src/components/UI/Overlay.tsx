@@ -1,13 +1,14 @@
 import { PropsWithChildren, useEffect } from 'react';
 import classes from './Overlay.module.css';
 
-interface OverlayProps {
+export interface OverlayProps {
   isOpen: boolean;
   onClose?: () => void;
   isClip?: boolean;
   isHideBackdrop?: boolean;
   noTransform?: boolean;
   noTransition?: boolean;
+  lockBody?: boolean;
   className?: string;
 }
 
@@ -18,15 +19,17 @@ function Overlay({
   isHideBackdrop,
   noTransform,
   noTransition,
+  lockBody,
   className,
   children,
 }: PropsWithChildren<OverlayProps>) {
   // NOTE: disable body scroll
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.setProperty('overflow', 'hidden');
+    const body = document.querySelector('body');
+    if (isOpen || lockBody) {
+      body?.style.setProperty('overflow', 'hidden');
     } else {
-      document.body.style.setProperty('overflow', 'scroll');
+      body?.style.setProperty('overflow', 'scroll');
     }
   }, [isOpen]);
 

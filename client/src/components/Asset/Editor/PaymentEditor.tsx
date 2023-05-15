@@ -1,14 +1,13 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
+import { assetActions } from '../../../store/asset';
 import { PaymentDataType, updatePayments } from '../../../util/api/assetAPI';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
-import Overlay from '../../UI/Overlay';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
+import OverlayForm from '../../UI/OverlayForm';
 import classes from './PaymentEditor.module.css';
-import { useDispatch } from 'react-redux';
-import { assetActions } from '../../../store/asset';
 
 interface PaymentEditorProps {
   isOpen: boolean;
@@ -22,9 +21,7 @@ const PaymentEditor = ({ isOpen, onClose }: PaymentEditorProps) => {
 
   const [listState, setListState] = useState<PaymentDataType[]>(payments);
 
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const submitHandler = async () => {
     const { paymentMethods } = await updatePayments(listState);
     dispatch(assetActions.setPaymentMethods(paymentMethods));
 
@@ -44,38 +41,39 @@ const PaymentEditor = ({ isOpen, onClose }: PaymentEditorProps) => {
   };
 
   return (
-    <Overlay
-      isOpen={isOpen}
-      onClose={onClose}
-      noTransform={true}
+    <OverlayForm
+      onSubmit={submitHandler}
+      overlayOptions={{
+        isOpen,
+        onClose,
+        noTransform: true,
+        lockBody: true,
+      }}
       className={classes.paymentEditor}
     >
-      <form onSubmit={submitHandler} className={classes.form}>
-        <h5>결제수단 목록 편집</h5>
-        <DraggableList
-          id="payment-list-editor"
-          list={listState}
-          setList={setListState}
-          className={classes.list}
-        >
-          {listState.map((item, i) => (
-            <DraggableItem
-              key={item._id}
-              id={item._id}
-              idx={i}
-              checked={item.isChecked}
-              onCheck={checkHandler}
-            >
-              <div className={classes.data}>
-                <Icon>{item.icon}</Icon>
-                <span>{item.title}</span>
-              </div>
-            </DraggableItem>
-          ))}
-        </DraggableList>
-        <ConfirmCancelButtons isClose={!isOpen} onClose={onClose} />
-      </form>
-    </Overlay>
+      <h5>결제수단 목록 편집</h5>
+      <DraggableList
+        id="payment-list-editor"
+        list={listState}
+        setList={setListState}
+        className={classes.list}
+      >
+        {listState.map((item, i) => (
+          <DraggableItem
+            key={item._id}
+            id={item._id}
+            idx={i}
+            checked={item.isChecked}
+            onCheck={checkHandler}
+          >
+            <div className={classes.data}>
+              <Icon>{item.icon}</Icon>
+              <span>{item.title}</span>
+            </div>
+          </DraggableItem>
+        ))}
+      </DraggableList>
+    </OverlayForm>
   );
 };
 

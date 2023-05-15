@@ -4,15 +4,16 @@ import Category from '../../../models/Category';
 import { userCategoryActions } from '../../../store/user-category';
 import { updateCategories } from '../../../util/api/categoryAPI';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import UserCategoryList from './UserCategoryList';
 import classes from './UserCategorySetting.module.css';
 
-function UserCategorySetting(props: {
+interface UserCategorySettingProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-}) {
+}
+
+function UserCategorySetting({ isOpen, setIsOpen }: UserCategorySettingProps) {
   const dispatch = useAppDispatch();
 
   const [isExpense, setIsExpense] = useState(true);
@@ -29,7 +30,7 @@ function UserCategorySetting(props: {
   useEffect(() => {
     setExpenseCategories(storedCategories.expense.filter((item) => !item.isDefault));
     setIncomeCategories(storedCategories.income.filter((item) => !item.isDefault));
-  }, [storedCategories, props.isOpen]);
+  }, [storedCategories, isOpen]);
 
   useEffect(() => {
     const currentDefault = currentCategories.find((item: Category) => item.isDefault);
@@ -37,9 +38,7 @@ function UserCategorySetting(props: {
   }, [isExpense]);
 
   // Form handlers
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const submitHandler = async () => {
     // request data
     const updatingCategories = [...expenseCategories, ...incomeCategories];
     if (defaultCategory) {
@@ -55,43 +54,40 @@ function UserCategorySetting(props: {
     dispatch(userCategoryActions.setCategories(categories));
 
     // close overlay
-    props.setIsOpen(false);
+    setIsOpen(false);
   };
 
   const closeHandler = () => {
-    props.setIsOpen(false);
+    setIsOpen(false);
   };
 
   return (
-    <Overlay
+    <OverlayForm
+      onSubmit={submitHandler}
+      overlayOptions={{
+        isOpen,
+        noTransform: true,
+        onClose: closeHandler,
+      }}
+      formHeight="90vh"
       className={classes.container}
-      isOpen={props.isOpen}
-      noTransform={true}
-      onClose={closeHandler}
     >
-      <form onSubmit={submitHandler}>
-        <div className={classes.header}>
-          <h5>카테고리 설정</h5>
-          <ExpenseTab
-            id="user-category-setting-type"
-            isExpense={isExpense}
-            setIsExpense={setIsExpense}
-          />
-        </div>
-        <UserCategoryList
+      <div className={classes.header}>
+        <h5>카테고리 설정</h5>
+        <ExpenseTab
+          id="user-category-setting-type"
           isExpense={isExpense}
-          categories={isExpense ? expenseCategories : incomeCategories}
-          setCategories={isExpense ? setExpenseCategories : setIncomeCategories}
-          defaultCategory={defaultCategory}
-          setDefaultCategory={setDefaultCategory}
+          setIsExpense={setIsExpense}
         />
-        <ConfirmCancelButtons
-          isClose={!props.isOpen}
-          onClose={closeHandler}
-          confirmMsg="완료"
-        />
-      </form>
-    </Overlay>
+      </div>
+      <UserCategoryList
+        isExpense={isExpense}
+        categories={isExpense ? expenseCategories : incomeCategories}
+        setCategories={isExpense ? setExpenseCategories : setIncomeCategories}
+        defaultCategory={defaultCategory}
+        setDefaultCategory={setDefaultCategory}
+      />
+    </OverlayForm>
   );
 }
 

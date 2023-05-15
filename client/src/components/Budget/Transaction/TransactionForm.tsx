@@ -17,9 +17,8 @@ import {
 import { getNumericHypenDateString } from '../../../util/date';
 import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/Button';
-import ConfirmCancelButtons from '../../UI/ConfirmCancelButtons';
 import EmojiInput from '../../UI/EmojiInput';
-import Overlay from '../../UI/Overlay';
+import OverlayForm from '../../UI/OverlayForm';
 import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
@@ -76,68 +75,76 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const budgetId = props.budgetId;
 
   // handlers
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const submitHandler = async () => {
     setIsPending(true);
 
-    // set transaction
-    const transaction: TransactionType = {
-      _id: defaultValue._id || uuid(),
-      budgetId,
-      isCurrent,
-      isExpense,
-      icon: iconRef.current!.value() || '',
-      title: titlesRef.current!.value(),
-      date: new Date(dateRef.current!.value()),
-      amount: +amountRef.current!.value(),
-      categoryId: categoryRef.current!.value(),
-      linkedPaymentMethodId: paymentState || '',
-      tags: tagsRef.current!.value(),
-      memo: memoRef.current!.value(),
-      linkId: defaultValue.linkId || undefined,
-      overAmount: defaultValue.overAmount,
-      updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : false,
-    };
+    try {
+      // set transaction
+      const transaction: TransactionType = {
+        _id: defaultValue._id || uuid(),
+        budgetId,
+        isCurrent,
+        isExpense,
+        icon: iconRef.current!.value() || '',
+        title: titlesRef.current!.value(),
+        date: new Date(dateRef.current!.value()),
+        amount: +amountRef.current!.value(),
+        categoryId: categoryRef.current!.value(),
+        linkedPaymentMethodId: paymentState || '',
+        tags: tagsRef.current!.value(),
+        memo: memoRef.current!.value(),
+        linkId: defaultValue.linkId || undefined,
+        overAmount: defaultValue.overAmount,
+        updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : false,
+      };
 
-    // send request
-    if (mode.isEdit) {
-      const {
-        transaction: transactionData,
-        transactionLinked,
-        budget,
-        assets,
-      } = await updateTransaction(transaction);
+      // send request
+      if (mode.isEdit) {
+        const {
+          transaction: transactionData,
+          transactionLinked,
+          budget,
+          assets,
+        } = await updateTransaction(transaction);
 
-      await dispatch(
-        transactionActions.updateTransactionFromData({
-          id: transactionData._id,
-          transactionData,
-        })
-      ); // NOTE: await for scroll
+        await dispatch(
+          transactionActions.updateTransactionFromData({
+            id: transactionData._id,
+            transactionData,
+          })
+        ); // NOTE: await for scroll
 
-      dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
-      dispatchAmount(budget, assets);
-    } else {
-      const {
-        transaction: createdTransaction,
-        transactionScheduled,
-        budget,
-        assets,
-      } = await createTransaction(transaction);
+        dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
+        dispatchAmount(budget, assets);
+      } else {
+        const {
+          transaction: createdTransaction,
+          transactionScheduled,
+          budget,
+          assets,
+        } = await createTransaction(transaction);
 
-      await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
+        await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
 
-      dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
-      dispatchAmount(budget, assets);
+        dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
+        dispatchAmount(budget, assets);
+      }
+
+      // scroll
+      document
+        .getElementById(transaction._id)
+        ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+      clearForm();
+      setIsPending(false);
+    } catch (error) {
+      setIsPending(false);
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error('에러발생');
+      }
     }
-
-    // scroll
-    document
-      .getElementById(transaction._id)
-      ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
-    clearForm();
-    setIsPending(false);
   };
 
   const dispatchAmount = (budget: BudgetDataType, assets: AssetDataType[]) => {
@@ -281,78 +288,74 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 
   return (
     <>
-      <Overlay
+      <OverlayForm
         className={containerClass}
-        isOpen={mode.isExpand}
-        isClip={true}
-        noTransition={true}
-        onClose={closeHandler}
+        onSubmit={submitHandler}
+        overlayOptions={{
+          isOpen: mode.isExpand,
+          onClose: closeHandler,
+          isClip: true,
+          noTransition: true,
+        }}
+        formPadding="sm"
+        formHeight="60vh"
       >
-        <form onSubmit={submitHandler}>
-          {/* shortField */}
-          {amountField}
-          {/* expandFields */}
-          {mode.isExpand && (
-            <>
-              {/* fields */}
-              <DateInput
-                ref={dateRef}
-                className={classes.dateField}
-                defaultValue={
-                  defaultValue.date ? getNumericHypenDateString(defaultValue.date) : ''
-                }
-                required={true}
-              />
-              {selectField} {/* category, payment */}
-              {noteField} {/* emoji, title */}
-              <TagInput
-                ref={tagsRef}
-                className={classes.field}
-                defaultValue={defaultValue.tags}
-              />
-              <MemoInput
-                ref={memoRef}
-                className={`${classes.field} ${classes.memo}`}
-                defaultValue={defaultValue.memo}
-              />
-              {optionFields}
-              {/* types */}
-              {!mode.isDone && (
-                <div className={classes.types}>
-                  <ExpenseTab
-                    id="transaction-form-expense"
-                    isExpense={isExpense}
-                    setIsExpense={setIsExpense}
-                    disabled={mode.isDone}
-                  />
-                  {!isDefaultBudget && (
-                    <>
-                      <span>|</span>
-                      <TransactionNav
-                        id="transaction-form-current"
-                        disabled={mode.isDone}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
-              {/* buttons */}
-              <ConfirmCancelButtons
-                isClose={!mode.isExpand}
-                className={classes.buttons}
-                onClose={closeHandler}
-                isPending={isPending}
-              />
-            </>
-          )}
-        </form>
+        {/* shortField */}
+        {amountField}
+        {/* expandFields */}
+        {mode.isExpand && (
+          <>
+            {/* fields */}
+            <DateInput
+              ref={dateRef}
+              className={classes.dateField}
+              defaultValue={
+                defaultValue.date ? getNumericHypenDateString(defaultValue.date) : ''
+              }
+              required={true}
+            />
+            {selectField} {/* category, payment */}
+            {noteField} {/* emoji, title */}
+            <TagInput
+              ref={tagsRef}
+              className={classes.field}
+              defaultValue={defaultValue.tags}
+            />
+            <MemoInput
+              ref={memoRef}
+              className={`${classes.field} ${classes.memo}`}
+              defaultValue={defaultValue.memo}
+            />
+            {optionFields}
+            {/* types */}
+            {!mode.isDone && (
+              <div className={classes.types}>
+                <ExpenseTab
+                  id="transaction-form-expense"
+                  isExpense={isExpense}
+                  setIsExpense={setIsExpense}
+                  disabled={mode.isDone}
+                />
+                {!isDefaultBudget && (
+                  <>
+                    <span>|</span>
+                    <TransactionNav
+                      id="transaction-form-current"
+                      disabled={mode.isDone}
+                    />
+                  </>
+                )}
+              </div>
+            )}
+          </>
+        )}
         {/* msg */}
         {isDefaultBudget && !mode.isExpand && (
           <p className={classes.info}>
             ⓘ 매월 반복적으로 생기는 지출/수입을 등록해보세요
           </p>
         )}
-      </Overlay>
+      </OverlayForm>
       <BudgetCategorySetting
         budgetId={props.budgetId}
         isExpense={isExpense}
