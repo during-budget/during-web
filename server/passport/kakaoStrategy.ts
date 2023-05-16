@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { User } from "../models/User";
 import { Request } from "express";
+import * as message from "./messages"
 
 const getEmail = (profile: Profile): string | undefined => {
   return profile._json.kakao_account?.email;
@@ -41,7 +42,7 @@ const kakao = () => {
             if (email) {
               const exUser = await User.findOne({ email });
               if (exUser) {
-                const err = new Error("email in use");
+                const err = new Error(message.REGISTER_FAILED_EMAIL_IN_USE);
                 return done(err, null, null);
               }
             }
@@ -52,20 +53,20 @@ const kakao = () => {
               userName: profile.displayName,
               snsId: { kakao: profile.id },
             });
-            await newUser.save();
+            await newUser.initialize();
             return done(null, newUser, "register");
           }
           /* if user is logged in - connect */
           const user = req.user!;
 
           if (user.snsId?.["kakao"]) {
-            const err = new Error("Already connected");
+            const err = new Error(message.CONNECT_FAILED_ALREADY_CONNECTED);
             return done(err, null, null);
           }
 
           const exUser = await User.findOne({ "snsId.kakao": profile.id });
           if (exUser) {
-            const err = new Error("SnsId in use");
+            const err = new Error(message.CONNECT_FAILED_SNSID_IN_USE);
             return done(err, null, null);
           }
 
@@ -73,8 +74,8 @@ const kakao = () => {
           if (user.isGuest) user.isGuest = false;
           await user.saveReqUser();
           return done(null, user, "connect");
-        } catch (error) {
-          console.error(error);
+        } catch (error:any) {
+          error.message=message.AUTH_FAILED_UNKNOWN_ERROR
           done(error);
         }
       }

@@ -10,6 +10,8 @@ import {
   KakaoLoginButton,
 } from "../../components/SocialLoginButton";
 
+const SERVER_URL = process.env.REACT_APP_DURING_SERVER + "/api/";
+
 const Index = () => {
   const { logIn } = useStore((state) => state);
   const API = useAPI();
@@ -144,7 +146,7 @@ const Index = () => {
           gap: "24px",
         }}
       >
-        <a href="http://localhost:5555/api/auth/google/admin">
+        <a href={SERVER_URL + "auth/google/admin"}>
           <GoogleLoginButton />
         </a>
         {/* <a href="http://localhost:5555/api/auth/google">

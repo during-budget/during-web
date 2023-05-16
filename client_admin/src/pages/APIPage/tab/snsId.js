@@ -3,6 +3,8 @@ import { Button, Card, Col, Row } from "antd";
 
 import useAPI from "../../../hooks/useAPI";
 
+const SERVER_URL = process.env.REACT_APP_DURING_SERVER + "/api/";
+
 const Index = () => {
   const API = useAPI();
 
@@ -52,7 +54,7 @@ const Index = () => {
           DISCONNECT
         </Button>
       ) : (
-        <a href={"http://localhost:5555/api/auth/" + sns}>
+        <a href={SERVER_URL + "auth/" + sns}>
           <Button>CONNECT</Button>
         </a>
       )}
