@@ -25,8 +25,8 @@ router.get(
 router.get("/naver", passport.authenticate("naver"));
 router.get("/kakao", passport.authenticate("kakao"));
 
-router.get("/:sns/callback", auth.callback);
+router.get("/:provider/callback", auth.callback);
 
-router.delete("/:sns", isLoggedIn, auth.disconnect);
+router.delete("/:provider", isLoggedIn, auth.disconnect);
 
 module.exports = router;
