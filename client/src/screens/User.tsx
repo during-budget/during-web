@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
@@ -11,6 +11,13 @@ import { userActions } from '../store/user';
 import { logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
+import {
+  providers, 
+  SnsIdType,
+  defaultSnsId,
+  getSnsId,
+  getAuthURL,disconnectSnsId } from '../util/api/snsIdAPI';
+
 function User() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -18,6 +25,8 @@ function User() {
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
   const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
+
+  const [snsId,setSnsId]=useState<SnsIdType>(defaultSnsId)
 
   const settings = [
     {
@@ -45,6 +54,32 @@ function User() {
           },
         },
       ],
+    },
+    {
+      title: "로그인 설정",
+      items: providers.map((provider)=>{
+        return  snsId[provider.provider]?{
+          icon: provider.icon,
+          label: `${provider.label} 로그인 해제`,
+          onClick: async() => {
+            try{
+              const data=await disconnectSnsId(provider.provider);
+              alert("success!")
+              if(data?.snsId){
+                setSnsId(data.snsId)
+              }
+            }catch(err: any){
+              alert(err.message)
+            }
+          },
+        }:{
+          icon: provider.icon,
+          label: `${provider.label} 계정 연결하기`,
+          onClick: async() => {
+            window.open(getAuthURL(provider.provider), "_self");
+          },
+        }
+      })
     },
     // {
     //   title: '기본 설정',
@@ -84,6 +119,16 @@ function User() {
     navigate('/auth', { replace: true });
   };
 
+  useEffect(() => {
+    getSnsId().then(data=>{
+      if(data?.snsId){
+        setSnsId(data.snsId)
+      }
+    })
+    return () => {
+    }
+  }, [])
+  
   return (
     <>
       <ScrollRestoration />
