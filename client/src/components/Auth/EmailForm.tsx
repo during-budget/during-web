@@ -10,6 +10,8 @@ import {
     verifyLogin,
     verifyRegister,
 } from '../../util/api/userAPI';
+import { getAuthURL } from '../../util/api/snsIdAPI';
+import { GoogleLoginButton, KakaoLoginButton, NaverLoginButton } from './SocialLoginButton';
 
 function EmailForm(props: {
     isLogin: boolean;
@@ -128,6 +130,21 @@ function EmailForm(props: {
                 <Button styleClass="extra" onClick={props.changeAuthType}>
                     {isLogin ? 'SNS로 로그인' : 'SNS로 회원가입'}
                 </Button>
+            </div>
+            <div style={{display:"flex", flexDirection:"column", gap:"12px"}}>
+                <div>{"--------------------------------"}</div>
+                <div>
+                {`주석: 소셜 로그인 시 계정이 연결된 경우에는 로그인을 진행하고, 계정이 없는 경우에는 자동으로 회원가입 이 이루어진 후 로그인됩니다.`}
+            </div>
+                <a href={getAuthURL('google')}>
+                    <GoogleLoginButton />
+                </a>
+                <a href={getAuthURL('naver')}>
+                    <NaverLoginButton />
+                </a>
+                <a href={getAuthURL('kakao')}>
+                    <KakaoLoginButton />
+                </a>
             </div>
         </div>
     );

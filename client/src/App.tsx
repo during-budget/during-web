@@ -12,6 +12,7 @@ import Budget, { loader as budgetLoader } from './screens/Budget';
 import NewBudget from './screens/NewBudget';
 import User from './screens/User';
 import InitialSetting from './screens/InitialSetting';
+import Redirect from './screens/Redirect';
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,11 @@ const router = createBrowserRouter([
             element: <User />,
           },
         ],
+      },
+      {
+        path: '/redirect',
+        element: <Redirect />,
+        errorElement: <ErrorBoundary />,
       },
     ],
   },
