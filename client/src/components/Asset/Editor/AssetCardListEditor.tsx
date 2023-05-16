@@ -76,12 +76,12 @@ const AssetCardListEditor = ({
   const submitHandler = async () => {
     if (isAsset) {
       const { assets, paymentMethods } = await updateAssets(listState as AssetDataType[]);
-      dispatch(assetActions.setAssets(assets));
-      dispatch(assetActions.setPaymentMethods(paymentMethods));
+      assets && dispatch(assetActions.setAssets(assets));
+      paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
     } else {
       const { cards, paymentMethods } = await updateCards(listState as CardDataType[]);
-      dispatch(assetActions.setCards(cards));
-      dispatch(assetActions.setPaymentMethods(paymentMethods));
+      cards && dispatch(assetActions.setCards(cards));
+      paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
     }
 
     closeEditor();
