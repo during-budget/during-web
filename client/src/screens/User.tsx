@@ -78,8 +78,8 @@ function User() {
     // },
   ];
 
-  const logoutHandler = () => {
-    logoutUser();
+  const logoutHandler = async () => {
+    await logoutUser();
     dispatch(userActions.logout());
     navigate('/auth', { replace: true });
   };
