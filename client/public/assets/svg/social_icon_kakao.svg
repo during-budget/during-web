@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_2" data-name="레이어 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89.87 89.87">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fee500;
+      }
+
+      .cls-2 {
+        opacity: .9;
+      }
+
+      .cls-3 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <g id="_축약_국문" data-name="축약_국문">
+    <g id="Large_180px_X_90px_" data-name="Large (180px X 90px)">
+      <g>
+        <rect class="cls-1" x="0" y="0" width="89.87" height="89.87" rx="44.94" ry="44.94"/>
+        <g id="Shape_5" data-name="Shape 5" class="cls-2">
+          <path class="cls-3" d="m47,27.94c-9.94,0-18,6.26-18,13.97,0,4.8,3.12,9.03,7.86,11.55l-2,7.33c-.18.65.56,1.17,1.13.79l8.75-5.81c.74.07,1.49.11,2.25.11,9.94,0,18-6.26,18-13.97s-8.06-13.97-18-13.97Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
