@@ -17,7 +17,7 @@ function SNSForm(props: {
     <div className={classes.sns}>
       <img src="/assets/images/logo.png" alt="듀링 가계부 로고" />
       <h2>시작하기</h2>
-
+      <p>SNS 계정으로 시작</p>
       <div className={classes.form}>
         <div className={classes.social}>
           <a href={getAuthURL('google')}>
@@ -32,14 +32,9 @@ function SNSForm(props: {
         </div>
 
         <div className={classes.buttons}>
-          <Button styleClass="extra">
-            가입 없이 둘러보기
-          </Button>
+          <Button styleClass="extra">가입 없이 둘러보기</Button>
           <span>|</span>
-          <Button
-            styleClass="extra"
-            onClick={props.changeAuthType}
-          >
+          <Button styleClass="extra" onClick={props.changeAuthType}>
             이메일로 시작하기
           </Button>
         </div>

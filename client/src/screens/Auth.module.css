@@ -9,7 +9,8 @@
   align-items: center;
 }
 
-.auth, .email {
+.auth,
+.email {
   max-width: 480px;
 }
 
@@ -22,5 +23,5 @@
 }
 
 .sns {
-  transform: translateY(40%) !important;
+  transform: translateY(30%) !important;
 }
