@@ -12,11 +12,14 @@ import { logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 import {
-  providers, 
+  providers,
   SnsIdType,
   defaultSnsId,
   getSnsId,
-  getAuthURL,disconnectSnsId } from '../util/api/snsIdAPI';
+  getAuthURL,
+  disconnectSnsId,
+} from '../util/api/snsIdAPI';
+import Modal from '../components/UI/Modal';
 
 function User() {
   const navigate = useNavigate();
@@ -26,7 +29,7 @@ function User() {
   const [showChartSkin, setShowChartSkin] = useState(false);
   const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
 
-  const [snsId,setSnsId]=useState<SnsIdType>(defaultSnsId)
+  const [snsId, setSnsId] = useState<SnsIdType>(defaultSnsId);
 
   const settings = [
     {
@@ -56,30 +59,32 @@ function User() {
       ],
     },
     {
-      title: "로그인 설정",
-      items: providers.map((provider)=>{
-        return  snsId[provider.provider]?{
-          icon: provider.icon,
-          label: `${provider.label} 로그인 해제`,
-          onClick: async() => {
-            try{
-              const data=await disconnectSnsId(provider.provider);
-              alert("success!")
-              if(data?.snsId){
-                setSnsId(data.snsId)
-              }
-            }catch(err: any){
-              alert(err.message)
+      title: '로그인 설정',
+      items: providers.map((provider) => {
+        return snsId[provider.provider]
+          ? {
+              icon: provider.icon,
+              label: `${provider.label} 로그인 해제`,
+              onClick: async () => {
+                try {
+                  const data = await disconnectSnsId(provider.provider);
+                  alert('success!');
+                  if (data?.snsId) {
+                    setSnsId(data.snsId);
+                  }
+                } catch (err: any) {
+                  alert(err.message);
+                }
+              },
             }
-          },
-        }:{
-          icon: provider.icon,
-          label: `${provider.label} 계정 연결하기`,
-          onClick: async() => {
-            window.open(getAuthURL(provider.provider), "_self");
-          },
-        }
-      })
+          : {
+              icon: provider.icon,
+              label: `${provider.label} 계정 연결하기`,
+              onClick: async () => {
+                window.open(getAuthURL(provider.provider), '_self');
+              },
+            };
+      }),
     },
     // {
     //   title: '기본 설정',
@@ -120,15 +125,14 @@ function User() {
   };
 
   useEffect(() => {
-    getSnsId().then(data=>{
-      if(data?.snsId){
-        setSnsId(data.snsId)
+    getSnsId().then((data) => {
+      if (data?.snsId) {
+        setSnsId(data.snsId);
       }
-    })
-    return () => {
-    }
-  }, [])
-  
+    });
+    return () => {};
+  }, []);
+
   return (
     <>
       <ScrollRestoration />
@@ -148,6 +152,7 @@ function User() {
         </section>
       </main>
       <EmojiOverlay />
+      <Modal />
     </>
   );
 }

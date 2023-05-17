@@ -17,6 +17,7 @@ import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './Budget.module.css';
+import Modal from '../components/UI/Modal';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -58,6 +59,7 @@ function Budget() {
         <BudgetList />
         <EmojiOverlay />
       </main>
+      <Modal />
     </>
   );
 }

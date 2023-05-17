@@ -1,5 +1,16 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+interface ModalOptions {
+  isOpen: boolean;
+  icon: string;
+  title: string;
+  description: string;
+  confirmMsg: string;
+  actionMsg: string;
+  actionPrefix: string;
+  onConfirm: () => void;
+  onAction: () => void;
+}
 interface EmojiOptions {
   isOpen: boolean;
   onClose: () => void;
@@ -22,12 +33,30 @@ const initialState = {
     onClear: () => {},
     onSelect: (value: any) => {},
   },
+  modal: {
+    isOpen: false,
+    icon: '',
+    title: '',
+    description: '',
+    confirmMsg: '확인',
+    actionMsg: '',
+    actionPrefix: '',
+    onConfirm: () => {},
+    onAction: () => {},
+  },
 };
 
 const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
+    showModal(state, action: PayloadAction<Partial<ModalOptions>>) {
+      const options = action.payload;
+      state.modal = { ...initialState.modal, ...options, isOpen: true };
+    },
+    closeModal(state) {
+      state.modal.isOpen = false;
+    },
     setIsCurrent(state, action: PayloadAction<boolean>) {
       state.budget.isCurrent = action.payload;
     },
@@ -51,7 +80,7 @@ const uiSlice = createSlice({
     },
     resetEmojiOverlay(state) {
       state.emoji = initialState.emoji;
-    }
+    },
   },
 });
 
