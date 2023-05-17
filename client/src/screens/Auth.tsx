@@ -13,6 +13,7 @@ import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import classes from './Auth.module.css';
+import Modal from '../components/UI/Modal';
 
 function Auth() {
   const dispatch = useAppDispatch();
@@ -96,26 +97,29 @@ function Auth() {
     );
   } else {
     return (
-      <Overlay
-        className={`${classes.auth} ${isEmailAuth ? classes.email : classes.sns}`}
-        isOpen={true}
-      >
-        {isEmailAuth ? (
-          <EmailForm
-            isLogin={isLogin}
-            toggleIsLogin={toggleIsLogin}
-            changeAuthType={setSNSAuth}
-            getUserLogin={getUserLogin}
-          />
-        ) : (
-          <SNSForm
-            isLogin={isLogin}
-            toggleIsLogin={toggleIsLogin}
-            changeAuthType={setEmailAuth}
-            getUserLogin={getUserLogin}
-          />
-        )}
-      </Overlay>
+      <>
+        <Overlay
+          className={`${classes.auth} ${isEmailAuth ? classes.email : classes.sns}`}
+          isOpen={true}
+        >
+          {isEmailAuth ? (
+            <EmailForm
+              isLogin={isLogin}
+              toggleIsLogin={toggleIsLogin}
+              changeAuthType={setSNSAuth}
+              getUserLogin={getUserLogin}
+            />
+          ) : (
+            <SNSForm
+              isLogin={isLogin}
+              toggleIsLogin={toggleIsLogin}
+              changeAuthType={setEmailAuth}
+              getUserLogin={getUserLogin}
+            />
+          )}
+        </Overlay>
+        <Modal />
+      </>
     );
   }
 }

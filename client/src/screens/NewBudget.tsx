@@ -9,6 +9,7 @@ import Carousel from '../components/UI/Carousel';
 import { useAppSelector } from '../hooks/redux-hook';
 import { createBudgetFromBasic } from '../util/api/budgetAPI';
 import classes from './NewBudget.module.css';
+import Modal from '../components/UI/Modal';
 
 dayjs.extend(customParseFormat);
 
@@ -62,6 +63,7 @@ function NewBudget() {
         {/* Overlays */}
         <BudgetList />
       </main>
+      <Modal />
     </>
   );
 }

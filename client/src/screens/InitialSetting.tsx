@@ -26,6 +26,7 @@ import {
 } from '../util/api/assetAPI';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './InitialSetting.module.css';
+import Modal from '../components/UI/Modal';
 
 const InitialSetting = () => {
   const dispatch = useDispatch();
@@ -168,6 +169,7 @@ const InitialSetting = () => {
         />
       )}
       <EmojiOverlay />
+      <Modal />
     </>
   );
 };
