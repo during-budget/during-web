@@ -4,6 +4,8 @@
   left: 0;
   right: 0;
   z-index: 2;
+  display: flex;
+  justify-content: center;
 }
 
 /* overlay */
@@ -11,8 +13,7 @@
   box-sizing: border-box;
   position: fixed !important;
   bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   background-color: #fff;
   border-radius: 2rem 2rem 0 0;
   box-shadow: 0 0 0 0;

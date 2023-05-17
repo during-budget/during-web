@@ -1,45 +1,51 @@
-import { useState } from 'react';
-import classes from './SNSForm.module.css';
+import { getAuthURL } from '../../util/api/snsIdAPI';
 import Button from '../UI/Button';
+import classes from './SNSForm.module.css';
+import {
+  GoogleLoginButton,
+  KakaoLoginButton,
+  NaverLoginButton,
+} from './SocialLoginButton';
 
 function SNSForm(props: {
-    isLogin: boolean;
-    toggleIsLogin: () => void;
-    changeAuthType: () => void;
-    getUserLogin: (user: any) => void;
+  isLogin: boolean;
+  toggleIsLogin: () => void;
+  changeAuthType: () => void;
+  getUserLogin: (user: any) => void;
 }) {
-    const { isLogin, toggleIsLogin } = props;
+  return (
+    <div className={classes.sns}>
+      <img src="/assets/images/logo.png" alt="듀링 가계부 로고" />
+      <h2>시작하기</h2>
 
-    return (
-        <div className={classes.container}>
-            <img src="/assets/png/logo.png" alt="듀링 가계부 로고" />
-            <h2>{isLogin ? '로그인' : '회원가입'}</h2>
-            <form>
-                <Button styleClass="extra" onClick={props.changeAuthType}>
-                    이메일로 {isLogin ? '로그인' : '회원가입'}
-                </Button>
-                <div className={classes.buttons}>
-                    <Button
-                        styleClass="extra"
-                        onClick={() => {
-                            // TODO: 게스트 로그인 요청
-                        }}
-                    >
-                        가입 없이 둘러보기
-                    </Button>
-                    |{' '}
-                    <Button
-                        styleClass="extra"
-                        onClick={() => {
-                            toggleIsLogin();
-                        }}
-                    >
-                        {isLogin ? '회원가입하기' : '로그인하기'}
-                    </Button>
-                </div>
-            </form>
+      <div className={classes.form}>
+        <div className={classes.social}>
+          <a href={getAuthURL('google')}>
+            <GoogleLoginButton />
+          </a>
+          <a href={getAuthURL('naver')}>
+            <NaverLoginButton />
+          </a>
+          <a href={getAuthURL('kakao')}>
+            <KakaoLoginButton />
+          </a>
         </div>
-    );
+
+        <div className={classes.buttons}>
+          <Button styleClass="extra">
+            가입 없이 둘러보기
+          </Button>
+          <span>|</span>
+          <Button
+            styleClass="extra"
+            onClick={props.changeAuthType}
+          >
+            이메일로 시작하기
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default SNSForm;

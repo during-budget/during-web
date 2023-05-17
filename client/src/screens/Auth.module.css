@@ -9,10 +9,18 @@
   align-items: center;
 }
 
-.email {
+.auth, .email {
+  max-width: 480px;
+}
+
+.auth {
   height: 95vh;
 }
 
+.email {
+  transform: translateY(0);
+}
+
 .sns {
-  height: 70vh;
+  transform: translateY(40%) !important;
 }

@@ -19,7 +19,7 @@ function Auth() {
   const navigate = useNavigate();
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-  const [isEmailAuth, setIsEmailAuth] = useState(true);
+  const [isEmailAuth, setIsEmailAuth] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
 
   // Get login
@@ -96,7 +96,10 @@ function Auth() {
     );
   } else {
     return (
-      <Overlay className={isEmailAuth ? classes.email : classes.sns} isOpen={true}>
+      <Overlay
+        className={`${classes.auth} ${isEmailAuth ? classes.email : classes.sns}`}
+        isOpen={true}
+      >
         {isEmailAuth ? (
           <EmailForm
             isLogin={isLogin}
