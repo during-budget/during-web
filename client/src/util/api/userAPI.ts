@@ -120,6 +120,22 @@ export const logoutUser = async () => {
   return response.json();
 };
 
+export const deleteUser = async () => {
+  const url = `${BASE_URL}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    console.error(`Failed delete user.\n${data.message ? data.message : ''}`);
+    return null;
+  }
+
+  return;
+};
+
 export const getUserState = async () => {
   const url = `${BASE_URL}/current`;
   const response = await fetch(url, {

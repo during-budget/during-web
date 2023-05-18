@@ -1,9 +1,11 @@
 .container {
-    width: 80%;
-    margin: 0 auto;
-    padding-bottom: 9vh;
+  width: 80%;
+  margin: 0 auto;
+  padding-bottom: 9vh;
 }
 
-.logout {
-    margin-bottom: 3rem;
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
 }
