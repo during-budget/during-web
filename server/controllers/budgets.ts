@@ -9,8 +9,10 @@ import { logger } from "../log/logger";
 // budget controller
 type budgetKeys =
   | "expenseScheduled"
+  | "expenseScheduledRemain"
   | "expenseCurrent"
   | "incomeScheduled"
+  | "incomeScheduledRemain"
   | "incomeCurrent";
 type categoryKeys = "amountPlanned" | "amountScheduled" | "amountCurrent";
 export const validate = async (req: Request, res: Response) => {
@@ -22,8 +24,10 @@ export const validate = async (req: Request, res: Response) => {
 
     const b: { [key: string]: number } = {
       expenseScheduled: 0,
+      expenseScheduledRemain: 0,
       expenseCurrent: 0,
       incomeScheduled: 0,
+      incomeScheduledRemain: 0,
       incomeCurrent: 0,
     };
     const amountPlanned: { [key: string]: number } = {};
@@ -49,8 +53,14 @@ export const validate = async (req: Request, res: Response) => {
       if (!transaction.isCurrent) {
         if (transaction.category.isExpense) {
           b.expenseScheduled += transaction.amount;
+          if (!transaction.linkId) {
+            b.expenseScheduledRemain += transaction.amount;
+          }
         } else {
           b.incomeScheduled += transaction.amount;
+          if (!transaction.linkId) {
+            b.incomeScheduledRemain += transaction.amount;
+          }
         }
         amountScheduled[transaction.category.categoryId.toString()] +=
           transaction.amount;
@@ -77,7 +87,7 @@ export const validate = async (req: Request, res: Response) => {
 
     for (let [key, value] of Object.entries(b)) {
       const k = key as budgetKeys;
-      if (budget[k] !== value) {
+      if (!(k in budget) || budget[k] !== value) {
         invalid.push({ field: key });
       }
     }
@@ -132,8 +142,10 @@ export const fix = async (req: Request, res: Response) => {
     const key = req.body.key;
     if (
       key === "expenseScheduled" ||
+      key === "expenseScheduledRemain" ||
       key === "expenseCurrent" ||
       key === "incomeScheduled" ||
+      key === "incomeScheduledRemain" ||
       key === "incomeCurrent"
     ) {
       const k = key as budgetKeys;
@@ -600,41 +612,6 @@ export const find = async (req: Request, res: Response) => {
         budgetId: budget._id,
       }).lean();
       return res.status(200).send({ budget, transactions });
-
-      // return res.status(200).send({
-      //   message: "check",
-      //   budget: {
-      //     title: budget.title,
-      //     expenseScheduled: budget.expenseScheduled,
-      //     expenseCurrent: budget.expenseCurrent,
-      //     expensePlanned: budget.expensePlanned,
-      //     incomeScheduled: budget.incomeScheduled,
-      //     incomeCurrent: budget.incomeCurrent,
-      //     incomePlanned: budget.incomePlanned,
-      //     categories: budget.categories.map((cat) => {
-      //       return {
-      //         categoryId: cat.categoryId,
-      //         title: cat.title,
-      //         amountPlanned: cat.amountPlanned,
-      //         amountScheduled: cat.amountScheduled,
-      //         amountCurrent: cat.amountCurrent,
-      //       };
-      //     }),
-      //   },
-
-      //   transactions: transactions.map((t) => {
-      //     return {
-      //       _id: t._id,
-      //       linkId: t.linkId,
-      //       title2: _.join(t.title, "/"),
-      //       amount: t.amount,
-      //       category: {
-      //         title: t.category.title,
-      //         categoryId: t.category.categoryId,
-      //       },
-      //     };
-      //   }),
-      // });
     }
     if ("year" in req.query) {
       const year = parseInt(req.query.year as string);
