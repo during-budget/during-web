@@ -11,15 +11,16 @@ import { userActions } from '../store/user';
 import { logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
+import Modal from '../components/UI/Modal';
+import { uiActions } from '../store/ui';
 import {
-  providers,
   SnsIdType,
   defaultSnsId,
-  getSnsId,
-  getAuthURL,
   disconnectSnsId,
+  getAuthURL,
+  getSnsId,
+  providers,
 } from '../util/api/snsIdAPI';
-import Modal from '../components/UI/Modal';
 
 function User() {
   const navigate = useNavigate();
@@ -68,12 +69,16 @@ function User() {
               onClick: async () => {
                 try {
                   const data = await disconnectSnsId(provider.provider);
-                  alert('success!');
+                  dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
                   if (data?.snsId) {
                     setSnsId(data.snsId);
                   }
-                } catch (err: any) {
-                  alert(err.message);
+                } catch (error: any) {
+                  if (error.message) {
+                    dispatch(uiActions.showModal({ description: error.message }));
+                  } else {
+                    dispatch(uiActions.showErrorModal());
+                  }
                 }
               },
             }

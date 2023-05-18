@@ -1,15 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-interface ModalOptions {
+export interface ModalOptions {
   isOpen: boolean;
   icon: string;
   title: string;
   description: string;
   confirmMsg: string;
-  actionMsg: string;
-  actionPrefix: string;
   onConfirm: () => void;
-  onAction: () => void;
+  showReport: boolean;
 }
 interface EmojiOptions {
   isOpen: boolean;
@@ -39,10 +37,8 @@ const initialState = {
     title: '',
     description: '',
     confirmMsg: '확인',
-    actionMsg: '',
-    actionPrefix: '',
     onConfirm: () => {},
-    onAction: () => {},
+    showReport: false,
   },
 };
 
@@ -53,6 +49,17 @@ const uiSlice = createSlice({
     showModal(state, action: PayloadAction<Partial<ModalOptions>>) {
       const options = action.payload;
       state.modal = { ...initialState.modal, ...options, isOpen: true };
+    },
+    showErrorModal(state, action: PayloadAction<Partial<ModalOptions> | undefined>) {
+      const options = action.payload;
+      state.modal = {
+        ...initialState.modal,
+        title: '문제가 발생했습니다',
+        description: '잠시 후 다시 시도해주세요',
+        isOpen: true,
+        showReport: true,
+        ...options,
+      };
     },
     closeModal(state) {
       state.modal.isOpen = false;
