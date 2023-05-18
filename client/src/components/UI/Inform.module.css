@@ -40,3 +40,13 @@
 .icon {
   margin-right: 0.3rem;
 }
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  justify-content: start;
+}

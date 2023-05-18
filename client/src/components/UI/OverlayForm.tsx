@@ -3,7 +3,7 @@ import ConfirmCancelButtons, { ConfirmCancelButtonsProps } from './ConfirmCancel
 import Overlay, { OverlayProps } from './Overlay';
 import classes from './OverlayForm.module.css';
 
-interface OverlayFormType {
+interface OverlayFormProps {
   overlayOptions: Omit<OverlayProps, 'className'>;
   confirmCancelOptions?: ConfirmCancelButtonsProps;
   onSubmit: () => void;
@@ -20,7 +20,7 @@ const OverlayForm = ({
   formPadding,
   className,
   children,
-}: PropsWithChildren<OverlayFormType>) => {
+}: PropsWithChildren<OverlayFormProps>) => {
   const [isPending, setIsPending] = useState(false);
 
   const submitHandler = (event: React.FormEvent) => {

@@ -7,12 +7,11 @@ import {
   NaverLoginButton,
 } from './SocialLoginButton';
 
-function SNSForm(props: {
-  isLogin: boolean;
-  toggleIsLogin: () => void;
+interface SNSFormProps {
   changeAuthType: () => void;
-  getUserLogin: (user: any) => void;
-}) {
+}
+
+const SNSForm = ({ changeAuthType }: SNSFormProps) => {
   return (
     <div className={classes.sns}>
       <img src="/assets/images/logo.png" alt="듀링 가계부 로고" />
@@ -34,13 +33,13 @@ function SNSForm(props: {
         <div className={classes.buttons}>
           <Button styleClass="extra">가입 없이 둘러보기</Button>
           <span>|</span>
-          <Button styleClass="extra" onClick={props.changeAuthType}>
+          <Button styleClass="extra" onClick={changeAuthType}>
             이메일로 시작하기
           </Button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default SNSForm;

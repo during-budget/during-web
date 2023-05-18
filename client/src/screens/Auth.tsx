@@ -21,7 +21,6 @@ function Auth() {
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isEmailAuth, setIsEmailAuth] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
 
   // Get login
   const location = useLocation();
@@ -85,10 +84,6 @@ function Auth() {
     setIsEmailAuth(false);
   };
 
-  const toggleIsLogin = () => {
-    setIsLogin((prev) => !prev);
-  };
-
   if (isFirstLoad) {
     return (
       <div className={`${classes.full} ${classes.center}`}>
@@ -103,19 +98,9 @@ function Auth() {
           isOpen={true}
         >
           {isEmailAuth ? (
-            <EmailForm
-              isLogin={isLogin}
-              toggleIsLogin={toggleIsLogin}
-              changeAuthType={setSNSAuth}
-              getUserLogin={getUserLogin}
-            />
+            <EmailForm changeAuthType={setSNSAuth} getUserLogin={getUserLogin} />
           ) : (
-            <SNSForm
-              isLogin={isLogin}
-              toggleIsLogin={toggleIsLogin}
-              changeAuthType={setEmailAuth}
-              getUserLogin={getUserLogin}
-            />
+            <SNSForm changeAuthType={setEmailAuth} />
           )}
         </Overlay>
         <Modal />
