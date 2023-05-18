@@ -24,12 +24,14 @@ interface EmailFormProps {
 const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
   const dispatch = useAppDispatch();
 
-  const codeRef = useRef<any>();
+  const codeRef = useRef<any>(null);
+  const persistRef = useRef<HTMLInputElement>(null);
 
   const [emailState, setEmailState] = useState('');
   const [emailVerifyState, setEmailVerifyState] = useState(false);
   const [errorState, setErrorState] = useState<String[]>([]);
   const [isLogin, setIsLogin] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   // Handlers
   const sendHandler = async (event?: React.MouseEvent) => {
@@ -46,6 +48,8 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
       return;
     }
 
+    setIsDisabled(true);
+
     try {
       if (isLogin) {
         await sendCodeLogin(emailState);
@@ -55,6 +59,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
 
       setEmailVerifyState(true);
     } catch (error) {
+      setIsDisabled(false);
       const msg = getErrorMsg(error);
       if (msg) {
         setErrorState(msg);
@@ -81,8 +86,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
 
     let data;
     try {
-      // TODO: 자동로그인(persist) 체크박스 추가
-      const persist = true;
+      const persist = persistRef.current!.checked;
 
       if (isLogin) {
         data = await verifyLogin(emailState, code, persist);
@@ -110,11 +114,17 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
     setIsLogin((prev) => !prev);
   };
 
-  // Focus email input on First load
-  useEffect(() => {
+  const focusEmail = () => {
     const field = document.querySelector('#auth-email-field input') as HTMLInputElement;
     field?.focus();
-  }, []);
+  };
+
+  // Focus email input on First load
+  useEffect(() => {
+    if (!isDisabled) {
+      focusEmail();
+    }
+  }, [emailVerifyState, isLogin, isDisabled]);
 
   // Error message JSXElement
   const errorMessage = errorState.length !== 0 && (
@@ -154,6 +164,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
             type="email"
             value={emailState}
             onChange={emailHandler}
+            disabled={isDisabled}
             required
           />
         </InputField>
@@ -165,6 +176,28 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
             <Button type="submit" className={classes.submit} onClick={verifyHandler}>
               {isLogin ? '로그인' : '회원가입'}
             </Button>
+            <div className={classes.options}>
+              <div className={classes.persist}>
+                <input
+                  id="auth-email-persist"
+                  ref={persistRef}
+                  type="checkbox"
+                  defaultChecked={true}
+                />
+                <label htmlFor="auth-email-persist">자동 로그인</label>
+              </div>
+              <Button
+                styleClass="extra"
+                className={classes.restart}
+                onClick={async () => {
+                  setEmailState('');
+                  setIsDisabled(false);
+                  setEmailVerifyState(false);
+                }}
+              >
+                <u>이메일 다시 입력하기</u>
+              </Button>
+            </div>
           </>
         ) : (
           <>

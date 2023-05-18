@@ -63,3 +63,31 @@
   margin-top: 0.5vh;
   margin-bottom: 2vh;
 }
+
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5rem;
+}
+
+.restart,
+.persist {
+  font-size: 0.875rem;
+}
+
+.persist {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.persist input {
+  width: 0.875rem;
+}
+
+.restart {
+  justify-content: end;
+  font-weight: 400;
+}
