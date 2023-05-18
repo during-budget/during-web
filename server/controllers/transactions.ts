@@ -257,11 +257,15 @@ export const updateV2 = async (req: Request, res: Response) => {
             if (transaction.isExpense) {
               budget.expenseScheduled -= transaction.amount;
               budget.incomeScheduled += transaction.amount;
+              budget.expenseScheduledRemain -= transaction.amount;
+              budget.incomeScheduledRemain += transaction.amount;
             }
             // 1-2. isIncome -> isExpense
             else {
               budget.incomeScheduled -= transaction.amount;
               budget.expenseScheduled += transaction.amount;
+              budget.incomeScheduledRemain -= transaction.amount;
+              budget.expenseScheduledRemain += transaction.amount;
             }
           }
         }
@@ -445,11 +449,13 @@ export const updateV2 = async (req: Request, res: Response) => {
           if (transaction.isExpense) {
             budget.expenseCurrent -= transaction.amount;
             budget.expenseScheduled += transaction.amount;
+            budget.expenseScheduledRemain += transaction.amount;
           }
           // 1-1. income category
           else {
             budget.incomeCurrent -= transaction.amount;
             budget.incomeScheduled += transaction.amount;
+            budget.incomeScheduledRemain += transaction.amount;
           }
 
           if (transaction.linkedPaymentMethodId && exUpdateAsset) {
@@ -469,11 +475,13 @@ export const updateV2 = async (req: Request, res: Response) => {
           // 2-1. expense category
           if (transaction.isExpense) {
             budget.expenseScheduled -= transaction.amount;
+            budget.expenseScheduledRemain -= transaction.amount;
             budget.expenseCurrent += transaction.amount;
           }
           // 2-1. income category
           else {
             budget.incomeScheduled -= transaction.amount;
+            budget.incomeScheduledRemain -= transaction.amount;
             budget.incomeCurrent += transaction.amount;
           }
 
