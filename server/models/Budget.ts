@@ -44,9 +44,11 @@ interface IBudget {
   endDate: Date;
   title: string;
   expenseScheduled: number;
+  expenseScheduledRemain: number;
   expenseCurrent: number;
   expensePlanned: number;
   incomeScheduled: number;
+  incomeScheduledRemain: number;
   incomeCurrent: number;
   incomePlanned: number;
   categories: ICategory[];
@@ -89,6 +91,10 @@ const budgetSchema = new Schema<IBudget, BudgetModelType, IBudgetProps>(
       type: Number,
       default: 0,
     },
+    expenseScheduledRemain: {
+      type: Number,
+      default: 0,
+    },
 
     //현재 지출
     expenseCurrent: {
@@ -104,6 +110,10 @@ const budgetSchema = new Schema<IBudget, BudgetModelType, IBudgetProps>(
 
     //예정 수입
     incomeScheduled: {
+      type: Number,
+      default: 0,
+    },
+    incomeScheduledRemain: {
       type: Number,
       default: 0,
     },
