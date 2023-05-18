@@ -73,6 +73,11 @@ export const create = async (req: Request, res: Response) => {
       );
       if (!transactionScheduled) return res.status(404).send({});
       transaction.overAmount = transaction.amount - transactionScheduled.amount;
+      if (transaction.isExpense) {
+        budget.expenseScheduledRemain -= transactionScheduled.amount;
+      } else {
+        budget.incomeScheduledRemain -= transactionScheduled.amount;
+      }
     }
     if (req.body.linkedPaymentMethodId) {
       const pm = _.find(user.paymentMethods, {
@@ -93,9 +98,15 @@ export const create = async (req: Request, res: Response) => {
       category.amountScheduled += transaction.amount;
 
       // 1-1. expense transaction
-      if (transaction.isExpense) budget.expenseScheduled += transaction.amount;
+      if (transaction.isExpense) {
+        budget.expenseScheduled += transaction.amount;
+        budget.expenseScheduledRemain += transaction.amount;
+      }
       // 1-2. income transaction
-      else budget.incomeScheduled += transaction.amount;
+      else {
+        budget.incomeScheduled += transaction.amount;
+        budget.incomeScheduledRemain += transaction.amount;
+      }
     }
     // 2. current transaction
     else {
@@ -356,9 +367,19 @@ export const updateV2 = async (req: Request, res: Response) => {
           category.amountScheduled += diff;
 
           // 1-1. expense transaction
-          if (transaction.isExpense) budget.expenseScheduled += diff;
+          if (transaction.isExpense) {
+            budget.expenseScheduled += diff;
+            if (!transactionLinked) {
+              budget.expenseScheduledRemain += diff;
+            }
+          }
           // 1-2. income transaction
-          else budget.incomeScheduled += diff;
+          else {
+            budget.incomeScheduled += diff;
+            if (!transactionLinked) {
+              budget.incomeScheduledRemain += diff;
+            }
+          }
         }
         // 2. current transaction
         else {
