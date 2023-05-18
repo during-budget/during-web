@@ -7,6 +7,8 @@ interface InfomProps {
   hideIcon?: boolean;
   isThin?: boolean;
   isHide?: boolean;
+  isLeft?: boolean;
+  isFlex?: boolean;
 }
 
 const Inform = ({
@@ -15,15 +17,18 @@ const Inform = ({
   hideIcon,
   isThin,
   isHide,
+  isFlex,
+  isLeft,
   children,
 }: PropsWithChildren<InfomProps>) => {
   const msgClass = isError ? classes.error : classes.inform;
   const thinClass = isThin ? classes.thin : '';
+
   return (
     <div
-      className={`${classes.msg} ${msgClass} ${thinClass} ${
-        isHide ? classes.hide : ''
-      } ${className}`}
+      className={`${classes.msg} ${msgClass} ${thinClass} ${isHide ? classes.hide : ''} ${
+        isFlex ? classes.flex : ''
+      } ${isLeft ? classes.left : ''} ${className || ''}`}
     >
       {!hideIcon && <i className={`fa-solid fa-circle-exclamation ${classes.icon}`} />}
       {children}

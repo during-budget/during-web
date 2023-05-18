@@ -1,31 +1,50 @@
 import { useEffect, useRef, useState } from 'react';
+import { useAppDispatch } from '../../hooks/redux-hook';
+import { uiActions } from '../../store/ui';
 import {
+  UserDataType,
   sendCodeLogin,
   sendCodeRegister,
   verifyLogin,
   verifyRegister,
 } from '../../util/api/userAPI';
-import { throwError } from '../../util/error';
+import { getErrorMsg } from '../../util/error';
+import { validateEmail } from '../../util/validate';
 import CodeField from '../Auth/CodeField';
 import Button from '../UI/Button';
+import Inform from '../UI/Inform';
 import InputField from '../UI/InputField';
 import classes from './EmailForm.module.css';
 
-function EmailForm(props: {
-  isLogin: boolean;
-  toggleIsLogin: () => void;
+interface EmailFormProps {
   changeAuthType: () => void;
-  getUserLogin: (user: any) => void;
-}) {
-  const { isLogin, toggleIsLogin } = props;
+  getUserLogin: (user: UserDataType) => void;
+}
+
+const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
+  const dispatch = useAppDispatch();
+
+  const codeRef = useRef<any>();
 
   const [emailState, setEmailState] = useState('');
   const [emailVerifyState, setEmailVerifyState] = useState(false);
-  const codeRef = useRef<any>();
+  const [errorState, setErrorState] = useState<String[]>([]);
+  const [isLogin, setIsLogin] = useState(false);
 
   // Handlers
   const sendHandler = async (event?: React.MouseEvent) => {
     event!.preventDefault();
+    setErrorState([]);
+
+    if (!emailState.trim()) {
+      setErrorState(['이메일을 입력하세요']);
+      return;
+    }
+
+    if (!validateEmail(emailState)) {
+      setErrorState(['올바른 이메일을 입력해주세요']);
+      return;
+    }
 
     try {
       if (isLogin) {
@@ -36,17 +55,32 @@ function EmailForm(props: {
 
       setEmailVerifyState(true);
     } catch (error) {
-      throwError(error);
+      const msg = getErrorMsg(error);
+      if (msg) {
+        setErrorState(msg);
+      } else {
+        dispatch(uiActions.showErrorModal());
+      }
     }
   };
 
   const verifyHandler = async (event?: React.MouseEvent) => {
     event!.preventDefault();
+    setErrorState([]);
+
+    if (!emailState.trim()) {
+      setErrorState(['이메일을 입력하세요']);
+      return;
+    }
+
+    const code = codeRef.current!.value();
+    if (code.trim().length < 6) {
+      setErrorState(['인증 코드 여섯자리를 모두 입력하세요']);
+      return;
+    }
 
     let data;
     try {
-      const code = codeRef.current!.value();
-
       // TODO: 자동로그인(persist) 체크박스 추가
       const persist = true;
 
@@ -56,9 +90,14 @@ function EmailForm(props: {
         data = await verifyRegister(emailState, code, persist);
       }
 
-      props.getUserLogin(data.user);
+      getUserLogin(data.user);
     } catch (error) {
-      throwError(error);
+      const msg = getErrorMsg(error);
+      if (!msg) {
+        dispatch(uiActions.showErrorModal());
+      } else {
+        setErrorState(msg);
+      }
     }
   };
 
@@ -66,10 +105,29 @@ function EmailForm(props: {
     setEmailState(event.target.value);
   };
 
+  const toggleIsLogin = () => {
+    setErrorState([]);
+    setIsLogin((prev) => !prev);
+  };
+
+  // Focus email input on First load
   useEffect(() => {
     const field = document.querySelector('#auth-email-field input') as HTMLInputElement;
     field?.focus();
   }, []);
+
+  // Error message JSXElement
+  const errorMessage = errorState.length !== 0 && (
+    <Inform isError={true} className={classes.error} isFlex={true} isLeft={true}>
+      {errorState.map((error, i) => {
+        return (
+          <p key={i}>
+            {errorState.length > 1 && i === 0 ? <strong>{error}</strong> : error}
+          </p>
+        );
+      })}
+    </Inform>
+  );
 
   return (
     <div className={classes.email}>
@@ -90,6 +148,7 @@ function EmailForm(props: {
               </Button>
             )}
           </div>
+
           <input
             id="auth-email"
             type="email"
@@ -98,17 +157,22 @@ function EmailForm(props: {
             required
           />
         </InputField>
+
         {emailVerifyState ? (
           <>
             <CodeField className={classes.code} ref={codeRef} />
+            {errorMessage}
             <Button type="submit" className={classes.submit} onClick={verifyHandler}>
               {isLogin ? '로그인' : '회원가입'}
             </Button>
           </>
         ) : (
-          <Button type="submit" className={classes.submit} onClick={sendHandler}>
-            {isLogin ? '로그인 인증코드 전송' : '회원가입 인증코드 전송'}
-          </Button>
+          <>
+            {errorMessage}
+            <Button type="submit" className={classes.submit} onClick={sendHandler}>
+              {isLogin ? '로그인 인증코드 전송' : '회원가입 인증코드 전송'}
+            </Button>
+          </>
         )}
       </form>
       <div className={classes.buttons}>
@@ -119,17 +183,24 @@ function EmailForm(props: {
         <Button
           styleClass="extra"
           onClick={() => {
+            setErrorState([]);
             toggleIsLogin();
           }}
         >
           {isLogin ? '회원가입하기' : '로그인하기'}
         </Button>
       </div>
-      <Button styleClass="extra" className={classes.sns} onClick={props.changeAuthType}>
+      <Button
+        styleClass="extra"
+        className={classes.sns}
+        onClick={() => {
+          changeAuthType();
+        }}
+      >
         SNS로 {isLogin ? '로그인' : '회원가입'}
       </Button>
     </div>
   );
-}
+};
 
 export default EmailForm;
