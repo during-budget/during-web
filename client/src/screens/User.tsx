@@ -8,7 +8,7 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 import { userActions } from '../store/user';
-import { logoutUser } from '../util/api/userAPI';
+import { deleteUser, logoutUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 import Modal from '../components/UI/Modal';
@@ -129,6 +129,16 @@ function User() {
     navigate('/auth', { replace: true });
   };
 
+  const deleteHandler = async () => {
+    if (
+      confirm('계정을 삭제할까요?\n 모든 정보가 삭제되며 복구할 수 없습니다.') === false
+    )
+      return;
+    await deleteUser();
+    dispatch(userActions.logout());
+    navigate('/auth', { replace: true });
+  };
+
   useEffect(() => {
     getSnsId().then((data) => {
       if (data?.snsId) {
@@ -147,9 +157,15 @@ function User() {
           {settings.map((data, i) => (
             <SettingList key={i} title={data.title} items={data.items} />
           ))}
-          <Button styleClass="extra" className={classes.logout} onClick={logoutHandler}>
-            로그아웃
-          </Button>
+          <div className={classes.buttons}>
+            <Button styleClass="extra" className={classes.logout} onClick={deleteHandler}>
+              탈퇴하기
+            </Button>
+            |
+            <Button styleClass="extra" className={classes.logout} onClick={logoutHandler}>
+              로그아웃
+            </Button>
+          </div>
         </section>
         <section>
           <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
