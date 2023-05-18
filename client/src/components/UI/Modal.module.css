@@ -1,9 +1,13 @@
 .modal-container {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: -1;
+}
+
+.open {
   z-index: 100;
 }
 
@@ -17,16 +21,22 @@
   opacity: 0;
 }
 
+.open .backdrop {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 .closed .backdrop {
   opacity: 0;
 }
 
 .backdrop {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  transform: translateY(100%);
   background-color: rgba(0, 0, 0, 0.8);
 }
 
