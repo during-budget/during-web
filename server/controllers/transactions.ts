@@ -668,23 +668,44 @@ export const remove = async (req: Request, res: Response) => {
 
     const category = budget.categories[categoryIdx];
 
+    let transactionLinked: HydratedDocument<ITransaction> | null = null;
+    if (transaction.linkId) {
+      transactionLinked = await Transaction.findById(transaction.linkId);
+    }
+
     // 1. scheduled transaction
     if (!transaction.isCurrent) {
       category.amountScheduled -= transaction.amount;
 
       // 1-1. expense transaction
-      if (transaction.isExpense) budget.expenseScheduled -= transaction.amount;
+      if (transaction.isExpense) {
+        budget.expenseScheduled -= transaction.amount;
+        budget.expenseScheduledRemain -= transaction.amount;
+      }
       // 1-2. income transaction
-      else budget.incomeScheduled -= transaction.amount;
+      else {
+        budget.incomeScheduled -= transaction.amount;
+        budget.incomeScheduledRemain -= transaction.amount;
+      }
     }
     // 2. current transaction
     else {
       category.amountCurrent -= transaction.amount;
 
       // 2-1. expense transaction
-      if (transaction.isExpense) budget.expenseCurrent -= transaction.amount;
+      if (transaction.isExpense) {
+        budget.expenseCurrent -= transaction.amount;
+        if (transactionLinked) {
+          budget.expenseScheduledRemain += transactionLinked.amount;
+        }
+      }
       // 2-2. income transaction
-      else budget.incomeCurrent -= transaction.amount;
+      else {
+        budget.incomeCurrent -= transaction.amount;
+        if (transactionLinked) {
+          budget.incomeScheduledRemain += transactionLinked.amount;
+        }
+      }
     }
 
     let isUserUpdated = false;
@@ -723,14 +744,10 @@ export const remove = async (req: Request, res: Response) => {
     budget.isModified("categories");
     await budget.save();
 
-    let transactionLinked: HydratedDocument<ITransaction> | null = null;
-    if (transaction.linkId) {
-      transactionLinked = await Transaction.findById(transaction.linkId);
-      if (transactionLinked) {
-        transactionLinked.linkId = undefined;
-        transactionLinked.overAmount = undefined;
-        await transactionLinked.save();
-      }
+    if (transactionLinked) {
+      transactionLinked.linkId = undefined;
+      transactionLinked.overAmount = undefined;
+      await transactionLinked.save();
     }
 
     return res.status(200).send({
