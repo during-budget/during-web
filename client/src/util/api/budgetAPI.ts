@@ -13,9 +13,11 @@ export interface BudgetDataType {
   endDate: string;
   expenseCurrent: number;
   expenseScheduled: number;
+  expenseScheduledRemain: number;
   expensePlanned: number;
   incomeCurrent: number;
   incomeScheduled: number;
+  incomeScheduledRemain: number;
   incomePlanned: number;
   categories: BudgetCategoryType[];
 }

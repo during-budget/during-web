@@ -71,10 +71,10 @@ class Budget {
       startDate,
       endDate,
       expenseCurrent,
-      expenseScheduled,
+      expenseScheduledRemain,
       expensePlanned,
       incomeCurrent,
-      incomeScheduled,
+      incomeScheduledRemain,
       incomePlanned,
     } = budget;
 
@@ -86,8 +86,8 @@ class Budget {
         end: new Date(endDate),
       },
       total: {
-        expense: new Amount(expenseCurrent, expenseScheduled, expensePlanned),
-        income: new Amount(incomeCurrent, incomeScheduled, incomePlanned),
+        expense: new Amount(expenseCurrent, expenseScheduledRemain, expensePlanned),
+        income: new Amount(incomeCurrent, incomeScheduledRemain, incomePlanned),
       },
     });
   };
