@@ -1,0 +1,37 @@
+.landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.landing h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.1rem;
+  font-weight: 900;
+}
+
+.full {
+  width: 100vw;
+  height: 90vh;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 2.5rem;
+}
+
+.button {
+  width: 70%;
+  max-width: 480px;
+  margin: 8vh 0;
+  height: 4rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}

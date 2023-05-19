@@ -126,7 +126,7 @@ function User() {
   const logoutHandler = async () => {
     await logoutUser();
     dispatch(userActions.logout());
-    navigate('/auth', { replace: true });
+    navigate('/', { replace: true });
   };
 
   const deleteHandler = async () => {
@@ -136,7 +136,7 @@ function User() {
       return;
     await deleteUser();
     dispatch(userActions.logout());
-    navigate('/auth', { replace: true });
+    navigate('/', { replace: true });
   };
 
   useEffect(() => {

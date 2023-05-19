@@ -18,10 +18,10 @@ import classes from './EmailForm.module.css';
 
 interface EmailFormProps {
   changeAuthType: () => void;
-  getUserLogin: (user: UserDataType) => void;
+  onLogin: (user: UserDataType) => void;
 }
 
-const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
+const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
   const dispatch = useAppDispatch();
 
   const codeRef = useRef<any>(null);
@@ -94,7 +94,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
         data = await verifyRegister(emailState, code, persist);
       }
 
-      getUserLogin(data.user);
+      onLogin(data.user);
     } catch (error) {
       const msg = getErrorMsg(error);
       if (!msg) {
@@ -115,8 +115,8 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
   };
 
   const focusEmail = () => {
-    const field = document.querySelector('#auth-email-field input') as HTMLInputElement;
-    field?.focus();
+    const emailInput = document.getElementById('auth-email-input') as HTMLInputElement;
+    emailInput?.focus({ preventScroll: true });
   };
 
   // Focus email input on First load
@@ -141,7 +141,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
 
   return (
     <div className={classes.email}>
-      <img src="/assets/images/logo.png" alt="듀링 가계부 로고" />
+      <img src="/images/logo.png" alt="듀링 가계부 로고" />
       <h2>{isLogin ? '로그인' : '회원가입'}</h2>
       <form className={classes.form}>
         <InputField
@@ -149,7 +149,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
           className={`${classes.field} ${classes.emailField}`}
         >
           <div className={classes.emailLabel}>
-            <label htmlFor="register-email">
+            <label htmlFor="auth-email-input">
               이메일로 {isLogin ? '로그인' : '회원가입'}
             </label>
             {emailVerifyState && (
@@ -160,7 +160,7 @@ const EmailForm = ({ changeAuthType, getUserLogin }: EmailFormProps) => {
           </div>
 
           <input
-            id="auth-email"
+            id="auth-email-input"
             type="email"
             value={emailState}
             onChange={emailHandler}

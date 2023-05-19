@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLoaderData, useLocation, useNavigate } from 'react-router';
-import EmailForm from '../components/Auth/EmailForm';
-import SNSForm from '../components/Auth/SNSForm';
+import Auth from '../components/Auth/Auth';
+import LandingCarousel from '../components/Landing/LandingCarousel';
+import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
-import Modal from '../components/UI/Modal';
-import Overlay from '../components/UI/Overlay';
 import { useAppDispatch } from '../hooks/redux-hook';
 import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
@@ -13,16 +12,15 @@ import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
-import classes from './Auth.module.css';
+import classes from './Landing.module.css';
 
-function Auth() {
+const Landing = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [showLogin, setShowLogin] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-  const [isEmailAuth, setIsEmailAuth] = useState(false);
 
-  // Get login
   const location = useLocation();
   const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const from = location.state?.from?.pathname;
@@ -75,15 +73,6 @@ function Auth() {
     navigate(from || '/budget', { replace: true });
   };
 
-  // Set state
-  const setEmailAuth = () => {
-    setIsEmailAuth(true);
-  };
-
-  const setSNSAuth = () => {
-    setIsEmailAuth(false);
-  };
-
   if (isFirstLoad) {
     return (
       <div className={`${classes.full} ${classes.center}`}>
@@ -92,25 +81,31 @@ function Auth() {
     );
   } else {
     return (
-      <>
-        <Overlay
-          className={`${classes.auth} ${isEmailAuth ? classes.email : classes.sns}`}
-          isOpen={true}
+      <div className={classes.landing}>
+        <img className={classes.logo} src="/images/logo.png" alt="듀링 가계부 로고" />
+        <LandingCarousel />
+        <Button
+          className={classes.button}
+          onClick={() => {
+            setShowLogin(true);
+          }}
         >
-          {isEmailAuth ? (
-            <EmailForm changeAuthType={setSNSAuth} getUserLogin={getUserLogin} />
-          ) : (
-            <SNSForm changeAuthType={setEmailAuth} />
-          )}
-        </Overlay>
-        <Modal />
-      </>
+          듀링 가계부 시작하기
+        </Button>
+        <Auth
+          isOpen={showLogin}
+          onClose={() => {
+            setShowLogin(false);
+          }}
+          onLogin={getUserLogin}
+        />
+      </div>
     );
   }
-}
+};
 
 export const loader = async () => {
   return getUserState();
 };
 
-export default Auth;
+export default Landing;

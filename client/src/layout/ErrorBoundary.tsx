@@ -8,7 +8,7 @@ function ErrorBoundary() {
 
   useEffect(() => {
     if (routeError.status === 403) {
-      navigate(`/auth`, { replace: true, state: { from: location } });
+      navigate('/', { replace: true, state: { from: location } });
     } else {
       // TODO: 에러 페이지 보완
       console.log(routeError);
