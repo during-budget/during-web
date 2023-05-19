@@ -14,7 +14,7 @@ interface SNSFormProps {
 const SNSForm = ({ changeAuthType }: SNSFormProps) => {
   return (
     <div className={classes.sns}>
-      <img src="/assets/images/logo.png" alt="듀링 가계부 로고" />
+      <img src="/images/logo.png" alt="듀링 가계부 로고" />
       <h2>시작하기</h2>
       <p>SNS 계정으로 시작</p>
       <div className={classes.form}>

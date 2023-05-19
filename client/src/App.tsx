@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
@@ -7,12 +7,12 @@ import ErrorBoundary from './layout/ErrorBoundary';
 import Nav from './layout/Nav';
 import Root from './layout/Root';
 import Asset from './screens/Asset';
-import Auth, { loader as AuthLoader } from './screens/Auth';
 import Budget, { loader as budgetLoader } from './screens/Budget';
-import NewBudget from './screens/NewBudget';
-import User from './screens/User';
 import InitialSetting from './screens/InitialSetting';
+import Landing, { loader as userLoader } from './screens/Landing';
+import NewBudget from './screens/NewBudget';
 import Redirect from './screens/Redirect';
+import User from './screens/User';
 
 const router = createBrowserRouter([
   {
@@ -22,12 +22,8 @@ const router = createBrowserRouter([
       {
         path: '/',
         index: true,
-        element: <Navigate to="/auth" />,
-      },
-      {
-        path: '/auth',
-        element: <Auth />,
-        loader: AuthLoader,
+        element: <Landing />,
+        loader: userLoader, // get user state
       },
       {
         path: '/init',

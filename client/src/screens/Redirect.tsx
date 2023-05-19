@@ -43,7 +43,7 @@ const Redirect = () => {
             description: '이메일로 로그인 후 소셜 계정 연결을 진행해주세요.',
           })
         );
-        navigate('/auth');
+        navigate('/');
         break;
       case 'CONNECT_SUCCESS':
         dispatch(uiActions.showModal({ icon: '✓', title: '연결 완료' }));
