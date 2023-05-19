@@ -20,15 +20,15 @@ const totalSlice = createSlice({
     setTotalFromBudgetData(state, action: PayloadAction<BudgetDataType>) {
       const {
         expenseCurrent,
-        expenseScheduled,
+        expenseScheduledRemain,
         expensePlanned,
         incomeCurrent,
-        incomeScheduled,
+        incomeScheduledRemain,
         incomePlanned,
       } = action.payload;
 
-      state.expense = new Amount(expenseCurrent, expenseScheduled, expensePlanned);
-      state.income = new Amount(incomeCurrent, incomeScheduled, incomePlanned);
+      state.expense = new Amount(expenseCurrent, expenseScheduledRemain, expensePlanned);
+      state.income = new Amount(incomeCurrent, incomeScheduledRemain, incomePlanned);
     },
     updateTotalAmount(
       state,
