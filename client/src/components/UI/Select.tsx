@@ -8,7 +8,7 @@ const Select = React.forwardRef(
   (
     props: {
       className?: string;
-      data: { element?: React.ReactNode; value?: string; label: string }[];
+      data: { element?: React.ReactNode; value?: string; label?: string }[];
       defaultValue?: string;
       value?: string;
       onChange?: (value?: string) => void;
