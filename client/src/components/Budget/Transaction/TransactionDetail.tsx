@@ -25,24 +25,83 @@ function TransactionDetail({ isDefaultBudget }: Props) {
     dispatch(transactionActions.closeDetail());
   };
 
-  // TODO: 에러 처리 제대로
-  if (!transaction) {
-    return <p>내역이 존재하지 않습니다.</p>;
-  }
+  const getContent = () => {
+    if (!transaction) return;
 
-  const {
-    isCurrent,
-    isExpense,
-    date,
-    amount,
-    linkId,
-    linkedPaymentMethodId,
-    overAmount,
-    icon,
-    title,
-    tags,
-    memo,
-  } = transaction;
+    const {
+      isCurrent,
+      isExpense,
+      date,
+      amount,
+      linkId,
+      linkedPaymentMethodId,
+      overAmount,
+      icon,
+      title,
+      tags,
+      memo,
+    } = transaction;
+
+    return (
+      <>
+        <span className={classes.type}>
+          {transaction && (isCurrent ? '거래내역' : '예정내역')}
+        </span>
+        <div className={classes.content}>
+          <div>
+            <p className={classes.date}>
+              {date &&
+                (isDefaultBudget
+                  ? `매월 ${date.getDate()}일`
+                  : getNumericDotDateString(date))}
+            </p>
+            <p className={classes.amount}>
+              {transaction && (isExpense ? '-' : '+')}
+              {amount && Amount.getAmountStr(amount)}
+            </p>
+            {isCurrent && linkId && overAmount !== undefined ? (
+              <OverAmountMsg className={classes.over} overAmount={overAmount} />
+            ) : null}
+          </div>
+          <div className={classes.main}>
+            <Icon size="5rem" fontSize="2.5rem">
+              {icon || category?.icon}
+            </Icon>
+            <span className={classes.category}>{category?.title}</span>
+            <span className={classes.titles}>{title?.join(' | ')}</span>
+            <ul className={classes.tags}>
+              {tags?.map((item: any, i: number) => (
+                <li key={i}>
+                  <Tag>{item}</Tag>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {payment && (
+            <dl className={classes.detail}>
+              {payment && (
+                <div>
+                  <dt>결제수단</dt>
+                  <dd>{payment.title}</dd>
+                </div>
+              )}
+              {false && ( // TODO: 이벤트 개발 후 작업
+                <div>
+                  <dt>이벤트</dt>
+                  <dd>ㅇㅇ 약속</dd>
+                </div>
+              )}
+            </dl>
+          )}
+          {memo && (
+            <div className={classes.memo}>
+              <p>{memo}</p>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
 
   return (
     <Overlay
@@ -50,61 +109,7 @@ function TransactionDetail({ isDefaultBudget }: Props) {
       isOpen={isOpen}
       onClose={closeHandler}
     >
-      <span className={classes.type}>
-        {transaction && (isCurrent ? '거래내역' : '예정내역')}
-      </span>
-      <div className={classes.content}>
-        <div>
-          <p className={classes.date}>
-            {date &&
-              (isDefaultBudget
-                ? `매월 ${date.getDate()}일`
-                : getNumericDotDateString(date))}
-          </p>
-          <p className={classes.amount}>
-            {transaction && (isExpense ? '-' : '+')}
-            {amount && Amount.getAmountStr(amount)}
-          </p>
-          {isCurrent && linkId && overAmount !== undefined ? (
-            <OverAmountMsg className={classes.over} overAmount={overAmount} />
-          ) : null}
-        </div>
-        <div className={classes.main}>
-          <Icon size="5rem" fontSize="2.5rem">
-            {icon || category?.icon}
-          </Icon>
-          <span className={classes.category}>{category?.title}</span>
-          <span className={classes.titles}>{title?.join(' | ')}</span>
-          <ul className={classes.tags}>
-            {tags?.map((item: any, i: number) => (
-              <li key={i}>
-                <Tag>{item}</Tag>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {payment && (
-          <dl className={classes.detail}>
-            {payment && (
-              <div>
-                <dt>결제수단</dt>
-                <dd>{payment.title}</dd>
-              </div>
-            )}
-            {false && ( // TODO: 이벤트 개발 후 작업
-              <div>
-                <dt>이벤트</dt>
-                <dd>ㅇㅇ 약속</dd>
-              </div>
-            )}
-          </dl>
-        )}
-        {memo && (
-          <div className={classes.memo}>
-            <p>{memo}</p>
-          </div>
-        )}
-      </div>
+      {getContent()}
       <div className={classes.buttons}>
         {transaction && category && (
           <TransactionOption
