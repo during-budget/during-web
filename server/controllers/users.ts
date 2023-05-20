@@ -41,7 +41,7 @@ export const register = async (req: Request, res: Response) => {
       client.v4.hSet(req.body.email, "code", cipher(code)),
       client.expire(req.body.email, 60 * 5),
     ]);
-    return res.status(200).send({ message: "Verification code is sent" });
+    return res.status(200).send({});
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
@@ -135,7 +135,7 @@ export const loginLocal = async (req: Request, res: Response) => {
     client.v4.hSet(req.body.email, "code", cipher(code)),
     client.expire(req.body.email, 60 * 5),
   ]);
-  return res.status(200).send({ message: "Verification code is sent" });
+  return res.status(200).send({});
 };
 
 /**
@@ -244,7 +244,7 @@ export const remove = async (req: Request, res: Response) => {
       Budget.deleteMany({ userId: user._id }),
     ]);
     await User.findByIdAndRemove(user._id);
-    return res.status(200).send();
+    return res.status(200).send({});
   } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
@@ -276,7 +276,7 @@ export const remove2 = async (req: Request, res: Response) => {
       Budget.deleteMany({ userId: req.params._id }),
     ]);
     await User.findByIdAndRemove(req.params._id);
-    return res.status(200).send();
+    return res.status(200).send({});
   } catch (err: any) {
     return res.status(err.status || 500).send({ message: err.message });
   }
