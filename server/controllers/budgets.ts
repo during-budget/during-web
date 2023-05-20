@@ -5,7 +5,7 @@ import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_INVALID, FIELD_MISSING } from "../@message";
+import { FIELD_INVALID, FIELD_MISSING, NOT_PERMITTED } from "../@message";
 
 // budget controller
 type budgetKeys =
@@ -597,7 +597,7 @@ export const find = async (req: Request, res: Response) => {
       if (!budget) return res.status(404).send();
       if (!budget.userId.equals(user._id)) {
         if (user.auth !== "admin") {
-          return res.status(409).send();
+          return res.status(403).send({ message: NOT_PERMITTED });
         }
       }
 
@@ -630,7 +630,7 @@ export const find = async (req: Request, res: Response) => {
     }
     if ("userId" in req.query) {
       if (user.auth !== "admin") {
-        return res.status(403).send({ message: "you have no permission" });
+        return res.status(403).send({ message: NOT_PERMITTED });
       }
       if (req.query.userId === "*") {
         const budgets = await Budget.find({}).lean();
@@ -661,7 +661,7 @@ export const remove = async (req: Request, res: Response) => {
 
     if (!budget.userId.equals(user._id)) {
       if (user.auth !== "admin") {
-        return res.status(409).send();
+        return res.status(403).send({ message: NOT_PERMITTED });
       }
     }
 

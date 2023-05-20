@@ -6,7 +6,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 import { logger } from "../log/logger";
 import { User } from "../models/User";
-import { FIELD_MISSING } from "../@message";
+import { FIELD_MISSING, NOT_PERMITTED } from "../@message";
 
 // transaction controller
 
@@ -607,7 +607,7 @@ export const find = async (req: Request, res: Response) => {
     }
     if ("userId" in req.query) {
       if (user.auth !== "admin") {
-        return res.status(403).send({ message: "you have no permission" });
+        return res.status(403).send({ message: NOT_PERMITTED });
       }
       if (req.query.userId === "*") {
         const transactions = await Transaction.find({}).lean();
@@ -650,7 +650,7 @@ export const remove = async (req: Request, res: Response) => {
 
     if (!transaction.userId.equals(user._id)) {
       if (user.auth !== "admin") {
-        return res.status(409).send();
+        return res.status(403).send({ message: NOT_PERMITTED });
       }
       const _user = await User.findById(transaction.userId);
       if (!_user) return res.status(404).send({ message: "User not found" });
