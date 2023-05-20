@@ -6,13 +6,14 @@ import { ICard } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
+import { FIELD_MISSING } from "../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
     if (!("title" in req.body)) {
-      return res.status(400).send({ message: "field 'title' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("title") });
     }
 
     const card = {
@@ -58,8 +59,7 @@ export const update = async (req: Request, res: Response) => {
     for (let field of ["icon", "title", "detail"]) {
       if (!(field in req.body)) {
         return res.status(400).send({
-          message: "fields  ['icon','title','detail'] are required",
-          missing: field,
+          message: FIELD_MISSING(field),
         });
       }
     }
@@ -176,7 +176,7 @@ export const updateAll = async (req: Request, res: Response) => {
       /* create card */
       if (!("_id" in _card)) {
         if (!("title" in _card)) {
-          return res.status(400).send({ message: "title is required" });
+          return res.status(400).send({ message: FIELD_MISSING("title") });
         }
         if ("linkedAssetId" in _card) {
           const asset = _.find(user.assets, {

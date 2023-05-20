@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "../models/User";
 
 import { logger } from "../log/logger";
+import { FIELD_MISSING } from "../@message";
 
 export const update = async (req: Request, res: Response) => {
   try {
@@ -26,12 +27,10 @@ export const update = async (req: Request, res: Response) => {
 
     for (let _pm of req.body.paymentMethods) {
       if (!("_id" in _pm)) {
-        return res.status(400).send({ message: "field '_id' is required" });
+        return res.status(400).send({ message: FIELD_MISSING("_id") });
       }
       if (!("isChecked" in _pm)) {
-        return res
-          .status(400)
-          .send({ message: "field 'isChecked' is required" });
+        return res.status(400).send({ message: FIELD_MISSING("isChecked") });
       }
 
       /* update pm */
