@@ -155,7 +155,7 @@ export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("cards" in req.body))
-      return res.status(409).send({ message: "field 'cards' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("cards") });
 
     const user = req.user!;
     if (!user.cards) user.cards = new Types.DocumentArray([]);

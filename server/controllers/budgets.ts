@@ -327,7 +327,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
-    if (!budget.userId.equals(user._id)) return res.status(409).send();
+    if (!budget.userId.equals(user._id)) {
+      return res.status(403).send({ message: NOT_PERMITTED });
+    }
 
     const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
       budget.categories.map((category) => [
@@ -505,7 +507,8 @@ export const updateCategoryAmountPlanned = async (
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({ message: "budget not found" });
-    if (!budget.userId.equals(user._id)) return res.status(409).send();
+    if (!budget.userId.equals(user._id))
+      return res.status(403).send({ message: NOT_PERMITTED });
 
     const categoryIdx = budget.findCategoryIdx(
       req.params.categoryId.toString()
@@ -554,7 +557,8 @@ export const updateField = async (req: Request, res: Response) => {
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
-    if (!budget.userId.equals(user._id)) return res.status(409).send();
+    if (!budget.userId.equals(user._id))
+      return res.status(403).send({ message: NOT_PERMITTED });
 
     budget.startDate = req.body.startDate ?? budget.startDate;
     budget.endDate = req.body.endDate ?? budget.endDate;

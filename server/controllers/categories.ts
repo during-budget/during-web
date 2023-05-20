@@ -15,9 +15,7 @@ export const updateV2 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("categories" in req.body))
-      return res
-        .status(409)
-        .send({ message: "field 'categories' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("categories") });
 
     const user = req.user!;
 
@@ -225,9 +223,7 @@ export const updateV3 = async (req: Request, res: Response) => {
       return res.status(400).send({ message: FIELD_MISSING("isExpense") });
 
     if (!("categories" in req.body))
-      return res
-        .status(409)
-        .send({ message: "field 'categories' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("cateogires") });
 
     const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
     const isIncome = "isIncome" in req.body ? req.body.isIncome : false;

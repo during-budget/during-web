@@ -121,7 +121,7 @@ export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("assets" in req.body))
-      return res.status(409).send({ message: "field 'assets' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("assets") });
 
     const user = req.user!;
     if (!user.assets) user.assets = new Types.DocumentArray([]);

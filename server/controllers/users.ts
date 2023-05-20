@@ -14,7 +14,7 @@ import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING, USER_NOT_FOUND } from "../@message";
+import { EMAIL_IN_USE, FIELD_MISSING, USER_NOT_FOUND } from "../@message";
 
 //_____________________________________________________________________________
 
@@ -26,7 +26,7 @@ import { FIELD_MISSING, USER_NOT_FOUND } from "../@message";
 export const register = async (req: Request, res: Response) => {
   try {
     const exUser = await User.findOne({ email: req.body.email });
-    if (exUser) return res.status(409).send({ message: `Email in use` });
+    if (exUser) return res.status(401).send({ message: EMAIL_IN_USE });
 
     // email 유효성 검사
 
