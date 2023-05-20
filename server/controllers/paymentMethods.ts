@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_REQUIRED, PM_CANNOT_BE_REMOVED } from "../@message";
+import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../@message";
 
 export const update = async (req: Request, res: Response) => {
   try {
@@ -36,8 +36,7 @@ export const update = async (req: Request, res: Response) => {
       /* update pm */
       const key = _pm._id;
       const exPM = pmDict[key];
-      if (!exPM)
-        return res.status(404).send({ message: "paymentMethod not found" });
+      if (!exPM) return res.status(404).send({ message: NOT_FOUND("PM") });
 
       _paymentMethods.push({
         ...exPM,

@@ -9,6 +9,7 @@ import { User } from "../models/User";
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_REQUIRED,
+  NOT_FOUND,
   NOT_PERMITTED,
 } from "../@message";
 
@@ -36,18 +37,13 @@ export const create = async (req: Request, res: Response) => {
     const user = req.user!;
 
     const budget = await Budget.findById(req.body.budgetId);
-    if (!budget)
-      return res
-        .status(404)
-        .send({ message: `budget(${req.body.budgetId}) not found` });
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
     const category = _.find(budget.categories, {
       categoryId: new Types.ObjectId(req.body.categoryId),
     });
     if (!category)
-      return res.status(404).send({
-        message: `category(${req.body.categoryId}) not found in budget`,
-      });
+      return res.status(404).send({ message: NOT_FOUND("category") });
 
     const transaction = new Transaction({
       userId: user._id,
@@ -74,7 +70,8 @@ export const create = async (req: Request, res: Response) => {
         { linkId: transaction._id },
         { new: true }
       );
-      if (!transactionScheduled) return res.status(404).send({});
+      if (!transactionScheduled)
+        return res.status(404).send({ message: NOT_FOUND("transaction") });
       transaction.overAmount = transaction.amount - transactionScheduled.amount;
       if (transaction.isExpense) {
         budget.expenseScheduledRemain -= transactionScheduled.amount;
@@ -86,8 +83,7 @@ export const create = async (req: Request, res: Response) => {
       const pm = _.find(user.paymentMethods, {
         _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
       });
-      if (!pm)
-        return res.status(404).send({ message: "paymentMethod not found" });
+      if (!pm) return res.status(404).send({ message: NOT_FOUND("PM") });
       transaction.linkedPaymentMethodId = pm._id;
       transaction.linkedPaymentMethodType = pm.type;
       transaction.linkedPaymentMethodIcon = pm.icon;
@@ -172,7 +168,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     const user = req.user!;
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction)
-      return res.status(404).send({ message: "transaction not found" });
+      return res.status(404).send({ message: NOT_FOUND("transaction") });
     if (!transaction.userId.equals(user._id))
       return res.status(403).send({ message: NOT_PERMITTED });
 
@@ -212,16 +208,12 @@ export const updateV2 = async (req: Request, res: Response) => {
     ) {
       budget = await Budget.findById(transaction.budgetId);
       if (!budget)
-        return res
-          .status(404)
-          .send({ message: `budget(${transaction.budgetId}) not found` });
+        return res.status(404).send({ message: NOT_FOUND("budget") });
 
       if (transaction?.linkId) {
         transactionLinked = await Transaction.findById(transaction.linkId);
         if (!transactionLinked) {
-          return res
-            .status(404)
-            .send({ message: "linked transaction not found " });
+          return res.status(404).send({ message: NOT_FOUND("transaction") });
         }
       }
 
@@ -230,18 +222,12 @@ export const updateV2 = async (req: Request, res: Response) => {
           transaction.category.categoryId
         );
         if (oldCategoryIdx === -1)
-          return res.status(404).send({
-            message: `old category(${transaction.category.categoryId}) not found in budget`,
-            transaction,
-          });
+          return res.status(404).send({ message: NOT_FOUND("category") });
         const oldCategory = budget.categories[oldCategoryIdx];
 
         const newCategoryIdx = budget.findCategoryIdx(req.body.categoryId);
         if (newCategoryIdx === -1)
-          return res.status(404).send({
-            message: `category(${req.body.categoryId}) not found in budget`,
-            transaction,
-          });
+          return res.status(404).send({ message: NOT_FOUND("category") });
         const newCategory = budget.categories[newCategoryIdx];
 
         if (transaction.isExpense !== newCategory.isExpense) {
@@ -355,10 +341,7 @@ export const updateV2 = async (req: Request, res: Response) => {
           transaction.category.categoryId
         );
         if (categoryIdx === -1)
-          return res.status(404).send({
-            message: `category(${transaction.category.categoryId}) not found in budget`,
-            transaction,
-          });
+          return res.status(404).send({ message: NOT_FOUND("category") });
 
         const category = budget.categories[categoryIdx];
 
@@ -435,10 +418,7 @@ export const updateV2 = async (req: Request, res: Response) => {
           transaction.category.categoryId
         );
         if (categoryIdx === -1)
-          return res.status(404).send({
-            message: `category(${transaction.category.categoryId}) not found in budget`,
-            transaction,
-          });
+          return res.status(404).send({ message: NOT_FOUND("category") });
 
         const category = budget.categories[categoryIdx];
 
@@ -529,7 +509,7 @@ export const updateV2 = async (req: Request, res: Response) => {
           _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
         });
         if (!pm) {
-          return res.status(404).send({ message: "paymentMethod not found" });
+          return res.status(404).send({ message: NOT_FOUND("PM") });
         }
         transaction.linkedPaymentMethodId = pm._id;
         transaction.linkedPaymentMethodType = pm.type;
@@ -651,29 +631,23 @@ export const remove = async (req: Request, res: Response) => {
     let user = req.user!;
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction)
-      return res.status(404).send({ message: "transaction not found" });
+      return res.status(404).send({ message: NOT_FOUND("transaction") });
 
     if (!transaction.userId.equals(user._id)) {
       if (user.auth !== "admin") {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
       const _user = await User.findById(transaction.userId);
-      if (!_user) return res.status(404).send({ message: "User not found" });
+      if (!_user) return res.status(404).send({ message: NOT_FOUND("user") });
       user = _user;
     }
 
     const budget = await Budget.findById(transaction.budgetId);
-    if (!budget)
-      return res
-        .status(404)
-        .send({ message: `budget(${transaction.budgetId}) not found` });
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
     const categoryIdx = budget.findCategoryIdx(transaction.category.categoryId);
     if (categoryIdx === -1)
-      return res.status(404).send({
-        message: `category(${transaction.category.categoryId}) not found in budget`,
-        transaction,
-      });
+      return res.status(404).send({ message: NOT_FOUND("category") });
 
     const category = budget.categories[categoryIdx];
 

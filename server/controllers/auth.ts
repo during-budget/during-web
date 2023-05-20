@@ -14,6 +14,7 @@ import {
   REGISTER_SUCCESS,
   FIELD_INVALID,
   AT_LEAST_ONE_SNSID_IS_REQUIRED,
+  NOT_FOUND,
 } from "../@message";
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect";
@@ -132,7 +133,7 @@ export const disconnect = async (req: Request, res: Response) => {
 
     const user = req.user!;
     if (!user.snsId || !user.snsId[provider]) {
-      return res.status(404).send({ message: "not connected" });
+      return res.status(404).send({ message: NOT_FOUND("snsId") });
     }
 
     user.snsId = { ...user.snsId, [provider]: undefined };

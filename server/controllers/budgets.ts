@@ -10,6 +10,7 @@ import {
   FIELD_INVALID,
   FIELD_REQUIRED,
   INVALID_CATEGORY,
+  NOT_FOUND,
   NOT_PERMITTED,
 } from "../@message";
 
@@ -26,7 +27,7 @@ export const validate = async (req: Request, res: Response) => {
   try {
     const budget = await Budget.findById(req.params._id);
     if (!budget) {
-      return res.status(404).send({ message: "budget not found" });
+      return res.status(404).send({ message: NOT_FOUND("budget") });
     }
 
     const b: { [key: string]: number } = {
@@ -143,7 +144,7 @@ export const fix = async (req: Request, res: Response) => {
   try {
     const budget = await Budget.findById(req.params._id);
     if (!budget) {
-      return res.status(404).send({ message: "budget not found" });
+      return res.status(404).send({ message: NOT_FOUND("budget") });
     }
 
     const key = req.body.key;
@@ -205,12 +206,10 @@ export const create = async (req: Request, res: Response) => {
       const category = user.findCategory(_category.categoryId);
 
       if (!category)
-        return res.status(404).send({
-          message: `category with _id ${_category.categoryId} not found`,
-        });
+        return res.status(404).send({ message: NOT_FOUND("category") });
       if (category.isDefault)
-        return res.status(404).send({
-          message: `you can't set default category`,
+        return res.status(409).send({
+          message: CATEGORY_CANOT_BE_UPDATED,
         });
 
       if (!("amountPlanned" in _category))
@@ -276,7 +275,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
     const user = req.user!;
 
     const budget = await Budget.findById(user.basicBudgetId);
-    if (!budget) return res.status(404).send();
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
     const transactions = await Transaction.find({
       budgetId: budget._id,
@@ -332,7 +331,7 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
 
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({});
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
     if (!budget.userId.equals(user._id)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
@@ -369,10 +368,7 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
       if (!categoryDict[_category.categoryId]) {
         const category = user.findCategory(_category.categoryId);
         if (!category)
-          return res.status(404).send({
-            message: "category not found in user.categories",
-            category: _category,
-          });
+          return res.status(404).send({ message: NOT_FOUND("category") });
         if (category.isDefault)
           return res.status(409).send({
             message: CATEGORY_CANOT_BE_UPDATED,
@@ -508,7 +504,7 @@ export const updateCategoryAmountPlanned = async (
 
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({ message: "budget not found" });
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
     if (!budget.userId.equals(user._id))
       return res.status(403).send({ message: NOT_PERMITTED });
 
@@ -517,9 +513,7 @@ export const updateCategoryAmountPlanned = async (
     );
     const category = budget.categories[categoryIdx];
     if (!category)
-      return res.status(404).send({
-        message: `budget category not found`,
-      });
+      return res.status(404).send({ message: NOT_FOUND("category") });
 
     if (category.isDefault)
       return res.status(409).send({
@@ -558,7 +552,7 @@ export const updateField = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({});
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
     if (!budget.userId.equals(user._id))
       return res.status(403).send({ message: NOT_PERMITTED });
 
@@ -600,7 +594,8 @@ export const find = async (req: Request, res: Response) => {
 
     if (req.params._id) {
       const budget = await Budget.findById(req.params._id);
-      if (!budget) return res.status(404).send();
+      if (!budget)
+        return res.status(404).send({ message: NOT_FOUND("budget") });
       if (!budget.userId.equals(user._id)) {
         if (user.auth !== "admin") {
           return res.status(403).send({ message: NOT_PERMITTED });
@@ -621,7 +616,7 @@ export const find = async (req: Request, res: Response) => {
           startDate: new Date(year, month - 1, 1, 9),
         });
         if (!budget) {
-          return res.status(404).send({ message: "budget not found" });
+          return res.status(404).send({ message: NOT_FOUND("budget") });
         }
         return res.status(200).send({ budget });
       }
@@ -663,7 +658,7 @@ export const remove = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send();
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
     if (!budget.userId.equals(user._id)) {
       if (user.auth !== "admin") {

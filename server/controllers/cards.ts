@@ -6,7 +6,7 @@ import { ICard } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_REQUIRED } from "../@message";
+import { FIELD_REQUIRED, NOT_FOUND } from "../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -29,7 +29,7 @@ export const create = async (req: Request, res: Response) => {
       });
 
       if (!asset) {
-        return res.status(404).send({ message: "linked asset not found" });
+        return res.status(404).send({ message: NOT_FOUND("asset") });
       }
       card.linkedAssetId = asset._id;
       card.linkedAssetIcon = asset.icon;
@@ -71,7 +71,7 @@ export const update = async (req: Request, res: Response) => {
       _id: new Types.ObjectId(req.params._id),
     });
     if (cardIdx === -1)
-      return res.status(404).send({ message: "card not found" });
+      return res.status(404).send({ message: NOT_FOUND("card") });
 
     let shouldUpdatePM =
       user.cards[cardIdx].icon !== req.body.icon ||
@@ -100,7 +100,7 @@ export const update = async (req: Request, res: Response) => {
           _id: new Types.ObjectId(req.body.linkedAssetId),
         });
         if (!asset)
-          return res.status(404).send({ message: "linked asset not found" });
+          return res.status(404).send({ message: NOT_FOUND("asset") });
         user.cards[cardIdx].linkedAssetId = asset._id;
         user.cards[cardIdx].linkedAssetIcon = asset.icon;
         user.cards[cardIdx].linkedAssetTitle = asset.title;
@@ -111,8 +111,7 @@ export const update = async (req: Request, res: Response) => {
       const asset = _.find(user.assets, {
         _id: new Types.ObjectId(req.body.linkedAssetId),
       });
-      if (!asset)
-        return res.status(404).send({ message: "linked asset not found" });
+      if (!asset) return res.status(404).send({ message: NOT_FOUND("asset") });
       user.cards[cardIdx].linkedAssetId = asset._id;
       user.cards[cardIdx].linkedAssetIcon = asset.icon;
       user.cards[cardIdx].linkedAssetTitle = asset.title;
@@ -184,7 +183,7 @@ export const updateAll = async (req: Request, res: Response) => {
           });
 
           if (!asset) {
-            return res.status(404).send({ message: "linked asset not found" });
+            return res.status(404).send({ message: NOT_FOUND("asset") });
           }
           _card.linkedAssetIcon = asset.icon;
           _card.linkedAssetTitle = asset.title;
@@ -196,7 +195,8 @@ export const updateAll = async (req: Request, res: Response) => {
         /* update card */
         const key = _card._id;
         const exCard = cardDict[key];
-        if (!exCard) return res.status(404).send({ message: "card not found" });
+        if (!exCard)
+          return res.status(404).send({ message: NOT_FOUND("card") });
 
         const card = {
           _id: exCard._id,
@@ -224,9 +224,7 @@ export const updateAll = async (req: Request, res: Response) => {
                 _id: new Types.ObjectId(_card.linkedAssetId),
               });
               if (!asset)
-                return res
-                  .status(404)
-                  .send({ message: "linked asset not found" });
+                return res.status(404).send({ message: NOT_FOUND("asset") });
               card.linkedAssetId = asset._id;
               card.linkedAssetIcon = asset.icon;
               card.linkedAssetTitle = asset.title;
@@ -245,7 +243,7 @@ export const updateAll = async (req: Request, res: Response) => {
             _id: new Types.ObjectId(_card.linkedAssetId),
           });
           if (!asset)
-            return res.status(404).send({ message: "linked asset not found" });
+            return res.status(404).send({ message: NOT_FOUND("asset") });
           card.linkedAssetId = asset._id;
           card.linkedAssetIcon = asset.icon;
           card.linkedAssetTitle = asset.title;
@@ -356,7 +354,7 @@ export const remove = async (req: Request, res: Response) => {
       _id: new Types.ObjectId(req.params._id),
     });
     if (cardIdx === -1)
-      return res.status(404).send({ message: "card not found" });
+      return res.status(404).send({ message: NOT_FOUND("card") });
 
     const paymentMethodIdx = _.findIndex(user.paymentMethods, {
       _id: user.cards[cardIdx]._id,
