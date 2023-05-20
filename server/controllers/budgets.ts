@@ -5,7 +5,13 @@ import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_INVALID, FIELD_MISSING, NOT_PERMITTED } from "../@message";
+import {
+  CATEGORY_CANOT_BE_UPDATED,
+  FIELD_INVALID,
+  FIELD_MISSING,
+  INVALID_CATEGORY,
+  NOT_PERMITTED,
+} from "../@message";
 
 // budget controller
 type budgetKeys =
@@ -369,13 +375,11 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
           });
         if (category.isDefault)
           return res.status(409).send({
-            message: `you can't set default category`,
+            message: CATEGORY_CANOT_BE_UPDATED,
           });
         if (category.isExpense !== isExpense)
           return res.status(409).send({
-            message: `isExpense not matching with category`,
-            isExpense,
-            category,
+            message: INVALID_CATEGORY,
           });
 
         sumDefaultAmountPlanned += _category.amountPlanned;
@@ -397,13 +401,11 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
           });
         if (exCategory.isDefault)
           return res.status(409).send({
-            message: `you can't set default category`,
+            message: CATEGORY_CANOT_BE_UPDATED,
           });
         if (exCategory.isExpense !== isExpense)
           return res.status(409).send({
-            message: `isExpense not matching with category`,
-            isExpense,
-            exCategory,
+            message: INVALID_CATEGORY,
           });
 
         sumDefaultAmountPlanned += _category.amountPlanned;
@@ -521,7 +523,7 @@ export const updateCategoryAmountPlanned = async (
 
     if (category.isDefault)
       return res.status(409).send({
-        message: `amountPlanned of default category cannot be updated`,
+        message: CATEGORY_CANOT_BE_UPDATED,
       });
 
     if (category.isExpense) {

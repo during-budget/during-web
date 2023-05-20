@@ -7,7 +7,7 @@ import { ITransaction, Transaction } from "../models/Transaction";
 import { ICategory } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_INVALID, FIELD_MISSING } from "../@message";
+import { FIELD_INVALID, FIELD_MISSING, INVALID_CATEGORY } from "../@message";
 
 // category settings controller
 
@@ -278,9 +278,7 @@ export const updateV3 = async (req: Request, res: Response) => {
 
         if (exCategory.isExpense !== isExpense)
           return res.status(409).send({
-            message: `isExpense not matching with category`,
-            isExpense,
-            exCategory,
+            message: INVALID_CATEGORY,
           });
 
         const category = {
