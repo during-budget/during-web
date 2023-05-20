@@ -14,6 +14,7 @@ import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 
 import { logger } from "../log/logger";
+import { FIELD_MISSING } from "../@message";
 
 //_____________________________________________________________________________
 
@@ -57,8 +58,11 @@ export const verify = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!("email" in req.body) || !("code" in req.body))
-    return res.status(400).send({ message: "required field is missing" });
+  for (let field in ["email", "code"]) {
+    if (!(field in req.body)) {
+      return res.status(400).send({ message: FIELD_MISSING(field) });
+    }
+  }
 
   passport.authenticate(
     "register",
@@ -144,10 +148,11 @@ export const loginVerify = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!("email" in req.body))
-    return res.status(400).send({ message: "field(email) is required" });
-  if (!("code" in req.body))
-    return res.status(400).send({ message: "field(code) is required" });
+  for (let field in ["email", "code"]) {
+    if (!(field in req.body)) {
+      return res.status(400).send({ message: FIELD_MISSING(field) });
+    }
+  }
 
   passport.authenticate(
     "local",

@@ -7,6 +7,7 @@ import { ITransaction, Transaction } from "../models/Transaction";
 import { ICategory } from "../models/User";
 
 import { logger } from "../log/logger";
+import { FIELD_INVALID, FIELD_MISSING } from "../@message";
 
 // category settings controller
 
@@ -39,8 +40,10 @@ export const updateV2 = async (req: Request, res: Response) => {
     let defaultIncomeCategory: any = user.findDefaultIncomeCategory();
 
     for (let _category of req.body.categories) {
-      if (!("title" in _category) || !("icon" in _category)) {
-        return res.status(400).send({ message: "{title, icon} is required" });
+      for (let field of ["title", "icon"]) {
+        if (!(field in _category)) {
+          return res.status(400).send({ message: FIELD_MISSING(field) });
+        }
       }
 
       /* create category */
@@ -49,9 +52,7 @@ export const updateV2 = async (req: Request, res: Response) => {
           "isExpense" in _category ? _category.isExpense : false;
         const isIncome = "isIncome" in _category ? _category.isIncome : false;
         if (isExpense === isIncome)
-          return res.status(400).send({
-            message: "set isExpense and isIncome of new category properly",
-          });
+          return res.status(400).send({ message: FIELD_INVALID("isExpense") });
 
         const category = {
           isExpense,
@@ -221,9 +222,8 @@ export const updateV3 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("isExpense" in req.body) && !("isIncome" in req.body))
-      return res
-        .status(400)
-        .send({ message: "field 'isExpense' or 'isIncome' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("isExpense") });
+
     if (!("categories" in req.body))
       return res
         .status(409)
@@ -232,9 +232,7 @@ export const updateV3 = async (req: Request, res: Response) => {
     const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
     const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
     if (isExpense === isIncome) {
-      return res
-        .status(400)
-        .send({ message: "set isExpense=true or isIncome=true" });
+      return res.status(400).send({ message: FIELD_INVALID("isExpense") });
     }
 
     const user = req.user!;
@@ -258,8 +256,10 @@ export const updateV3 = async (req: Request, res: Response) => {
     let defaultIncomeCategory: any = user.findDefaultIncomeCategory();
 
     for (let _category of req.body.categories) {
-      if (!("title" in _category) || !("icon" in _category)) {
-        return res.status(400).send({ message: "{title, icon} is required" });
+      for (let field of ["title", "icon"]) {
+        if (!(field in _category)) {
+          return res.status(400).send({ message: FIELD_MISSING(field) });
+        }
       }
 
       /* create category */

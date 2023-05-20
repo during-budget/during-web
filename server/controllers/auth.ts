@@ -8,10 +8,10 @@ import { NextFunction } from "express-serve-static-core";
 import passport from "passport";
 import { HydratedDocument } from "mongoose";
 
-import * as messages from "../passport/messages"
+import * as messages from "../passport/messages";
+import { FIELD_INVALID } from "../@message";
 
-const clientRedirectURL = process.env.CLIENT.trim()+"/redirect";
-
+const clientRedirectURL = process.env.CLIENT.trim() + "/redirect";
 
 const clientAdminURL = process.env.CLIENT_ADMIN.trim();
 
@@ -78,9 +78,7 @@ export const callback = async (
         if (authError) {
           return res.redirect(
             clientRedirectURL +
-              `?message=${encodeURIComponent(
-                authError.message
-              )}`
+              `?message=${encodeURIComponent(authError.message)}`
           );
         }
 
@@ -97,15 +95,14 @@ export const callback = async (
             );
           });
         } else if (type === "register") {
-        /* _____ 소셜 회원 가입 _____ */
+          /* _____ 소셜 회원 가입 _____ */
           return req.login(user, (loginError) => {
             if (loginError) {
               throw loginError;
             }
             // 회원 가입 후 로그인 성공
             return res.redirect(
-              clientRedirectURL +
-                `?message=${messages.REGISTER_SUCCESS}`
+              clientRedirectURL + `?message=${messages.REGISTER_SUCCESS}`
             );
           });
         }
@@ -118,9 +115,7 @@ export const callback = async (
       } catch (err: any) {
         return res.redirect(
           clientRedirectURL +
-            `?message=${encodeURIComponent(
-              messages.AUTH_FAILED_UNKNOWN_ERROR
-            )}`
+            `?message=${encodeURIComponent(messages.AUTH_FAILED_UNKNOWN_ERROR)}`
         );
       }
     }
@@ -131,7 +126,7 @@ export const disconnect = async (req: Request, res: Response) => {
   try {
     const provider = req.params.provider;
     if (provider !== "google" && provider !== "naver" && provider !== "kakao") {
-      return res.status(400).send({ message: "invalid sns" });
+      return res.status(400).send({ message: FIELD_INVALID(provider) });
     }
 
     const user = req.user!;

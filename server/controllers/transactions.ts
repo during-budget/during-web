@@ -6,6 +6,7 @@ import { HydratedDocument, Types } from "mongoose";
 
 import { logger } from "../log/logger";
 import { User } from "../models/User";
+import { FIELD_MISSING } from "../@message";
 
 // transaction controller
 
@@ -27,9 +28,7 @@ export const create = async (req: Request, res: Response) => {
       "categoryId",
     ])
       if (!(field in req.body))
-        return res.status(400).send({
-          message: `fields(budgetId, date, isCurrent, title, amount, categoryId) are required`,
-        });
+        return res.status(400).send({ message: FIELD_MISSING(field) });
     const user = req.user!;
 
     const budget = await Budget.findById(req.body.budgetId);
@@ -162,10 +161,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     for (let field of updateV2BodyFields) {
       if (!(field in req.body))
         return res.status(400).send({
-          message: `field(${field}) is missing; require ${_.join(
-            updateV2BodyFields,
-            ", "
-          )}`,
+          message: FIELD_MISSING(field),
         });
     }
 
@@ -173,7 +169,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction)
       return res.status(404).send({ message: "transaction not found" });
-    if (!transaction.userId.equals(user._id)) return res.status(401).send();
+    if (!transaction.userId.equals(user._id)) return res.status(409).send();
 
     /* update date, icon, title, tags, memo */
     transaction.date = req.body.date;
@@ -654,7 +650,7 @@ export const remove = async (req: Request, res: Response) => {
 
     if (!transaction.userId.equals(user._id)) {
       if (user.auth !== "admin") {
-        return res.status(401).send();
+        return res.status(409).send();
       }
       const _user = await User.findById(transaction.userId);
       if (!_user) return res.status(404).send({ message: "User not found" });

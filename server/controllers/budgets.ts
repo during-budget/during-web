@@ -5,6 +5,7 @@ import { Budget, ICategory } from "../models/Budget";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
+import { FIELD_INVALID, FIELD_MISSING } from "../@message";
 
 // budget controller
 type budgetKeys =
@@ -159,7 +160,7 @@ export const fix = async (req: Request, res: Response) => {
       const idx = budget.findCategoryIdx(req.body.categoryId);
       budget.categories[idx][k] = req.body.amount;
     } else {
-      return res.status(400).send({});
+      return res.status(400).send({ message: FIELD_INVALID("key") });
     }
     budget.isModified("categories");
     await budget.save();
@@ -209,7 +210,7 @@ export const create = async (req: Request, res: Response) => {
       if (!("amountPlanned" in _category))
         return res
           .status(400)
-          .send({ message: "field 'amountPlanned' is required" });
+          .send({ message: FIELD_MISSING("amountPlanned") });
 
       if (category.isExpense)
         sumExpenseAmountPlanned += _category.amountPlanned;
@@ -251,8 +252,10 @@ export const create = async (req: Request, res: Response) => {
  */
 export const createWithBasic = async (req: Request, res: Response) => {
   try {
-    if (!("year" in req.body) || !("month" in req.body)) {
-      return res.status(400).send({ message: "body(year, month) is missing" });
+    for (let field in ["year", "month"]) {
+      if (!(field in req.body)) {
+        return res.status(400).send({ message: FIELD_MISSING(field) });
+      }
     }
 
     const startDate = new Date(req.body.year, req.body.month - 1, 1, 9);
@@ -311,26 +314,20 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("isExpense" in req.body) && !("isIncome" in req.body))
-      return res
-        .status(400)
-        .send({ message: "field 'isExpense' or 'isIncome' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("isExpense") });
     if (!("categories" in req.body))
-      return res
-        .status(400)
-        .send({ message: "field 'categories' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("categories") });
 
     const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
     const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
     if (isExpense === isIncome) {
-      return res
-        .status(400)
-        .send({ message: "set isExpense=true or isIncome=true" });
+      return res.status(400).send({ message: FIELD_INVALID("isExpense") });
     }
 
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
-    if (!budget.userId.equals(user._id)) return res.status(401).send();
+    if (!budget.userId.equals(user._id)) return res.status(409).send();
 
     const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
       budget.categories.map((category) => [
@@ -356,11 +353,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
       if (!("amountPlanned" in _category))
         return res
           .status(400)
-          .send({ message: "field 'amountPlanned' is required" });
+          .send({ message: FIELD_MISSING("amountPlanned") });
       if (!("categoryId" in _category))
-        return res
-          .status(400)
-          .send({ message: "field 'categoryId' is required" });
+        return res.status(400).send({ message: FIELD_MISSING("categoryId") });
 
       /* include category */
       if (!categoryDict[_category.categoryId]) {
@@ -505,14 +500,12 @@ export const updateCategoryAmountPlanned = async (
 ) => {
   try {
     if (!("amountPlanned" in req.body))
-      return res
-        .status(400)
-        .send({ message: "field 'amountPlanned' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("amountPlanned") });
 
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({ message: "budget not found" });
-    if (!budget.userId.equals(user._id)) return res.status(401).send();
+    if (!budget.userId.equals(user._id)) return res.status(409).send();
 
     const categoryIdx = budget.findCategoryIdx(
       req.params.categoryId.toString()
@@ -561,7 +554,7 @@ export const updateField = async (req: Request, res: Response) => {
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);
     if (!budget) return res.status(404).send({});
-    if (!budget.userId.equals(user._id)) return res.status(401).send();
+    if (!budget.userId.equals(user._id)) return res.status(409).send();
 
     budget.startDate = req.body.startDate ?? budget.startDate;
     budget.endDate = req.body.endDate ?? budget.endDate;
@@ -604,7 +597,7 @@ export const find = async (req: Request, res: Response) => {
       if (!budget) return res.status(404).send();
       if (!budget.userId.equals(user._id)) {
         if (user.auth !== "admin") {
-          return res.status(401).send();
+          return res.status(409).send();
         }
       }
 
@@ -668,7 +661,7 @@ export const remove = async (req: Request, res: Response) => {
 
     if (!budget.userId.equals(user._id)) {
       if (user.auth !== "admin") {
-        return res.status(401).send();
+        return res.status(409).send();
       }
     }
 
