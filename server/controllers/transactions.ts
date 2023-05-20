@@ -6,7 +6,11 @@ import { HydratedDocument, Types } from "mongoose";
 
 import { logger } from "../log/logger";
 import { User } from "../models/User";
-import { FIELD_MISSING, NOT_PERMITTED } from "../@message";
+import {
+  CATEGORY_CANOT_BE_UPDATED,
+  FIELD_MISSING,
+  NOT_PERMITTED,
+} from "../@message";
 
 // transaction controller
 
@@ -169,7 +173,8 @@ export const updateV2 = async (req: Request, res: Response) => {
     const transaction = await Transaction.findById(req.params._id);
     if (!transaction)
       return res.status(404).send({ message: "transaction not found" });
-    if (!transaction.userId.equals(user._id)) return res.status(409).send();
+    if (!transaction.userId.equals(user._id))
+      return res.status(403).send({ message: NOT_PERMITTED });
 
     /* update date, icon, title, tags, memo */
     transaction.date = req.body.date;
@@ -423,7 +428,7 @@ export const updateV2 = async (req: Request, res: Response) => {
       if (isUpdated["isCurrent"]) {
         if (transaction.linkId) {
           return res.status(409).send({
-            message: "you cannot update 'isCurrent' of linked transaction",
+            message: CATEGORY_CANOT_BE_UPDATED,
           });
         }
         const categoryIdx = budget.findCategoryIdx(
@@ -617,8 +622,8 @@ export const find = async (req: Request, res: Response) => {
       return res.status(200).send({ transactions });
     }
     if (!("budgetId" in req.query))
-      return res.status(409).send({
-        message: `query budgetId is required`,
+      return res.status(400).send({
+        message: FIELD_MISSING("budgetId"),
       });
     const transactions = await Transaction.find({
       userId: user._id,
@@ -639,8 +644,8 @@ export const find = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   try {
     if (!("_id" in req.params))
-      return res.status(409).send({
-        message: `parameter _id is required`,
+      return res.status(400).send({
+        message: FIELD_MISSING("_id"),
       });
 
     let user = req.user!;

@@ -11,9 +11,7 @@ export const update = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("paymentMethods" in req.body))
-      return res
-        .status(409)
-        .send({ message: "field 'paymentMethods' is required" });
+      return res.status(400).send({ message: FIELD_MISSING("paymentMethods") });
 
     const user = req.user!;
     if (!user.paymentMethods) user.paymentMethods = new Types.DocumentArray([]);
