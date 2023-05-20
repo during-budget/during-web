@@ -6,14 +6,14 @@ import { ICard } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING } from "../@message";
+import { FIELD_REQUIRED } from "../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
     if (!("title" in req.body)) {
-      return res.status(400).send({ message: FIELD_MISSING("title") });
+      return res.status(400).send({ message: FIELD_REQUIRED("title") });
     }
 
     const card = {
@@ -59,7 +59,7 @@ export const update = async (req: Request, res: Response) => {
     for (let field of ["icon", "title", "detail"]) {
       if (!(field in req.body)) {
         return res.status(400).send({
-          message: FIELD_MISSING(field),
+          message: FIELD_REQUIRED(field),
         });
       }
     }
@@ -155,7 +155,7 @@ export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("cards" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("cards") });
+      return res.status(400).send({ message: FIELD_REQUIRED("cards") });
 
     const user = req.user!;
     if (!user.cards) user.cards = new Types.DocumentArray([]);
@@ -176,7 +176,7 @@ export const updateAll = async (req: Request, res: Response) => {
       /* create card */
       if (!("_id" in _card)) {
         if (!("title" in _card)) {
-          return res.status(400).send({ message: FIELD_MISSING("title") });
+          return res.status(400).send({ message: FIELD_REQUIRED("title") });
         }
         if ("linkedAssetId" in _card) {
           const asset = _.find(user.assets, {

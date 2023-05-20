@@ -14,7 +14,7 @@ import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 
 import { logger } from "../log/logger";
-import { EMAIL_IN_USE, FIELD_MISSING, USER_NOT_FOUND } from "../@message";
+import { EMAIL_IN_USE, FIELD_REQUIRED, USER_NOT_FOUND } from "../@message";
 
 //_____________________________________________________________________________
 
@@ -60,7 +60,7 @@ export const verify = async (
 ) => {
   for (let field in ["email", "code"]) {
     if (!(field in req.body)) {
-      return res.status(400).send({ message: FIELD_MISSING(field) });
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
   }
 
@@ -150,7 +150,7 @@ export const loginVerify = async (
 ) => {
   for (let field in ["email", "code"]) {
     if (!(field in req.body)) {
-      return res.status(400).send({ message: FIELD_MISSING(field) });
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
   }
 

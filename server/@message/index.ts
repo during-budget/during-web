@@ -26,8 +26,8 @@ export const CONNECT_SUCCESS = "CONNECT_SUCCESS";
 /**
  * @code 400 Bad Request
  */
-export const FIELD_MISSING = (field: string) =>
-  `${field.toUpperCase()}_MISSING`;
+export const FIELD_REQUIRED = (field: string) =>
+  `${field.toUpperCase()}_REQUIRED`;
 /**
  * @code 400 Bad Request
  */
