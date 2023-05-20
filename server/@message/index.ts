@@ -1,4 +1,18 @@
 /**
+ * 2xx Successful
+ * ---------------------------------------------
+ * 200 Success
+ * ---------------------------------------------
+ */
+
+/**
+ * @code 200 Success
+ */
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const CONNECT_SUCCESS = "CONNECT_SUCCESS";
+
+/**
  * 4xx Client Error
  * ---------------------------------------------
  * 400 Bad Request // 유효하지 않은 요청
@@ -19,3 +33,13 @@ export const FIELD_MISSING = (field: string) =>
  */
 export const FIELD_INVALID = (field: string) =>
   `${field.toUpperCase()}_INVALID`;
+
+/**
+ * @code 401 Unauthorized
+ */
+export const EMAIL_IN_USE = "EMAIL_IN_USE";
+export const SNSID_IN_USE = "SNSID_IN_USE";
+export const CONNECTED_ALREADY = "CONNECTED_ALREADY";
+export const USER_NOT_FOUND = "USER_NOT_FOUND";
+export const VERIFICATION_CODE_WRONG = "VERIFICATION_CODE_WRONG";
+export const VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED";

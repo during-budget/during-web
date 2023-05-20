@@ -14,7 +14,7 @@ import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING } from "../@message";
+import { FIELD_MISSING, USER_NOT_FOUND } from "../@message";
 
 //_____________________________________________________________________________
 
@@ -122,7 +122,7 @@ export const loginLocal = async (req: Request, res: Response) => {
   };
   if ("auth" in req.body) filter["auth"] = req.body.auth;
   const user = await User.findOne(filter);
-  if (!user) return res.status(404).send({ message: "User not found" });
+  if (!user) return res.status(401).send({ message: USER_NOT_FOUND });
 
   const code = generateRandomNumber(6);
   sendEmail({
@@ -158,16 +158,15 @@ export const loginVerify = async (
     "local",
     (authError: Error, user: HydratedDocument<IUser, IUserProps>) => {
       try {
-        if (authError) throw authError;
-        console.log("DEBUG: authentication is over");
+        if (authError) {
+          return res.status(401).send({ message: authError.message });
+        }
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
-          console.log("DEBUG: login is over");
           /* set maxAge as 1 year if auto login is requested */
           if (req.body.persist === true) {
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
           }
-          console.log("DEBUG: sending response");
           return res.status(200).send({ user });
         });
       } catch (err: any) {

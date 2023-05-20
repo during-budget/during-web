@@ -8,8 +8,12 @@ import { NextFunction } from "express-serve-static-core";
 import passport from "passport";
 import { HydratedDocument } from "mongoose";
 
-import * as messages from "../passport/messages";
-import { FIELD_INVALID } from "../@message";
+import {
+  CONNECT_SUCCESS,
+  LOGIN_SUCCESS,
+  REGISTER_SUCCESS,
+  FIELD_INVALID,
+} from "../@message";
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect";
 
@@ -44,9 +48,7 @@ export const callbackAdmin = async (
         });
       } catch (err: any) {
         return res.redirect(
-          clientAdminURL +
-            "?error=" +
-            encodeURIComponent(err.message ?? "unknown error occured")
+          clientAdminURL + "?error=" + encodeURIComponent(err.message)
         );
       }
     }
@@ -63,7 +65,7 @@ export const callback = async (
     return res.redirect(
       clientRedirectURL +
         "?message=" +
-        encodeURIComponent(messages.INVALID_REQUEST)
+        encodeURIComponent(FIELD_INVALID("provider"))
     );
   }
 
@@ -91,7 +93,7 @@ export const callback = async (
             // 로그인 성공
             return res.redirect(
               clientRedirectURL +
-                `?message=${encodeURIComponent(messages.LOGIN_SUCCESS)}`
+                `?message=${encodeURIComponent(LOGIN_SUCCESS)}`
             );
           });
         } else if (type === "register") {
@@ -102,20 +104,18 @@ export const callback = async (
             }
             // 회원 가입 후 로그인 성공
             return res.redirect(
-              clientRedirectURL + `?message=${messages.REGISTER_SUCCESS}`
+              clientRedirectURL + `?message=${REGISTER_SUCCESS}`
             );
           });
         }
         /* _____ 소셜 계정 연결 _____ */
         // 소셜 계정 연결 성공
         return res.redirect(
-          clientRedirectURL +
-            `?message=${encodeURIComponent(messages.CONNECT_SUCCESS)}`
+          clientRedirectURL + `?message=${encodeURIComponent(CONNECT_SUCCESS)}`
         );
       } catch (err: any) {
         return res.redirect(
-          clientRedirectURL +
-            `?message=${encodeURIComponent(messages.AUTH_FAILED_UNKNOWN_ERROR)}`
+          clientRedirectURL + `?message=${encodeURIComponent(err.message)}`
         );
       }
     }
