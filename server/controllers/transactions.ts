@@ -8,7 +8,7 @@ import { logger } from "../log/logger";
 import { User } from "../models/User";
 import {
   CATEGORY_CANOT_BE_UPDATED,
-  FIELD_MISSING,
+  FIELD_REQUIRED,
   NOT_PERMITTED,
 } from "../@message";
 
@@ -32,7 +32,7 @@ export const create = async (req: Request, res: Response) => {
       "categoryId",
     ])
       if (!(field in req.body))
-        return res.status(400).send({ message: FIELD_MISSING(field) });
+        return res.status(400).send({ message: FIELD_REQUIRED(field) });
     const user = req.user!;
 
     const budget = await Budget.findById(req.body.budgetId);
@@ -165,7 +165,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     for (let field of updateV2BodyFields) {
       if (!(field in req.body))
         return res.status(400).send({
-          message: FIELD_MISSING(field),
+          message: FIELD_REQUIRED(field),
         });
     }
 
@@ -623,7 +623,7 @@ export const find = async (req: Request, res: Response) => {
     }
     if (!("budgetId" in req.query))
       return res.status(400).send({
-        message: FIELD_MISSING("budgetId"),
+        message: FIELD_REQUIRED("budgetId"),
       });
     const transactions = await Transaction.find({
       userId: user._id,
@@ -645,7 +645,7 @@ export const remove = async (req: Request, res: Response) => {
   try {
     if (!("_id" in req.params))
       return res.status(400).send({
-        message: FIELD_MISSING("_id"),
+        message: FIELD_REQUIRED("_id"),
       });
 
     let user = req.user!;

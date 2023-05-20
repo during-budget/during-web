@@ -8,7 +8,7 @@ import { logger } from "../log/logger";
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,
-  FIELD_MISSING,
+  FIELD_REQUIRED,
   INVALID_CATEGORY,
   NOT_PERMITTED,
 } from "../@message";
@@ -216,7 +216,7 @@ export const create = async (req: Request, res: Response) => {
       if (!("amountPlanned" in _category))
         return res
           .status(400)
-          .send({ message: FIELD_MISSING("amountPlanned") });
+          .send({ message: FIELD_REQUIRED("amountPlanned") });
 
       if (category.isExpense)
         sumExpenseAmountPlanned += _category.amountPlanned;
@@ -260,7 +260,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
   try {
     for (let field in ["year", "month"]) {
       if (!(field in req.body)) {
-        return res.status(400).send({ message: FIELD_MISSING(field) });
+        return res.status(400).send({ message: FIELD_REQUIRED(field) });
       }
     }
 
@@ -320,9 +320,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("isExpense" in req.body) && !("isIncome" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("isExpense") });
+      return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
     if (!("categories" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("categories") });
+      return res.status(400).send({ message: FIELD_REQUIRED("categories") });
 
     const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
     const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
@@ -361,9 +361,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
       if (!("amountPlanned" in _category))
         return res
           .status(400)
-          .send({ message: FIELD_MISSING("amountPlanned") });
+          .send({ message: FIELD_REQUIRED("amountPlanned") });
       if (!("categoryId" in _category))
-        return res.status(400).send({ message: FIELD_MISSING("categoryId") });
+        return res.status(400).send({ message: FIELD_REQUIRED("categoryId") });
 
       /* include category */
       if (!categoryDict[_category.categoryId]) {
@@ -504,7 +504,7 @@ export const updateCategoryAmountPlanned = async (
 ) => {
   try {
     if (!("amountPlanned" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("amountPlanned") });
+      return res.status(400).send({ message: FIELD_REQUIRED("amountPlanned") });
 
     const user = req.user!;
     const budget = await Budget.findById(req.params._id);

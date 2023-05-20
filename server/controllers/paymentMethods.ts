@@ -5,13 +5,15 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING, PM_CANNOT_BE_REMOVED } from "../@message";
+import { FIELD_REQUIRED, PM_CANNOT_BE_REMOVED } from "../@message";
 
 export const update = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("paymentMethods" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("paymentMethods") });
+      return res
+        .status(400)
+        .send({ message: FIELD_REQUIRED("paymentMethods") });
 
     const user = req.user!;
     if (!user.paymentMethods) user.paymentMethods = new Types.DocumentArray([]);
@@ -25,10 +27,10 @@ export const update = async (req: Request, res: Response) => {
 
     for (let _pm of req.body.paymentMethods) {
       if (!("_id" in _pm)) {
-        return res.status(400).send({ message: FIELD_MISSING("_id") });
+        return res.status(400).send({ message: FIELD_REQUIRED("_id") });
       }
       if (!("isChecked" in _pm)) {
-        return res.status(400).send({ message: FIELD_MISSING("isChecked") });
+        return res.status(400).send({ message: FIELD_REQUIRED("isChecked") });
       }
 
       /* update pm */

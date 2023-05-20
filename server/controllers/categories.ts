@@ -7,7 +7,7 @@ import { ITransaction, Transaction } from "../models/Transaction";
 import { ICategory } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_INVALID, FIELD_MISSING, INVALID_CATEGORY } from "../@message";
+import { FIELD_INVALID, FIELD_REQUIRED, INVALID_CATEGORY } from "../@message";
 
 // category settings controller
 
@@ -15,7 +15,7 @@ export const updateV2 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("categories" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("categories") });
+      return res.status(400).send({ message: FIELD_REQUIRED("categories") });
 
     const user = req.user!;
 
@@ -40,7 +40,7 @@ export const updateV2 = async (req: Request, res: Response) => {
     for (let _category of req.body.categories) {
       for (let field of ["title", "icon"]) {
         if (!(field in _category)) {
-          return res.status(400).send({ message: FIELD_MISSING(field) });
+          return res.status(400).send({ message: FIELD_REQUIRED(field) });
         }
       }
 
@@ -220,10 +220,10 @@ export const updateV3 = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("isExpense" in req.body) && !("isIncome" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("isExpense") });
+      return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
 
     if (!("categories" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("cateogires") });
+      return res.status(400).send({ message: FIELD_REQUIRED("cateogires") });
 
     const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
     const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
@@ -254,7 +254,7 @@ export const updateV3 = async (req: Request, res: Response) => {
     for (let _category of req.body.categories) {
       for (let field of ["title", "icon"]) {
         if (!(field in _category)) {
-          return res.status(400).send({ message: FIELD_MISSING(field) });
+          return res.status(400).send({ message: FIELD_REQUIRED(field) });
         }
       }
 

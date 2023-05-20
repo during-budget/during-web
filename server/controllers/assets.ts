@@ -6,14 +6,14 @@ import { IAsset } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING } from "../@message";
+import { FIELD_REQUIRED } from "../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
     if (!("title" in req.body)) {
-      return res.status(400).send({ message: FIELD_MISSING("title") });
+      return res.status(400).send({ message: FIELD_REQUIRED("title") });
     }
 
     const asset = {
@@ -47,7 +47,7 @@ export const update = async (req: Request, res: Response) => {
     for (let field of ["icon", "title", "amount", "detail"]) {
       if (!(field in req.body)) {
         return res.status(400).send({
-          message: FIELD_MISSING(field),
+          message: FIELD_REQUIRED(field),
         });
       }
     }
@@ -121,7 +121,7 @@ export const updateAll = async (req: Request, res: Response) => {
   try {
     /* validate */
     if (!("assets" in req.body))
-      return res.status(400).send({ message: FIELD_MISSING("assets") });
+      return res.status(400).send({ message: FIELD_REQUIRED("assets") });
 
     const user = req.user!;
     if (!user.assets) user.assets = new Types.DocumentArray([]);
@@ -143,7 +143,7 @@ export const updateAll = async (req: Request, res: Response) => {
       /* create asset */
       if (!("_id" in _asset)) {
         if (!("title" in _asset)) {
-          return res.status(400).send({ message: FIELD_MISSING("title") });
+          return res.status(400).send({ message: FIELD_REQUIRED("title") });
         }
         _asset._id = new Types.ObjectId();
         _assets.push(_asset);
