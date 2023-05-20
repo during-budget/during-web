@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_MISSING } from "../@message";
+import { FIELD_MISSING, PM_CANNOT_BE_REMOVED } from "../@message";
 
 export const update = async (req: Request, res: Response) => {
   try {
@@ -45,9 +45,7 @@ export const update = async (req: Request, res: Response) => {
     }
     /* block removing pm */
     if (Object.keys(pmDict).length > 0) {
-      return res
-        .status(409)
-        .send({ message: "paymentMethod cannot be removed" });
+      return res.status(409).send({ message: PM_CANNOT_BE_REMOVED });
     }
 
     user.paymentMethods = _paymentMethods;

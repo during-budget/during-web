@@ -13,6 +13,7 @@ import {
   LOGIN_SUCCESS,
   REGISTER_SUCCESS,
   FIELD_INVALID,
+  AT_LEAST_ONE_SNSID_IS_REQUIRED,
 } from "../@message";
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect";
@@ -141,9 +142,7 @@ export const disconnect = async (req: Request, res: Response) => {
       !user.snsId.naver &&
       !user.snsId.kakao
     ) {
-      return res
-        .status(409)
-        .send({ message: "At least one login method is required." });
+      return res.status(409).send({ message: AT_LEAST_ONE_SNSID_IS_REQUIRED });
     }
     await user.saveReqUser();
 
