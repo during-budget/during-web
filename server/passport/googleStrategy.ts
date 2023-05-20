@@ -2,7 +2,12 @@ import { Request } from "express";
 import passport from "passport";
 import { Strategy as GogoleStrategy, Profile } from "passport-google-oauth20";
 import { User } from "../models/User";
-import * as message from "./messages"
+import {
+  CONNECTED_ALREADY,
+  EMAIL_IN_USE,
+  SNSID_IN_USE,
+  USER_NOT_FOUND,
+} from "../@message";
 
 const getEmail = (profile: Profile): string | undefined => {
   if (profile.emails) {
@@ -51,7 +56,7 @@ const google = () => {
             if (email) {
               const exUser = await User.findOne({ email });
               if (exUser) {
-                const err = new Error(message.REGISTER_FAILED_EMAIL_IN_USE);
+                const err = new Error(EMAIL_IN_USE);
                 return done(err, null, null);
               }
             }
@@ -70,13 +75,13 @@ const google = () => {
           const user = req.user!;
 
           if (user.snsId?.["google"]) {
-            const err = new Error(message.CONNECT_FAILED_ALREADY_CONNECTED);
+            const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
 
           const exUser = await User.findOne({ "snsId.google": profile.id });
           if (exUser) {
-            const err = new Error(message.CONNECT_FAILED_SNSID_IN_USE);
+            const err = new Error(SNSID_IN_USE);
             return done(err, null, null);
           }
 
@@ -84,8 +89,7 @@ const google = () => {
           if (user.isGuest) user.isGuest = false;
           await user.saveReqUser();
           return done(null, user, "connect");
-        } catch (error:any) {
-          error.message=message.AUTH_FAILED_UNKNOWN_ERROR
+        } catch (error: any) {
           done(error);
         }
       }
@@ -121,7 +125,7 @@ const googleAdmin = () => {
           }
 
           /* register(blocked) */
-          const err = new Error("user not found");
+          const err = new Error(USER_NOT_FOUND);
           return done(err, null);
         } catch (error) {
           console.error(error);

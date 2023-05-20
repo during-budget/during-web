@@ -2,7 +2,7 @@ import { Request } from "express";
 import passport, { Profile } from "passport";
 import { Strategy as NaverStrategy } from "passport-naver";
 import { User } from "../models/User";
-import * as message from "./messages"
+import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../@message";
 
 const getEmail = (profile: Profile): string | undefined => {
   if (profile.emails && profile.emails.length > 0) {
@@ -46,7 +46,7 @@ const naver = () => {
             if (email) {
               const exUser = await User.findOne({ email });
               if (exUser) {
-                const err = new Error(message.REGISTER_FAILED_EMAIL_IN_USE);
+                const err = new Error(EMAIL_IN_USE);
                 return done(err, null, null);
               }
             }
@@ -64,13 +64,13 @@ const naver = () => {
           const user = req.user!;
 
           if (user.snsId?.["naver"]) {
-            const err = new Error(message.CONNECT_FAILED_ALREADY_CONNECTED);
+            const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
 
           const exUser = await User.findOne({ "snsId.naver": profile.id });
           if (exUser) {
-            const err = new Error(message.CONNECT_FAILED_SNSID_IN_USE);
+            const err = new Error(SNSID_IN_USE);
             return done(err, null, null);
           }
 
@@ -78,8 +78,7 @@ const naver = () => {
           if (user.isGuest) user.isGuest = false;
           await user.saveReqUser();
           return done(null, user, "connect");
-        } catch (error:any) {
-          error.message=message.AUTH_FAILED_UNKNOWN_ERROR
+        } catch (error: any) {
           done(error);
         }
       }
