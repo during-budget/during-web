@@ -6,7 +6,7 @@ import { IAsset } from "../models/User";
 import { Transaction } from "../models/Transaction";
 
 import { logger } from "../log/logger";
-import { FIELD_REQUIRED } from "../@message";
+import { FIELD_REQUIRED, NOT_FOUND } from "../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -59,7 +59,7 @@ export const update = async (req: Request, res: Response) => {
       _id: new Types.ObjectId(req.params._id),
     });
     if (assetIdx === -1)
-      return res.status(404).send({ message: "asset not found" });
+      return res.status(404).send({ message: NOT_FOUND("asset") });
 
     const isUpdatedIcon = user.assets[assetIdx].icon !== req.body.icon;
     const isUpdatedTitle = user.assets[assetIdx].title !== req.body.title;
@@ -153,7 +153,7 @@ export const updateAll = async (req: Request, res: Response) => {
         const key = _asset._id;
         const exAsset = assetDict[key];
         if (!exAsset)
-          return res.status(404).send({ message: "asset not found" });
+          return res.status(404).send({ message: NOT_FOUND("asset") });
 
         const asset = {
           _id: exAsset._id,
@@ -275,7 +275,7 @@ export const remove = async (req: Request, res: Response) => {
       _id: new Types.ObjectId(req.params._id),
     });
     if (assetIdx === -1)
-      return res.status(404).send({ message: "asset not found" });
+      return res.status(404).send({ message: NOT_FOUND("asset") });
 
     for (let i = 0; i < user.cards.length; i++) {
       if (user.cards[i].linkedAssetId?.equals(user.assets[assetIdx]._id)) {

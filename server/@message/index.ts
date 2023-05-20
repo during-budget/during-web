@@ -52,6 +52,11 @@ export const ALREADY_LOGGED_IN = "ALREADY_LOGGED_IN";
 export const NOT_PERMITTED = "NOT_PERMITTED";
 
 /**
+ * @code 404 Not Found
+ */
+export const NOT_FOUND = (field: string) => `${field.toUpperCase()}_NOT_FOUND`;
+
+/**
  * @code 409 Conflict
  */
 export const AT_LEAST_ONE_SNSID_IS_REQUIRED = "AT_LEAST_ONE_SNSID_IS_REQUIRED";

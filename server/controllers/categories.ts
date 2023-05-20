@@ -7,7 +7,12 @@ import { ITransaction, Transaction } from "../models/Transaction";
 import { ICategory } from "../models/User";
 
 import { logger } from "../log/logger";
-import { FIELD_INVALID, FIELD_REQUIRED, INVALID_CATEGORY } from "../@message";
+import {
+  FIELD_INVALID,
+  FIELD_REQUIRED,
+  INVALID_CATEGORY,
+  NOT_FOUND,
+} from "../@message";
 
 // category settings controller
 
@@ -66,7 +71,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         const key = _category._id;
         const exCategory = categoryDict[key];
         if (!exCategory)
-          return res.status(404).send({ message: "category not found" });
+          return res.status(404).send({ message: NOT_FOUND("category") });
 
         const category = {
           ...exCategory,
@@ -274,7 +279,7 @@ export const updateV3 = async (req: Request, res: Response) => {
         const key = _category._id;
         const exCategory = categoryDict[key];
         if (!exCategory)
-          return res.status(404).send({ message: "category not found" });
+          return res.status(404).send({ message: NOT_FOUND("category") });
 
         if (exCategory.isExpense !== isExpense)
           return res.status(409).send({
