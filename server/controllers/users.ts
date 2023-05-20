@@ -112,7 +112,10 @@ export const loginGuest = async (req: Request, res: Response) => {
  * @body {email: 'user00001'}
  */
 export const loginLocal = async (req: Request, res: Response) => {
-  const filter: { [key: string]: string } = { email: req.body.email };
+  const filter: { [key: string]: string | boolean } = {
+    email: req.body.email,
+    isLocal: true,
+  };
   if ("auth" in req.body) filter["auth"] = req.body.auth;
   const user = await User.findOne(filter);
   if (!user) return res.status(404).send({ message: "User not found" });
