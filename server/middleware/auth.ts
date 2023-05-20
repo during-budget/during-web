@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
+import { ALREADY_LOGGED_IN, NOT_LOGGED_IN, NOT_PERMITTED } from "../@message";
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(403).send({ message: "You are not logged in." });
+    res.status(403).send({ message: NOT_LOGGED_IN });
   }
 };
 
@@ -16,7 +17,7 @@ export const isNotLoggedIn = (
   if (!req.isAuthenticated()) {
     next();
   } else {
-    res.status(403).send({ message: "You are already logged in." });
+    res.status(403).send({ message: ALREADY_LOGGED_IN });
   }
 };
 
@@ -41,9 +42,9 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.user.auth === "admin") {
       next();
     } else {
-      res.status(403).send({ message: "You have no permission." });
+      res.status(403).send({ message: NOT_PERMITTED });
     }
   } else {
-    res.status(403).send({ message: "You are not logged in." });
+    res.status(403).send({ message: NOT_LOGGED_IN });
   }
 };
