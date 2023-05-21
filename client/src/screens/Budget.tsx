@@ -5,10 +5,14 @@ import BudgetList from '../components/Budget/List/BudgetList';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
 import DateStatus from '../components/Budget/Status/DateStatus';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
-import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
+import TransactionDetail from '../components/Budget/Transaction/TransactionDetail';
+import TransactionForm from '../components/Budget/Transaction/TransactionForm';
+import TransactionList from '../components/Budget/Transaction/TransactionList';
+import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
+import Modal from '../components/UI/Modal';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/redux-hook';
 import { budgetActions } from '../store/budget';
@@ -17,7 +21,6 @@ import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './Budget.module.css';
-import Modal from '../components/UI/Modal';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -35,6 +38,8 @@ function Budget() {
     dispatch(transactionActions.setTransactions(data.transactions));
   }, [data]);
 
+  const defaultBudgetStatus = <DefaultStatus budgetId={id} />;
+
   const statusCarousel = (
     <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
       <DateStatus budgetId={id} />
@@ -42,8 +47,6 @@ function Budget() {
       <CategoryStatus budgetId={id} />
     </Carousel>
   );
-
-  const defaultBudgetStatus = <DefaultStatus budgetId={id} />;
 
   return (
     <>
@@ -53,8 +56,13 @@ function Budget() {
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}
         <hr />
         {/* Transactions */}
-        <TransactionLayout budgetId={id} isDefault={isDefaultBudget} />
+        <section>
+          <TransactionNav id="budget_layout" isAll={true} />
+          <TransactionList isDefault={isDefaultBudget} />
+          <TransactionForm budgetId={id} isDefaultBudget={isDefaultBudget} />
+        </section>
         {/* Overlays */}
+        <TransactionDetail isDefaultBudget={isDefaultBudget} />
         <CategoryPlan budgetId={id} />
         <BudgetList />
         <EmojiOverlay />
