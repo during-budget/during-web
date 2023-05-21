@@ -9,7 +9,7 @@ import SNSForm from './SNSForm';
 interface AuthProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: UserDataType) => void;
+  onLogin: (user: UserDataType, to: string) => void;
 }
 
 function Auth({ isOpen, onClose, onLogin }: AuthProps) {
@@ -42,7 +42,7 @@ function Auth({ isOpen, onClose, onLogin }: AuthProps) {
         {isEmailAuth ? (
           <EmailForm changeAuthType={setSNSAuth} onLogin={onLogin} />
         ) : (
-          <SNSForm changeAuthType={setEmailAuth} />
+          <SNSForm changeAuthType={setEmailAuth} onLogin={onLogin} />
         )}
       </Overlay>
       <Modal />

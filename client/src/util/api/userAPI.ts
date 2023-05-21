@@ -176,30 +176,75 @@ export const verifyLogin = async (email: string, code: string, persist: boolean)
 
 export const logoutUser = async () => {
   const url = `${BASE_URL}/logout`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
+    });
+    data = await response.json();
+  } catch (error) {
+    console.error(error);
+    throw new Error('로그아웃 요청 중 문제가 발생했습니다.', { cause: error });
+  }
 
   if (!response.ok) {
-    const data = await response.json();
     console.error(data.message);
-    throw new Error('로그아웃 시도 중 문제가 발생했습니다', {
+    throw new Error('로그아웃 중 문제가 발생했습니다', {
       cause: { response, message: data.message },
     });
   }
 
-  return response.json();
+  return data;
+};
+
+export const guestLogin = async () => {
+  const url = `${BASE_URL}/login/guest`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ persist: true }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    console.error(error);
+    throw new Error('게스트 로그인 요청 중 문제가 발생했습니다.', { cause: error });
+  }
+
+  if (!response.ok) {
+    console.error(data.message);
+    throw new Error('게스트 로그인 중 문제가 발생했습니다', {
+      cause: { response, message: data.message },
+    });
+  }
+
+  return data;
 };
 
 export const deleteUser = async () => {
   const url = `${BASE_URL}`;
-  const response = await fetch(url, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
+
+  let response, data;
+
+  try {
+    response = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    data = await response.json();
+  } catch (error) {
+    console.error(error);
+    throw new Error('회원탈퇴 요청 중 문제가 발생했습니다.', { cause: error });
+  }
 
   if (!response.ok) {
-    const data = await response.json();
     console.error(data.message);
     throw new Error('회원 탈퇴 시도 중 문제가 발생했습니다', {
       cause: { response, message: data.message },

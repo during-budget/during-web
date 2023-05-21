@@ -27,13 +27,13 @@ const Landing = () => {
 
   useEffect(() => {
     if (loaderData && 'user' in loaderData) {
-      getUserLogin(loaderData.user);
+      getUserLogin(loaderData.user, from || '/budget');
     } else {
       setIsFirstLoad(false);
     }
   }, [loaderData]);
 
-  const getUserLogin = async (user: UserDataType) => {
+  const getUserLogin = async (user: UserDataType, to: string) => {
     // get user data
     const {
       userName,
@@ -70,7 +70,7 @@ const Landing = () => {
     const { budgets } = await getBudgetList();
     dispatch(budgetActions.setBudgetList(budgets));
 
-    navigate(from || '/budget', { replace: true });
+    navigate(to, { replace: true });
   };
 
   if (isFirstLoad) {

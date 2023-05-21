@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { useAppDispatch } from '../../hooks/redux-hook';
 import { uiActions } from '../../store/ui';
 import {
@@ -15,14 +16,18 @@ import Button from '../UI/Button';
 import Inform from '../UI/Inform';
 import InputField from '../UI/InputField';
 import classes from './EmailForm.module.css';
+import GuestLoginButton from './GuestLoginButton';
 
 interface EmailFormProps {
   changeAuthType: () => void;
-  onLogin: (user: UserDataType) => void;
+  onLogin: (user: UserDataType, to: string) => void;
 }
 
 const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname;
 
   const codeRef = useRef<any>(null);
   const persistRef = useRef<HTMLInputElement>(null);
@@ -90,11 +95,11 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
 
       if (isLogin) {
         data = await verifyLogin(emailState, code, persist);
+        onLogin(data.user, from || '/budget');
       } else {
         data = await verifyRegister(emailState, code, persist);
+        onLogin(data.user, '/init');
       }
-
-      onLogin(data.user);
     } catch (error) {
       const msg = getErrorMsg(error);
       if (!msg) {
@@ -209,9 +214,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
         )}
       </form>
       <div className={classes.buttons}>
-        <Button styleClass="extra" className={classes.guest}>
-          가입 없이 둘러보기
-        </Button>
+        <GuestLoginButton onLogin={onLogin} />
         <span>|</span>
         <Button
           styleClass="extra"
