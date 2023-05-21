@@ -20,6 +20,7 @@ const initialState = {
   budget: {
     isCurrent: true,
     isExpense: true,
+    isIncome: true,
     showBudgetList: false,
     category: {
       showEditPlan: false,
@@ -69,6 +70,9 @@ const uiSlice = createSlice({
     },
     setIsExpense(state, action: PayloadAction<boolean>) {
       state.budget.isExpense = action.payload;
+    },
+    setIsIncome(state, action: PayloadAction<boolean>) {
+      state.budget.isIncome = action.payload;
     },
     showBudgetList(state, action: PayloadAction<boolean>) {
       state.budget.showBudgetList = action.payload;

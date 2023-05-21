@@ -15,9 +15,13 @@ function TransactionList({ isDefault }: Props) {
   const isCurrent = isDefault
     ? false
     : useAppSelector((state) => state.ui.budget.isCurrent);
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
+  const isIncome = useAppSelector((state) => state.ui.budget.isIncome);
   const dateTransactionData = getTransacitonsFilteredByDate({
     transactions,
     isCurrent,
+    isExpense,
+    isIncome,
     isDefault,
   });
 
@@ -54,12 +58,16 @@ function TransactionList({ isDefault }: Props) {
 const getTransacitonsFilteredByDate = (data: {
   transactions: TransactionType[];
   isCurrent: boolean;
+  isExpense: boolean;
+  isIncome: boolean;
   isDefault?: boolean;
 }) => {
-  const { transactions, isCurrent, isDefault } = data;
+  const { transactions, isCurrent, isExpense, isIncome, isDefault } = data;
 
-  const filteredTransactions = transactions.filter((item) =>
-    isCurrent ? item.isCurrent : !item.isCurrent
+  const filteredTransactions = transactions.filter(
+    (item) =>
+      item.isCurrent === isCurrent &&
+      (item.isExpense === isExpense || !item.isExpense === isIncome)
   );
 
   const dateTransactions: {

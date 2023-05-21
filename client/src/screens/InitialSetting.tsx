@@ -6,8 +6,12 @@ import { AssetCardDataType } from '../components/Asset/Editor/AssetCardListEdito
 import AssetStatus from '../components/Asset/Status/AssetStatus';
 import CardStatus from '../components/Asset/Status/CardStatus';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
-import TransactionLayout from '../components/Budget/Transaction/TransactionLayout';
+import TransactionDetail from '../components/Budget/Transaction/TransactionDetail';
+import TransactionForm from '../components/Budget/Transaction/TransactionForm';
+import TransactionList from '../components/Budget/Transaction/TransactionList';
+import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
+import Modal from '../components/UI/Modal';
 import StepNav from '../components/UI/StepNav';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/redux-hook';
@@ -26,7 +30,6 @@ import {
 } from '../util/api/assetAPI';
 import { getBudgetById } from '../util/api/budgetAPI';
 import classes from './InitialSetting.module.css';
-import Modal from '../components/UI/Modal';
 
 const InitialSetting = () => {
   const dispatch = useDispatch();
@@ -92,8 +95,13 @@ const InitialSetting = () => {
       list: (
         <>
           {/* Transactions */}
-          <TransactionLayout budgetId={defaultBudgetId} isDefault={true} />
+          <section>
+            <TransactionNav id="initial_setting_layout" />
+            <TransactionList isDefault={true} />
+            <TransactionForm budgetId={defaultBudgetId} isDefaultBudget={true} />
+          </section>
           {/* Overlays */}
+          <TransactionDetail isDefaultBudget={true} />
           <CategoryPlan budgetId={defaultBudgetId} />
         </>
       ),

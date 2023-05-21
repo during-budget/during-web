@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
 import { updateBudgetFields, updateCategoryPlan } from '../../../util/api/budgetAPI';
-import { getExpensePlannedKey, getFilteredCategories } from '../../../util/filter';
+import { getExpensePlannedKey } from '../../../util/filter';
 import AmountBars from '../../Budget/Amount/AmountBars';
 import EditInput from '../../Budget/Input/EditInput';
 import CategoryPlanButtons from '../../Budget/UI/CategoryPlanButtons';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import classes from './DefaultStatus.module.css';
-import { uiActions } from '../../../store/ui';
 
 const DefaultStatus = (props: { budgetId: string }) => {
   const dispatch = useDispatch();
@@ -75,14 +74,7 @@ const DefaultStatus = (props: { budgetId: string }) => {
 
   return (
     <>
-      <ExpenseTab
-        id="default-type"
-        className={classes.tab}
-        isExpense={isExpense}
-        setIsExpense={(isExpense: boolean) => {
-          dispatch(uiActions.setIsExpense(isExpense));
-        }}
-      />
+      <ExpenseTab id="default-type" className={classes.tab} />
       <div className={classes.container}>
         {/* Scheduled amount */}
         <div className={classes.scheduled}>

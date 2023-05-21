@@ -7,8 +7,6 @@ import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryInput.module.css';
 
 interface CategoryInputProps {
-  isExpense: boolean;
-  setIsExpense: React.Dispatch<boolean>;
   categoryId?: string;
   className?: string;
   setIcon?: React.Dispatch<string>;
@@ -18,15 +16,7 @@ interface CategoryInputProps {
 
 const CategoryInput = React.forwardRef(
   (
-    {
-      isExpense,
-      setIsExpense,
-      categoryId,
-      className,
-      setIcon,
-      disabled,
-      setIsEditSetting,
-    }: CategoryInputProps,
+    { categoryId, className, setIcon, disabled, setIsEditSetting }: CategoryInputProps,
     ref
   ) => {
     const dispatch = useAppDispatch();
@@ -39,6 +29,7 @@ const CategoryInput = React.forwardRef(
     });
 
     // Set category data
+    const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
     const storedCategories = useAppSelector((state) => state.budgetCategory);
     const filteredCategories = useMemo(
       () => (isExpense ? storedCategories.expense : storedCategories.income),
@@ -46,7 +37,7 @@ const CategoryInput = React.forwardRef(
     );
 
     const categoryOptions = useMemo(
-      () => getCategoryOptions(filteredCategories, isExpense, setIsExpense),
+      () => getCategoryOptions(filteredCategories),
       [filteredCategories]
     );
 
@@ -101,11 +92,7 @@ const CategoryInput = React.forwardRef(
 );
 
 /** 카테고리 Select의 Options 엘리먼트를 반환 */
-const getCategoryOptions = (
-  categories: Category[],
-  isExpense: boolean,
-  setIsExpense: React.Dispatch<boolean>
-) => {
+const getCategoryOptions = (categories: Category[]) => {
   const categoryOptions: any = categories.map((item: Category) => {
     return {
       value: item.id,
@@ -120,8 +107,6 @@ const getCategoryOptions = (
           className={classes.tab}
           key="category-input-expense-tab"
           id="category-input-expense-tab"
-          isExpense={isExpense}
-          setIsExpense={setIsExpense}
         />
       ),
     },
