@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 import AssetCardEditItemList from '../components/Asset/Editor/AssetCardEditItemList';
 import AssetCardItemEditor from '../components/Asset/Editor/AssetCardItemEditor';
 import { AssetCardDataType } from '../components/Asset/Editor/AssetCardListEditor';
@@ -33,6 +34,7 @@ import classes from './InitialSetting.module.css';
 
 const InitialSetting = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { assets, cards } = useAppSelector((state) => state.asset);
   const defaultBudgetId = useAppSelector((state) => state.user.info.defaultBudgetId);
@@ -159,7 +161,7 @@ const InitialSetting = () => {
           setIdx={setCurrentIdx}
           length={data.length}
           onComplete={() => {
-            alert('완료!');
+            navigate('/budget');
           }}
         />
         <hr />

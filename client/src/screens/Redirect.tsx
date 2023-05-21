@@ -32,8 +32,10 @@ const Redirect = () => {
   useEffect(() => {
     switch (snsLoginMsg) {
       case 'LOGIN_SUCCESS':
-      case 'REGISTER_SUCCESS':
         navigate('/budget');
+        return;
+      case 'REGISTER_SUCCESS':
+        navigate('/init');
         return;
       case 'EMAIL_IN_USE':
         dispatch(
