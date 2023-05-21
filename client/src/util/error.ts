@@ -16,8 +16,6 @@ export const getErrorMsg = (error: any) => {
   }
 
   if (error.cause) {
-    console.error(error);
-    console.error('[cause]', error.cause);
     return null;
   }
 

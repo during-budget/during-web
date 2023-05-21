@@ -38,24 +38,20 @@ export const sendCodeRegister = async (email: string) => {
 
     data = await response.json();
   } catch (error) {
-    throw new Error('회원가입 코드 요청 중 문제가 발생했습니다.', {
+    console.error(error);
+    throw new Error('회원가입 코드 전송 요청 중 문제가 발생했습니다.', {
       cause: { error },
     });
   }
 
-  if (!response) {
-    throw new Error(`회원가입 코드 요청 결과를 알 수 없습니다.`, {
-      cause: { response },
-    });
-  }
-
   if (!response.ok) {
-    if (response.status === 409) {
-      throw new Error('이미 사용중인 이메일입니다.');
-    } else {
-      throw new Error('회원가입 코드 전송 중 문제가 발생했습니다', {
-        cause: { status: response.status, message: data.message },
-      });
+    switch (data.message) {
+      case 'EMAIL_IN_USE':
+        throw new Error('이미 사용중인 이메일입니다.');
+      default:
+        throw new Error('회원가입 코드 전송 중 문제가 발생했습니다', {
+          cause: { status: response.status, message: data.message },
+        });
     }
   }
 
@@ -79,27 +75,23 @@ export const verifyRegister = async (email: string, code: string, persist: boole
 
     data = await response.json();
   } catch (error) {
+    console.error(error);
     throw new Error('회원가입 인증 요청 중 문제가 발생했습니다.', {
       cause: { error },
     });
   }
 
-  if (!response) {
-    throw new Error(`회원가입 인증 요청 결과를 알 수 없습니다.`, {
-      cause: { response },
-    });
-  }
-
   if (!response.ok) {
-    // throw new Error(`Failed to register.\n${data.message ? data.message : ''}`);
-    if (response.status === 400) {
-      throw new Error('잘못된 회원가입 인증 요청입니다.');
-    } else if (response.status === 409) {
-      throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
-    } else {
-      throw new Error('회원가입 인증 중 문제가 발생했습니다', {
-        cause: { status: response.status, message: data.message },
-      });
+    switch (data.message) {
+      case 'VERIFICATION_CODE_EXPIRED':
+        throw new Error('유효 시간이 지났습니다. 코드를 다시 전송해주세요.');
+      case 'VERIFICATION_CODE_WRONG':
+        throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
+      default:
+        console.error(data.message);
+        throw new Error('회원가입 인증 중 문제가 발생했습니다', {
+          cause: { status: response.status, message: data.message },
+        });
     }
   }
 
@@ -123,24 +115,21 @@ export const sendCodeLogin = async (email: string) => {
 
     data = await response.json();
   } catch (error) {
-    throw new Error('로그인 코드 요청 중 문제가 발생했습니다.', {
+    console.error(error);
+    throw new Error('로그인 코드 전송 요청 중 문제가 발생했습니다.', {
       cause: { error },
     });
   }
 
-  if (!response) {
-    throw new Error(`로그인 코드 요청 결과를 알 수 없습니다.`, {
-      cause: { response },
-    });
-  }
-
   if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('가입되지 않은 이메일입니다');
-    } else {
-      throw new Error('로그인 코드 전송 중 문제가 발생했습니다', {
-        cause: { status: response.status, message: data.message },
-      });
+    switch (data.message) {
+      case 'USER_NOT_FOUND':
+        throw new Error('가입되지 않은 이메일입니다');
+      default:
+        console.error(data.message);
+        throw new Error('로그인 코드 전송 중 문제가 발생했습니다', {
+          cause: { status: response.status, message: data.message },
+        });
     }
   }
 
@@ -168,30 +157,17 @@ export const verifyLogin = async (email: string, code: string, persist: boolean)
     throw new Error('로그인 인증 요청 중 문제가 발생했습니다.', { cause: error });
   }
 
-  if (!response) {
-    const error = new Error('로그인 인증 요청 결과를 알 수 없습니다.', {
-      cause: { response },
-    });
-    console.error(error);
-    throw error;
-  }
-
   if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('유효 시간이 지났습니다. 코드를 다시 전송해주세요.');
-    } else if (response.status === 409) {
-      throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
-    } else if (response.status === 400) {
-      throw new Error('잘못된 요청입니다.', {
-        cause: { status: response.status, message: data.message },
-      });
-    } else {
-      throw new Error(
-        `로그인 인증 중 문제가 발생했습니다\n${data.message ? data.message : ''}`,
-        {
+    switch (data.message) {
+      case 'VERIFICATION_CODE_EXPIRED':
+        throw new Error('유효 시간이 지났습니다. 코드를 다시 전송해주세요.');
+      case 'VERIFICATION_CODE_WRONG':
+        throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
+      default:
+        console.error(data.message);
+        throw new Error('로그인 인증 중 문제가 발생했습니다', {
           cause: { response, message: data.message },
-        }
-      );
+        });
     }
   }
 
@@ -206,8 +182,10 @@ export const logoutUser = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Failed logout.\n${data.message ? data.message : ''}`);
-    return null;
+    console.error(data.message);
+    throw new Error('로그아웃 시도 중 문제가 발생했습니다', {
+      cause: { response, message: data.message },
+    });
   }
 
   return response.json();
@@ -222,8 +200,10 @@ export const deleteUser = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Failed delete user.\n${data.message ? data.message : ''}`);
-    return null;
+    console.error(data.message);
+    throw new Error('회원 탈퇴 시도 중 문제가 발생했습니다', {
+      cause: { response, message: data.message },
+    });
   }
 
   return;
@@ -237,7 +217,7 @@ export const getUserState = async () => {
 
   if (!response.ok) {
     const data = await response.json();
-    console.error(`Yout should login.\n${data.message ? data.message : ''}`);
+    console.error(data?.message);
     return null;
   }
 

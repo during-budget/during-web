@@ -230,7 +230,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
           changeAuthType();
         }}
       >
-        SNS로 {isLogin ? '로그인' : '회원가입'}
+        SNS로 시작하기
       </Button>
     </div>
   );
