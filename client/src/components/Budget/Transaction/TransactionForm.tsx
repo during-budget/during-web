@@ -27,9 +27,9 @@ import MemoInput from '../Input/MemoInput';
 import PaymentInput from '../Input/PaymentInput';
 import TagInput from '../Input/TagInput';
 import TitleInput from '../Input/TitleInput';
+import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
-import TransactionNav from './TransactionNav';
 
 function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean }) {
   const dispatch = useAppDispatch();
@@ -240,8 +240,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     <div className={classes.selects}>
       <CategoryInput
         ref={categoryRef}
-        isExpense={isExpense}
-        setIsExpense={setIsExpense}
         setIsEditSetting={setIsOpenCategorySetting}
         className={`${classes.field} ${classes.select}`}
         categoryId={defaultValue.categoryId}
@@ -330,19 +328,11 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
             {/* types */}
             {!mode.isDone && (
               <div className={classes.types}>
-                <ExpenseTab
-                  id="transaction-form-expense"
-                  isExpense={isExpense}
-                  setIsExpense={setIsExpense}
-                  disabled={mode.isDone}
-                />
+                <ExpenseTab id="transaction-form-expense" disabled={mode.isDone} />
                 {!isDefaultBudget && (
                   <>
                     <span>|</span>
-                    <TransactionNav
-                      id="transaction-form-current"
-                      disabled={mode.isDone}
-                    />
+                    <CurrentTab id="transaction-form-current" disabled={mode.isDone} />
                   </>
                 )}
               </div>

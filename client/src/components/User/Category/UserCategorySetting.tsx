@@ -16,7 +16,8 @@ interface UserCategorySettingProps {
 function UserCategorySetting({ isOpen, setIsOpen }: UserCategorySettingProps) {
   const dispatch = useAppDispatch();
 
-  const [isExpense, setIsExpense] = useState(true);
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
+
   const [expenseCategories, setExpenseCategories] = useState<Category[]>([]);
   const [incomeCategories, setIncomeCategories] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category | undefined>(undefined);
@@ -74,11 +75,7 @@ function UserCategorySetting({ isOpen, setIsOpen }: UserCategorySettingProps) {
     >
       <div className={classes.header}>
         <h5>카테고리 설정</h5>
-        <ExpenseTab
-          id="user-category-setting-type"
-          isExpense={isExpense}
-          setIsExpense={setIsExpense}
-        />
+        <ExpenseTab id="user-category-setting-type" />
       </div>
       <UserCategoryList
         isExpense={isExpense}

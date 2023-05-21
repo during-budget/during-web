@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
-import { uiActions } from '../../../store/ui';
 import { updateBudgetFields } from '../../../util/api/budgetAPI';
 import { getExpensePlannedKey } from '../../../util/filter';
 import AmountDetail from '../Amount/AmountDetail';
@@ -44,15 +43,7 @@ function TotalStatus(props: { budgetId?: string }) {
 
   return (
     <>
-      {budgetId && (
-        <ExpenseTab
-          id="total-nav"
-          isExpense={isExpense}
-          setIsExpense={(isExpense: boolean) => {
-            dispatch(uiActions.setIsExpense(isExpense));
-          }}
-        />
-      )}
+      {budgetId && <ExpenseTab id="total-nav" />}
       <AmountRing
         amount={budgetId ? currentTotal : new Amount(0, 0, 0)}
         size="18rem"

@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
 import { budgetCategoryActions } from '../../../store/budget-category';
-import { uiActions } from '../../../store/ui';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 import IndexNav from '../../UI/IndexNav';
 import AmountBars from '../Amount/AmountBars';
@@ -48,15 +47,7 @@ function CategoryStatus(props: { budgetId: string }) {
       <StatusHeader
         id="category-status-type"
         title="카테고리별 현황"
-        tab={
-          <ExpenseTab
-            id="category-status-type-tab"
-            isExpense={isExpense}
-            setIsExpense={(isExpense: boolean) => {
-              dispatch(uiActions.setIsExpense(isExpense));
-            }}
-          />
-        }
+        tab={<ExpenseTab id="category-status-type-tab" />}
       />
       <AmountBars
         amountData={categories.map((item: Category, i) => {

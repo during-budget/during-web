@@ -1,37 +1,21 @@
-import { uiActions } from '../../../store/ui';
-import RadioTab from '../../UI/RadioTab';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import CurrentTab from '../UI/CurrentTab';
+import ExpenseTab from '../UI/ExpenseTab';
+import classes from './TransactionNav.module.css';
 
-function TransactionNav(props: { id: string; isLine?: boolean; disabled?: boolean }) {
-  const dispatch = useAppDispatch();
-
-  const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
-  const setIsCurrent = (state: boolean) => {
-    dispatch(uiActions.setIsCurrent(state));
-  };
-
-  const tabs = [
-    {
-      label: '예정내역',
-      value: 'scheduled',
-      checked: !isCurrent,
-      onChange: () => {
-        setIsCurrent(false);
-      },
-      disabled: props.disabled,
-    },
-    {
-      label: '거래내역',
-      value: 'current',
-      checked: isCurrent,
-      onChange: () => {
-        setIsCurrent(true);
-      },
-      disabled: props.disabled,
-    },
-  ];
-
-  return <RadioTab name={props.id} values={tabs} isLine={props.isLine} isCenter={true} />;
+interface TransactionNavProps {
+  id: string;
+  isAll?: boolean;
+  disabled?: boolean;
 }
+
+const TransactionNav = ({ id, isAll, disabled }: TransactionNavProps) => {
+  return (
+    <div className={classes.transactionNav}>
+      <CurrentTab id={`${id}_current`} disabled={disabled} />
+      <span>|</span>
+      <ExpenseTab id={`${id}_expense`} isAll={isAll} disabled={disabled} />
+    </div>
+  );
+};
 
 export default TransactionNav;

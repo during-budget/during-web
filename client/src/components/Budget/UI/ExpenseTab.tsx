@@ -1,36 +1,62 @@
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { uiActions } from '../../../store/ui';
 import RadioTab from '../../UI/RadioTab';
 
 function ExpenseTab(props: {
-    id: string;
-    className?: string;
-    isExpense: boolean;
-    setIsExpense: (isExpense: boolean) => void;
-    disabled?: boolean;
+  id: string;
+  className?: string;
+  isAll?: boolean;
+  disabled?: boolean;
 }) {
-    const tabs = [
-        {
-            label: '지출',
-            value: 'expense',
-            checked: props.isExpense,
-            onChange: () => {
-                props.setIsExpense(true);
-            },
-            disabled: props.disabled,
-        },
-        {
-            label: '수입',
-            value: 'income',
-            checked: !props.isExpense,
-            onChange: () => {
-                props.setIsExpense(false);
-            },
-            disabled: props.disabled,
-        },
-    ];
+  const dispatch = useAppDispatch();
 
-    return (
-        <RadioTab className={props.className} name={props.id} values={tabs} />
-    );
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
+  const isIncome = useAppSelector((state) => state.ui.budget.isIncome);
+
+  const setIsExpense = (state: boolean) => {
+    dispatch(uiActions.setIsExpense(state));
+  };
+  const setIsIncome = (state: boolean) => {
+    dispatch(uiActions.setIsIncome(state));
+  };
+
+  const tabs = [
+    {
+      label: '지출',
+      value: 'expense',
+      checked: props.isAll ? isExpense && !isIncome : isExpense,
+      onChange: () => {
+        setIsExpense(true);
+        setIsIncome(false);
+      },
+      disabled: props.disabled,
+    },
+    {
+      label: '수입',
+      value: 'income',
+      checked: isIncome && !isExpense,
+      onChange: () => {
+        setIsExpense(false);
+        setIsIncome(true);
+      },
+      disabled: props.disabled,
+    },
+  ];
+
+  if (props.isAll) {
+    tabs.unshift({
+      label: '전체',
+      value: 'all',
+      checked: isExpense && isIncome,
+      onChange: () => {
+        setIsExpense(true);
+        setIsIncome(true);
+      },
+      disabled: props.disabled,
+    });
+  }
+
+  return <RadioTab className={props.className} name={props.id} values={tabs} />;
 }
 
 export default ExpenseTab;
