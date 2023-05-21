@@ -58,7 +58,7 @@ export const verify = async (
   res: Response,
   next: NextFunction
 ) => {
-  for (let field in ["email", "code"]) {
+  for (let field of ["email", "code"]) {
     if (!(field in req.body)) {
       return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
@@ -148,7 +148,7 @@ export const loginVerify = async (
   res: Response,
   next: NextFunction
 ) => {
-  for (let field in ["email", "code"]) {
+  for (let field of ["email", "code"]) {
     if (!(field in req.body)) {
       return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }

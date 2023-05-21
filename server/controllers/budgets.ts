@@ -257,7 +257,7 @@ export const create = async (req: Request, res: Response) => {
  */
 export const createWithBasic = async (req: Request, res: Response) => {
   try {
-    for (let field in ["year", "month"]) {
+    for (let field of ["year", "month"]) {
       if (!(field in req.body)) {
         return res.status(400).send({ message: FIELD_REQUIRED(field) });
       }
