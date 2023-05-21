@@ -7,12 +7,10 @@ import { uiActions } from '../store/ui';
 type SocialAuthMsgType =
   | 'LOGIN_SUCCESS'
   | 'REGISTER_SUCCESS'
-  | 'REGISTER_FAILED_EMAIL_IN_USE'
-  | 'CONNECT_FAILED_ALREADY_CONNECTED'
-  | 'CONNECT_FAILED_SNSID_IN_USE'
   | 'CONNECT_SUCCESS'
-  | 'AUTH_FAILED_UNKNOWN_ERROR'
-  | 'INVALIED_REQUEST';
+  | 'EMAIL_IN_USE'
+  | 'CONNECTED_ALREADY'
+  | 'AT_LEAST_ONE_SNSID_IS_REQUIRED';
 
 const Redirect = () => {
   const navigate = useNavigate();
@@ -36,7 +34,7 @@ const Redirect = () => {
       case 'REGISTER_SUCCESS':
         navigate('/budget');
         return;
-      case 'REGISTER_FAILED_EMAIL_IN_USE':
+      case 'EMAIL_IN_USE':
         dispatch(
           uiActions.showModal({
             title: '이미 사용 중인 이메일입니다',
@@ -48,28 +46,17 @@ const Redirect = () => {
       case 'CONNECT_SUCCESS':
         dispatch(uiActions.showModal({ icon: '✓', title: '연결 완료' }));
         break;
-      case 'CONNECT_FAILED_ALREADY_CONNECTED':
-        dispatch(
-          uiActions.showModal({ description: '이미 연결 완료된 소셜 계정입니다' })
-        );
+      case 'CONNECTED_ALREADY':
+        dispatch(uiActions.showModal({ description: '이미 사용중인 소셜 계정입니다' }));
         break;
-      case 'CONNECT_FAILED_SNSID_IN_USE':
+      case 'AT_LEAST_ONE_SNSID_IS_REQUIRED':
         dispatch(
           uiActions.showModal({
-            title: '이미 사용중인 소셜 계정입니다',
-            description: '다른 계정으로 시도해주세요',
+            description: '최소 하나 이상의 로그인 수단이 필요합니다',
           })
         );
-        break;
-      case 'AUTH_FAILED_UNKNOWN_ERROR':
+      default:
         dispatch(uiActions.showErrorModal());
-        break;
-      case 'INVALIED_REQUEST':
-        dispatch(
-          uiActions.showErrorModal({
-            title: '잘못된 요청입니다.',
-          })
-        );
         break;
     }
 
