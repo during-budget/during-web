@@ -33,7 +33,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
   const persistRef = useRef<HTMLInputElement>(null);
 
   const [emailState, setEmailState] = useState('');
-  const [emailVerifyState, setEmailVerifyState] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
   const [errorState, setErrorState] = useState<String[]>([]);
   const [isLogin, setIsLogin] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -62,7 +62,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
         await sendCodeRegister(emailState);
       }
 
-      setEmailVerifyState(true);
+      setIsVerify(true);
     } catch (error) {
       setIsDisabled(false);
       const msg = getErrorMsg(error);
@@ -129,7 +129,16 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
     if (!isDisabled) {
       focusEmail();
     }
-  }, [emailVerifyState, isLogin, isDisabled]);
+  }, [isVerify, isLogin, isDisabled]);
+
+  useEffect(() => {
+    setIsVerify(false);
+    setIsDisabled(false);
+
+    if (isVerify) {
+      setEmailState('');
+    }
+  }, [isLogin]);
 
   // Error message JSXElement
   const errorMessage = errorState.length !== 0 && (
@@ -157,7 +166,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
             <label htmlFor="auth-email-input">
               이메일로 {isLogin ? '로그인' : '회원가입'}
             </label>
-            {emailVerifyState && (
+            {isVerify && (
               <Button sizeClass="sm" onClick={sendHandler}>
                 재전송
               </Button>
@@ -174,7 +183,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
           />
         </InputField>
 
-        {emailVerifyState ? (
+        {isVerify ? (
           <>
             <CodeField className={classes.code} ref={codeRef} />
             {errorMessage}
@@ -197,7 +206,7 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
                 onClick={async () => {
                   setEmailState('');
                   setIsDisabled(false);
-                  setEmailVerifyState(false);
+                  setIsVerify(false);
                 }}
               >
                 <u>이메일 다시 입력하기</u>
