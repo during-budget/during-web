@@ -24,9 +24,8 @@
 }
 
 .basic {
-  height: calc(5.8rem + 4vh);
+  transform: translateY(5.8rem + 4vh);
   clip-path: none;
-  /* transform: translateY(5.8rem + 4vh); */
 }
 
 .info {
