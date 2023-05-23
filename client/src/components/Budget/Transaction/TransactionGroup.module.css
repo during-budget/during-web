@@ -1,0 +1,22 @@
+.group {
+  margin-bottom: var(--size-6);
+}
+
+.expand {
+  margin-bottom: 3rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header button {
+  width: auto;
+}
+
+.date {
+  flex-shrink: 0;
+  scroll-margin: 10vh;
+}
