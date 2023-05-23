@@ -63,15 +63,6 @@ const AssetCardListEditor = ({
     setListState(list);
   }, [isAsset]);
 
-  useEffect(() => {
-    if (detailState === 'all') {
-      setListState(list);
-    } else {
-      const filteredList = list.filter((item) => item.detail === detailState);
-      setListState(filteredList);
-    }
-  }, [detailState]);
-
   /** 자산/카드 목록 수정사항 제출 */
   const submitHandler = async () => {
     if (isAsset) {
@@ -88,8 +79,9 @@ const AssetCardListEditor = ({
   };
 
   /** 해당 자산/카드 편집 오버레이 열기 */
-  const openEditHandler = (idx: number) => {
-    setItemEditorData({ isOpen: true, target: listState[idx] });
+  const openEditHandler = (idx: number, id?: string) => {
+    const target = listState.find((item) => item._id === id || item.id === id) || null;
+    setItemEditorData({ isOpen: true, target });
   };
 
   const openAddHandler = () => {
@@ -109,8 +101,15 @@ const AssetCardListEditor = ({
   };
 
   /** 해당 자산/카드 삭제하여 paymentState에 반영 */
-  const removeHandler = (idx: number) => {
-    setListState((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)]);
+  const removeHandler = (_: number, id?: string) => {
+    setListState((prev) => {
+      const idx = prev.findIndex((item) => item._id === id || item.id === id);
+      if (idx === -1) {
+        return prev;
+      } else {
+        return [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)];
+      }
+    });
   };
 
   /** 자산/카드 편집 내용 기반 리스트 업데이트 */
@@ -126,7 +125,6 @@ const AssetCardListEditor = ({
       } else {
         next[idx] = target;
       }
-
       return next;
     });
   };
@@ -167,27 +165,30 @@ const AssetCardListEditor = ({
           className={classes.list}
         >
           {/* TODO: filter by item.type */}
-          {listState.map((item, i) => (
-            <DraggableItem
-              key={item._id || uuid()}
-              id={item._id || uuid()}
-              idx={i}
-              onEdit={openEditHandler}
-              onRemove={removeHandler}
-            >
-              <div className={classes.data}>
-                <Icon className={classes.icon} isSquare={true}>
-                  {item.icon}
-                </Icon>
-                <div className={classes.info}>
-                  <span className={classes.detail}>
-                    {ASSET_CARD_DETAIL_TYPE[item.detail]}
-                  </span>
-                  <span className={classes.title}>{item.title}</span>
+          {listState
+            .filter((item) => detailState === 'all' || item.detail === detailState)
+            .map((item, i) => (
+              <DraggableItem
+                key={item._id || item.id}
+                id={item._id || item.id || uuid()}
+                idx={i}
+                onEdit={openEditHandler}
+                onRemove={removeHandler}
+                preventDrag={detailState !== 'all'}
+              >
+                <div className={classes.data}>
+                  <Icon className={classes.icon} isSquare={true}>
+                    {item.icon}
+                  </Icon>
+                  <div className={classes.info}>
+                    <span className={classes.detail}>
+                      {ASSET_CARD_DETAIL_TYPE[item.detail]}
+                    </span>
+                    <span className={classes.title}>{item.title}</span>
+                  </div>
                 </div>
-              </div>
-            </DraggableItem>
-          ))}
+              </DraggableItem>
+            ))}
         </DraggableList>
         <Button className={classes.add} styleClass="extra" onClick={openAddHandler}>
           자산 및 결제수단 추가하기
