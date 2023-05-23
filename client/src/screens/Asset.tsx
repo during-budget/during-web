@@ -7,6 +7,7 @@ import { AssetDataType, CardDataType, getAssets, getCards } from '../util/api/as
 import classes from './Asset.module.css';
 import { useDispatch } from 'react-redux';
 import { assetActions } from '../store/asset';
+import { uiActions } from '../store/ui';
 export interface AssetProps {
   assets: AssetDataType[];
   cards: CardDataType[];
@@ -18,25 +19,34 @@ const Asset = () => {
 
   const dataExists = assets && cards;
 
-  // TODO: 에러 모달 띄우고, 유저가 클릭해서 재요청하는 걸로... 이거 무한루프 가능성 있어 보임
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     if (!assets) {
-  //       const { assets: assetData } = await getAssets();
-  //       dispatch(assetActions.setAssets(assetData));
-  //     }
-  //     if (!cards) {
-  //       const { cards: cardData } = await getCards();
-  //       dispatch(assetActions.setCards(cardData));
-  //     }
-  //   };
-
-  //   try {
-  //     getData();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [assets, cards, dataExists]);
+  useEffect(() => {
+    if (!assets || !cards) {
+      dispatch(
+        uiActions.showModal({
+          description: '자산 또는 카드를 찾을 수 없습니다',
+          confirmMsg: '다시 불러오기',
+          onConfirm: async () => {
+            try {
+              if (!assets) {
+                const { assets: assetData } = await getAssets();
+                dispatch(assetActions.setAssets(assetData));
+              }
+              if (!cards) {
+                const { cards: cardData } = await getCards();
+                dispatch(assetActions.setCards(cardData));
+              }
+            } catch (error) {
+              console.log(error);
+              uiActions.showErrorModal({
+                title: '',
+                description: '자산 또는 카드를 불러오는 중 문제가 발생했습니다',
+              });
+            }
+          },
+        })
+      );
+    }
+  }, [assets, cards, dataExists]);
 
   return (
     <>
