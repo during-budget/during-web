@@ -76,8 +76,10 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   }, [defaultValue.updateAsset]);
 
   useEffect(() => {
-    const isLater = dayjs().endOf('day') < dayjs(dateState);
-    dispatch(uiActions.setIsCurrent(!isLater));
+    if (!mode.isEdit && !mode.isDone) {
+      const isLater = dayjs().endOf('day') < dayjs(dateState);
+      dispatch(uiActions.setIsCurrent(!isLater));
+    }
   }, [dateState]);
 
   useEffect(() => {
