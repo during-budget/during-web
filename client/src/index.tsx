@@ -3,10 +3,11 @@ import { Provider } from 'react-redux';
 import App from './App';
 import store from './store/index';
 import * as Sentry from '@sentry/react';
+const { DURING_SENTRY } = import.meta.env;
 
 if (import.meta.env.MODE === 'production') {
   Sentry.init({
-    dsn: 'https://7447449226b942609c7f55f66d10d401@o4505136726605824.ingest.sentry.io/4505136729227264',
+    dsn: DURING_SENTRY,
     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!

@@ -28,6 +28,7 @@ jobs:
         run: |
           cd client
           echo "DURING_SERVER=${{secrets.DURING_SERVER}}" >> .env
+          echo "DURING_SENTRY=${{secrets.DURING_SENTRY}}" >> .env
 
       - name: Install Dependencies and Build
         run: |
