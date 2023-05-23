@@ -37,8 +37,6 @@ function TransactionItem(props: {
   const storedPayments = useAppSelector((state) => state.asset.paymentMethods);
   const payment = storedPayments.find((item) => item._id === linkedPaymentMethodId);
 
-  const liClass = [classes.container, linkId && !isCurrent ? classes.done : ''];
-
   const openDetail = (event: React.MouseEvent<HTMLLIElement>) => {
     dispatch(
       transactionActions.openDetail({
@@ -50,7 +48,11 @@ function TransactionItem(props: {
   };
 
   return (
-    <li id={_id} className={liClass.join(' ')} onClick={openDetail}>
+    <li
+      id={_id}
+      className={`${classes.transactionItem} ${isCurrent ? '' : classes.scheduled}`}
+      onClick={openDetail}
+    >
       {/* icon */}
       <Icon className={classes.icon}>{icon || category?.icon}</Icon>
       <div className={classes.data}>
@@ -63,16 +65,18 @@ function TransactionItem(props: {
           </div>
           {/* amount */}
           <div className={classes.right}>
-            <div>
+            <div className={classes.content}>
+              {/* label */}
+              {!isCurrent && <span className={classes.label}>(예정)</span>}
               <p className={classes.amount}>
                 {isExpense ? '-' : '+'}
                 {Amount.getAmountStr(amount)}
               </p>
-              {/* CHECK: isCurrent && linkId && 라는 조건이 원래 있었는데, 필요할까? 백에서 알아서 처리해줬을 거 같기도.. */}
-              {overAmount !== undefined && (
-                <OverAmountMsg className={classes.over} overAmount={overAmount} />
-              )}
             </div>
+            {/* CHECK: isCurrent && linkId && 라는 조건이 원래 있었는데, 필요할까? 백에서 알아서 처리해줬을 거 같기도.. */}
+            {overAmount !== undefined && (
+              <OverAmountMsg className={classes.over} overAmount={overAmount} />
+            )}
             {/* TODO: !!! category! 이거 undefined있을 수 있음 처리 꼭 필요 */}
             <TransactionOption
               className={classes.option}
