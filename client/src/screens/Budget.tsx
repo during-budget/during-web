@@ -67,7 +67,6 @@ function Budget() {
         <BudgetList />
         <EmojiOverlay />
       </main>
-      <Modal />
     </>
   );
 }

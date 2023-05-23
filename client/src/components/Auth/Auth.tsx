@@ -45,7 +45,6 @@ function Auth({ isOpen, onClose, onLogin }: AuthProps) {
           <SNSForm changeAuthType={setEmailAuth} onLogin={onLogin} />
         )}
       </Overlay>
-      <Modal />
     </>
   );
 }

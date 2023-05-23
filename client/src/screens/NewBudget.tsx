@@ -63,7 +63,6 @@ function NewBudget() {
         {/* Overlays */}
         <BudgetList />
       </main>
-      <Modal />
     </>
   );
 }

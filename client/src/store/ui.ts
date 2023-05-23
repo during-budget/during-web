@@ -1,12 +1,21 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+interface BudgetOptions {
+  isCurrent: boolean;
+  isExpense: boolean;
+  isIncome: boolean;
+  showBudgetList: boolean;
+  category: {
+    showEditPlan: boolean;
+  };
+}
 export interface ModalOptions {
   isOpen: boolean;
   icon: string;
   title: string;
   description: string;
   confirmMsg: string;
-  onConfirm: () => void;
+  onConfirm: (() => void) | null;
   showReport: boolean;
 }
 interface EmojiOptions {
@@ -16,7 +25,11 @@ interface EmojiOptions {
   onSelect: (value: any) => void;
 }
 
-const initialState = {
+const initialState: {
+  budget: BudgetOptions;
+  emoji: EmojiOptions;
+  modal: ModalOptions;
+} = {
   budget: {
     isCurrent: true,
     isExpense: true,
@@ -38,7 +51,7 @@ const initialState = {
     title: '',
     description: '',
     confirmMsg: '확인',
-    onConfirm: () => {},
+    onConfirm: null,
     showReport: false,
   },
 };

@@ -129,14 +129,18 @@ function User() {
     navigate('/', { replace: true });
   };
 
-  const deleteHandler = async () => {
-    if (
-      confirm('계정을 삭제할까요?\n 모든 정보가 삭제되며 복구할 수 없습니다.') === false
-    )
-      return;
-    await deleteUser();
-    dispatch(userActions.logout());
-    navigate('/', { replace: true });
+  const deleteHandler = () => {
+    dispatch(
+      uiActions.showModal({
+        title: '계정을 삭제할까요?',
+        description: '모든 정보가 삭제되며 복구할 수 없습니다.',
+        onConfirm: async () => {
+          await deleteUser();
+          dispatch(userActions.logout());
+          navigate('/', { replace: true });
+        },
+      })
+    );
   };
 
   useEffect(() => {
@@ -173,7 +177,6 @@ function User() {
         </section>
       </main>
       <EmojiOverlay />
-      <Modal />
     </>
   );
 }

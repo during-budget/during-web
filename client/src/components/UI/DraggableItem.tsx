@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import Button from './Button';
 import classes from './DraggableItem.module.css';
+import { useAppDispatch } from '../../hooks/redux-hook';
+import { uiActions } from '../../store/ui';
 
 interface DraggableItemProps {
   id: string;
@@ -23,9 +25,17 @@ const DraggableItem = ({
   className,
   children,
 }: PropsWithChildren<DraggableItemProps>) => {
+  const dispatch = useAppDispatch();
+
   const removeHandler = () => {
-    if (confirm('정말 삭제할까요?') === false) return;
-    onRemove && onRemove(idx);
+    dispatch(
+      uiActions.showModal({
+        title: '정말 삭제할까요?',
+        onConfirm: () => {
+          onRemove && onRemove(idx);
+        },
+      })
+    );
   };
 
   const editHandler = () => {
