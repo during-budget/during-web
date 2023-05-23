@@ -114,9 +114,7 @@ function AmountRing(props: {
   return (
     <div className={classes.amountRing} style={{ width: size, height: size }}>
       <div
-        className={`${classes.rings} ${
-          showMsg && amount.overPlanned ? classes.opacity : ''
-        }`}
+        className={classes.rings}
       >
         {rings.map((data, i) => (
           <Ring
@@ -148,7 +146,7 @@ function AmountRing(props: {
                 : ''
             }
             isError={true}
-            isHide={!showMsg || !state.isOver || !amount.overPlanned}
+            isHide={!showMsg || !state.isOver}
           >
             <p>
               <b>{state.target}</b>이 목표보다
