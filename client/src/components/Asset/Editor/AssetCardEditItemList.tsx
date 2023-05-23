@@ -15,6 +15,7 @@ import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
 import classes from './AssetCardEditItemList.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
+import { uiActions } from '../../../store/ui';
 
 interface AssetCardEditItemListProps {
   id: string;
@@ -41,14 +42,21 @@ const AssetCardEditItemList = ({
   };
 
   const removeHandler = async (id: string) => {
-    if (confirm('정말 삭제할까요?') === false) return;
-    const { assets, paymentMethods, cards } = isAsset
-      ? await removeAssetById(id)
-      : await removeCardById(id);
+    dispatch(
+      uiActions.showModal({
+        title: `${isAsset ? '자산을' : '카드를'} 삭제할까요?`,
+        description: '모든 정보가 삭제되며 복구할 수 없습니다.',
+        onConfirm: async () => {
+          const { assets, paymentMethods, cards } = isAsset
+            ? await removeAssetById(id)
+            : await removeCardById(id);
 
-    assets && dispatch(assetActions.setAssets(assets));
-    paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
-    cards && dispatch(assetActions.setCards(cards));
+          assets && dispatch(assetActions.setAssets(assets));
+          paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
+          cards && dispatch(assetActions.setCards(cards));
+        },
+      })
+    );
   };
 
   const editHandler = async (target: AssetCardDataType) => {

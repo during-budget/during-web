@@ -22,6 +22,7 @@ import classes from './AssetCardItemEditor.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
 import AssetFields from './AssetFields';
 import CardFields from './CardFields';
+import { uiActions } from '../../../store/ui';
 
 interface AssetCardItemEditorProps {
   isAsset: boolean;
@@ -124,23 +125,30 @@ const AssetCardItemEditor = ({
   };
 
   /** 자산/카드 삭제 */
-  const removeHandler = async (id: string) => {
-    if (confirm('정말 삭제할까요?') === false) return;
-    const { assets, paymentMethods, cards } = isAsset
-      ? await removeAssetById(id)
-      : await removeCardById(id);
+  const removeHandler = (id: string) => {
+    dispatch(
+      uiActions.showModal({
+        title: `${isAsset ? '자산을' : '카드를'} 삭제할까요?`,
+        description: '모든 정보가 삭제되며 복구할 수 없습니다.',
+        onConfirm: async () => {
+          const { assets, paymentMethods, cards } = isAsset
+            ? await removeAssetById(id)
+            : await removeCardById(id);
 
-    if (assets) {
-      dispatch(assetActions.setAssets(assets));
-    }
-    if (paymentMethods) {
-      dispatch(assetActions.setPaymentMethods(paymentMethods));
-    }
-    if (cards) {
-      dispatch(assetActions.setCards(cards));
-    }
+          if (assets) {
+            dispatch(assetActions.setAssets(assets));
+          }
+          if (paymentMethods) {
+            dispatch(assetActions.setPaymentMethods(paymentMethods));
+          }
+          if (cards) {
+            dispatch(assetActions.setCards(cards));
+          }
 
-    closeEditor();
+          closeEditor();
+        },
+      })
+    );
   };
 
   /** 자산/카드 정보 업데이트 */

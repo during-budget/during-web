@@ -83,19 +83,25 @@ function TransactionOption({
 
   const remove = (isCurrent || !linkId) && {
     name: '내역 삭제',
-    action: async () => {
-      if (confirm('정말 삭제할까요?') === false) return;
-      const { transactionLinked, budget, assets } = await deleteTransaction(_id);
+    action: () => {
+      dispatch(
+        uiActions.showModal({
+          title: '내역을 삭제할까요?',
+          onConfirm: async () => {
+            const { transactionLinked, budget, assets } = await deleteTransaction(_id);
 
-      // remove transaction
-      dispatch(transactionActions.removeTransaction(_id));
-      dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
+            // remove transaction
+            dispatch(transactionActions.removeTransaction(_id));
+            dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
 
-      // dispatch updated amount
-      dispatch(budgetActions.setCurrentBudget(budget));
-      dispatch(totalActions.setTotalFromBudgetData(budget));
-      dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
-      dispatch(assetActions.setAssets(assets));
+            // dispatch updated amount
+            dispatch(budgetActions.setCurrentBudget(budget));
+            dispatch(totalActions.setTotalFromBudgetData(budget));
+            dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+            dispatch(assetActions.setAssets(assets));
+          },
+        })
+      );
     },
   };
 

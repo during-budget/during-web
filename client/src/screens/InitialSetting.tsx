@@ -179,7 +179,6 @@ const InitialSetting = () => {
         />
       )}
       <EmojiOverlay />
-      <Modal />
     </>
   );
 };

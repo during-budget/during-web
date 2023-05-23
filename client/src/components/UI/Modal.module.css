@@ -76,9 +76,14 @@
   font-size: 1rem;
 }
 
-.confirm {
+.buttons {
   margin-top: 1.75rem;
+  display: flex;
+}
+
+.confirm {
   font-size: 1.125rem;
+  min-width: 65%;
   height: 3.75rem;
 }
 

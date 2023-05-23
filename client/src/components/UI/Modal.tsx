@@ -15,7 +15,7 @@ const Modal = () => {
 
   const confirmHandler = () => {
     closeHandler();
-    onConfirm();
+    onConfirm && onConfirm();
   };
 
   const reportHandler = () => {
@@ -48,9 +48,16 @@ const Modal = () => {
           )}
           {description && <p className={classes.description}>{description}</p>}
         </div>
-        <Button onClick={confirmHandler} className={classes.confirm}>
-          {confirmMsg}
-        </Button>
+        <div className={classes.buttons}>
+          {onConfirm && (
+            <Button onClick={closeHandler} styleClass="extra">
+              취소
+            </Button>
+          )}
+          <Button onClick={confirmHandler} className={classes.confirm}>
+            {confirmMsg}
+          </Button>
+        </div>
         {showReport && (
           <Button styleClass="extra" onClick={reportHandler} className={classes.action}>
             <span>문제가 계속되나요? </span>
