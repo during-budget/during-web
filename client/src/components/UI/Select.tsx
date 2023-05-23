@@ -61,11 +61,15 @@ const Select = React.forwardRef(
             // onChange={props.onChange}
             disabled
           >
-            {props.data.map((item, i) => (
-              <option key={i} value={item.value}>
-                {item.label}
-              </option>
-            ))}
+            {props.data.map((item, i) => {
+              if (item.label) {
+                return (
+                  <option key={i} value={item.value}>
+                    {item.label}
+                  </option>
+                );
+              }
+            })}
           </select>
           {!props.disabled && (
             <ul>
