@@ -98,7 +98,7 @@ function TransactionOption({
             dispatch(budgetActions.setCurrentBudget(budget));
             dispatch(totalActions.setTotalFromBudgetData(budget));
             dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
-            dispatch(assetActions.setAssets(assets));
+            assets && dispatch(assetActions.setAssets(assets));
           },
         })
       );
