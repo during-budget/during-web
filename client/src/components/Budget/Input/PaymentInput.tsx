@@ -88,12 +88,12 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
         props.setIsEditSetting(true);
       }}
       onChange={(value?: string) => {
-        // NOTE: 신용카드의 경우 자산 합계 제외 체크하기
+        localStorage.setItem('payment', value || '');
         const payment = filteredPaymentMethods.find((item) => item._id === value);
         props.onChange && props.onChange(value || '', payment?.detail === 'credit');
       }}
       value={props.value}
-      defaultValue={props.defaultValue}
+      defaultValue={props.defaultValue || localStorage.getItem('payment') || ''}
       disabled={props.disabled}
     />
   );
