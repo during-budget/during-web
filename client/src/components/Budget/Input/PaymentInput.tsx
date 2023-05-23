@@ -8,7 +8,7 @@ interface PaymentInputProps {
   budgetId: string;
   className?: string;
   value?: string;
-  onChange?: (value?: string, isCredit?: boolean) => void;
+  onChange?: (value: string, isCredit: boolean) => void;
   defaultValue?: string;
   disabled?: boolean;
   setIsEditSetting: (isEdit: boolean) => void;
@@ -90,7 +90,7 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
       onChange={(value?: string) => {
         // NOTE: 신용카드의 경우 자산 합계 제외 체크하기
         const payment = filteredPaymentMethods.find((item) => item._id === value);
-        props.onChange && props.onChange(value, payment?.detail === 'credit');
+        props.onChange && props.onChange(value || '', payment?.detail === 'credit');
       }}
       value={props.value}
       defaultValue={props.defaultValue}

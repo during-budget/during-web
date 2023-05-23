@@ -59,8 +59,21 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const [iconState, setIconState] = useState('');
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
-  const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
+  const [paymentState, setPaymentState] = useState<string | undefined>(
+    defaultValue.linkedPaymentMethodId
+  );
   const [dateState, setDateState] = useState<Date | null>(defaultValue.date);
+  const [excludeAsset, setExcludeAsset] = useState(
+    defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
+  );
+
+  useEffect(() => {
+    setPaymentState(defaultValue.linkedPaymentMethodId);
+  }, [defaultValue.linkedPaymentMethodId]);
+
+  useEffect(() => {
+    setExcludeAsset(!defaultValue.updateAsset);
+  }, [defaultValue.updateAsset]);
 
   useEffect(() => {
     const isLater = dayjs().endOf('day') < dayjs(dateState);
@@ -73,7 +86,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 
   const titlesRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
-  const excludeAssetRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<any>(null);
   const iconRef = useRef<any>(null);
   const tagsRef = useRef<any>(null);
@@ -100,7 +112,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         memo: memoRef.current!.value(),
         linkId: defaultValue.linkId || undefined,
         overAmount: defaultValue.overAmount,
-        updateAsset: excludeAssetRef.current ? !excludeAssetRef.current.checked : false,
+        updateAsset: !excludeAsset,
       };
 
       // send request
@@ -212,23 +224,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     </div>
   );
 
-  const optionFields = (
-    <div className={classes.options}>
-      {isCurrent && (paymentState || defaultValue.linkedPaymentMethodId) && (
-        <div className={classes.option}>
-          <input
-            ref={excludeAssetRef}
-            id={`check-exclude-asset`}
-            className={classes.check}
-            type="checkbox"
-            defaultChecked={!defaultValue.updateAsset}
-          />
-          <label htmlFor={`check-exclude-asset`}>자산 합계에서 제외</label>
-        </div>
-      )}
-    </div>
-  );
-
   const selectField = (
     <div className={classes.selects}>
       <CategoryInput
@@ -243,10 +238,9 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         budgetId={budgetId}
         className={`${classes.field} ${classes.select}`}
         value={paymentState || ''}
-        onChange={(value?: string, isCredit?: boolean) => {
+        onChange={(value: string, isCredit: boolean) => {
           setPaymentState(value);
-          if (excludeAssetRef.current)
-            excludeAssetRef.current.checked = isCredit ? true : false;
+          setExcludeAsset(isCredit);
         }}
         defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={setIsOpenPaymentEditor}
@@ -314,7 +308,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
               className={`${classes.field} ${classes.memo}`}
               defaultValue={defaultValue.memo}
             />
-            {optionFields}
             {/* types */}
             {!mode.isDone && (
               <div className={classes.types}>
