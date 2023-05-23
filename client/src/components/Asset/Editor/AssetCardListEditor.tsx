@@ -194,6 +194,7 @@ const AssetCardListEditor = ({
         </Button>
       </OverlayForm>
       <AssetCardItemEditor
+        id="edit"
         isAsset={isAsset}
         defaultDetail={detailState === 'all' ? undefined : detailState}
         target={itemEditorData.target ? itemEditorData.target : undefined}

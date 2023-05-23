@@ -12,7 +12,6 @@ import TransactionForm from '../components/Budget/Transaction/TransactionForm';
 import TransactionList from '../components/Budget/Transaction/TransactionList';
 import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
-import Modal from '../components/UI/Modal';
 import StepNav from '../components/UI/StepNav';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/redux-hook';
@@ -170,6 +169,7 @@ const InitialSetting = () => {
       {/* Overlays */}
       {currentIdx < 2 && (
         <AssetCardItemEditor
+          id="add"
           isAsset={currentIdx === 0}
           isOpen={openEditor}
           target={targetState}
