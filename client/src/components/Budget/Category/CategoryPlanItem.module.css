@@ -41,3 +41,8 @@
 .detail .amount {
   font-weight: 200;
 }
+
+.default {
+  padding: 1rem;
+  font-size: var(--size-5);
+}

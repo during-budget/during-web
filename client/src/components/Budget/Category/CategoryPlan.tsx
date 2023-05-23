@@ -191,34 +191,39 @@ function CategoryPlan(props: { budgetId: string }) {
           <h5>목표 예산</h5>
           <DraggableList
             id="category-plan-draggable-list"
-            list={categoryState}
+            list={[...categoryState, defaultCategory]}
             setList={(list: any[]) => {
               setCategoryState(list);
             }}
           >
-            {categoryState.map((item: any, i: number) => (
-              <CategoryPlanItem
-                key={item.id}
-                idx={i}
-                id={item.id}
-                icon={item.icon}
-                title={item.title}
-                amount={item.amount}
-                onChange={updateCategoryPlanHandler}
-                hideCurrent={isDefaultBudget}
-              />
-            ))}
+            {[...categoryState, defaultCategory].map(
+              (item: any, i: number) =>
+                item && (
+                  <CategoryPlanItem
+                    key={item.id}
+                    idx={i}
+                    id={item.id}
+                    icon={item.icon}
+                    title={item.title}
+                    amount={item.amount}
+                    isDefault={item.isDefault}
+                    onChange={updateCategoryPlanHandler}
+                    hideCurrent={isDefaultBudget}
+                  />
+                )
+            )}
           </DraggableList>
         </ul>
         {/* category - default amount (left amount) */}
         <div className={classes.left}>
-          <h6>{
-            // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
-            `${defaultCategory?.icon || ''} 
-                ${defaultCategory?.title || ''} 
-                (남은 금액)`
-          }</h6>
-          <p>{Amount.getAmountStr(defaultCategory?.amount.planned || 0)}</p>
+          <h6>목표 가능 금액</h6>
+          <p>
+            {Amount.getAmountStr(
+              (defaultCategory?.amount.planned || 0) -
+                (defaultCategory?.amount.current || 0) -
+                (defaultCategory?.amount.scheduled || 0)
+            )}
+          </p>
         </div>
         {/* buttons */}
         <Button

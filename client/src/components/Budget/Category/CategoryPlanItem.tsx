@@ -4,16 +4,28 @@ import DraggableItem from '../../UI/DraggableItem';
 import Icon from '../../UI/Icon';
 import classes from './CategoryPlanItem.module.css';
 
-function CategoryPlanItem(props: {
+interface CategoryPlanItemProps {
   id: string;
   idx: number;
   icon: string;
   title: string;
   amount: Amount;
+  isDefault: boolean;
   onChange?: (i: number, value: number) => void;
   hideCurrent?: boolean;
-}) {
-  const [plan, setPlan] = useState(Amount.getAmountStr(props.amount.planned));
+}
+
+function CategoryPlanItem({
+  id,
+  idx,
+  icon,
+  title,
+  amount,
+  isDefault,
+  onChange,
+  hideCurrent,
+}: CategoryPlanItemProps) {
+  const [plan, setPlan] = useState(Amount.getAmountStr(amount.planned));
 
   // Change - Set number
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +33,7 @@ function CategoryPlanItem(props: {
 
     setPlan(value);
 
-    props.onChange && props.onChange(props.idx, +value);
+    onChange && onChange(idx, +value);
   };
 
   // Focus - Conver to number
@@ -52,34 +64,38 @@ function CategoryPlanItem(props: {
   };
 
   return (
-    <DraggableItem id={props.id} idx={props.idx}>
+    <DraggableItem id={id} idx={idx}>
       <div className={classes.content}>
         <div className={classes.info}>
-          <Icon>{props.icon}</Icon>
+          <Icon>{icon}</Icon>
           <div>
-            <p className={classes.title}>{props.title}</p>
+            <p className={classes.title}>{title}</p>
             <div className={classes.detail}>
               <p>
                 <span className={classes.label}>예정</span>
-                <span className={classes.amount}>{props.amount.getScheduledStr()}</span>
+                <span className={classes.amount}>{amount.getScheduledStr()}</span>
               </p>
-              {!props.hideCurrent && (
+              {!hideCurrent && (
                 <p>
                   <span className={classes.label}>현재</span>
-                  <span className={classes.amount}>{props.amount.getCurrentStr()}</span>
+                  <span className={classes.amount}>{amount.getCurrentStr()}</span>
                 </p>
               )}
             </div>
           </div>
         </div>
         {/* TODO: number input으로 대체 */}
-        <input
-          type="text"
-          value={plan}
-          onChange={changeHandler}
-          onFocus={focusHandler}
-          onBlur={blurHandler}
-        ></input>
+        {isDefault ? (
+          <p className={classes.default}>{plan}</p>
+        ) : (
+          <input
+            type="text"
+            value={plan}
+            onChange={changeHandler}
+            onFocus={focusHandler}
+            onBlur={blurHandler}
+          />
+        )}
       </div>
     </DraggableItem>
   );
