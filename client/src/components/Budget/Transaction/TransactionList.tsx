@@ -56,12 +56,10 @@ const getTransacitonsFilteredByDate = (data: {
   isIncome: boolean;
   isDefault?: boolean;
 }) => {
-  const { transactions, isCurrent, isExpense, isIncome, isDefault } = data;
+  const { transactions, isExpense, isIncome, isDefault } = data;
 
   const filteredTransactions = transactions.filter(
-    (item) =>
-      item.isCurrent === isCurrent &&
-      (item.isExpense === isExpense || !item.isExpense === isIncome)
+    (item) => item.isExpense === isExpense || !item.isExpense === isIncome
   );
 
   const dateTransactions: {

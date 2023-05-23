@@ -5,7 +5,8 @@ import RadioTab from '../../UI/RadioTab';
 function ExpenseTab(props: {
   id: string;
   className?: string;
-  isAll?: boolean;
+  showAll?: boolean;
+  showLine?: boolean;
   disabled?: boolean;
 }) {
   const dispatch = useAppDispatch();
@@ -24,7 +25,7 @@ function ExpenseTab(props: {
     {
       label: '지출',
       value: 'expense',
-      checked: props.isAll ? isExpense && !isIncome : isExpense,
+      checked: props.showAll ? isExpense && !isIncome : isExpense,
       onChange: () => {
         setIsExpense(true);
         setIsIncome(false);
@@ -43,7 +44,7 @@ function ExpenseTab(props: {
     },
   ];
 
-  if (props.isAll) {
+  if (props.showAll) {
     tabs.unshift({
       label: '전체',
       value: 'all',
@@ -56,7 +57,14 @@ function ExpenseTab(props: {
     });
   }
 
-  return <RadioTab className={props.className} name={props.id} values={tabs} />;
+  return (
+    <RadioTab
+      className={props.className}
+      name={props.id}
+      values={tabs}
+      isLine={props.showLine}
+    />
+  );
 }
 
 export default ExpenseTab;

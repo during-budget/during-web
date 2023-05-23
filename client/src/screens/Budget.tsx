@@ -57,7 +57,7 @@ function Budget() {
         <hr />
         {/* Transactions */}
         <section>
-          <TransactionNav id="budget_layout" isAll={true} />
+          <TransactionNav id="budget_layout" showAll={true} />
           <TransactionList isDefault={isDefaultBudget} />
           <TransactionForm budgetId={id} isDefaultBudget={isDefaultBudget} />
         </section>
