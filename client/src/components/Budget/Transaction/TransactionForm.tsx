@@ -14,7 +14,6 @@ import {
   createTransaction,
   updateTransaction,
 } from '../../../util/api/transactionAPI';
-import { getNumericHypenDateString } from '../../../util/date';
 import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/Button';
 import EmojiInput from '../../UI/EmojiInput';
@@ -60,7 +59,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
-  const [isPending, setIsPending] = useState(false);
 
   const titlesRef = useRef<any>(null);
   const dateRef = useRef<any>(null);
@@ -76,8 +74,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 
   // handlers
   const submitHandler = async () => {
-    setIsPending(true);
-
     try {
       // set transaction
       const transaction: TransactionType = {
@@ -136,9 +132,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
       clearForm();
-      setIsPending(false);
     } catch (error) {
-      setIsPending(false);
       if (error instanceof Error) {
         console.error(error.message);
       } else {
@@ -223,16 +217,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
           <label htmlFor={`check-exclude-asset`}>자산 합계에서 제외</label>
         </div>
       )}
-      {/* <div className={classes.option}>
-        <input
-          ref={autoConvertRef}
-          id={`auto-convert-to-current`}
-          className={classes.check}
-          type="checkbox"
-          defaultChecked={false}
-        />
-        <label htmlFor={`auto-convert-to-current`}>거래 내역으로 자동 전환</label>
-      </div> */}
     </div>
   );
 
@@ -307,9 +291,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
             <DateInput
               ref={dateRef}
               className={classes.dateField}
-              defaultValue={
-                defaultValue.date ? getNumericHypenDateString(defaultValue.date) : ''
-              }
+              defaultValue={defaultValue.date}
               required={true}
             />
             {selectField} {/* category, payment */}
