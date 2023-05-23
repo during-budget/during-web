@@ -76,7 +76,7 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
           label: `${item.icon} ${item.title}`,
         };
       }),
-    { value: '결제수단 없음', label: '결제수단 없음' },
+    { value: '', label: '결제수단 없음' },
   ];
 
   return (
@@ -88,6 +88,7 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
         props.setIsEditSetting(true);
       }}
       onChange={(value?: string) => {
+        // NOTE: 신용카드의 경우 자산 합계 제외 체크하기
         const payment = filteredPaymentMethods.find((item) => item._id === value);
         props.onChange && props.onChange(value, payment?.detail === 'credit');
       }}

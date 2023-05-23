@@ -30,7 +30,7 @@ function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTa
             id={`${name}-${item.value}`}
             type="radio"
             name={name}
-            checked={item.checked === undefined ? false : item.checked}
+            checked={item.checked || false}
             onChange={item.onChange}
             disabled={item.disabled}
           ></input>

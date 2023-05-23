@@ -7,12 +7,12 @@ interface CardListProps {
   cards: CardDataType[];
 }
 
-const CardList = ({ className, cards }: CardListProps) => {
+const CardList = ({ className, cards }: CardListProps) => {  
   return (
     <ul className={`${classes.container} ${className}`}>
       {cards.map((card) => (
         <li key={card._id} className={classes.card}>
-          <p className={classes.type}>신용카드</p>
+          <p className={classes.type}>{card.detail === 'credit' ? '신용카드' : '체크카드'}</p>
           <p className={classes.title}>{card.title}</p>
         </li>
       ))}

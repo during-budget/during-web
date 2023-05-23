@@ -65,7 +65,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   useEffect(() => {
     const isLater = dayjs().endOf('day') < dayjs(dateState);
     dispatch(uiActions.setIsCurrent(!isLater));
-    console.log(dateState);
   }, [dateState]);
 
   useEffect(() => {
