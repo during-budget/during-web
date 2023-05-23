@@ -145,37 +145,29 @@ class Amount {
     return formatCurrent(amount);
   };
 
-  private getEachState = (
-    id: string,
-    target: string,
-    overTarget: string,
-    overAmount: number
-  ) => {
-    const isOver = overAmount < 0;
-    return {
-      id,
-      target,
-      overTarget,
-      isOver,
-      amount: isOver ? -overAmount : 0,
-    };
-  };
-
   private getState = () => {
-    const currentOverPlanned = this.getEachState(
-      'current',
-      '현재내역',
-      '목표',
-      this._planned - this._current
-    );
-    const scheduledOverplanned = this.getEachState(
-      'scheduled',
-      '예정내역',
-      '목표',
-      this._planned - this.scheduled
-    );
+    const currentOverAmount = this._planned - this._current;
+    const currentIsOverPlan = currentOverAmount < 0;
 
-    return [currentOverPlanned, scheduledOverplanned];
+    const scheduledOverAmount = this._planned - this._scheduled - this._current;
+    const scheduledIsOver = (this._scheduled && scheduledOverAmount < 0) || false;
+
+    return [
+      {
+        id: 'current',
+        target: '현재내역',
+        overTarget: '목표',
+        isOver: currentIsOverPlan,
+        amount: -currentOverAmount,
+      },
+      {
+        id: 'scheduled',
+        target: '예정내역',
+        overTarget: '목표',
+        isOver: scheduledIsOver,
+        amount: currentIsOverPlan ? this._scheduled : -scheduledOverAmount,
+      },
+    ];
   };
 
   private getOverPlanned = () => {
@@ -183,7 +175,9 @@ class Amount {
   };
 
   private getAllOverPlanned = () => {
-    return this._planned - this._current < 0 && this._planned - this.scheduled < 0;
+    return (
+      (this._scheduled && this._planned - this._current - this.scheduled < 0) || false
+    );
   };
 }
 

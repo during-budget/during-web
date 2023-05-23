@@ -111,6 +111,8 @@ function AmountRing(props: {
     },
   ];
 
+  console.log(amount.state);
+
   return (
     <div className={classes.amountRing} style={{ width: size, height: size }}>
       <div
