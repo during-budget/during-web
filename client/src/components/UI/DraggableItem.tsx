@@ -1,17 +1,18 @@
 import { PropsWithChildren } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import Button from './Button';
-import classes from './DraggableItem.module.css';
 import { useAppDispatch } from '../../hooks/redux-hook';
 import { uiActions } from '../../store/ui';
+import Button from './Button';
+import classes from './DraggableItem.module.css';
 
 interface DraggableItemProps {
   id: string;
   idx: number;
-  onRemove?: (idx: number) => void;
-  onEdit?: (idx: number) => void;
-  onCheck?: (idx: number) => void;
+  onRemove?: (idx: number, id?: string) => void;
+  onEdit?: (idx: number, id?: string) => void;
+  onCheck?: (idx: number, id?: string) => void;
   checked?: boolean;
+  preventDrag?: boolean;
   className?: string;
 }
 
@@ -22,6 +23,7 @@ const DraggableItem = ({
   onEdit,
   onCheck,
   checked,
+  preventDrag,
   className,
   children,
 }: PropsWithChildren<DraggableItemProps>) => {
@@ -32,14 +34,14 @@ const DraggableItem = ({
       uiActions.showModal({
         title: '정말 삭제할까요?',
         onConfirm: () => {
-          onRemove && onRemove(idx);
+          onRemove && onRemove(idx, id);
         },
       })
     );
   };
 
   const editHandler = () => {
-    onEdit && onEdit(idx);
+    onEdit && onEdit(idx, id);
   };
 
   const checkHandler = () => {
@@ -48,13 +50,13 @@ const DraggableItem = ({
 
   let buttonAreaClass = classes.sm;
   if (onRemove && onEdit) {
-    buttonAreaClass = classes.lg;
+    buttonAreaClass = preventDrag ? classes.md : classes.lg;
   } else if (onRemove || onEdit) {
-    buttonAreaClass = classes.md;
+    buttonAreaClass = preventDrag ? classes.sm : classes.md;
   }
 
   return (
-    <Draggable draggableId={id} key={id} index={idx}>
+    <Draggable draggableId={id} key={id} index={idx} isDragDisabled={preventDrag}>
       {(provided, snapshot) => {
         const lockedProvided = lockXAxis(provided);
         return (
@@ -101,7 +103,9 @@ const DraggableItem = ({
                   onClick={removeHandler}
                 />
               )}
-              <div {...provided.dragHandleProps} className={classes.handle} />
+              {!preventDrag && (
+                <div {...provided.dragHandleProps} className={classes.handle} />
+              )}
             </div>
           </li>
         );
