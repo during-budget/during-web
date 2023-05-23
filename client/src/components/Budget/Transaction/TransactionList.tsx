@@ -2,7 +2,7 @@ import { DEFAULT_DATE_PREFIX, DEFAULT_DATE_SUFFIX } from '../../../constants/dat
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
-import TransactionItem from './TransactionItem';
+import TransactionGroup from './TransactionGroup';
 import classes from './TransactionList.module.css';
 
 interface Props {
@@ -34,20 +34,14 @@ function TransactionList({ isDefault }: Props) {
 
         return (
           <li key={date}>
-            <ol>
-              {/* Date */}
-              <h5 id={id} className={classes.date}>
-                {date}
-              </h5>
-              {/* Transactions */}
-              {dateTransactionData[date].map((item) => (
-                <TransactionItem
-                  key={item._id}
-                  transaction={item}
-                  isDefault={isDefault}
-                />
-              ))}
-            </ol>
+            {
+              <TransactionGroup
+                id={id}
+                date={date}
+                data={dateTransactionData[date]}
+                isDefaultBudget={isDefault}
+              />
+            }
           </li>
         );
       })}

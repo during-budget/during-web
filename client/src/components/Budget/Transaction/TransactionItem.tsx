@@ -9,7 +9,10 @@ import OverAmountMsg from './OverAmountMsg';
 import classes from './TransactionItem.module.css';
 import TransactionOption from './TransactionOption';
 
-function TransactionItem(props: { transaction: TransactionType; isDefault?: boolean }) {
+function TransactionItem(props: {
+  transaction: TransactionType;
+  isDefaultBudget?: boolean;
+}) {
   const dispatch = useAppDispatch();
 
   const {
@@ -75,7 +78,7 @@ function TransactionItem(props: { transaction: TransactionType; isDefault?: bool
               className={classes.option}
               transaction={props.transaction}
               category={category!}
-              isDefaultBudget={props.isDefault}
+              isDefaultBudget={props.isDefaultBudget}
             />
           </div>
         </div>
