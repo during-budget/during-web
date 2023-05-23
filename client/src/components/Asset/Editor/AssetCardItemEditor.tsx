@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import { assetActions } from '../../../store/asset';
+import { uiActions } from '../../../store/ui';
 import {
   AssetDataType,
   CardDataType,
@@ -22,9 +23,9 @@ import classes from './AssetCardItemEditor.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
 import AssetFields from './AssetFields';
 import CardFields from './CardFields';
-import { uiActions } from '../../../store/ui';
 
 interface AssetCardItemEditorProps {
+  id: string;
   isAsset: boolean;
   target?: AssetCardDataType;
   updateTarget?: (target: AssetCardDataType, isAsset?: boolean) => void;
@@ -36,6 +37,7 @@ interface AssetCardItemEditorProps {
 }
 
 const AssetCardItemEditor = ({
+  id,
   isAsset,
   target,
   updateTarget,
@@ -203,7 +205,7 @@ const AssetCardItemEditor = ({
           </div>
         )}
         <DetailTypeTab
-          id={`${isAsset ? 'asset' : 'card'}-detail-type-tab`}
+          id={`${isAsset ? 'asset' : 'card'}-detail-type-${id}-tab`}
           isAsset={isAsset}
           detailState={targetState.detail}
           setDetailState={setDetail}
