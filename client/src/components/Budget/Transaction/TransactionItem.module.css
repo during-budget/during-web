@@ -34,8 +34,19 @@
 }
 
 .data .right {
-    display: flex;
-    flex-shrink: 0;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.875rem;
 }
 
 .tags {

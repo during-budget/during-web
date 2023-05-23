@@ -1,35 +1,27 @@
-import React, { useImperativeHandle, useRef } from 'react';
+import React from 'react';
 
 interface DateInputProps {
   className: string;
-  defaultValue?: Date | null;
+  value: Date | null;
+  onChange: React.Dispatch<React.SetStateAction<Date | null>>;
   required?: boolean;
 }
 
-const DateInput = React.forwardRef(
-  ({ className, defaultValue, required }: DateInputProps, ref) => {
-    useImperativeHandle(ref, () => {
-      return {
-        value: () => dateRef.current!.value,
-      };
-    });
+const DateInput = ({ className, value, onChange, required }: DateInputProps) => {
+  const dateTimeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(new Date(event.target.value));
+  };
 
-    const dateRef = useRef<HTMLInputElement>(null);
-
-    return (
-      <input
-        className={className}
-        ref={dateRef}
-        type="datetime-local"
-        placeholder="날짜를 입력하세요"
-        defaultValue={
-          defaultValue?.toISOString().slice(0, 16) ||
-          new Date().toISOString().slice(0, 16)
-        }
-        required={required}
-      />
-    );
-  }
-);
+  return (
+    <input
+      className={className}
+      type="datetime-local"
+      placeholder="날짜를 입력하세요"
+      value={value?.toISOString().slice(0, 16) || new Date().toISOString().slice(0, 16)}
+      onChange={dateTimeHandler}
+      required={required}
+    />
+  );
+};
 
 export default DateInput;

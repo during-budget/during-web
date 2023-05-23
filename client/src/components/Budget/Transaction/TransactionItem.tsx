@@ -64,10 +64,14 @@ function TransactionItem(props: {
           {/* amount */}
           <div className={classes.right}>
             <div>
-              <p className={classes.amount}>
-                {isExpense ? '-' : '+'}
-                {Amount.getAmountStr(amount)}
-              </p>
+              {/* label */}
+              <div className={classes.content}>
+                {!isCurrent && <span className={classes.label}>(예정)</span>}
+                <p className={classes.amount}>
+                  {isExpense ? '-' : '+'}
+                  {Amount.getAmountStr(amount)}
+                </p>
+              </div>
               {/* CHECK: isCurrent && linkId && 라는 조건이 원래 있었는데, 필요할까? 백에서 알아서 처리해줬을 거 같기도.. */}
               {overAmount !== undefined && (
                 <OverAmountMsg className={classes.over} overAmount={overAmount} />

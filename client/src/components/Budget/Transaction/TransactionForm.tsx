@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
@@ -59,13 +60,22 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string | undefined>(undefined);
+  const [dateState, setDateState] = useState<Date | null>(defaultValue.date);
+
+  useEffect(() => {
+    const isLater = dayjs().endOf('day') < dayjs(dateState);
+    dispatch(uiActions.setIsCurrent(!isLater));
+    console.log(dateState);
+  }, [dateState]);
+
+  useEffect(() => {
+    setDateState(defaultValue.date);
+  }, [defaultValue.date]);
 
   const titlesRef = useRef<any>(null);
-  const dateRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
   const excludeAssetRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<any>(null);
-  const paymentRef = useRef<any>(null);
   const iconRef = useRef<any>(null);
   const tagsRef = useRef<any>(null);
   const memoRef = useRef<any>(null);
@@ -83,7 +93,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         isExpense,
         icon: iconRef.current!.value() || '',
         title: titlesRef.current!.value(),
-        date: new Date(dateRef.current!.value()),
+        date: dateState,
         amount: +amountRef.current!.value(),
         categoryId: categoryRef.current!.value(),
         linkedPaymentMethodId: paymentState || '',
@@ -231,7 +241,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
         disabled={mode.isDone}
       />
       <PaymentInput
-        ref={paymentRef}
         budgetId={budgetId}
         className={`${classes.field} ${classes.select}`}
         value={paymentState || ''}
@@ -289,9 +298,9 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
           <>
             {/* fields */}
             <DateInput
-              ref={dateRef}
               className={classes.dateField}
-              defaultValue={defaultValue.date}
+              value={dateState}
+              onChange={setDateState}
               required={true}
             />
             {selectField} {/* category, payment */}
@@ -314,7 +323,11 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
                 {!isDefaultBudget && (
                   <>
                     <span>|</span>
-                    <CurrentTab id="transaction-form-current" disabled={mode.isDone} />
+                    <CurrentTab
+                      id="transaction-form-current"
+                      isCurrent={defaultValue.isCurrent}
+                      disabled={mode.isDone}
+                    />
                   </>
                 )}
               </div>

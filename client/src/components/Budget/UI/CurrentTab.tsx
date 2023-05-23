@@ -1,27 +1,33 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import { uiActions } from '../../../store/ui';
 import RadioTab from '../../UI/RadioTab';
 
 interface CurrentTabProps {
   id: string;
+  isCurrent?: boolean;
   isLine?: boolean;
   disabled?: boolean;
   isCenter?: boolean;
 }
 
-function CurrentTab({ id, isLine, isCenter, disabled }: CurrentTabProps) {
+function CurrentTab({ id, isCurrent, isLine, isCenter, disabled }: CurrentTabProps) {
   const dispatch = useAppDispatch();
 
-  const isCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
+  const storedIsCurrent = useAppSelector((state) => state.ui.budget.isCurrent);
   const setIsCurrent = (state: boolean) => {
     dispatch(uiActions.setIsCurrent(state));
   };
+
+  useEffect(() => {
+    setIsCurrent(isCurrent || false);
+  }, [isCurrent]);
 
   const tabs = [
     {
       label: '예정내역',
       value: 'scheduled',
-      checked: !isCurrent,
+      checked: !storedIsCurrent,
       onChange: () => {
         setIsCurrent(false);
       },
@@ -30,7 +36,7 @@ function CurrentTab({ id, isLine, isCenter, disabled }: CurrentTabProps) {
     {
       label: '거래내역',
       value: 'current',
-      checked: isCurrent,
+      checked: storedIsCurrent,
       onChange: () => {
         setIsCurrent(true);
       },
