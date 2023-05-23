@@ -59,7 +59,9 @@ const getTransacitonsFilteredByDate = (data: {
   const { transactions, isExpense, isIncome, isDefault } = data;
 
   const filteredTransactions = transactions.filter(
-    (item) => item.isExpense === isExpense || !item.isExpense === isIncome
+    (item) =>
+      (item.isExpense === isExpense || !item.isExpense === isIncome) &&
+      (item.isCurrent ? true : !item.linkId)
   );
 
   const dateTransactions: {

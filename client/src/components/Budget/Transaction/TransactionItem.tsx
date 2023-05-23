@@ -37,8 +37,6 @@ function TransactionItem(props: {
   const storedPayments = useAppSelector((state) => state.asset.paymentMethods);
   const payment = storedPayments.find((item) => item._id === linkedPaymentMethodId);
 
-  const liClass = [classes.container, linkId && !isCurrent ? classes.done : ''];
-
   const openDetail = (event: React.MouseEvent<HTMLLIElement>) => {
     dispatch(
       transactionActions.openDetail({
@@ -50,7 +48,11 @@ function TransactionItem(props: {
   };
 
   return (
-    <li id={_id} className={liClass.join(' ')} onClick={openDetail}>
+    <li
+      id={_id}
+      className={`${classes.transactionItem} ${isCurrent ? '' : classes.scheduled}`}
+      onClick={openDetail}
+    >
       {/* icon */}
       <Icon className={classes.icon}>{icon || category?.icon}</Icon>
       <div className={classes.data}>
@@ -64,8 +66,8 @@ function TransactionItem(props: {
           {/* amount */}
           <div className={classes.right}>
             <div>
-              {/* label */}
               <div className={classes.content}>
+                {/* label */}
                 {!isCurrent && <span className={classes.label}>(예정)</span>}
                 <p className={classes.amount}>
                   {isExpense ? '-' : '+'}
