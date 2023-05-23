@@ -137,15 +137,9 @@ const AssetCardItemEditor = ({
             ? await removeAssetById(id)
             : await removeCardById(id);
 
-          if (assets) {
-            dispatch(assetActions.setAssets(assets));
-          }
-          if (paymentMethods) {
-            dispatch(assetActions.setPaymentMethods(paymentMethods));
-          }
-          if (cards) {
-            dispatch(assetActions.setCards(cards));
-          }
+          assets && dispatch(assetActions.setAssets(assets));
+          paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
+          cards && dispatch(assetActions.setCards(cards));
 
           closeEditor();
         },
