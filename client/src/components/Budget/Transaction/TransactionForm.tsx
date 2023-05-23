@@ -59,16 +59,16 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const [iconState, setIconState] = useState('');
   const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
-  const [paymentState, setPaymentState] = useState<string | undefined>(
-    defaultValue.linkedPaymentMethodId
-  );
+  const [paymentState, setPaymentState] = useState<string>('');
   const [dateState, setDateState] = useState<Date | null>(defaultValue.date);
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
   );
 
   useEffect(() => {
-    setPaymentState(defaultValue.linkedPaymentMethodId);
+    setPaymentState(
+      defaultValue.linkedPaymentMethodId || localStorage.getItem('payment') || ''
+    );
   }, [defaultValue.linkedPaymentMethodId]);
 
   useEffect(() => {
@@ -177,6 +177,8 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   };
 
   const expandHandler = () => {
+    if (mode.isExpand) return;
+
     // set form expand
     dispatch(
       transactionActions.setForm({
