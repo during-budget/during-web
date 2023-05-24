@@ -36,6 +36,7 @@ function CategoryPlan(props: { budgetId: string }) {
   const [totalPlanState, setTotalPlanState] = useState<number>(0);
   const [categoryState, setCategoryState] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category | undefined>(undefined);
+  const [allCategory, setAllCategoryState] = useState<Category[]>([]);
 
   // Update state <- from store
   // TODO: isExpense 일치 일반 카테고리와 기본 카테고리 분류해서 얻는 헬퍼 함수나 훅.. 만들기...
@@ -66,10 +67,16 @@ function CategoryPlan(props: { budgetId: string }) {
       );
 
       nextDefault.amount.planned = totalPlanState - categoryPlanSum;
-
       return nextDefault;
     });
   }, [categoryState, totalPlanState]);
+
+  useEffect(() => {
+    setAllCategoryState([
+      ...categoryState,
+      defaultCategory || Category.getEmptyCategory(),
+    ]);
+  }, [categoryState, defaultCategory]);
 
   // Handlers for Overlay
   const closeHandler = () => {
@@ -177,9 +184,8 @@ function CategoryPlan(props: { budgetId: string }) {
         <AmountBars
           className={classes.bars}
           borderRadius="0.4rem"
-          // NOTE: useEffect 전 초기 defaultCategory는 undefined이므로 옵셔널 처리
-          amountData={[...categoryState, defaultCategory].map((item) => {
-            return { label: item?.icon || '', amount: item?.amount.planned || 0 };
+          amountData={allCategory.map((item) => {
+            return { label: item.icon || '', amount: item.amount.planned || 0 };
           })}
         />
         {/* category - plan editors (with current, scheudled amount) */}
@@ -187,12 +193,12 @@ function CategoryPlan(props: { budgetId: string }) {
           <h5>목표 예산</h5>
           <DraggableList
             id="category-plan-draggable-list"
-            list={[...categoryState, defaultCategory]}
+            list={allCategory}
             setList={(list: any[]) => {
-              setCategoryState(list);
+              setCategoryState(list.filter((item) => !item.isDefault));
             }}
           >
-            {[...categoryState, defaultCategory].map(
+            {allCategory.map(
               (item: any, i: number) =>
                 item && (
                   <CategoryPlanItem
@@ -205,6 +211,7 @@ function CategoryPlan(props: { budgetId: string }) {
                     isDefault={item.isDefault}
                     onChange={updateCategoryPlanHandler}
                     hideCurrent={isDefaultBudget}
+                    preventDrag={item.isDefault}
                   />
                 )
             )}
