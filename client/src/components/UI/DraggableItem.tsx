@@ -10,7 +10,7 @@ interface DraggableItemProps {
   idx: number;
   onRemove?: (idx: number, id?: string) => void;
   onEdit?: (idx: number, id?: string) => void;
-  onCheck?: (idx: number, id?: string) => void;
+  onCheck?: (idx: number, id?: string, checked?: boolean) => void;
   checked?: boolean;
   preventDrag?: boolean;
   className?: string;
@@ -44,8 +44,9 @@ const DraggableItem = ({
     onEdit && onEdit(idx, id);
   };
 
-  const checkHandler = () => {
-    onCheck && onCheck(idx);
+  const checkHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = event.target;
+    onCheck && onCheck(idx, value, checked);
   };
 
   let buttonAreaClass = classes.sm;
@@ -75,7 +76,7 @@ const DraggableItem = ({
                   className={classes.check}
                   type="checkbox"
                   name="category-setting"
-                  checked={checked}
+                  checked={checked || false}
                   onChange={checkHandler}
                   value={id}
                 />

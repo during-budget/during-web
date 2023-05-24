@@ -7,6 +7,7 @@ interface BudgetOptions {
   showBudgetList: boolean;
   category: {
     showEditPlan: boolean;
+    showSetting: boolean;
   };
 }
 export interface ModalOptions {
@@ -37,6 +38,7 @@ const initialState: {
     showBudgetList: false,
     category: {
       showEditPlan: false,
+      showSetting: false,
     },
   },
   emoji: {
@@ -97,6 +99,9 @@ const uiSlice = createSlice({
       const { isExpense, showEditPlan } = action.payload;
       state.budget.isExpense = isExpense;
       state.budget.category.showEditPlan = showEditPlan;
+    },
+    showBudgetCategorySetting(state, action: PayloadAction<boolean>) {
+      state.budget.category.showSetting = action.payload;
     },
     setEmojiOverlay(state, action: PayloadAction<Partial<EmojiOptions>>) {
       const options = action.payload;

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
+import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import BudgetList from '../components/Budget/List/BudgetList';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
@@ -12,7 +13,6 @@ import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
-import Modal from '../components/UI/Modal';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/redux-hook';
 import { budgetActions } from '../store/budget';
@@ -64,6 +64,7 @@ function Budget() {
         {/* Overlays */}
         <TransactionDetail isDefaultBudget={isDefaultBudget} />
         <CategoryPlan budgetId={id} />
+        <BudgetCategorySetting budgetId={id} />
         <BudgetList />
         <EmojiOverlay />
       </main>

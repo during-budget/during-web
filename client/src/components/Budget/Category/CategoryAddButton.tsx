@@ -1,10 +1,12 @@
+import { v4 as uuid } from 'uuid';
 import Category from '../../../models/Category';
 import Button from '../../UI/Button';
-import { v4 as uuid } from 'uuid';
 
 const CategoryAddButton = (props: {
   isExpense: boolean;
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
+  onAdd?: (category: Category) => void;
+  afterAdd?: () => void;
 }) => {
   const addHandler = async () => {
     const id = uuid();
@@ -18,8 +20,11 @@ const CategoryAddButton = (props: {
         isExpense: props.isExpense ? true : false,
         isDefault: false,
       });
+      props.onAdd && props.onAdd(newCategory);
       return [...prev, newCategory];
     });
+
+    props.afterAdd && props.afterAdd();
 
     // 스크롤
     const newCategory = document.getElementById(id);

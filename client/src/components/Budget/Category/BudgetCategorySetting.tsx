@@ -3,49 +3,29 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Category from '../../../models/Category';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { transactionActions } from '../../../store/transaction';
+import { uiActions } from '../../../store/ui';
 import { userCategoryActions } from '../../../store/user-category';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { updateCategoriesPartially } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
-import Button from '../../UI/Button';
+import DraggableItem from '../../UI/DraggableItem';
+import DraggableList from '../../UI/DraggableList';
+import EmojiInput from '../../UI/EmojiInput';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
 import CategoryAddButton from './CategoryAddButton';
-import CategoryCheckItem from './CategoryCheckItem';
-import CategoryEditItem from './CategoryEditItem';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
-
-// TODO: DraggableList 활용하여 개선
-
-// setCheckedPaymentIds((prev) => {
-//   if (prev.includes(id)) {
-//     return prev.filter((item) => item !== id);
-//   } else {
-//     return [...prev, id];
-//   }
-// });
 
 interface BudgetCategorySettingProps {
   budgetId: string;
-  budgetCategories?: Category[];
-  isExpense: boolean;
-  isOpen: boolean;
-  onClose: () => void;
-  sendRequest?: boolean;
-  setCategoryPlans?: React.Dispatch<React.SetStateAction<Category[]>>;
-  setDefaultPlan?: React.Dispatch<React.SetStateAction<Category | undefined>>;
 }
 
-function BudgetCategorySetting({
-  budgetId,
-  budgetCategories: propsBudgetCategories,
-  isExpense,
-  isOpen,
-  onClose,
-  sendRequest,
-  setCategoryPlans,
-}: BudgetCategorySettingProps) {
+const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
   const dispatch = useAppDispatch();
+
+  // Set ui data
+  const isOpen = useAppSelector((state) => state.ui.budget.category.showSetting);
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
   // Set category data
   const storedUserCategories = useAppSelector((state) => state.userCategory);
@@ -58,12 +38,6 @@ function BudgetCategorySetting({
     ? storedBudgetCategories.expense
     : storedBudgetCategories.income;
 
-  const budgetCategories = propsBudgetCategories
-    ? propsBudgetCategories
-    : currentBudgetCategories;
-
-  // Set state for edit & check
-  const [isEdit, setIsEdit] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category>(
     Category.getEmptyCategory
@@ -75,173 +49,190 @@ function BudgetCategorySetting({
   // Set categories
   useEffect(() => {
     // categories
-    setCategories(currentUserCategories.filter((item) => !item.isDefault));
+    const currentCategories = currentUserCategories.map((item) => {
+      const budgetCategory = currentBudgetCategories.find(
+        (target) => target.id === item.id
+      );
+      if (budgetCategory) {
+        item.amount = budgetCategory.amount;
+      }
+      return item;
+    });
+
+    setCategories(currentCategories.filter((item) => !item.isDefault));
     setDefaultCategory(
       currentUserCategories.find((item) => item.isDefault) || Category.getEmptyCategory()
     );
 
-    // checked categories
-    const checkedIds = budgetCategories.map((item) => item.id);
+    // checked
+    const checkedIds = currentUserCategories.map((item) => item.id);
     setCheckedCategoryIds(
-      new Map(categories.map((item: Category) => [item.id, checkedIds.includes(item.id)]))
+      new Map(
+        currentBudgetCategories.map((item: Category) => [
+          item.id,
+          checkedIds.includes(item.id),
+        ])
+      )
     );
+  }, [currentUserCategories, currentBudgetCategories, isExpense]);
 
-    // init edit mode
-    if (isOpen) {
-      setIsEdit(false);
-    }
-  }, [currentUserCategories, budgetCategories, isExpense, isOpen]);
-
-  // Form handlers
   const submitHandler = async () => {
-    if (isEdit) {
-      submitEditData();
-    } else {
-      submitCheckedData();
-      onClose();
-    }
+    await updateUserCategory();
+    updateBudgetCategory();
+    closeHandler();
   };
 
-  const submitEditData = async () => {
+  const updateUserCategory = async () => {
     const {
-      categories: updatedCategories,
+      categories: updatedCategory,
       updated,
       removed,
-    } = await updateCategoriesPartially({ isExpense, categories });
+    } = await updateCategoriesPartially({
+      isExpense,
+      categories: [...categories, defaultCategory],
+    });
 
-    // update transaction state (removed category -> default category)
+    // user category - update transaction state (removed category -> default category)
     if (removed.length > 0) {
       const { transactions } = await getTransactions(budgetId);
       dispatch(transactionActions.setTransactions(transactions));
     }
 
-    // update category state
-    dispatch(userCategoryActions.setCategories(updatedCategories));
+    // user category - update category state
+    dispatch(userCategoryActions.setCategories(updatedCategory));
     dispatch(budgetCategoryActions.updateCategoryFromSetting({ updated, removed }));
   };
 
-  const submitCheckedData = async () => {
-    // checkedId -> checkedCategories
-    const checkedCategories: Category[] = [];
-    checkedCategoryIds.forEach((isChecked, key) => {
-      if (isChecked) {
-        const category = categories.find((item: Category) => item.id === key);
-        category && checkedCategories.push(category);
-      }
+  const updateBudgetCategory = async () => {
+    // get checked categories & default category
+    const updatingCategories = categories.filter((item) =>
+      checkedCategoryIds.get(item.id) && item.title
+    );
+
+    // send request
+    const categoryReqData = updatingCategories.map((item) => {
+      const { id, amount } = item;
+      return {
+        categoryId: id,
+        amountPlanned: amount.planned,
+      };
     });
+    const { categories: updatedCategories, excluded: excludedCategories } =
+      await updateBudgetCategories(budgetId, isExpense, categoryReqData);
 
-    // checkedCategories -> update budget categories (include / exclude)
-    const updatingCategories: Category[] = [];
-    checkedCategories.forEach((checkedItem: Category) => {
-      const existingItem = budgetCategories.find((item) => item.id === checkedItem.id);
-      if (existingItem) {
-        existingItem.title = checkedItem.title;
-        existingItem.icon = checkedItem.icon;
-        updatingCategories.push(existingItem);
-      } else {
-        updatingCategories.push(checkedItem);
-      }
-    });
-
-    // update budgetCategory state
-    if (setCategoryPlans) {
-      setCategoryPlans(updatingCategories);
-    } else {
-      dispatch(
-        budgetCategoryActions.updateCategory({
-          isExpense,
-          categories: updatingCategories,
-        })
-      );
-
-      if (sendRequest) {
-        // consist request data - {categoryId, amountPlanned}[]
-        const categoryReqData = updatingCategories.map((item) => {
-          const { id, amount } = item;
-          return {
-            categoryId: id,
-            amountPlanned: amount.planned,
-          };
-        });
-        // send request
-        const { categories: updatedCategories, excluded: excludedCategories } =
-          await updateBudgetCategories(budgetId, isExpense, categoryReqData);
-        // set state - updated category
-        dispatch(budgetCategoryActions.setCategoryFromData(updatedCategories));
-        // set state - transactions updated category (excluded -> default)
-        if (excludedCategories.length > 0) {
-          const { transactions } = await getTransactions(budgetId);
-          dispatch(transactionActions.setTransactions(transactions));
-        }
-      }
+    // set state - updated category
+    dispatch(budgetCategoryActions.setCategoryFromData(updatedCategories));
+    // set state - transactions updated category (excluded -> default)
+    if (excludedCategories.length > 0) {
+      const { transactions } = await getTransactions(budgetId);
+      dispatch(transactionActions.setTransactions(transactions));
     }
   };
 
-  /** Set isEdit & Submit */
-  const editHandler = async () => {
-    if (isEdit) {
-      submitHandler();
-      setIsEdit(false);
-    } else {
-      setIsEdit(true);
-    }
+  const checkHandler = (_: number, id?: string, checked?: boolean) => {
+    setCheckedCategoryIds((prev) => {
+      const next = new Map(prev);
+      id && next.set(id, checked || false);
+      return next;
+    });
+  };
+
+  const removeHandler = (idx: number) => {
+    setCategories((prev) => {
+      const removedId = prev[idx].id;
+      setCheckedCategoryIds((prev) => {
+        const next = new Map(prev);
+        next.set(removedId, false);
+        return next;
+      });
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length)];
+    });
+  };
+
+  const iconHandler = (idx: number, value: string) => {
+    setCategories((prev) => {
+      const next = [...prev];
+      next[idx].icon = value;
+      return next;
+    });
+  };
+
+  const titleHandler = (idx: number, value: string) => {
+    setCategories((prev) => {
+      const next = [...prev];
+      next[idx].title = value;
+      return next;
+    });
+  };
+
+  const closeHandler = () => {
+    dispatch(uiActions.showBudgetCategorySetting(false));
   };
 
   return (
     <OverlayForm
+      overlayOptions={{ isOpen, onClose: closeHandler, noTransform: true }}
       onSubmit={submitHandler}
-      overlayOptions={{
-        isOpen,
-        onClose,
-      }}
-      confirmCancelOptions={{
-        confirmMsg: isEdit ? '수정 완료' : '카테고리 설정 완료',
-      }}
-      className={`${classes.container} ${isEdit ? classes.edit : ''}`}
+      className={classes.budgetCategoryForm}
     >
-      {/* Header */}
-      <div className={classes.header}>
-        <h5>카테고리 목록 편집</h5>
-        <Button
-          styleClass="extra"
-          className={isEdit ? classes.confirm : classes.pencil}
-          onClick={editHandler}
-        ></Button>
-      </div>
-      {/* List */}
-      <ul className={classes.list}>
-        {categories.map((item, i) =>
-          isEdit ? (
-            <CategoryEditItem
-              key={item.id}
-              idx={i}
-              category={item}
-              setCategories={setCategories}
-              setCheckedCategoryIds={setCheckedCategoryIds}
-            />
-          ) : (
-            <CategoryCheckItem
-              key={item.id}
-              category={item}
-              checkedCategoryIds={checkedCategoryIds}
-              setCheckedCategoryIds={setCheckedCategoryIds}
-            />
-          )
-        )}
-      </ul>
-      {/* Add category & Edit default category */}
-      {isEdit && (
-        <>
-          <CategoryAddButton isExpense={isExpense} setCategories={setCategories} />
-          <DefaultCategoryEdit
-            defaultCategory={defaultCategory}
-            setDefaultCategory={setDefaultCategory}
-          />
-        </>
-      )}
+      <h5>카테고리 목록 편집</h5>
+      <DraggableList
+        id="budget-category-setting-list"
+        className={classes.list}
+        list={categories}
+        setList={setCategories}
+      >
+        {categories.map((item, i) => (
+          <DraggableItem
+            key={item.id}
+            id={item.id}
+            className={classes.budgetCategoryItem}
+            idx={i}
+            onCheck={checkHandler}
+            checked={checkedCategoryIds.get(item.id)}
+            onRemove={item.isDefault ? undefined : removeHandler}
+          >
+            <div className={classes.info}>
+              <EmojiInput
+                className={classes.icon}
+                value={item.icon}
+                onChange={(value: string) => {
+                  iconHandler(i, value);
+                }}
+                required={true}
+              />
+              <input
+                className={classes.title}
+                type="text"
+                value={item.title}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  titleHandler(i, event.target.value);
+                }}
+                required
+              />
+            </div>
+          </DraggableItem>
+        ))}
+      </DraggableList>
+      <CategoryAddButton
+        isExpense={isExpense}
+        setCategories={setCategories}
+        onAdd={(category) => {
+          checkedCategoryIds.set(category.id, true);
+        }}
+        afterAdd={() => {
+          const input = document.querySelector(
+            '.' + classes.budgetCategoryItem + ':last-child .' + classes.title
+          ) as HTMLInputElement;
+          input?.focus();
+        }}
+      />
+      <DefaultCategoryEdit
+        defaultCategory={defaultCategory}
+        setDefaultCategory={setDefaultCategory}
+      />
     </OverlayForm>
   );
-  return <></>;
-}
+};
 
 export default BudgetCategorySetting;

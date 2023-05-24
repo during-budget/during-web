@@ -9,7 +9,7 @@ interface OverlayFormProps {
   onSubmit: () => void;
   formHeight?: string;
   formPadding?: 'lg' | 'md' | 'sm';
-  className: string;
+  className?: string;
 }
 
 const OverlayForm = ({

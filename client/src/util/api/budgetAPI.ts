@@ -184,7 +184,7 @@ export const updateCategoryPlan = async (
   return response.json() as Promise<{ budget: BudgetDataType }>;
 };
 
-/** 예산 내 카ㅔ고리 업데이트 */
+/** 예산 내 카테고리 업데이트 */
 export const updateBudgetCategories = async (
   budgetId: string,
   isExpense: boolean,

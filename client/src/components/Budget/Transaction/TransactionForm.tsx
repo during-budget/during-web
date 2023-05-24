@@ -19,7 +19,6 @@ import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/Button';
 import EmojiInput from '../../UI/EmojiInput';
 import OverlayForm from '../../UI/OverlayForm';
-import BudgetCategorySetting from '../Category/BudgetCategorySetting';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
@@ -57,7 +56,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   }, [defaultValue.isExpense]);
 
   const [iconState, setIconState] = useState('');
-  const [isOpenCategorySetting, setIsOpenCategorySetting] = useState(false);
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
   const [dateState, setDateState] = useState<Date | null>(defaultValue.date);
@@ -206,6 +204,10 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     amountRef.current!.clear();
   };
 
+  const editorHandler = () => {
+    dispatch(uiActions.showBudgetCategorySetting(true));
+  };
+
   // fields
   const amountField = (
     <div className={classes.amount}>
@@ -232,7 +234,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     <div className={classes.selects}>
       <CategoryInput
         ref={categoryRef}
-        setIsEditSetting={setIsOpenCategorySetting}
+        setIsEditSetting={editorHandler}
         className={`${classes.field} ${classes.select}`}
         categoryId={defaultValue.categoryId}
         setIcon={setIconState}
@@ -337,15 +339,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
           </p>
         )}
       </OverlayForm>
-      <BudgetCategorySetting
-        budgetId={props.budgetId}
-        isExpense={isExpense}
-        isOpen={isOpenCategorySetting}
-        onClose={() => {
-          setIsOpenCategorySetting(false);
-        }}
-        sendRequest={true}
-      />
       <PaymentEditor
         isOpen={isOpenPaymentEditor}
         onClose={() => {

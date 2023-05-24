@@ -14,7 +14,6 @@ import DraggableList from '../../UI/DraggableList';
 import OverlayForm from '../../UI/OverlayForm';
 import AmountBars from '../Amount/AmountBars';
 import EditInput from '../Input/EditInput';
-import BudgetCategorySetting from './BudgetCategorySetting';
 import classes from './CategoryPlan.module.css';
 import CategoryPlanItem from './CategoryPlanItem';
 
@@ -37,9 +36,6 @@ function CategoryPlan(props: { budgetId: string }) {
   const [totalPlanState, setTotalPlanState] = useState<number>(0);
   const [categoryState, setCategoryState] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category | undefined>(undefined);
-
-  // Set states - ui
-  const [isEditSetting, setIsEditSetting] = useState(false);
 
   // Update state <- from store
   // TODO: isExpense 일치 일반 카테고리와 기본 카테고리 분류해서 얻는 헬퍼 함수나 훅.. 만들기...
@@ -230,22 +226,12 @@ function CategoryPlan(props: { budgetId: string }) {
           className={classes.edit}
           styleClass="extra"
           onClick={() => {
-            setIsEditSetting(true);
+            dispatch(uiActions.showBudgetCategorySetting(true));
           }}
         >
           카테고리 목록 편집
         </Button>
       </OverlayForm>
-      <BudgetCategorySetting
-        budgetId={props.budgetId}
-        budgetCategories={categoryState}
-        isExpense={isExpense}
-        isOpen={isEditSetting}
-        onClose={() => {
-          setIsEditSetting(false);
-        }}
-        setCategoryPlans={setCategoryState}
-      />
     </>
   );
 }
