@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Amount from '../../../models/Amount';
 import DraggableItem from '../../UI/DraggableItem';
 import Icon from '../../UI/Icon';
@@ -13,6 +13,7 @@ interface CategoryPlanItemProps {
   isDefault: boolean;
   onChange?: (i: number, value: number) => void;
   hideCurrent?: boolean;
+  preventDrag?: boolean;
 }
 
 function CategoryPlanItem({
@@ -24,8 +25,15 @@ function CategoryPlanItem({
   isDefault,
   onChange,
   hideCurrent,
+  preventDrag,
 }: CategoryPlanItemProps) {
   const [plan, setPlan] = useState(Amount.getAmountStr(amount.planned));
+
+  useEffect(() => {
+    if (isDefault) {
+      setPlan(Amount.getAmountStr(amount.planned));
+    }
+  }, [amount.planned]);
 
   // Change - Set number
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +72,7 @@ function CategoryPlanItem({
   };
 
   return (
-    <DraggableItem id={id} idx={idx}>
+    <DraggableItem id={id} idx={idx} preventDrag={preventDrag}>
       <div className={classes.content}>
         <div className={classes.info}>
           <Icon>{icon}</Icon>
