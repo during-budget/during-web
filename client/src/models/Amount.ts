@@ -84,7 +84,7 @@ class Amount {
   }
 
   getLeftScheduled = () => {
-    return this.planned - this._scheduled;
+    return this._planned - (this._current + this._scheduled);
   };
 
   getLeftPlanned = () => {
