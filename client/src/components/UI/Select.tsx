@@ -27,12 +27,12 @@ const Select = React.forwardRef(
     });
 
     const selectRef = useRef<HTMLSelectElement>(null);
-    const [selectState, setSelectState] = useState(props.defaultValue || props.value);
+    const [selectState, setSelectState] = useState(props.defaultValue ?? props.value);
     const [isExpand, setIsExpand] = useState(false);
 
     // NOTE: 지출 & 수입 변경되었을 때 기본값 다시 세팅
     useEffect(() => {
-      setSelectState(props.defaultValue || props.value);
+      setSelectState(props.defaultValue ?? props.value);
     }, [props.defaultValue, props.value]);
 
     const toggleList = () => {

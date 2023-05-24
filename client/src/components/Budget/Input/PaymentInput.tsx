@@ -14,15 +14,17 @@ interface PaymentInputProps {
   setIsEditSetting: (isEdit: boolean) => void;
 }
 
-const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
-  useImperativeHandle(ref, () => {
-    return {
-      value: () => paymentRef.current!.value(),
-    };
-  });
-
+const PaymentInput = ({
+  budgetId,
+  className,
+  value,
+  onChange,
+  defaultValue,
+  disabled,
+  setIsEditSetting,
+}: PaymentInputProps) => {
   const [isAsset, setIsAsset] = useState(false);
-
+  console.log(value);
   const paymentRef = useRef<any>(null);
 
   const storedPaymentMethods = useAppSelector((state) => state.asset.paymentMethods);
@@ -82,21 +84,21 @@ const PaymentInput = React.forwardRef((props: PaymentInputProps, ref) => {
   return (
     <Select
       ref={paymentRef}
-      className={props.className}
+      className={className}
       data={paymentOptions}
       showEdit={() => {
-        props.setIsEditSetting(true);
+        setIsEditSetting(true);
       }}
       onChange={(value?: string) => {
         localStorage.setItem('payment', value || '');
         const payment = filteredPaymentMethods.find((item) => item._id === value);
-        props.onChange && props.onChange(value || '', payment?.detail === 'credit');
+        onChange && onChange(value || '', payment?.detail === 'credit');
       }}
-      value={props.value}
-      defaultValue={props.defaultValue || localStorage.getItem('payment') || ''}
-      disabled={props.disabled}
+      value={value}
+      defaultValue={defaultValue ?? localStorage.getItem('payment') ?? ''}
+      disabled={disabled}
     />
   );
-});
+};
 
 export default PaymentInput;

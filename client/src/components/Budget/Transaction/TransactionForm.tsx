@@ -65,7 +65,10 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 
   useEffect(() => {
     setPaymentState(
-      defaultValue.linkedPaymentMethodId || localStorage.getItem('payment') || ''
+      defaultValue.linkedPaymentMethodId ??
+        defaultValue.linkedPaymentMethodId ??
+        localStorage.getItem('payment') ??
+        ''
     );
   }, [defaultValue.linkedPaymentMethodId]);
 
