@@ -51,6 +51,7 @@ const AssetCardStatus = ({ assets, cards }: AssetProps) => {
         isAsset={isAssetEditor}
       />
       <AssetCardItemEditor
+        id="status"
         isAsset={isAssetEditor}
         isOpen={showEditor}
         closeEditor={closeEditor}
