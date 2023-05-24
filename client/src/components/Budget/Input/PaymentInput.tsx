@@ -24,7 +24,6 @@ const PaymentInput = ({
   setIsEditSetting,
 }: PaymentInputProps) => {
   const [isAsset, setIsAsset] = useState(false);
-  console.log(value);
   const paymentRef = useRef<any>(null);
 
   const storedPaymentMethods = useAppSelector((state) => state.asset.paymentMethods);
