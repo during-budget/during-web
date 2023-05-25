@@ -20,7 +20,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
 
   const [skinState, setSkinState] = useState<ChartSkinType>(skin);
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     dispatch(settingActions.setChartSkin(skinState));
     updateChartSkin(skinState);
 
