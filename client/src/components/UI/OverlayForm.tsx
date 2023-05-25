@@ -6,7 +6,7 @@ import classes from './OverlayForm.module.css';
 interface OverlayFormProps {
   overlayOptions: Omit<OverlayProps, 'className'>;
   confirmCancelOptions?: ConfirmCancelButtonsProps;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   formHeight?: string;
   formPadding?: 'lg' | 'md' | 'sm';
   className?: string;
@@ -23,14 +23,12 @@ const OverlayForm = ({
 }: PropsWithChildren<OverlayFormProps>) => {
   const [isPending, setIsPending] = useState(false);
 
-  const submitHandler = (event: React.FormEvent) => {
+  const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
       setIsPending(true);
-
-      onSubmit();
-
+      await onSubmit();
       setIsPending(false);
     } catch (error) {
       if (error instanceof Error) {
