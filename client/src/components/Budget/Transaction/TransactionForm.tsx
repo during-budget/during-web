@@ -64,13 +64,14 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   );
 
   useEffect(() => {
-    setPaymentState(
-      defaultValue.linkedPaymentMethodId ??
-        defaultValue.linkedPaymentMethodId ??
-        localStorage.getItem('payment') ??
-        ''
-    );
-  }, [defaultValue.linkedPaymentMethodId]);
+    if (!mode.isDone && !mode.isEdit) {
+      setPaymentState(
+        defaultValue.linkedPaymentMethodId ?? localStorage.getItem('payment') ?? ''
+      );
+    } else {
+      setPaymentState(defaultValue.linkedPaymentMethodId || '');
+    }
+  }, [defaultValue]);
 
   useEffect(() => {
     setExcludeAsset(!defaultValue.updateAsset);
@@ -251,7 +252,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
           setPaymentState(value);
           setExcludeAsset(isCredit);
         }}
-        defaultValue={defaultValue.linkedPaymentMethodId}
+        // defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={setIsOpenPaymentEditor}
       />
     </div>

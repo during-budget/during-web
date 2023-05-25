@@ -94,7 +94,6 @@ const PaymentInput = ({
         onChange && onChange(value || '', payment?.detail === 'credit');
       }}
       value={value}
-      defaultValue={defaultValue ?? localStorage.getItem('payment') ?? ''}
       disabled={disabled}
     />
   );

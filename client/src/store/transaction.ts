@@ -48,7 +48,7 @@ const initialState: {
       amount: 0,
       categoryId: '',
       date: null, // yyyy-mm-dd
-      linkedPaymentMethodId: '',
+      linkedPaymentMethodId: undefined,
       icon: '',
       title: [''],
       tags: [],
