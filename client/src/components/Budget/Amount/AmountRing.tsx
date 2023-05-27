@@ -108,14 +108,13 @@ function AmountRing(props: {
       r,
       showEyes: !isBasic && currentDeg > 10,
       showLine: !isBasic && currentDeg >= scheduledDeg && currentDeg >= 350, // almostFull
+      isFront: currentDeg && scheduledDeg >= 350, // almostFull
     },
   ];
 
   return (
     <div className={classes.amountRing} style={{ width: size, height: size }}>
-      <div
-        className={classes.rings}
-      >
+      <div className={classes.rings}>
         {rings.map((data, i) => (
           <Ring
             key={i}
