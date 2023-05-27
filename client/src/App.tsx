@@ -18,6 +18,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
+    errorElement: <ErrorBoundary />,
     children: [
       {
         path: '/',
@@ -28,7 +29,6 @@ const router = createBrowserRouter([
       {
         path: '/init',
         element: <Nav />,
-        errorElement: <ErrorBoundary />,
         children: [
           {
             path: '/init',
@@ -39,7 +39,6 @@ const router = createBrowserRouter([
       {
         path: '/budget',
         element: <Nav />,
-        errorElement: <ErrorBoundary />,
         children: [
           {
             path: '/budget',
@@ -65,7 +64,6 @@ const router = createBrowserRouter([
       {
         path: '/asset',
         element: <Nav />,
-        errorElement: <ErrorBoundary />,
         children: [
           {
             path: '/asset',
@@ -76,7 +74,6 @@ const router = createBrowserRouter([
       {
         path: '/user',
         element: <Nav />,
-        errorElement: <ErrorBoundary />,
         children: [
           {
             path: '/user',
@@ -87,7 +84,6 @@ const router = createBrowserRouter([
       {
         path: '/redirect',
         element: <Redirect />,
-        errorElement: <ErrorBoundary />,
       },
     ],
   },
