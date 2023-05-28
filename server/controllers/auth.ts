@@ -46,6 +46,7 @@ export const callbackAdmin = async (
         if (authError) throw authError;
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
+          req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
           return res.redirect(clientAdminURL + "/login/redirect");
         });
       } catch (err: any) {
@@ -93,6 +94,7 @@ export const callback = async (
               throw loginError;
             }
             // 로그인 성공
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
             return res.redirect(
               clientRedirectURL +
                 `?message=${encodeURIComponent(LOGIN_SUCCESS)}`
@@ -105,6 +107,7 @@ export const callback = async (
               throw loginError;
             }
             // 회원 가입 후 로그인 성공
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
             return res.redirect(
               clientRedirectURL + `?message=${REGISTER_SUCCESS}`
             );
