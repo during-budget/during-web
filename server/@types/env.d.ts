@@ -5,6 +5,7 @@ declare namespace NodeJS {
   }
   interface ProcessEnv {
     /** node environment */
+    SERVER_URL?: string;
     SERVER_PORT: string;
     CLIENT: string;
     CLIENT_ADMIN: string;
