@@ -9,7 +9,7 @@ import {
   generateRandomString,
   generateRandomNumber,
 } from "../utils/randomString";
-import { client } from "../redis";
+import { client } from "../_redis";
 import { sendEmail } from "../utils/email";
 import { cipher, decipher } from "../utils/crypto";
 

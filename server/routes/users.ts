@@ -34,4 +34,4 @@ router.get("/", isAdmin, users.list);
 router.get("/:_id", isAdmin, users.find);
 router.delete("/:_id", isAdmin, users.remove2);
 
-module.exports = router;
+export default router;
