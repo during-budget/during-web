@@ -12,11 +12,54 @@ import {
   LOCAL_LOGIN_DISABLED,
   VERIFICATION_CODE_EXPIRED,
   VERIFICATION_CODE_WRONG,
+  FIELD_REQUIRED,
+  CONNECTED_ALREADY,
+  EMAIL_IN_USE,
+  INVALID_EMAIL,
 } from "../@message";
-import { FIELD_REQUIRED } from "../@message";
 import { sendEmail } from "../utils/email";
-import { CONNECTED_ALREADY } from "../@message";
-import { EMAIL_IN_USE } from "../@message";
+
+const emailMessage = {
+  login: "로그인",
+  register: "회원 가입",
+  updateEmail: "이메일 변경",
+};
+
+const sendCode = async (
+  type: "login" | "register" | "updateEmail",
+  email: string
+) => {
+  const code = generateRandomNumber(6);
+  try {
+    await sendEmail({
+      to: email,
+      subject: `${emailMessage[type]} 인증 메일입니다.`,
+      html: `${emailMessage[type]} 확인 코드는 [ ${code} ]입니다. <br/>
+    코드는 5분간 유효합니다.`,
+    });
+  } catch (err) {
+    const _err = new Error(INVALID_EMAIL);
+    throw _err;
+  }
+
+  await client.v4.hSet(email, "code", cipher(code));
+  await client.expire(email, 60 * 5);
+};
+
+const verifyCode = async (email: string, code: string) => {
+  const _code = await client.v4.hGet(email, "code");
+  if (!_code) {
+    const err = new Error(VERIFICATION_CODE_EXPIRED);
+    throw err;
+  }
+
+  if (decipher(_code) !== code) {
+    const err = new Error(VERIFICATION_CODE_WRONG);
+    throw err;
+  }
+
+  await client.del(email ?? "");
+};
 
 const localV2 = () => {
   passport.use(
@@ -42,64 +85,23 @@ const localV2 = () => {
 
             /* login - send code */
             if (!("code" in req.body)) {
-              const code = generateRandomNumber(6);
-              sendEmail({
-                to: req.body.email,
-                subject: "로그인 인증 메일입니다.",
-                html: `로그인 확인 코드는 [ ${code} ]입니다. <br/>
-              코드는 5분간 유효합니다.`,
-              });
-              await Promise.all([
-                client.v4.hSet(req.body.email, "code", cipher(code)),
-                client.expire(req.body.email, 60 * 5),
-              ]);
+              await sendCode("login", req.body.email);
               return done(null, user, "login");
             }
 
             /* login - verify code */
-            const _code = await client.v4.hGet(user.email, "code");
-            if (!_code) {
-              const err = new Error(VERIFICATION_CODE_EXPIRED);
-              return done(err, null, null);
-            }
-
-            if (decipher(_code) !== req.body.code) {
-              const err = new Error(VERIFICATION_CODE_WRONG);
-              return done(err, null, null);
-            }
-            await client.del(user.email ?? "");
-
+            await verifyCode(req.body.email, req.body.code);
             return done(null, user, "loginVerify");
           }
 
           /* register - send code */
           if (!("code" in req.body)) {
-            const code = generateRandomNumber(6);
-            sendEmail({
-              to: req.body.email,
-              subject: "가입 인증 메일입니다.",
-              html: `가입 확인 코드는 [ ${code} ]입니다. <br/>
-              코드는 5분간 유효합니다.`,
-            });
-            await Promise.all([
-              client.v4.hSet(req.body.email, "code", cipher(code)),
-              client.expire(req.body.email, 60 * 5),
-            ]);
+            await sendCode("register", req.body.email);
             return done(null, null, "register");
           }
 
           /* register  - verify code */
-          const _code = await client.v4.hGet(req.body.email, "code");
-          if (!_code) {
-            const err = new Error(VERIFICATION_CODE_EXPIRED);
-            return done(err, null, null);
-          }
-
-          if (decipher(_code) !== req.body.code) {
-            const err = new Error(VERIFICATION_CODE_WRONG);
-            return done(err, null, null);
-          }
-          await client.del(req.body.email ?? "");
+          await verifyCode(req.body.email, req.body.code);
 
           const newUser = new User({
             email: req.body.email,
@@ -118,7 +120,7 @@ const localV2 = () => {
           return done(err, null, null);
         }
 
-        const exUser = await User.find({ email: req.body.email });
+        const exUser = await User.findOne({ email: req.body.email });
         if (exUser) {
           const err = new Error(EMAIL_IN_USE);
           return done(err, null, null);
@@ -126,32 +128,12 @@ const localV2 = () => {
 
         /* updateEmail - send code */
         if (!("code" in req.body)) {
-          const code = generateRandomNumber(6);
-          sendEmail({
-            to: req.body.email,
-            subject: "이메일 확인 메일입니다.",
-            html: `가입 확인 코드는 [ ${code} ]입니다. <br/>
-      코드는 5분간 유효합니다.`,
-          });
-          await Promise.all([
-            client.v4.hSet(req.body.email, "code", cipher(code)),
-            client.expire(req.body.email, 60 * 5),
-          ]);
+          await sendCode("updateEmail", req.body.email);
           return done(null, user, "updateEmail");
         }
 
         /* updateEmail  - verify code */
-        const _code = await client.v4.hGet(req.body.email, "code");
-        if (!_code) {
-          const err = new Error(VERIFICATION_CODE_EXPIRED);
-          return done(err, null, null);
-        }
-
-        if (decipher(_code) !== req.body.code) {
-          const err = new Error(VERIFICATION_CODE_WRONG);
-          return done(err, null, null);
-        }
-        await client.del(req.body.email ?? "");
+        await verifyCode(req.body.email, req.body.code);
 
         user.email = req.body.email;
         user.isLocal = true;

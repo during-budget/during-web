@@ -15,8 +15,10 @@ import {
   FIELD_INVALID,
   AT_LEAST_ONE_SNSID_IS_REQUIRED,
   NOT_FOUND,
-  VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_SUCCESS,
+  LOGIN_VERIFICATION_CODE_SENT,
+  REGISTER_VERIFICATION_CODE_SENT,
+  EMAIL_UPDATE_VERIFICATION_CODE_SENT,
 } from "../@message";
 import { Budget } from "@models/Budget";
 import { Transaction } from "@models/Transaction";
@@ -159,8 +161,20 @@ export const local = async (
         }
 
         /* _____ 로그인 & 회원가입 & 이메일 변경 _____ */
-        if (type === "login" || type === "register" || type === "updateEmail") {
-          return res.status(200).send({ message: VERIFICATION_CODE_SENT });
+        if (type === "login") {
+          return res
+            .status(200)
+            .send({ message: LOGIN_VERIFICATION_CODE_SENT });
+        }
+        if (type === "register") {
+          return res
+            .status(200)
+            .send({ message: REGISTER_VERIFICATION_CODE_SENT });
+        }
+        if (type === "updateEmail") {
+          return res
+            .status(200)
+            .send({ message: EMAIL_UPDATE_VERIFICATION_CODE_SENT });
         }
         /* _____ 로그인 & 회원가입 검증 _____ */
         if ((type === "loginVerify" || type === "registerVerify") && user) {
@@ -206,15 +220,19 @@ export const guest = async (
     "guestV2",
     async (authError?: Error, user?: HydratedDocument<IUser, IUserProps>) => {
       try {
-        if (authError) {
+        if (authError || !user) {
           throw authError;
         }
-        if (req.body.persist === true) {
-          req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
-        }
-        return res.status(200).send({
-          message: LOGIN_SUCCESS,
-          user,
+        return req.login(user, (loginError) => {
+          if (loginError) throw loginError;
+          /* set maxAge as 1 year if auto login is requested */
+          if (req.body.persist === true) {
+            req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
+          }
+          return res.status(200).send({
+            message: LOGIN_SUCCESS,
+            user,
+          });
         });
       } catch (err: any) {
         logger.error(err.message);
@@ -251,7 +269,10 @@ export const disconnect = async (req: Request, res: Response) => {
     await user.saveReqUser();
 
     return res.status(200).send({
-      snsId: user.snsId,
+      email: user.email,
+      isLocal: user.isLocal,
+      snsId: user.snsId ?? {},
+      isGuest: user.isGuest,
     });
   } catch (err: any) {
     logger.error(err.message);
