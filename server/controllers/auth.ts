@@ -30,7 +30,10 @@ export const find = async (req: Request, res: Response) => {
     const user = req.user!;
 
     return res.status(200).send({
+      email: user.email,
+      isLocal: user.isLocal,
       snsId: user.snsId ?? {},
+      isGuest: user.isGuest,
     });
   } catch (err: any) {
     logger.error(err.message);
