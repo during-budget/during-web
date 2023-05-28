@@ -32,7 +32,8 @@ const google = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID.trim() ?? "",
         clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim() ?? "",
-        callbackURL: "/api/auth/google/callback",
+        callbackURL:
+          process.env.SERVER_URL?.trim() ?? "" + "/api/auth/google/callback",
         passReqToCallback: true,
       },
       async (
@@ -104,7 +105,9 @@ const googleAdmin = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID.trim() ?? "",
         clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim() ?? "",
-        callbackURL: "/api/auth/google/admin/callback",
+        callbackURL:
+          process.env.SERVER_URL?.trim() ??
+          "" + "/api/auth/google/admin/callback",
         passReqToCallback: true,
       },
       async (

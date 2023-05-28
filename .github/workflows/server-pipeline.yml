@@ -39,6 +39,7 @@ jobs:
       - name: Set .env.production File
         run: |
           cd server
+          echo "SERVER_URL= ${{secrets.SERVER_URL}}" >> .env.production
           echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env.production
           echo "CLIENT= ${{secrets.CLIENT}}" >> .env.production
           echo "CLIENT_ADMIN= ${{secrets.CLIENT_ADMIN}}" >> .env.production
