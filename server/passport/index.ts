@@ -4,6 +4,8 @@ import { local, register, guest } from "./localStrategy";
 import { google, googleAdmin } from "./googleStrategy";
 import { naver } from "./naverStrategy";
 import { kakao } from "./kakaoStrategy";
+import { localV2 } from "./localV2Strategy";
+import { guestV2 } from "./guestV2Strategy";
 import { User, IUser, IUserProps } from "../models/User";
 
 const config = () => {
@@ -21,15 +23,18 @@ const config = () => {
     );
   });
 
-  local();
-  register();
-  guest();
+  local(); //deprecated
+  register(); //deprecated
+  guest(); //deprecated
 
   google();
   googleAdmin();
 
   naver();
   kakao();
+
+  localV2();
+  guestV2();
 };
 
 export { config };
