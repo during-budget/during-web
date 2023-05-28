@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { Budget, IBudget, IBudgetProps } from "../models/Budget";
-import { ITransaction, Transaction } from "../models/Transaction";
+import { Budget, IBudget, IBudgetProps } from "@models/Budget";
+import { ITransaction, Transaction } from "@models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
 
-import { logger } from "../log/logger";
-import { User } from "../models/User";
+import { logger } from "@logger";
+import { User } from "@models/User";
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_REQUIRED,

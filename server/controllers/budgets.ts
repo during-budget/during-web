@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { HydratedDocument, Types } from "mongoose";
-import { Budget, ICategory } from "../models/Budget";
-import { Transaction } from "../models/Transaction";
+import { Budget, ICategory } from "@models/Budget";
+import { Transaction } from "@models/Transaction";
 
-import { logger } from "../log/logger";
+import { logger } from "@logger";
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,

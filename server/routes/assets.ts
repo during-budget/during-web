@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import { isLoggedIn } from "../middleware/auth";
 
-import * as assets from "../controllers/assets";
+import * as assets from "@controllers/assets";
 
 router.put("/", isLoggedIn, assets.updateAll);
 router.get("/", isLoggedIn, assets.find);

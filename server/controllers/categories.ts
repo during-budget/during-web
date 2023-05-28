@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { HydratedDocument, Types } from "mongoose";
-import { Budget } from "../models/Budget";
-import { ITransaction, Transaction } from "../models/Transaction";
+import { Budget } from "@models/Budget";
+import { ITransaction, Transaction } from "@models/Transaction";
 
-import { ICategory } from "../models/User";
+import { ICategory } from "@models/User";
 
-import { logger } from "../log/logger";
+import { logger } from "@logger";
 import {
   FIELD_INVALID,
   FIELD_REQUIRED,

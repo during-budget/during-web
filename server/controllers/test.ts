@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { logger } from "../log/logger";
+import { logger } from "@logger";
 
 /**
  * Hello

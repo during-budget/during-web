@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { isLoggedIn, isNotLoggedIn } from "../middleware/auth";
-import * as auth from "../controllers/auth";
+import * as auth from "@controllers/auth";
 import passport from "passport";
 
 router.get("/", isLoggedIn, auth.find);

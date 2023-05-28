@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { isLoggedIn } from "../middleware/auth";
-import * as transactions from "../controllers/transactions";
+import * as transactions from "@controllers/transactions";
 
 router.post("/", isLoggedIn, transactions.create);
 
