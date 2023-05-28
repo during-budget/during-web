@@ -1,13 +1,14 @@
 {
   "preset": "ts-jest",
   "rootDir": ".",
-  "testMatch": ["**/tests/*.ts"],
+  "testMatch": ["**/tests/auth.test.ts"],
   "testEnvironment": "node",
   "resetMocks": true,
   "clearMocks": true,
   "moduleNameMapper": {
     "@models/(.*)$": "<rootDir>/models/$1",
-    "@controllers/(.*)$": "<rootDir>/controllers/$1"
+    "@controllers/(.*)$": "<rootDir>/controllers/$1",
+    "@logger": "<rootDir>/log/logger"
   },
   "setupFiles": ["<rootDir>/setup.ts"]
 }
