@@ -1,0 +1,13 @@
+{
+  "preset": "ts-jest",
+  "rootDir": ".",
+  "testMatch": ["**/tests/*.ts"],
+  "testEnvironment": "node",
+  "resetMocks": true,
+  "clearMocks": true,
+  "moduleNameMapper": {
+    "@models/(.*)$": "<rootDir>/models/$1",
+    "@controllers/(.*)$": "<rootDir>/controllers/$1"
+  },
+  "setupFiles": ["<rootDir>/setup.ts"]
+}
