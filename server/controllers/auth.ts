@@ -46,7 +46,6 @@ export const callbackAdmin = async (
         if (authError) throw authError;
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
-          req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
           return res.redirect(clientAdminURL + "/login/redirect");
         });
       } catch (err: any) {
