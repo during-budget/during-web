@@ -1,7 +1,7 @@
 import { Request } from "express";
 import passport from "passport";
 import { Strategy as GogoleStrategy, Profile } from "passport-google-oauth20";
-import { User } from "../models/User";
+import { User } from "@models/User";
 import {
   CONNECTED_ALREADY,
   EMAIL_IN_USE,

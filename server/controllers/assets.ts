@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import _ from "lodash";
 import { Types } from "mongoose";
 
-import { IAsset } from "../models/User";
-import { Transaction } from "../models/Transaction";
+import { IAsset } from "@models/User";
+import { Transaction } from "@models/Transaction";
 
-import { logger } from "../log/logger";
+import { logger } from "@logger";
 import { FIELD_REQUIRED, NOT_FOUND } from "../@message";
 
 export const create = async (req: Request, res: Response) => {

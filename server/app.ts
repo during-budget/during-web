@@ -16,7 +16,7 @@ import { routers } from "./routes/index";
 
 /* logger */
 import morgan, { StreamOptions, TokenIndexer } from "morgan";
-import { logger } from "./log/logger";
+import { logger } from "@logger";
 
 /* session */
 import connectRedis from "connect-redis";

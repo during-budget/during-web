@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { isAdmin, isLoggedIn } from "../middleware/auth";
-import * as budgets from "../controllers/budgets";
+import * as budgets from "@controllers/budgets";
 
 router.get("/:_id/validate", isAdmin, budgets.validate);
 router.put("/:_id/fix", isAdmin, budgets.fix);

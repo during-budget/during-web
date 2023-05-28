@@ -2,7 +2,7 @@ import { Request } from "express";
 import passport from "passport";
 import { Strategy as CustomStrategy } from "passport-custom";
 
-import { User } from "../models/User";
+import { User } from "@models/User";
 
 import { generateRandomString } from "../utils/randomString";
 

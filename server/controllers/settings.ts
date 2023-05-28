@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { logger } from "../log/logger";
+import { logger } from "@logger";
 
 export const find = async (req: Request, res: Response) => {
   try {

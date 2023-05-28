@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import * as users from "../controllers/users";
+import * as users from "@controllers/users";
 import {
   isLoggedIn,
   isNotLoggedIn,

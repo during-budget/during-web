@@ -4,7 +4,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as CustomStrategy } from "passport-custom";
 
-import { User } from "../models/User";
+import { User } from "@models/User";
 
 import { client } from "../_redis";
 import { decipher } from "../utils/crypto";
