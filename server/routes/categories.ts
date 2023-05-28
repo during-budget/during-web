@@ -10,4 +10,4 @@ router.patch("/", isLoggedIn, categories.updateV3);
 
 router.get("/", isLoggedIn, categories.find);
 
-module.exports = router;
+export default router;

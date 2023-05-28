@@ -35,4 +35,4 @@ router.delete("/:provider", isLoggedIn, auth.disconnect);
 
 router.get("/logout", isLoggedIn, auth.logout);
 
-module.exports = router;
+export default router;

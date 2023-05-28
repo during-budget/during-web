@@ -6,7 +6,7 @@ import { Strategy as CustomStrategy } from "passport-custom";
 
 import { User } from "../models/User";
 
-import { client } from "../redis";
+import { client } from "../_redis";
 import { decipher } from "../utils/crypto";
 import { generateRandomString } from "../utils/randomString";
 import {

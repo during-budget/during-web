@@ -21,4 +21,4 @@ router.patch("/:_id", isLoggedIn, budgets.updateField);
 router.get("/:_id?", isLoggedIn, budgets.find);
 router.delete("/:_id", isLoggedIn, budgets.remove);
 
-module.exports = router;
+export default router;

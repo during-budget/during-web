@@ -11,4 +11,4 @@ router.get("/:_id?", isLoggedIn, transactions.find);
 
 router.delete("/:_id", isLoggedIn, transactions.remove);
 
-module.exports = router;
+export default router;

@@ -29,7 +29,6 @@ export const forceNotLoggedIn = (
   if (req.isAuthenticated()) {
     req.logout((err) => {
       if (err) return res.status(500).send({ err: err.message });
-      console.log("forced to logout");
       next();
     });
   } else {

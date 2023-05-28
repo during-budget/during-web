@@ -7,4 +7,4 @@ import * as paymentMethods from "../controllers/paymentMethods";
 router.put("/", isLoggedIn, paymentMethods.update);
 router.get("/", isLoggedIn, paymentMethods.find);
 
-module.exports = router;
+export default router;

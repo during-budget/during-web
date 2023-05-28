@@ -1,17 +1,13 @@
 import { Request } from "express";
 
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as CustomStrategy } from "passport-custom";
 
 import { User } from "../models/User";
 
-import { client } from "../redis";
+import { client } from "../_redis";
 import { cipher, decipher } from "../utils/crypto";
-import {
-  generateRandomNumber,
-  generateRandomString,
-} from "../utils/randomString";
+import { generateRandomNumber } from "../utils/randomString";
 import {
   LOCAL_LOGIN_DISABLED,
   VERIFICATION_CODE_EXPIRED,
