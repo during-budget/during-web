@@ -22,7 +22,7 @@ export interface ICard {
   linkedAssetIcon?: string;
   linkedAssetTitle?: string;
   detail: string;
-  paymentDate: number;
+  paymentDate?: number;
 }
 
 export const cardSchema = new Schema<ICard>({
@@ -32,7 +32,7 @@ export const cardSchema = new Schema<ICard>({
   linkedAssetIcon: String,
   linkedAssetTitle: String,
   detail: { type: String, default: "" },
-  paymentDate: { type: Number, default: 0 },
+  paymentDate: Number,
 });
 
 export interface IPaymentMethod {

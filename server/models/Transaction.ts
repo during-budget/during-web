@@ -22,7 +22,7 @@ const categorySchema = new Schema<ICategory>(
 interface ITransaction {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
-  budgetId: Types.ObjectId;
+  budgetId?: Types.ObjectId;
   date: Date;
   isCurrent: boolean;
   isExpense?: boolean;
@@ -41,6 +41,8 @@ interface ITransaction {
   linkedPaymentMethodTitle?: string;
   linkedPaymentMethodDetail?: string;
   updateAsset: boolean;
+  year?: number;
+  month?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -70,6 +72,8 @@ const transactionSchema = new Schema<ITransaction>(
     linkedPaymentMethodTitle: String,
     linkedPaymentMethodDetail: String,
     updateAsset: { type: Boolean, default: true },
+    year: Number,
+    month: Number,
   },
   { timestamps: true }
 );
