@@ -8,6 +8,7 @@ import { logger } from "@logger";
 import { User } from "@models/User";
 import {
   CATEGORY_CANOT_BE_UPDATED,
+  FIELD_INVALID,
   FIELD_REQUIRED,
   NOT_FOUND,
   NOT_PERMITTED,
@@ -21,6 +22,8 @@ import {
  * @body { budgetId, date, isCurrent, isExpense, isIncome, title: [String], amount: Number, categoryId, tags?, memo?, linkId?}
  * @return transaction
  */
+
+const dateReg = new RegExp("[0-9]{4}[-][0-9]{2}[-][0-9]{2}");
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -600,6 +603,33 @@ export const find = async (req: Request, res: Response) => {
       }
       const transactions = await Transaction.find({ userId: user._id }).lean();
       return res.status(200).send({ transactions });
+    }
+    if ("linkedPaymentMethodId" in req.query) {
+      for (let field of ["startDate", "endDate"]) {
+        if (!(field in req.query)) {
+          return res.status(400).send({ message: FIELD_REQUIRED(field) });
+        }
+        if (!dateReg.test(`${req.query[field]}`)) {
+          return res.status(400).send({ message: FIELD_INVALID(field) });
+        }
+      }
+
+      const startDate = new Date(`${req.query.startDate} 00:00`);
+      const endDate = new Date(`${req.query.endDate} 00:00`);
+      const transactions = await Transaction.find({
+        userId: user._id,
+        budgetId: { $exists: true, $ne: user.basicBudgetId },
+        linkedPaymentMethodId: req.query.linkedPaymentMethodId,
+        date: { $gte: startDate, $lt: endDate },
+      }).lean();
+      return res.status(200).send({
+        amountTotal: transactions.reduce((sum, cur) => sum + cur.amount, 0),
+        description: {
+          gte: `${startDate}`,
+          lt: `${endDate}`,
+        },
+        transactions,
+      });
     }
     if (!("budgetId" in req.query))
       return res.status(400).send({
