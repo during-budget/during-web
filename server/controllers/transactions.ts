@@ -614,8 +614,8 @@ export const find = async (req: Request, res: Response) => {
         }
       }
 
-      const startDate = new Date(`${req.query.startDate} 00:00`);
-      const endDate = new Date(`${req.query.endDate} 00:00`);
+      const startDate = new Date(`${req.query.startDate}`);
+      const endDate = new Date(`${req.query.endDate}`);
       const transactions = await Transaction.find({
         userId: user._id,
         budgetId: { $exists: true, $ne: user.basicBudgetId },
@@ -625,8 +625,8 @@ export const find = async (req: Request, res: Response) => {
       return res.status(200).send({
         amountTotal: transactions.reduce((sum, cur) => sum + cur.amount, 0),
         description: {
-          gte: `${startDate}`,
-          lt: `${endDate}`,
+          gte: `${startDate.toUTCString()}`,
+          lt: `${endDate.toUTCString()}`,
         },
         transactions,
       });
