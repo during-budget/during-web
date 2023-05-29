@@ -1,4 +1,5 @@
 import { ChartSkinType } from '../../components/Budget/Amount/AmountRing';
+import { checkNetwork } from '../network';
 
 const { DURING_SERVER } = import.meta.env;
 
@@ -9,34 +10,47 @@ export interface SettingType {
 }
 
 export const getSettings = async () => {
-  const response = await fetch(BASE_URL, {
-    credentials: 'include',
-  });
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-    console.error(`Failed to get settings.\n${data.message ? data.message : ''}`);
-    return null;
+  let data, response;
+  try {
+    response = await fetch(BASE_URL, {
+      credentials: 'include',
+    });
+
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<{ settings: SettingType }>;
+  if (!response.ok) {
+    throw new Error(data?.message || '설정 데이터 로드 중 문제가 발생했습니다.');
+  }
+
+  return data as { settings: SettingType };
 };
 
 export const updateChartSkin = async (chartSkin: ChartSkinType) => {
-  const response = await fetch(BASE_URL, {
-    method: 'PATCH',
-    credentials: 'include',
-    body: JSON.stringify({ chartSkin }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-
-    throw new Error(`Failed to update chart skin.\n${data.message ? data.message : ''}`);
+  let response, data;
+  try {
+    response = await fetch(BASE_URL + 's', {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify({ chartSkin }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<{ settings: SettingType }>;
+  if (!response.ok) {
+    throw new Error(data?.message || '차트 스킨 업데이트 중 문제가 발생했습니다.');
+  }
+
+  return data as { settings: SettingType };
 };

@@ -1,3 +1,4 @@
+import { checkNetwork } from '../network';
 import { BudgetCategoryType, UpdatedBudgetCategoryType } from './categoryAPI';
 import { TransactionDataType } from './transactionAPI';
 
@@ -24,135 +25,138 @@ export interface BudgetDataType {
 
 /** 기본 예산 정보 바탕으로 특정 년/월의 예산 생성 */
 export const createBudgetFromBasic = async (year: number, month: number) => {
+  checkNetwork();
+
   const url = `${BASE_URL}/basic`;
-  const response = await fetch(url, {
-    method: 'POST',
-    credentials: 'include',
-    body: JSON.stringify({
-      year,
-      month,
-      title: month + '월',
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        year,
+        month,
+        title: month + '월',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
 
   if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to create budgets from basic.\n${data.message ? data.message : ''}`,
-      { status: response.status }
+    throw new Error(
+      data?.message || '기본 예산 바탕으로 예산 생성 중 문제가 발생했습니다.'
     );
   }
 
-  return response.json() as Promise<{ budget: BudgetDataType }>;
+  return data as { budget: BudgetDataType };
 };
 
 /** 전체 Budget 목록 조회 */
 export const getBudgetList = async () => {
+  checkNetwork();
+
   const url = BASE_URL;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Response(`Failed to get budgets.\n${data.message ? data.message : ''}`, {
-      status: response.status,
+  let response, data;
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
     });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
-
-  return response.json() as Promise<{ budgets: BudgetDataType[] }>;
-};
-
-/** 연도 기준으로 Budget 목록 조회 */
-export const getBudgetByYear = async (year: number) => {
-  const url = `${BASE_URL}?year=${year}`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
 
   if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to get budgets by date.\n${data.message ? data.message : ''}`,
-      {
-        status: response.status,
-      }
-    );
+    throw new Error(data?.message || '전체 예산 목록 조회 중 문제가 발생했습니다.');
   }
 
-  return response.json() as Promise<{ budgets: BudgetDataType[] }>;
+  return data as { budgets: BudgetDataType[] };
 };
 
-/** 월 기준으로 Budget 목록 조회 */
+/** 월 기준으로 Budget 조회 */
 export const getBudgetByMonth = async (year: number, month: number) => {
-  const url = `${BASE_URL}?year=${year}&month=${month}`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
+  checkNetwork();
 
-  const status = response.status;
-  if (status === 404) {
-    return { budget: null };
+  const url = `${BASE_URL}/?year=${year}&month=${month}`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
   if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to get budgets by date.\n${data.message ? data.message : ''}`,
-      {
-        status: response.status,
-      }
+    throw new Error(
+      data?.message || `${year}년 ${month}월 예산 조회 요청 중 오류가 발생했습니다.`
     );
   }
 
-  return response.json() as Promise<{ budget: BudgetDataType }>;
+  return data as { budget: BudgetDataType };
 };
 
 /** id 기준으로 Budget 조회 */
 export const getBudgetById = async (id: string) => {
-  const url = `${BASE_URL}/${encodeURIComponent(id)}`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Response(`Failed to get budgets.\n${data.message ? data.message : ''}`, {
-      status: response.status,
+  const url = `${BASE_URL}/${encodeURIComponent(id)}`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
     });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  // TODO: transactionsDataType 정의
-  return response.json() as Promise<{
+  if (!response.ok) {
+    throw new Error(data?.message || '예산 조회 중 문제가 발생했습니다.');
+  }
+
+  return data as {
     budget: BudgetDataType;
     transactions: TransactionDataType[];
-  }>;
+  };
 };
 
 /** 예산 정보 업데이트 */
-export const updateBudgetFields = async (id: string, data: any) => {
-  const url = `${BASE_URL}/${encodeURIComponent(id)}`;
-  const response = await fetch(url, {
-    method: 'PATCH',
-    credentials: 'include',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export const updateBudgetFields = async (id: string, fields: any) => {
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to patch budget fields.\n${data.message ? data.message : ''}`,
-      { status: response.status }
-    );
+  const url = `${BASE_URL}/${encodeURIComponent(id)}`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(fields),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<{ budget: BudgetDataType }>;
+  if (!response.ok) {
+    throw new Error(data?.message || '예산 업데이트 중 문제가 발생했습니다.');
+  }
+
+  return data as { budget: BudgetDataType };
 };
 
 /** 예산 내 카테고리 목표 금액 업데이트 */
@@ -161,27 +165,34 @@ export const updateCategoryPlan = async (
   categoryId: string,
   amount: number
 ) => {
+  checkNetwork();
+
   const url = `${BASE_URL}/${budgetId}/categories/${categoryId}/amountPlanned`;
-  const response = await fetch(url, {
-    method: 'PUT',
-    credentials: 'include',
-    body: JSON.stringify({
-      amountPlanned: amount,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'PUT',
+      credentials: 'include',
+      body: JSON.stringify({
+        amountPlanned: amount,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
 
   if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to patch category plan.\n${data.message ? data.message : ''}`,
-      { status: response.status }
+    throw new Error(
+      data?.message || '카테고리 목표 금액 업데이트 중 문제가 발생했습니다.'
     );
   }
 
-  return response.json() as Promise<{ budget: BudgetDataType }>;
+  return data as { budget: BudgetDataType };
 };
 
 /** 예산 내 카테고리 업데이트 */
@@ -193,27 +204,32 @@ export const updateBudgetCategories = async (
     amountPlanned: number;
   }[]
 ) => {
-  const url = `${BASE_URL}/${budgetId}/categories`;
-  const response = await fetch(url, {
-    method: 'PATCH',
-    credentials: 'include',
-    body: JSON.stringify({
-      isExpense,
-      isIncome: !isExpense,
-      categories,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Response(
-      `Failed to patch category plan.\n${data.message ? data.message : ''}`,
-      { status: response.status }
-    );
+  const url = `${BASE_URL}/${budgetId}/categories`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify({
+        isExpense,
+        isIncome: !isExpense,
+        categories,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<UpdatedBudgetCategoryType>;
+  if (!response.ok) {
+    throw new Error(data?.message || '예산 카테고리 업데이트 중 문제가 발생했습니다.');
+  }
+
+  return data as UpdatedBudgetCategoryType;
 };
