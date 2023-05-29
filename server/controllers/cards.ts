@@ -21,6 +21,7 @@ export const create = async (req: Request, res: Response) => {
       icon: req.body.icon ?? "",
       title: req.body.title,
       detail: req.body.detail ?? "",
+      paymentDate: req.body.paymentDate ?? 0,
     } as ICard;
 
     if ("linkedAssetId" in req.body) {
@@ -56,7 +57,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   try {
-    for (let field of ["icon", "title", "detail"]) {
+    for (let field of ["icon", "title", "detail", "paymentDate"]) {
       if (!(field in req.body)) {
         return res.status(400).send({
           message: FIELD_REQUIRED(field),
@@ -81,6 +82,7 @@ export const update = async (req: Request, res: Response) => {
     user.cards[cardIdx].icon = req.body.icon;
     user.cards[cardIdx].title = req.body.title;
     user.cards[cardIdx].detail = req.body.detail;
+    user.cards[cardIdx].paymentDate = req.body.paymentDate;
 
     // linkedAssetId1 -> undefined | linkedAssetId2
     if (user.cards[cardIdx].linkedAssetId) {
@@ -203,6 +205,7 @@ export const updateAll = async (req: Request, res: Response) => {
           icon: _card.icon ?? exCard.icon,
           title: _card.title ?? exCard.title,
           detail: _card.detail ?? exCard.detail,
+          paymentDate: _card.paymentDate ?? exCard.paymentDate,
         } as ICard;
 
         // linkedAssetId1 -> linkedAssetId1 | linkedAssetId2 | undefined

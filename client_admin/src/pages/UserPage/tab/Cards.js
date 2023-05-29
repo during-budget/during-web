@@ -66,6 +66,9 @@ function Index() {
             key: "detail",
           },
           {
+            key: "paymentDate",
+          },
+          {
             key: "_detail",
             type: "expand-detail",
           },
