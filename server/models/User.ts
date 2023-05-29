@@ -1,8 +1,8 @@
 import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 
-import bcrypt from "bcrypt";
 import _ from "lodash";
 import { Budget } from "./Budget";
+import { basicCategories } from "./_basicCategories";
 
 interface IAsset {
   _id: Types.ObjectId;
@@ -152,6 +152,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     /* ____________ categories ____________ */
     categories: {
       type: [categorySchema],
+      default: basicCategories,
     },
     birthdate: Date,
     gender: String,
@@ -179,97 +180,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   { timestamps: true }
 );
 
-const defaultCategories = [
-  // 지출 카테고리
-  {
-    isExpense: true,
-    title: "식비",
-    icon: "🍚",
-  },
-  {
-    isExpense: true,
-    title: "교통비",
-    icon: "🚉",
-  },
-  {
-    isExpense: true,
-    title: "생활",
-    icon: "🛒",
-  },
-  {
-    isExpense: true,
-    title: "쇼핑",
-    icon: "🛍️",
-  },
-  {
-    isExpense: true,
-    title: "문화/여가",
-    icon: "🎬",
-  },
-
-  {
-    isExpense: true,
-    title: "주거/통신",
-    icon: "🏠",
-  },
-  {
-    isExpense: true,
-    title: "의료/건강",
-    icon: "💊",
-  },
-  {
-    isExpense: true,
-    title: "경조사",
-    icon: "💌",
-  },
-  // 수입 카테고리
-  {
-    isIncome: true,
-    title: "월급",
-    icon: "💰",
-  },
-  {
-    isIncome: true,
-    title: "용돈",
-    icon: "💵",
-  },
-  {
-    isIncome: true,
-    title: "이자",
-    icon: "🏦",
-  },
-  {
-    isIncome: true,
-    title: "혜택",
-    icon: "👍",
-  },
-  {
-    isIncome: true,
-    title: "중고",
-    icon: "🥕",
-  },
-  // 기본 카테고리
-  {
-    isExpense: true,
-    isDefault: true,
-    title: "기타",
-    icon: "",
-  },
-  {
-    isIncome: true,
-    isDefault: true,
-    title: "기타",
-    icon: "",
-  },
-];
-
 userSchema.methods.initialize = async function () {
   try {
     const user = this;
 
-    user.categories = new Types.DocumentArray(defaultCategories);
-
-    const budget = new Budget({
+    const budget = await Budget.create({
       userId: user._id,
       title: "기본 예산",
       categories: user.categories.map((category) => {
@@ -282,10 +197,7 @@ userSchema.methods.initialize = async function () {
     });
 
     user.basicBudgetId = budget._id;
-    await budget.save();
     await user.save();
-
-    return await this.save();
   } catch (err: any) {
     return err;
   }
