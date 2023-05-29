@@ -21,212 +21,6 @@ export interface UserDataType {
   settings: SettingType;
 }
 
-export const sendCodeRegister = async (email: string) => {
-  const url = `${BASE_URL}/register`;
-
-  let response, data;
-
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('회원가입 코드 전송 요청 중 문제가 발생했습니다.', {
-      cause: { error },
-    });
-  }
-
-  if (!response.ok) {
-    switch (data.message) {
-      case 'EMAIL_IN_USE':
-        throw new Error('이미 사용중인 이메일입니다.');
-      default:
-        throw new Error('회원가입 코드 전송 중 문제가 발생했습니다', {
-          cause: { status: response.status, message: data.message },
-        });
-    }
-  }
-
-  return data as { message: string };
-};
-
-export const verifyRegister = async (email: string, code: string, persist: boolean) => {
-  const url = `${BASE_URL}/register/verify`;
-
-  let response, data;
-
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ email, code, persist }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('회원가입 인증 요청 중 문제가 발생했습니다.', {
-      cause: { error },
-    });
-  }
-
-  if (!response.ok) {
-    switch (data.message) {
-      case 'VERIFICATION_CODE_EXPIRED':
-        throw new Error('유효 시간이 지났습니다. 코드를 다시 전송해주세요.');
-      case 'VERIFICATION_CODE_WRONG':
-        throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
-      default:
-        console.error(data.message);
-        throw new Error('회원가입 인증 중 문제가 발생했습니다', {
-          cause: { status: response.status, message: data.message },
-        });
-    }
-  }
-
-  return data as { user: UserDataType };
-};
-
-export const sendCodeLogin = async (email: string) => {
-  const url = `${BASE_URL}/login/local`;
-
-  let response, data;
-
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('로그인 코드 전송 요청 중 문제가 발생했습니다.', {
-      cause: { error },
-    });
-  }
-
-  if (!response.ok) {
-    switch (data.message) {
-      case 'USER_NOT_FOUND':
-        throw new Error('가입되지 않은 이메일입니다');
-      default:
-        console.error(data.message);
-        throw new Error('로그인 코드 전송 중 문제가 발생했습니다', {
-          cause: { status: response.status, message: data.message },
-        });
-    }
-  }
-
-  return data as { message: string };
-};
-
-export const verifyLogin = async (email: string, code: string, persist: boolean) => {
-  const url = `${BASE_URL}/login/local/verify`;
-
-  let response, data;
-
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ email, code, persist }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('로그인 인증 요청 중 문제가 발생했습니다.', { cause: error });
-  }
-
-  if (!response.ok) {
-    switch (data.message) {
-      case 'VERIFICATION_CODE_EXPIRED':
-        throw new Error('유효 시간이 지났습니다. 코드를 다시 전송해주세요.');
-      case 'VERIFICATION_CODE_WRONG':
-        throw new Error('잘못된 인증코드입니다. 코드를 다시 입력해주세요.');
-      default:
-        console.error(data.message);
-        throw new Error('로그인 인증 중 문제가 발생했습니다', {
-          cause: { response, message: data.message },
-        });
-    }
-  }
-
-  return data as { user: UserDataType };
-};
-
-export const logoutUser = async () => {
-  const url = `${BASE_URL}/logout`;
-
-  let response, data;
-  try {
-    response = await fetch(url, {
-      credentials: 'include',
-    });
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('로그아웃 요청 중 문제가 발생했습니다.', { cause: error });
-  }
-
-  if (!response.ok) {
-    console.error(data.message);
-    throw new Error('로그아웃 중 문제가 발생했습니다', {
-      cause: { response, message: data.message },
-    });
-  }
-
-  return data;
-};
-
-export const guestLogin = async () => {
-  const url = `${BASE_URL}/login/guest`;
-
-  let response, data;
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({ persist: true }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    data = await response.json();
-  } catch (error) {
-    console.error(error);
-    throw new Error('게스트 로그인 요청 중 문제가 발생했습니다.', { cause: error });
-  }
-
-  if (!response.ok) {
-    console.error(data.message);
-    throw new Error('게스트 로그인 중 문제가 발생했습니다', {
-      cause: { response, message: data.message },
-    });
-  }
-
-  return data;
-};
-
 export const deleteUser = async () => {
   const url = `${BASE_URL}`;
 
@@ -240,15 +34,11 @@ export const deleteUser = async () => {
 
     data = await response.json();
   } catch (error) {
-    console.error(error);
-    throw new Error('회원탈퇴 요청 중 문제가 발생했습니다.', { cause: error });
+    throw error;
   }
 
   if (!response.ok) {
-    console.error(data.message);
-    throw new Error('회원 탈퇴 시도 중 문제가 발생했습니다', {
-      cause: { response, message: data.message },
-    });
+    throw new Error(data?.message || '회원 탈퇴 시도 중 문제가 발생했습니다');
   }
 
   return;
@@ -256,15 +46,25 @@ export const deleteUser = async () => {
 
 export const getUserState = async () => {
   const url = `${BASE_URL}/current`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
+  let response, data;
 
-  if (!response.ok) {
-    const data = await response.json();
-    console.error(data?.message);
-    return null;
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<{ user: UserDataType }>;
+  if (!response.ok) {
+    const message = data?.message;
+    if (message === 'NOT_LOGGED_IN') {
+      return null;
+    } else {
+      throw new Error(message || '로그인 정보를 불러오는 중 문제가 발생했습니다.');
+    }
+  }
+
+  return data as { user?: UserDataType };
 };

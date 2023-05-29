@@ -1,6 +1,7 @@
 const { DURING_SERVER } = import.meta.env;
 import { validate as isUUID } from 'uuid';
 import Category from '../../models/Category';
+import { checkNetwork } from '../network';
 
 const BASE_URL = `${DURING_SERVER}/api/categories`;
 
@@ -46,70 +47,91 @@ export interface UpdatedUserCategoryType {
 }
 
 export const getCategories = async () => {
-  const response = await fetch(BASE_URL, {
-    credentials: 'include',
-  });
+  checkNetwork();
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Response(`Failed to get categories.\n${data.message ? data.message : ''}`, {
-      status: response.status,
+  let response, data;
+
+  try {
+    response = await fetch(BASE_URL, {
+      credentials: 'include',
     });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
-
-  return response.json() as Promise<UserCategoryType[]>;
-};
-
-export const updateCategories = async (data: { categoryData: Category[] }) => {
-  const { categoryData } = data;
-
-  const response = await fetch(BASE_URL, {
-    method: 'PUT',
-    credentials: 'include',
-    body: JSON.stringify({ categories: convertCategory(categoryData) }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
 
   if (!response.ok) {
-    const data = await response.json();
-
-    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+    throw new Error(data?.message || '카테고리 목록 조회 중 문제가 발생했습니다.');
   }
-
-  return response.json() as Promise<UpdatedUserCategoryType>;
+  return data as UserCategoryType[];
 };
 
-export const updateCategoriesPartially = async (data: {
+export const updateCategories = async (categories: { categoryData: Category[] }) => {
+  checkNetwork();
+
+  const { categoryData } = categories;
+
+  let response, data;
+  try {
+    response = await fetch(BASE_URL, {
+      method: 'PUT',
+      credentials: 'include',
+      body: JSON.stringify({ categories: convertCategory(categoryData) }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || '카테고리 업데이트 중 문제가 발생했습니다.');
+  }
+
+  return data as UpdatedUserCategoryType;
+};
+
+export const updateCategoriesPartially = async (updatingData: {
   isExpense?: boolean;
   categories: Category[];
 }) => {
-  const { isExpense, categories } = data;
+  checkNetwork();
 
-  const response = await fetch(BASE_URL, {
-    method: 'PATCH',
-    credentials: 'include',
-    body: JSON.stringify({
-      isExpense,
-      isIncome: !isExpense,
-      categories: convertCategory(categories),
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const { isExpense, categories } = updatingData;
 
-  if (!response.ok) {
-    const data = await response.json();
-
-    throw new Error(`Failed to update categories.\n${data.message ? data.message : ''}`);
+  let response, data;
+  try {
+    response = await fetch(BASE_URL, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify({
+        isExpense,
+        isIncome: !isExpense,
+        categories: convertCategory(categories),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
   }
 
-  return response.json() as Promise<UpdatedUserCategoryType>;
+  if (!response.ok) {
+    throw new Error(
+      data?.message || '지출/수입 카테고리 업데이트 중 문제가 발생했습니다.'
+    );
+  }
+
+  return data as UpdatedUserCategoryType;
 };
 
 const convertCategory = (categoryData: Category[]) => {
+  checkNetwork();
+
   return categoryData.map((category) => {
     const { id, isExpense, icon, title } = category;
 
