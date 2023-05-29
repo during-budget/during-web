@@ -3,55 +3,14 @@ import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 import _ from "lodash";
 import { Budget } from "./Budget";
 import { basicCategories } from "./_basicCategories";
-
-interface IAsset {
-  _id: Types.ObjectId;
-  icon: string;
-  title: string;
-  amount: number;
-  detail: string;
-}
-const assetSchema = new Schema<IAsset>({
-  icon: { type: String, default: "" },
-  title: String,
-  amount: { type: Number, default: 0 },
-  detail: { type: String, default: "" },
-});
-
-interface ICard {
-  _id: Types.ObjectId;
-  icon: string;
-  title: string;
-  linkedAssetId?: Types.ObjectId;
-  linkedAssetIcon?: string;
-  linkedAssetTitle?: string;
-  detail: string;
-}
-const cardSchema = new Schema<ICard>({
-  icon: { type: String, default: "" },
-  title: String,
-  linkedAssetId: Schema.Types.ObjectId,
-  linkedAssetIcon: String,
-  linkedAssetTitle: String,
-  detail: { type: String, default: "" },
-});
-
-interface IPaymentMethod {
-  _id: Types.ObjectId;
-  type: "asset" | "card";
-  icon: string;
-  title: string;
-  detail: string;
-  isChecked: boolean;
-}
-
-const paymentMethodSchema = new Schema<IPaymentMethod>({
-  type: String,
-  icon: String,
-  title: String,
-  detail: { type: String, default: "" },
-  isChecked: { type: Boolean, default: true },
-});
+import {
+  IAsset,
+  ICard,
+  IPaymentMethod,
+  assetSchema,
+  cardSchema,
+  paymentMethodSchema,
+} from "./PaymentMethod";
 
 interface ICategory {
   _id: Types.ObjectId;
