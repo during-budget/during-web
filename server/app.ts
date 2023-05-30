@@ -1,6 +1,7 @@
 /* setup env */
 import "./_setup";
-import * as connection from "./_connect";
+import * as _connect from "./_connect";
+import { client } from "./_redis/index";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
@@ -19,7 +20,8 @@ import morgan, { StreamOptions, TokenIndexer } from "morgan";
 import { logger } from "@logger";
 
 /* session */
-import RedisStore from "connect-redis";
+import connectRedis from "connect-redis";
+const RedisStore = connectRedis(session);
 
 const app: Express = express();
 
@@ -46,7 +48,7 @@ app.use(
     },
     rolling: true,
     store: new RedisStore({
-      client: connection.redisClient,
+      client: client as connectRedis.Client,
       ttl: 24 * 60 * 60, //1 day
       // no need to set reapInterval
     }),

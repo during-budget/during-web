@@ -2,12 +2,13 @@ import { createClient } from "redis";
 
 const client = createClient({
   url: process.env["REDIS_URL"],
+  legacyMode: true,
 });
 let isConnected = false;
 
 client.connect();
 
-client.on("error", function (err) {
+client.on("error", function (err: any) {
   console.log("Redis connection error: " + err);
 });
 client.on("ready", () => {
@@ -16,4 +17,6 @@ client.on("ready", () => {
   isConnected = true;
 });
 
-export { client, isConnected };
+const cli = client.v4;
+
+export { cli as client, isConnected };

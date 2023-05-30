@@ -1,8 +1,5 @@
 import { isConnected as isMongoDBConnected } from "./_mongoose";
-import {
-  client as redisClient,
-  isConnected as isRedisConnected,
-} from "./_redis";
+import { isConnected as isRedisConnected } from "./_redis";
 
 export const isDBConnected = () => isMongoDBConnected && isRedisConnected;
 
@@ -19,5 +16,3 @@ export const ready = async () => {
     }, 2000);
   });
 };
-
-export { redisClient };
