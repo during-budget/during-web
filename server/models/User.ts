@@ -11,6 +11,7 @@ import {
   cardSchema,
   paymentMethodSchema,
 } from "./PaymentMethod";
+import { basicChartSkin, basicTimeZone } from "./_basicSettings";
 
 interface ICategory {
   _id: Types.ObjectId;
@@ -133,8 +134,8 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     settings: {
       type: Object,
       default: {
-        chartSkin: "basic",
-        timeZone: "Asia/Seoul",
+        chartSkin: basicChartSkin,
+        timeZone: basicTimeZone,
       },
     },
   },

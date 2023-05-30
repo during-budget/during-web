@@ -14,6 +14,7 @@ import {
   NOT_FOUND,
   NOT_PERMITTED,
 } from "../@message";
+import { basicTimeZone } from "@models/_basicSettings";
 
 // transaction controller
 
@@ -615,7 +616,7 @@ export const find = async (req: Request, res: Response) => {
         }
       }
 
-      const tz = user.settings.timeZone ?? "Asia/Seoul";
+      const tz = user.settings.timeZone ?? basicTimeZone;
       const startMMT = moment.tz(req.query.startDate, tz);
       const endMMT = moment.tz(req.query.endDate, tz);
       const transactions = await Transaction.find({
