@@ -617,7 +617,8 @@ export const find = async (req: Request, res: Response) => {
         const month = parseInt(req.query.month as string);
         const budget = await Budget.findOne({
           userId: user._id,
-          startDate: new Date(year, month - 1, 1, 9),
+          year,
+          month,
         });
         if (!budget) {
           return res.status(404).send({ message: NOT_FOUND("budget") });
@@ -626,10 +627,7 @@ export const find = async (req: Request, res: Response) => {
       }
       const budgets = await Budget.find({
         userId: user._id,
-        startDate: {
-          $gte: new Date(year, 0, 1, 9),
-          $lte: new Date(year, 11, 1, 9),
-        },
+        year,
       });
       return res.status(200).send({ budgets });
     }
