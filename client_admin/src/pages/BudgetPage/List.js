@@ -21,7 +21,7 @@ function Index() {
 
   const updateData = async () => {
     const { budgets } = await API.GET({ location: "budgets?userId=" + "*" });
-    setBudgets(_.orderBy(budgets, ["startDate"]));
+    setBudgets(_.orderBy(budgets, ["createdAt"], ["desc"]));
 
     setIdFilters(
       budgets.map((b) => {
@@ -70,6 +70,14 @@ function Index() {
             filters: userIdFilters,
             onFilter: (value, record) => `${record.userId}`.startsWith(value),
             filterSearch: true,
+          },
+          {
+            key: "year",
+            width: "240px",
+          },
+          {
+            key: "month",
+            width: "240px",
           },
           {
             key: "title",
