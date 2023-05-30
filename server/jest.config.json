@@ -10,5 +10,5 @@
     "@controllers/(.*)$": "<rootDir>/controllers/$1",
     "@logger": "<rootDir>/log/logger"
   },
-  "setupFiles": ["<rootDir>/setup.ts"]
+  "setupFiles": ["<rootDir>/_setup.ts"]
 }

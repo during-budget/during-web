@@ -1,6 +1,6 @@
 /* setup env */
-import "./setup";
-import * as connection from "./connect";
+import "./_setup";
+import * as connection from "./_connect";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
@@ -19,8 +19,7 @@ import morgan, { StreamOptions, TokenIndexer } from "morgan";
 import { logger } from "@logger";
 
 /* session */
-import connectRedis from "connect-redis";
-const RedisStore = connectRedis(session);
+import RedisStore from "connect-redis";
 
 const app: Express = express();
 
