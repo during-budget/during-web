@@ -13,6 +13,7 @@ import {
   NOT_FOUND,
   NOT_PERMITTED,
 } from "../@message";
+import moment from "moment-timezone";
 
 // budget controller
 type budgetKeys =
@@ -262,15 +263,8 @@ export const createWithBasic = async (req: Request, res: Response) => {
         return res.status(400).send({ message: FIELD_REQUIRED(field) });
       }
     }
-
-    const startDate = new Date(req.body.year, req.body.month - 1, 1, 9);
-    const lastDate = new Date(req.body.year, req.body.month, 0);
-    const endDate = new Date(
-      req.body.year,
-      req.body.month - 1,
-      lastDate.getDate(),
-      9
-    );
+    const year = parseInt(req.body.year);
+    const month = parseInt(req.body.month);
 
     const user = req.user!;
 
@@ -284,23 +278,33 @@ export const createWithBasic = async (req: Request, res: Response) => {
     budget.isNew = true;
     budget._id = new Types.ObjectId();
     budget.title = req.body.title ?? budget.title;
-    budget.startDate = startDate;
-    budget.endDate = endDate;
+    budget.year = year;
+    budget.month = month;
     budget.createdAt = undefined;
     budget.updatedAt = undefined;
 
     const save: Promise<any>[] = [budget.save()];
 
+    const tz = user.settings.timeZone ?? "Asia/Seoul";
+    const lastDayOfTheMonth = new Date(year, month, 0).getDate();
+
     for (let transaction of transactions) {
+      const date = moment.tz(transaction.date, tz).toDate();
+      let mmt = moment.tz(
+        [
+          year,
+          month - 1,
+          Math.min(date.getDate(), lastDayOfTheMonth),
+          date.getHours(),
+          date.getMinutes(),
+        ],
+        tz
+      );
+
       transaction.isNew = true;
       transaction._id = new Types.ObjectId();
       transaction.budgetId = budget._id;
-      transaction.date = new Date(
-        req.body.year,
-        req.body.month - 1,
-        transaction.date.getDate(),
-        9
-      );
+      transaction.date = mmt.toDate();
       transaction.createdAt = undefined;
       transaction.updatedAt = undefined;
       save.push(transaction.save());
