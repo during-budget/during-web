@@ -8,7 +8,7 @@ let isConnected = false;
 
 client.connect();
 
-client.on("error", function (err) {
+client.on("error", function (err: any) {
   console.log("Redis connection error: " + err);
 });
 client.on("ready", () => {
