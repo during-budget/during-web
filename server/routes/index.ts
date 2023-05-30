@@ -7,8 +7,9 @@ import cards from "./cards";
 import paymentMethods from "./paymentMethods";
 import auth from "./auth";
 import settings from "./settings";
+import test from "./test";
 
-export const routers = [
+const routers = [
   { label: "users", routes: users },
   { label: "budgets", routes: budgets },
   { label: "transactions", routes: transactions },
@@ -19,3 +20,12 @@ export const routers = [
   { label: "auth", routes: auth },
   { label: "settings", routes: settings },
 ];
+
+if (
+  process.env.NODE_ENV?.trim() === "development" ||
+  process.env.NODE_ENV?.trim() === "test"
+) {
+  routers.push({ label: "test", routes: test });
+}
+
+export { routers };
