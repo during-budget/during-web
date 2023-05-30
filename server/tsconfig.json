@@ -15,7 +15,8 @@
       "@models/*": ["models/*"],
       "@controllers/*": ["controllers/*"],
       "@logger": ["log/logger"]
-    }
+    },
+    "skipLibCheck": true
   },
   "include": ["**/*.ts", "**/*.d.ts", "**/*.json"],
   "exclude": ["**/test/*"]
