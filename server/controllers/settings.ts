@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { logger } from "@logger";
-import { chartSkins } from "@models/_chartSkin";
 import { FIELD_INVALID, FIELD_REQUIRED } from "@message";
 import moment from "moment";
+import { basicTimeZone, chartSkins } from "@models/_basicSettings";
 
 export const find = async (req: Request, res: Response) => {
   try {
@@ -59,7 +59,7 @@ export const options = async (req: Request, res: Response) => {
     }
     if (req.query.field === "timeZone") {
       return res.status(200).send({
-        default: "Asia/Seoul",
+        default: basicTimeZone,
         options: moment.tz.names(),
       });
     }

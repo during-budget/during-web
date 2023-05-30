@@ -14,6 +14,7 @@ import {
   NOT_PERMITTED,
 } from "../@message";
 import moment from "moment-timezone";
+import { basicTimeZone } from "@models/_basicSettings";
 
 // budget controller
 type budgetKeys =
@@ -285,7 +286,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
 
     const save: Promise<any>[] = [budget.save()];
 
-    const tz = user.settings.timeZone ?? "Asia/Seoul";
+    const tz = user.settings.timeZone ?? basicTimeZone;
     const lastDayOfTheMonth = new Date(year, month, 0).getDate();
 
     for (let transaction of transactions) {
