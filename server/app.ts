@@ -1,6 +1,7 @@
 /* setup env */
-import "./setup";
-import * as connection from "./connect";
+import "./_setup";
+import * as _connect from "./_connect";
+import { client } from "./_redisConfig/index";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
@@ -9,7 +10,7 @@ import session from "express-session";
 
 /* passport */
 import passport from "passport";
-import { config as passportConfig } from "./_passport";
+import { config as passportConfig } from "./_passportConfig";
 
 /* routers */
 import { routers } from "./routes/index";
@@ -47,7 +48,7 @@ app.use(
     },
     rolling: true,
     store: new RedisStore({
-      client: connection.redisClient,
+      client: client as unknown as connectRedis.Client,
       ttl: 24 * 60 * 60, //1 day
       // no need to set reapInterval
     }),

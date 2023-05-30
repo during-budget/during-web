@@ -1,6 +1,6 @@
 import { AddressInfo } from "net";
 import { app } from "./app";
-import { ready } from "./connect";
+import { ready } from "./_connect";
 import { Server } from "http";
 import moment from "moment-timezone";
 import { basicTimeZone } from "@models/_basicSettings";
