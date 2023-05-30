@@ -52,6 +52,7 @@ interface IUser {
   auth?: string;
   settings: {
     chartSkin: string;
+    timeZone: string;
   };
 }
 
@@ -133,6 +134,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
       type: Object,
       default: {
         chartSkin: "basic",
+        timeZone: "Asia/Seoul",
       },
     },
   },

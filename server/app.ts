@@ -91,10 +91,6 @@ routers.forEach((router) => {
   app.use("/api/" + router.label, router.routes);
 });
 
-app.get("/api/test", (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).send({ message: "hello world!" });
-});
-
 app.set("port", process.env.SERVER_PORT.trim() ?? 3000);
 
 export { app };
