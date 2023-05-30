@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Budget, IBudget, IBudgetProps } from "@models/Budget";
 import { ITransaction, Transaction } from "@models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
+import moment from "moment-timezone";
 
 import { logger } from "@logger";
 import { User } from "@models/User";
@@ -614,19 +615,20 @@ export const find = async (req: Request, res: Response) => {
         }
       }
 
-      const startDate = new Date(`${req.query.startDate}`);
-      const endDate = new Date(`${req.query.endDate}`);
+      const tz = user.settings.timeZone ?? "Asia/Seoul";
+      const startMMT = moment.tz(req.query.startDate, tz);
+      const endMMT = moment.tz(req.query.endDate, tz);
       const transactions = await Transaction.find({
         userId: user._id,
         budgetId: { $exists: true, $ne: user.basicBudgetId },
         linkedPaymentMethodId: req.query.linkedPaymentMethodId,
-        date: { $gte: startDate, $lt: endDate },
+        date: { $gte: startMMT.toDate(), $lt: endMMT.toDate() },
       }).lean();
       return res.status(200).send({
         amountTotal: transactions.reduce((sum, cur) => sum + cur.amount, 0),
         description: {
-          gte: `${startDate.toUTCString()}`,
-          lt: `${endDate.toUTCString()}`,
+          gte: `${startMMT.format()}`,
+          lt: `${endMMT.format()}`,
         },
         transactions,
       });
