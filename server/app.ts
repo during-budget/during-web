@@ -1,7 +1,7 @@
 /* setup env */
 import "./_setup";
 import * as _connect from "./_connect";
-import { client } from "./_redis/index";
+import { client } from "./_redisConfig/index";
 
 import express, { Express, Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
@@ -10,7 +10,7 @@ import session from "express-session";
 
 /* passport */
 import passport from "passport";
-import { config as passportConfig } from "./_passport";
+import { config as passportConfig } from "./_passportConfig";
 
 /* routers */
 import { routers } from "./routes/index";

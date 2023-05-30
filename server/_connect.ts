@@ -1,5 +1,5 @@
-import { isConnected as isMongoDBConnected } from "./_mongoose";
-import { isConnected as isRedisConnected } from "./_redis";
+import { isConnected as isMongoDBConnected } from "./_mongooseConfig";
+import { isConnected as isRedisConnected } from "./_redisConfig";
 
 export const isDBConnected = () => isMongoDBConnected && isRedisConnected;
 
