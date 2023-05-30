@@ -20,11 +20,9 @@ function Index() {
 
   const updateData = async () => {
     const { budgets } = await API.GET({ location: "budgets?userId=" + _id });
-    setBudgets(_.orderBy(budgets, ["startDate"]));
+    setBudgets(_.orderBy(budgets, ["year", "month"], ["desc", "desc"]));
 
-    const years = new Set(
-      budgets.map((budget) => budget.startDate?.split("-")[0])
-    );
+    const years = new Set(budgets.map((budget) => budget.year));
     setDateFilters(
       _.sortBy(Array.from(years)).map((year) => {
         return { text: `${year}`, value: `${year}` };
@@ -58,15 +56,17 @@ function Index() {
             width: "112px",
           },
           {
-            key: "startDate",
+            key: "year",
             width: "240px",
-            sorter: (a, b) => a.startDate > b.startDate,
-            sortDirections: ["descend"],
             filters: dateFilters,
-            onFilter: (value, record) =>
-              `${record.startDate}`.startsWith(value),
+            onFilter: (value, record) => `${record.year}`.startsWith(value),
             filterSearch: true,
           },
+          {
+            key: "month",
+            width: "240px",
+          },
+
           {
             key: "title",
             type: "button-detail",

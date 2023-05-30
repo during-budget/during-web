@@ -42,6 +42,8 @@ interface IBudget {
   userId: Types.ObjectId;
   startDate: Date;
   endDate: Date;
+  year?: Number;
+  month?: Number;
   title: string;
   expenseScheduled: number;
   expenseScheduledRemain: number;
@@ -84,6 +86,8 @@ const budgetSchema = new Schema<IBudget, BudgetModelType, IBudgetProps>(
     userId: Schema.Types.ObjectId,
     startDate: Date,
     endDate: Date,
+    year: Number,
+    month: Number,
     title: String,
 
     //예정 지출
