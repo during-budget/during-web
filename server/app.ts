@@ -48,7 +48,7 @@ app.use(
     },
     rolling: true,
     store: new RedisStore({
-      client: client as connectRedis.Client,
+      client: client as unknown as connectRedis.Client,
       ttl: 24 * 60 * 60, //1 day
       // no need to set reapInterval
     }),

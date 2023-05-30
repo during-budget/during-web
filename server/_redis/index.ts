@@ -17,6 +17,4 @@ client.on("ready", () => {
   isConnected = true;
 });
 
-const cli = client.v4;
-
-export { cli as client, isConnected };
+export { client, isConnected };
