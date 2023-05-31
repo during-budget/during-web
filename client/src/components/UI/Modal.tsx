@@ -6,8 +6,16 @@ import classes from './Modal.module.css';
 const Modal = () => {
   const dispatch = useAppDispatch();
 
-  const { isOpen, icon, title, description, confirmMsg, onConfirm, showReport } =
-    useAppSelector((state) => state.ui.modal);
+  const {
+    isOpen,
+    icon,
+    title,
+    description,
+    confirmMsg,
+    onConfirm,
+    showReport,
+    hideCancel,
+  } = useAppSelector((state) => state.ui.modal);
 
   const closeHandler = () => {
     dispatch(uiActions.closeModal());
@@ -26,6 +34,7 @@ const Modal = () => {
         confirmMsg: '돌아가기',
       })
     );
+    throw new Error('⚠️ ErrorModal - 에러 제보');
   };
 
   return (
@@ -49,7 +58,7 @@ const Modal = () => {
           {description && <p className={classes.description}>{description}</p>}
         </div>
         <div className={classes.buttons}>
-          {onConfirm && (
+          {onConfirm && hideCancel !== true && (
             <Button onClick={closeHandler} styleClass="extra">
               취소
             </Button>

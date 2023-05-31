@@ -18,6 +18,7 @@ export interface ModalOptions {
   confirmMsg: string;
   onConfirm: (() => void) | null;
   showReport: boolean;
+  hideCancel?: boolean;
 }
 interface EmojiOptions {
   isOpen: boolean;
@@ -55,6 +56,7 @@ const initialState: {
     confirmMsg: '확인',
     onConfirm: null,
     showReport: false,
+    hideCancel: undefined,
   },
 };
 
