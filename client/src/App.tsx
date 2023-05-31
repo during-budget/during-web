@@ -5,7 +5,7 @@ import CurrentBudgetNavigator, {
 } from './layout/CurrentBudgetNavigator';
 import ErrorBoundary from './layout/ErrorBoundary';
 import Nav from './layout/Nav';
-import Root from './layout/Root';
+import Root, { loader as networkLoader } from './layout/Root';
 import Asset from './screens/Asset';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import InitialSetting from './screens/InitialSetting';
@@ -19,6 +19,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorBoundary />,
+    loader: networkLoader,
     children: [
       {
         path: '/',
