@@ -1,8 +1,8 @@
+import * as Sentry from '@sentry/react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import App from './App';
 import store from './store/index';
-import * as Sentry from '@sentry/react';
 const { DURING_SENTRY } = import.meta.env;
 
 if (import.meta.env.MODE === 'production') {
