@@ -1,4 +1,7 @@
-import { UserDataType, guestLogin } from '../../util/api/userAPI';
+import { useAppDispatch } from '../../hooks/redux-hook';
+import { uiActions } from '../../store/ui';
+import { guestLogin } from '../../util/api/authAPI';
+import { UserDataType } from '../../util/api/userAPI';
 import Button from '../UI/Button';
 
 interface GuestLoginButtonProps {
@@ -6,9 +9,17 @@ interface GuestLoginButtonProps {
 }
 
 const GuestLoginButton = ({ onLogin }: GuestLoginButtonProps) => {
+  const dispatch = useAppDispatch();
+
   const guestHandler = async () => {
-    const data = await guestLogin();
-    onLogin(data.user, '/init');
+    try {
+      const data = await guestLogin();
+      onLogin(data.user, '/init');
+    } catch (error) {
+      const message = (error as Error).message;
+      dispatch(uiActions.showErrorModal({ description: message }));
+      throw new Error(message);
+    }
   };
 
   return (

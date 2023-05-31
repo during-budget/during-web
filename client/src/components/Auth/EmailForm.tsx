@@ -2,14 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useAppDispatch } from '../../hooks/redux-hook';
 import { uiActions } from '../../store/ui';
-import {
-  UserDataType,
-  sendCodeLogin,
-  sendCodeRegister,
-  verifyLogin,
-  verifyRegister,
-} from '../../util/api/userAPI';
-import { getErrorMsg } from '../../util/error';
+import { localAuth } from '../../util/api/authAPI';
+import { UserDataType } from '../../util/api/userAPI';
+import { getErrorMessage } from '../../util/error';
 import { validateEmail } from '../../util/validate';
 import CodeField from '../Auth/CodeField';
 import Button from '../UI/Button';
@@ -20,10 +15,10 @@ import GuestLoginButton from './GuestLoginButton';
 
 interface EmailFormProps {
   changeAuthType: () => void;
-  onLogin: (user: UserDataType, to: string) => void;
+  onLanding: (user: UserDataType, to: string) => void;
 }
 
-const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
+const EmailForm = ({ changeAuthType, onLanding }: EmailFormProps) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -34,89 +29,92 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
 
   const [emailState, setEmailState] = useState('');
   const [isVerify, setIsVerify] = useState(false);
-  const [errorState, setErrorState] = useState<String[]>([]);
-  const [isLogin, setIsLogin] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [errorState, setErrorState] = useState<String>('');
   const [isDisabled, setIsDisabled] = useState(false);
 
   // Handlers
   const sendHandler = async (event?: React.MouseEvent) => {
     event!.preventDefault();
-    setErrorState([]);
+    setErrorState('');
+    setIsPending(true);
+
+    if (isVerify) {
+      codeRef.current.clear();
+      codeRef.current.focus();
+    }
 
     if (!emailState.trim()) {
-      setErrorState(['이메일을 입력하세요']);
+      setErrorState('이메일을 입력하세요');
+      setIsPending(false);
       return;
     }
 
     if (!validateEmail(emailState)) {
-      setErrorState(['올바른 이메일을 입력해주세요']);
+      setErrorState('올바른 이메일을 입력해주세요');
+      setIsPending(false);
       return;
     }
 
     setIsDisabled(true);
 
     try {
-      if (isLogin) {
-        await sendCodeLogin(emailState);
-      } else {
-        await sendCodeRegister(emailState);
-      }
-
       setIsVerify(true);
+      await localAuth(emailState);
+      setIsPending(false);
     } catch (error) {
+      setIsPending(false);
+      setIsVerify(false);
       setIsDisabled(false);
-      const msg = getErrorMsg(error);
-      if (msg) {
-        setErrorState(msg);
+
+      const message = getErrorMessage(error);
+      if (message) {
+        setErrorState(message);
       } else {
         dispatch(uiActions.showErrorModal());
+        throw error;
       }
     }
   };
 
   const verifyHandler = async (event?: React.MouseEvent) => {
     event!.preventDefault();
-    setErrorState([]);
+    setErrorState('');
+    setIsPending(true);
 
     if (!emailState.trim()) {
-      setErrorState(['이메일을 입력하세요']);
+      setErrorState('이메일을 입력하세요');
       return;
     }
 
     const code = codeRef.current!.value();
     if (code.trim().length < 6) {
-      setErrorState(['인증 코드 여섯자리를 모두 입력하세요']);
+      setErrorState('인증 코드 여섯자리를 모두 입력하세요');
       return;
     }
 
-    let data;
     try {
       const persist = persistRef.current!.checked;
-
-      if (isLogin) {
-        data = await verifyLogin(emailState, code, persist);
-        onLogin(data.user, from || '/budget');
+      const { message, user } = await localAuth(emailState, code, persist);
+      if (message === 'REGISTER_SUCCESS') {
+        onLanding(user, '/init');
       } else {
-        data = await verifyRegister(emailState, code, persist);
-        onLogin(data.user, '/init');
+        onLanding(user, from || '/budget');
       }
     } catch (error) {
-      const msg = getErrorMsg(error);
-      if (!msg) {
-        dispatch(uiActions.showErrorModal());
+      setIsPending(false);
+      const message = getErrorMessage(error);
+      if (message) {
+        setErrorState(message);
       } else {
-        setErrorState(msg);
+        dispatch(uiActions.showErrorModal());
+        throw error;
       }
     }
   };
 
   const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailState(event.target.value);
-  };
-
-  const toggleIsLogin = () => {
-    setErrorState([]);
-    setIsLogin((prev) => !prev);
   };
 
   const focusEmail = () => {
@@ -126,46 +124,31 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
 
   // Focus email input on First load
   useEffect(() => {
-    if (!isDisabled) {
+    if (isVerify) {
+      codeRef.current && codeRef.current.focus();
+    } else if (!isDisabled) {
       focusEmail();
     }
-  }, [isVerify, isLogin, isDisabled]);
-
-  useEffect(() => {
-    setIsVerify(false);
-    setIsDisabled(false);
-
-    if (isVerify) {
-      setEmailState('');
-    }
-  }, [isLogin]);
+  }, [isVerify, isDisabled]);
 
   // Error message JSXElement
   const errorMessage = errorState.length !== 0 && (
     <Inform isError={true} className={classes.error} isFlex={true} isLeft={true}>
-      {errorState.map((error, i) => {
-        return (
-          <p key={i}>
-            {errorState.length > 1 && i === 0 ? <strong>{error}</strong> : error}
-          </p>
-        );
-      })}
+      <p>{errorState}</p>
     </Inform>
   );
 
   return (
     <div className={classes.email}>
       <img src="/images/logo.png" alt="듀링 가계부 로고" />
-      <h2>{isLogin ? '로그인' : '회원가입'}</h2>
+      <h2>시작하기</h2>
       <form className={classes.form}>
         <InputField
           id="auth-email-field"
           className={`${classes.field} ${classes.emailField}`}
         >
           <div className={classes.emailLabel}>
-            <label htmlFor="auth-email-input">
-              이메일로 {isLogin ? '로그인' : '회원가입'}
-            </label>
+            <label htmlFor="auth-email-input">이메일로 시작</label>
             {isVerify && (
               <Button sizeClass="sm" onClick={sendHandler}>
                 재전송
@@ -187,8 +170,13 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
           <>
             <CodeField className={classes.code} ref={codeRef} />
             {errorMessage}
-            <Button type="submit" className={classes.submit} onClick={verifyHandler}>
-              {isLogin ? '로그인' : '회원가입'}
+            <Button
+              type="submit"
+              className={classes.submit}
+              onClick={verifyHandler}
+              isPending={isPending}
+            >
+              인증하기
             </Button>
             <div className={classes.options}>
               <div className={classes.persist}>
@@ -216,34 +204,30 @@ const EmailForm = ({ changeAuthType, onLogin }: EmailFormProps) => {
         ) : (
           <>
             {errorMessage}
-            <Button type="submit" className={classes.submit} onClick={sendHandler}>
-              {isLogin ? '로그인 인증코드 전송' : '회원가입 인증코드 전송'}
+            <Button
+              type="submit"
+              className={classes.submit}
+              onClick={sendHandler}
+              isPending={isPending}
+            >
+              인증코드 전송
             </Button>
           </>
         )}
       </form>
       <div className={classes.buttons}>
-        <GuestLoginButton onLogin={onLogin} />
+        <GuestLoginButton onLogin={onLanding} />
         <span>|</span>
         <Button
           styleClass="extra"
+          className={classes.sns}
           onClick={() => {
-            setErrorState([]);
-            toggleIsLogin();
+            changeAuthType();
           }}
         >
-          {isLogin ? '회원가입하기' : '로그인하기'}
+          SNS로 시작하기
         </Button>
       </div>
-      <Button
-        styleClass="extra"
-        className={classes.sns}
-        onClick={() => {
-          changeAuthType();
-        }}
-      >
-        SNS로 시작하기
-      </Button>
     </div>
   );
 };

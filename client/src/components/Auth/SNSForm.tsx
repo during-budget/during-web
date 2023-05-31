@@ -1,4 +1,4 @@
-import { getAuthURL } from '../../util/api/snsIdAPI';
+import { getAuthURL } from '../../util/api/authAPI';
 import { UserDataType } from '../../util/api/userAPI';
 import Button from '../UI/Button';
 import GuestLoginButton from './GuestLoginButton';
@@ -11,10 +11,10 @@ import {
 
 interface SNSFormProps {
   changeAuthType: () => void;
-  onLogin: (user: UserDataType, to: string) => void;
+  onLanding: (user: UserDataType, to: string) => void;
 }
 
-const SNSForm = ({ changeAuthType, onLogin }: SNSFormProps) => {
+const SNSForm = ({ changeAuthType, onLanding }: SNSFormProps) => {
   return (
     <div className={classes.sns}>
       <img src="/images/logo.png" alt="듀링 가계부 로고" />
@@ -34,7 +34,7 @@ const SNSForm = ({ changeAuthType, onLogin }: SNSFormProps) => {
         </div>
 
         <div className={classes.buttons}>
-          <GuestLoginButton onLogin={onLogin} />
+          <GuestLoginButton onLogin={onLanding} />
           <span>|</span>
           <Button styleClass="extra" onClick={changeAuthType}>
             이메일로 시작하기

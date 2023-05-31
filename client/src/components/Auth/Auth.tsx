@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { UserDataType, getUserState } from '../../util/api/userAPI';
-import Modal from '../UI/Modal';
+import { UserDataType } from '../../util/api/userAPI';
 import Overlay from '../UI/Overlay';
 import classes from './Auth.module.css';
 import EmailForm from './EmailForm';
@@ -9,10 +8,10 @@ import SNSForm from './SNSForm';
 interface AuthProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: UserDataType, to: string) => void;
+  onLanding: (user: UserDataType, to: string) => void;
 }
 
-function Auth({ isOpen, onClose, onLogin }: AuthProps) {
+function Auth({ isOpen, onClose, onLanding }: AuthProps) {
   const [isEmailAuth, setIsEmailAuth] = useState(false);
 
   // Set state
@@ -40,17 +39,13 @@ function Auth({ isOpen, onClose, onLogin }: AuthProps) {
         onClose={onClose}
       >
         {isEmailAuth ? (
-          <EmailForm changeAuthType={setSNSAuth} onLogin={onLogin} />
+          <EmailForm changeAuthType={setSNSAuth} onLanding={onLanding} />
         ) : (
-          <SNSForm changeAuthType={setEmailAuth} onLogin={onLogin} />
+          <SNSForm changeAuthType={setEmailAuth} onLanding={onLanding} />
         )}
       </Overlay>
     </>
   );
 }
-
-export const loader = async () => {
-  return getUserState();
-};
 
 export default Auth;
