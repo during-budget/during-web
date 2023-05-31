@@ -1,5 +1,9 @@
 import { PropsWithChildren } from 'react';
 import { DragDropContext, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { useAppDispatch } from '../../hooks/redux-hook';
+import { uiActions } from '../../store/ui';
+import { ERROR_MESSAGE } from '../../constants/error';
+import { getErrorMessage } from '../../util/error';
 
 interface DraggableListProps {
   id: string;
@@ -17,7 +21,9 @@ const DraggableList = ({
   setList,
   onDragEnd,
 }: PropsWithChildren<DraggableListProps>) => {
-  const sortHandler: OnDragEndResponder = (result) => {
+  const dispatch = useAppDispatch();
+
+  const sortHandler: OnDragEndResponder = async (result) => {
     if (!result.destination) return;
     const items = [...list!];
 
@@ -25,7 +31,19 @@ const DraggableList = ({
     items.splice(result.destination.index, 0, reorderedItem);
 
     setList!(items);
-    onDragEnd && onDragEnd(items);
+
+    try {
+      onDragEnd && (await onDragEnd(items));
+    } catch (error) {
+      const message = getErrorMessage(error);
+      dispatch(
+        uiActions.showErrorModal({
+          description: message || '다시 시도해주세요.',
+        })
+      );
+      setList(list);
+      if (!message) throw error;
+    }
   };
 
   return (
