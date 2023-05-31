@@ -20,9 +20,8 @@ import { budgetCategoryActions } from '../store/budget-category';
 import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
 import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
-import classes from './Budget.module.css';
-import { uiActions } from '../store/ui';
 import { TransactionDataType } from '../util/api/transactionAPI';
+import classes from './Budget.module.css';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -34,28 +33,7 @@ function Budget() {
 
   // set loaderData
   useEffect(() => {
-    if (data) {
-      dispatchBudgetData(data);
-    } else {
-      dispatch(
-        uiActions.showModal({
-          description: '예산 데이터를 찾을 수 없습니다',
-          confirmMsg: '다시 불러오기',
-          onConfirm: async () => {
-            try {
-              const data = await getBudgetById(id);
-              dispatchBudgetData(data);
-            } catch (error) {
-              console.log(error);
-              uiActions.showErrorModal({
-                title: '',
-                description: '예산 데이터를 불러오는 중 문제가 발생했습니다',
-              });
-            }
-          },
-        })
-      );
-    }
+    dispatchBudgetData(data);
   }, [data]);
 
   const dispatchBudgetData = (data: {
@@ -105,7 +83,7 @@ function Budget() {
 export default Budget;
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  if (!params.budgetId) throw new Response('Budget Not Found', { status: 404 });
+  if (!params.budgetId) throw new Error('예산을 찾기 위해 예산 id가 필요합니다.');
 
   return {
     id: params.budgetId,

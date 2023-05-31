@@ -7,6 +7,7 @@ import { totalActions } from '../../../store/total';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import { TransactionType, deleteTransaction } from '../../../util/api/transactionAPI';
+import { getErrorMessage } from '../../../util/error';
 import OptionButton from '../../UI/OptionButton';
 
 interface TransactionOptionProps {
@@ -88,17 +89,27 @@ function TransactionOption({
         uiActions.showModal({
           title: '내역을 삭제할까요?',
           onConfirm: async () => {
-            const { transactionLinked, budget, assets } = await deleteTransaction(_id);
+            try {
+              const { transactionLinked, budget, assets } = await deleteTransaction(_id);
 
-            // remove transaction
-            dispatch(transactionActions.removeTransaction(_id));
-            dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
+              // remove transaction
+              dispatch(transactionActions.removeTransaction(_id));
+              dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
 
-            // dispatch updated amount
-            dispatch(budgetActions.setCurrentBudget(budget));
-            dispatch(totalActions.setTotalFromBudgetData(budget));
-            dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
-            assets && dispatch(assetActions.setAssets(assets));
+              // dispatch updated amount
+              dispatch(budgetActions.setCurrentBudget(budget));
+              dispatch(totalActions.setTotalFromBudgetData(budget));
+              dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+              assets && dispatch(assetActions.setAssets(assets));
+            } catch (error) {
+              const message = getErrorMessage(error);
+              dispatch(
+                uiActions.showErrorModal({
+                  description: message || '삭제 처리 중 문제가 발생했습니다.',
+                })
+              );
+              if (!message) throw error;
+            }
           },
         })
       );

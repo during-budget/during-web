@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import AssetList from '../components/Asset/List/AssetList';
 import AssetCardStatus from '../components/Asset/Status/AssetCardStatus';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import { useAppSelector } from '../hooks/redux-hook';
-import { AssetDataType, CardDataType, getAssets, getCards } from '../util/api/assetAPI';
-import classes from './Asset.module.css';
-import { useDispatch } from 'react-redux';
 import { assetActions } from '../store/asset';
 import { uiActions } from '../store/ui';
+import { AssetDataType, CardDataType, getAssets, getCards } from '../util/api/assetAPI';
+import { getErrorMessage } from '../util/error';
+import classes from './Asset.module.css';
 export interface AssetProps {
   assets: AssetDataType[];
   cards: CardDataType[];
@@ -36,11 +37,13 @@ const Asset = () => {
                 dispatch(assetActions.setCards(cardData));
               }
             } catch (error) {
-              console.log(error);
+              const message = getErrorMessage(error);
               uiActions.showErrorModal({
                 title: '',
-                description: '자산 또는 카드를 불러오는 중 문제가 발생했습니다',
+                description:
+                  message || '자산 또는 카드를 불러오는 중 문제가 발생했습니다',
               });
+              if (!message) throw error;
             }
           },
         })

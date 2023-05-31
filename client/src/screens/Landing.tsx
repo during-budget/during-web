@@ -8,10 +8,12 @@ import { useAppDispatch } from '../hooks/redux-hook';
 import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
 import { settingActions } from '../store/setting';
+import { uiActions } from '../store/ui';
 import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
+import { getErrorMessage } from '../util/error';
 import classes from './Landing.module.css';
 
 const Landing = () => {
@@ -26,7 +28,7 @@ const Landing = () => {
   const from = location.state?.from?.pathname;
 
   useEffect(() => {
-    if (loaderData && 'user' in loaderData) {
+    if (loaderData && loaderData.user) {
       getUserLogin(loaderData.user, from || '/budget');
     } else {
       setIsFirstLoad(false);
@@ -63,14 +65,43 @@ const Landing = () => {
     dispatch(settingActions.setSettings(settings));
 
     // set default budget data
-    const { budget: defaultBudget } = await getBudgetById(defaultBudgetId);
-    dispatch(budgetActions.setDefaultBudget(defaultBudget));
+    let defaultBudget;
+    try {
+      const { budget } = await getBudgetById(defaultBudgetId);
+      defaultBudget = budget;
+      dispatch(budgetActions.setDefaultBudget(defaultBudget));
+    } catch (error) {
+      const message = getErrorMessage(error);
+      showError(message || '기본 예산을 로드할 수 없습니다.');
+      if (!message) throw error;
+    }
 
     // set budget data
-    const { budgets } = await getBudgetList();
-    dispatch(budgetActions.setBudgetList(budgets));
+    let budgets;
+    try {
+      const budgetList = await getBudgetList();
+      budgets = budgetList.budgets;
+      dispatch(budgetActions.setBudgetList(budgets));
+      navigate(to, { replace: true });
+    } catch (error) {
+      const message = getErrorMessage(error);
+      showError(message || '예산 목록을 로드할 수 없습니다.');
+      if (!message) throw error;
+    }
+  };
 
-    navigate(to, { replace: true });
+  const showError = async (message: string) => {
+    dispatch(userActions.logout());
+    setShowLogin(false);
+    setIsFirstLoad(false);
+
+    dispatch(
+      uiActions.showErrorModal({
+        description: message,
+      })
+    );
+
+    navigate('/user');
   };
 
   if (isFirstLoad) {
@@ -97,7 +128,7 @@ const Landing = () => {
           onClose={() => {
             setShowLogin(false);
           }}
-          onLogin={getUserLogin}
+          onLanding={getUserLogin}
         />
       </div>
     );

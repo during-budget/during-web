@@ -78,7 +78,7 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
 
   const submitHandler = async () => {
     await updateUserCategory();
-    updateBudgetCategory();
+    await updateBudgetCategory();
     closeHandler();
   };
 
@@ -105,8 +105,8 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
 
   const updateBudgetCategory = async () => {
     // get checked categories & default category
-    const updatingCategories = categories.filter((item) =>
-      checkedCategoryIds.get(item.id) && item.title
+    const updatingCategories = categories.filter(
+      (item) => checkedCategoryIds.get(item.id) && item.title
     );
 
     // send request

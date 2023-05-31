@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import { assetActions } from '../../../store/asset';
 import { uiActions } from '../../../store/ui';
@@ -15,6 +14,7 @@ import {
   updateAssetById,
   updateCardById,
 } from '../../../util/api/assetAPI';
+import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/Button';
 import EmojiInput from '../../UI/EmojiInput';
 import OverlayForm from '../../UI/OverlayForm';
@@ -48,9 +48,6 @@ const AssetCardItemEditor = ({
   preventSubmit,
 }: AssetCardItemEditorProps) => {
   const dispatch = useDispatch();
-
-  const location = useLocation();
-  // const isInit = location.pathname.includes('/init');
 
   const [targetState, setTargetState] = useState(target || getDefaultTarget(isAsset));
 
@@ -133,15 +130,25 @@ const AssetCardItemEditor = ({
         title: `${isAsset ? '자산을' : '카드를'} 삭제할까요?`,
         description: '모든 정보가 삭제되며 복구할 수 없습니다.',
         onConfirm: async () => {
-          const { assets, paymentMethods, cards } = isAsset
-            ? await removeAssetById(id)
-            : await removeCardById(id);
+          try {
+            const { assets, paymentMethods, cards } = isAsset
+              ? await removeAssetById(id)
+              : await removeCardById(id);
 
-          assets && dispatch(assetActions.setAssets(assets));
-          paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
-          cards && dispatch(assetActions.setCards(cards));
+            assets && dispatch(assetActions.setAssets(assets));
+            paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
+            cards && dispatch(assetActions.setCards(cards));
 
-          closeEditor();
+            closeEditor();
+          } catch (error) {
+            const message = getErrorMessage(error);
+            dispatch(
+              uiActions.showErrorModal({
+                description: message || '삭제 처리 중 문제가 발생했습니다.',
+              })
+            );
+            if (!message) throw error;
+          }
         },
       })
     );

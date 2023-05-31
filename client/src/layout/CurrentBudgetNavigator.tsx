@@ -1,26 +1,38 @@
 import { useDispatch } from 'react-redux';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../store/budget';
-import { getBudgetByMonth } from '../util/api/budgetAPI';
+import { BudgetDataType, getBudgetByMonth } from '../util/api/budgetAPI';
 
 function CurrentBudgetNavigator() {
   const dispatch = useDispatch();
 
-  const { budget } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const data = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const budget = data?.budget;
 
-  budget && dispatch(budgetActions.setCurrentBudget(budget));
-
-  const { year, month } = getCurrentYearMonth();
-
-  const path = budget
-    ? `/budget/${budget._id}`
-    : `/budget/new?year=${year}&month=${month}`;
-  return <Navigate to={path} replace={true} />;
+  if (budget) {
+    dispatch(budgetActions.setCurrentBudget(budget));
+    return <Navigate to={`/budget/${budget._id}`} replace={true} />;
+  } else {
+    const { year, month } = getCurrentYearMonth();
+    return <Navigate to={`/budget/new?year=${year}&month=${month}`} replace={true} />;
+  }
 }
 
 export const loader = async () => {
   const { year, month } = getCurrentYearMonth();
-  return getBudgetByMonth(year, month);
+  let data: {
+    budget: BudgetDataType;
+  } | null;
+  try {
+    data = await getBudgetByMonth(year, month);
+  } catch (error) {
+    if ((error as Error).message?.includes('NOT_FOUND')) {
+      data = null;
+    } else {
+      throw error;
+    }
+  }
+  return data;
 };
 
 const getCurrentYearMonth = () => {

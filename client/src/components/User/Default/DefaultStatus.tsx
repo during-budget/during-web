@@ -4,7 +4,9 @@ import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
+import { uiActions } from '../../../store/ui';
 import { updateBudgetFields, updateCategoryPlan } from '../../../util/api/budgetAPI';
+import { getErrorMessage } from '../../../util/error';
 import { getExpensePlannedKey } from '../../../util/filter';
 import AmountBars from '../../Budget/Amount/AmountBars';
 import EditInput from '../../Budget/Input/EditInput';
@@ -32,20 +34,30 @@ const DefaultStatus = (props: { budgetId: string }) => {
       );
     }
 
-    categories.forEach((item) => {
-      if (item.isDefault) return;
+    categories.forEach(async (item) => {
+      try {
+        if (item.isDefault) return;
 
-      const amount = item.amount;
+        const amount = item.amount;
 
-      if (amount.planned < amount.scheduled) {
-        updateCategoryPlan(props.budgetId, item.id, amount.scheduled);
+        if (amount.planned < amount.scheduled) {
+          await updateCategoryPlan(props.budgetId, item.id, amount.scheduled);
+          dispatch(
+            budgetCategoryActions.updateCategoryAmount({
+              categoryId: item.id,
+              isExpense,
+              planned: amount.scheduled,
+            })
+          );
+        }
+      } catch (error) {
+        const message = getErrorMessage(error);
         dispatch(
-          budgetCategoryActions.updateCategoryAmount({
-            categoryId: item.id,
-            isExpense,
-            planned: amount.scheduled,
+          uiActions.showErrorModal({
+            description: message || '카테고리 목표 업데이트 중 문제가 발생했습니다.',
           })
         );
+        if (!message) throw error;
       }
     });
   }, [totalAmount.scheduled]);
@@ -54,18 +66,28 @@ const DefaultStatus = (props: { budgetId: string }) => {
 
   // Handlers for plan amounts
   const confirmTotalHandler = async (total: string) => {
-    const confirmedTotal = +total.replace(/[^0-9]+/g, '');
+    try {
+      const confirmedTotal = +total.replace(/[^0-9]+/g, '');
 
-    // send Request
-    const key = getExpensePlannedKey(isExpense);
-    const { budget } = await updateBudgetFields(props.budgetId, {
-      [key]: confirmedTotal,
-    });
+      // send Request
+      const key = getExpensePlannedKey(isExpense);
+      const { budget } = await updateBudgetFields(props.budgetId, {
+        [key]: confirmedTotal,
+      });
 
-    // Update total plan state
-    dispatch(totalActions.updateTotalAmount({ isExpense, planned: confirmedTotal }));
-    // Update category plan state
-    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+      // Update total plan state
+      dispatch(totalActions.updateTotalAmount({ isExpense, planned: confirmedTotal }));
+      // Update category plan state
+      dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+    } catch (error) {
+      const message = getErrorMessage(error);
+      dispatch(
+        uiActions.showErrorModal({
+          description: message || '목표 금액 수정 중 문제가 발생했습니다.',
+        })
+      );
+      if (!message) throw error;
+    }
   };
 
   const convertTotalHandler = (value: string) => {
