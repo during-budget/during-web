@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { settingActions } from '../../../store/setting';
@@ -21,8 +21,8 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
   const [skinState, setSkinState] = useState<ChartSkinType>(skin);
 
   const submitHandler = async () => {
+    await updateChartSkin(skinState);
     dispatch(settingActions.setChartSkin(skinState));
-    updateChartSkin(skinState);
 
     closeSetting();
   };
@@ -30,6 +30,12 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
   const closeSetting = () => {
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      setSkinState(skin);
+    }
+  }, [isOpen]);
 
   return (
     <OverlayForm

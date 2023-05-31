@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../../hooks/redux-hook';
+import { uiActions } from '../../../store/ui';
 import { getBudgetByMonth } from '../../../util/api/budgetAPI';
-import { throwError } from '../../../util/error';
+import { getErrorMessage } from '../../../util/error';
 import NavButton from '../../UI/NavButton';
 
 interface BudgetNavProps {
@@ -11,6 +13,7 @@ interface BudgetNavProps {
 
 const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const setBudget = async ({ year, month }: { year: number; month: number }) => {
     try {
@@ -21,11 +24,18 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
       } else {
         navigate(`/budget/${budget._id}`);
       }
-    } catch (e) {
-      if ((e as Response).status === 404) {
+    } catch (error) {
+      const message = getErrorMessage(error);
+      if (message?.includes('NOT_FOUND')) {
         navigateToNewBudget(year, month);
       } else {
-        throwError(e);
+        dispatch(
+          uiActions.showErrorModal({
+            description:
+              message || `${year}년 ${month}월 예산 조회 중 문제가 발생했습니다.`,
+          })
+        );
+        throw error;
       }
     }
   };

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
+import { getBudgetList } from '../../../util/api/budgetAPI';
+import { getErrorMessage } from '../../../util/error';
 import Overlay from '../../UI/Overlay';
 import YearPicker from '../../UI/YearPicker';
 import BudgetItem from './BudgetItem';
 import classes from './BudgetList.module.css';
-import { budgetActions } from '../../../store/budget';
-import { getBudgetList } from '../../../util/api/budgetAPI';
 
 const startDay = 1;
 const endDay = startDay - 1;
@@ -21,8 +22,19 @@ const BudgetList = () => {
 
   useEffect(() => {
     const setBudgetList = async () => {
-      const { budgets } = await getBudgetList();
-      dispatch(budgetActions.setBudgetList(budgets));
+      try {
+        const { budgets } = await getBudgetList();
+        dispatch(budgetActions.setBudgetList(budgets));
+      } catch (error) {
+        const message = getErrorMessage(error);
+        dispatch(
+          uiActions.showErrorModal({
+            description: message || '전체 예산 목록 조회 중 문제가 발생했습니다.',
+          })
+        );
+        dispatch(uiActions.showBudgetList(false));
+        if (!message) throw error;
+      }
     };
 
     if (isOpen) {

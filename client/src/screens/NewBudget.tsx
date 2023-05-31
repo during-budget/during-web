@@ -6,16 +6,18 @@ import TotalStatus from '../components/Budget/Status/TotalStatus';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Button from '../components/UI/Button';
 import Carousel from '../components/UI/Carousel';
-import { useAppSelector } from '../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import { uiActions } from '../store/ui';
 import { createBudgetFromBasic } from '../util/api/budgetAPI';
+import { getErrorMessage } from '../util/error';
 import classes from './NewBudget.module.css';
-import Modal from '../components/UI/Modal';
 
 dayjs.extend(customParseFormat);
 
 function NewBudget() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   const defaultBudgetId = useAppSelector((state) => state.budget.default.id);
 
@@ -29,8 +31,18 @@ function NewBudget() {
   const endDate = dayjs(startDate).endOf('month').toDate();
 
   const createNewBudget = async () => {
-    const { budget } = await createBudgetFromBasic(year, month);
-    navigate(`/budget/${budget._id}`);
+    try {
+      const { budget } = await createBudgetFromBasic(year, month);
+      navigate(`/budget/${budget._id}`);
+    } catch (error) {
+      const message = getErrorMessage(error);
+      dispatch(
+        uiActions.showErrorModal({
+          description: message || '예산 생성 중 문제가 발생했습니다.',
+        })
+      );
+      if (!message) throw error;
+    }
   };
 
   return (

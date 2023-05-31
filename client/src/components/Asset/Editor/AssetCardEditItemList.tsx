@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { assetActions } from '../../../store/asset';
+import { uiActions } from '../../../store/ui';
 import {
   AssetDataType,
   CardDataType,
@@ -10,12 +11,12 @@ import {
   updateAssets,
   updateCards,
 } from '../../../util/api/assetAPI';
+import { getErrorMessage } from '../../../util/error';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
 import classes from './AssetCardEditItemList.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
-import { uiActions } from '../../../store/ui';
 
 interface AssetCardEditItemListProps {
   id: string;
@@ -47,13 +48,23 @@ const AssetCardEditItemList = ({
         title: `${isAsset ? '자산을' : '카드를'} 삭제할까요?`,
         description: '모든 정보가 삭제되며 복구할 수 없습니다.',
         onConfirm: async () => {
-          const { assets, paymentMethods, cards } = isAsset
-            ? await removeAssetById(id)
-            : await removeCardById(id);
+          try {
+            const { assets, paymentMethods, cards } = isAsset
+              ? await removeAssetById(id)
+              : await removeCardById(id);
 
-          assets && dispatch(assetActions.setAssets(assets));
-          paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
-          cards && dispatch(assetActions.setCards(cards));
+            assets && dispatch(assetActions.setAssets(assets));
+            paymentMethods && dispatch(assetActions.setPaymentMethods(paymentMethods));
+            cards && dispatch(assetActions.setCards(cards));
+          } catch (error) {
+            const message = getErrorMessage(error);
+            dispatch(
+              uiActions.showErrorModal({
+                description: message || '삭제 처리 중 문제가 발생했습니다.',
+              })
+            );
+            if (!message) throw error;
+          }
         },
       })
     );

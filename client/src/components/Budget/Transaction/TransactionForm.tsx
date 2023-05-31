@@ -99,71 +99,63 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 
   // handlers
   const submitHandler = async () => {
-    try {
-      // set transaction
-      const transaction: TransactionType = {
-        _id: defaultValue._id || uuid(),
-        budgetId,
-        isCurrent,
-        isExpense,
-        icon: iconRef.current!.value() || '',
-        title: titlesRef.current!.value(),
-        date: dateState,
-        amount: +amountRef.current!.value(),
-        categoryId: categoryRef.current!.value(),
-        linkedPaymentMethodId: paymentState || '',
-        tags: tagsRef.current!.value(),
-        memo: memoRef.current!.value(),
-        linkId: defaultValue.linkId || undefined,
-        overAmount: defaultValue.overAmount,
-        updateAsset: !excludeAsset,
-      };
+    // set transaction
+    const transaction: TransactionType = {
+      _id: defaultValue._id || uuid(),
+      budgetId,
+      isCurrent,
+      isExpense,
+      icon: iconRef.current!.value() || '',
+      title: titlesRef.current!.value(),
+      date: dateState,
+      amount: +amountRef.current!.value(),
+      categoryId: categoryRef.current!.value(),
+      linkedPaymentMethodId: paymentState || '',
+      tags: tagsRef.current!.value(),
+      memo: memoRef.current!.value(),
+      linkId: defaultValue.linkId || undefined,
+      overAmount: defaultValue.overAmount,
+      updateAsset: !excludeAsset,
+    };
 
-      // send request
-      if (mode.isEdit) {
-        const {
-          transaction: transactionData,
-          transactionLinked,
-          budget,
-          assets,
-        } = await updateTransaction(transaction);
+    // send request
+    if (mode.isEdit) {
+      const {
+        transaction: transactionData,
+        transactionLinked,
+        budget,
+        assets,
+      } = await updateTransaction(transaction);
 
-        await dispatch(
-          transactionActions.updateTransactionFromData({
-            id: transactionData._id,
-            transactionData,
-          })
-        ); // NOTE: await for scroll
+      await dispatch(
+        transactionActions.updateTransactionFromData({
+          id: transactionData._id,
+          transactionData,
+        })
+      ); // NOTE: await for scroll
 
-        dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
-        dispatchAmount(budget, assets);
-      } else {
-        const {
-          transaction: createdTransaction,
-          transactionScheduled,
-          budget,
-          assets,
-        } = await createTransaction(transaction);
+      dispatch(transactionActions.replaceTransactionFromData(transactionLinked));
+      dispatchAmount(budget, assets);
+    } else {
+      const {
+        transaction: createdTransaction,
+        transactionScheduled,
+        budget,
+        assets,
+      } = await createTransaction(transaction);
 
-        await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
+      await dispatch(transactionActions.addTransactionFromData(createdTransaction)); // NOTE: await for scroll
 
-        dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
-        dispatchAmount(budget, assets);
-      }
-
-      // scroll
-      document
-        .getElementById(transaction._id)
-        ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
-      clearForm();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error('에러발생');
-      }
+      dispatch(transactionActions.replaceTransactionFromData(transactionScheduled));
+      dispatchAmount(budget, assets);
     }
+
+    // scroll
+    document
+      .getElementById(transaction._id)
+      ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+    clearForm();
   };
 
   const dispatchAmount = (budget: BudgetDataType, assets: AssetDataType[]) => {

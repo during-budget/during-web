@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import RequireAuth from './RequireAuth';
 import classes from './Nav.module.css';
+import RequireAuth from './RequireAuth';
 
 function Nav() {
   const loacation = useLocation();
@@ -23,11 +23,12 @@ function Nav() {
   });
 
   const isDefaultBudget = loacation.search === '?isDefault';
+  const isInit = location.pathname === '/init';
 
   return (
     <RequireAuth>
       <Outlet />
-      {!isDefaultBudget && <nav className={classes.nav}>{navList}</nav>}
+      {!isDefaultBudget && !isInit && <nav className={classes.nav}>{navList}</nav>}
     </RequireAuth>
   );
 }

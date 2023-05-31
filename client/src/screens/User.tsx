@@ -8,19 +8,18 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 import { userActions } from '../store/user';
-import { deleteUser, logoutUser } from '../util/api/userAPI';
+import { deleteUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
-import Modal from '../components/UI/Modal';
 import { uiActions } from '../store/ui';
 import {
   SnsIdType,
   defaultSnsId,
   disconnectSnsId,
   getAuthURL,
-  getSnsId,
-  providers,
-} from '../util/api/snsIdAPI';
+  getSnsId, logoutUser, providers
+} from '../util/api/authAPI';
+import { getErrorMessage } from '../util/error';
 
 function User() {
   const navigate = useNavigate();
@@ -73,11 +72,13 @@ function User() {
                   if (data?.snsId) {
                     setSnsId(data.snsId);
                   }
-                } catch (error: any) {
-                  if (error.message) {
-                    dispatch(uiActions.showModal({ description: error.message }));
+                } catch (error) {
+                  const message = getErrorMessage(error);
+                  if (message) {
+                    dispatch(uiActions.showModal({ description: message }));
                   } else {
                     dispatch(uiActions.showErrorModal());
+                    throw error;
                   }
                 }
               },
@@ -124,9 +125,18 @@ function User() {
   ];
 
   const logoutHandler = async () => {
-    await logoutUser();
-    dispatch(userActions.logout());
-    navigate('/', { replace: true });
+    try {
+      await logoutUser();
+      dispatch(userActions.logout());
+      navigate('/', { replace: true });
+    } catch (error) {
+      dispatch(
+        uiActions.showErrorModal({
+          description: '로그아웃 시도 중 문제가 발생했습니다.',
+        })
+      );
+      throw error;
+    }
   };
 
   const deleteHandler = () => {
@@ -135,20 +145,41 @@ function User() {
         title: '계정을 삭제할까요?',
         description: '모든 정보가 삭제되며 복구할 수 없습니다.',
         onConfirm: async () => {
-          await deleteUser();
-          dispatch(userActions.logout());
-          navigate('/', { replace: true });
+          try {
+            await deleteUser();
+            dispatch(userActions.logout());
+            navigate('/', { replace: true });
+          } catch (error) {
+            dispatch(
+              uiActions.showErrorModal({
+                description: '회원 탈퇴 시도 중 문제가 발생했습니다.',
+              })
+            );
+            throw error;
+          }
         },
       })
     );
   };
 
   useEffect(() => {
-    getSnsId().then((data) => {
-      if (data?.snsId) {
-        setSnsId(data.snsId);
-      }
-    });
+    getSnsId()
+      .then((data: any) => {
+        if (data?.snsId) {
+          setSnsId(data.snsId);
+        }
+      })
+      .catch((error: Error) => {
+        const message = getErrorMessage(error);
+        if (message) {
+          uiActions.showModal({
+            title: message,
+          });
+        } else {
+          uiActions.showErrorModal();
+          throw error;
+        }
+      });
     return () => {};
   }, []);
 

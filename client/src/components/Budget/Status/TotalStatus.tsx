@@ -2,7 +2,9 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
+import { uiActions } from '../../../store/ui';
 import { updateBudgetFields } from '../../../util/api/budgetAPI';
+import { getErrorMessage } from '../../../util/error';
 import { getExpensePlannedKey } from '../../../util/filter';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
@@ -21,19 +23,29 @@ function TotalStatus(props: { budgetId?: string }) {
 
   // Update plan amount (request & dispatch)
   const updatePlan = async (amountStr: string) => {
-    // convert amount
-    const amount = +amountStr;
+    try {
+      // convert amount
+      const amount = +amountStr;
 
-    // send Request
-    const key = getExpensePlannedKey(isExpense);
-    const { budget } = await updateBudgetFields(budgetId!, {
-      [key]: amount,
-    });
+      // send Request
+      const key = getExpensePlannedKey(isExpense);
+      const { budget } = await updateBudgetFields(budgetId!, {
+        [key]: amount,
+      });
 
-    // Update total plan state
-    dispatch(totalActions.updateTotalAmount({ isExpense, planned: amount }));
-    // Update category plan state
-    dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+      // Update total plan state
+      dispatch(totalActions.updateTotalAmount({ isExpense, planned: amount }));
+      // Update category plan state
+      dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+    } catch (error) {
+      const message = getErrorMessage(error);
+      dispatch(
+        uiActions.showErrorModal({
+          description: message || '목표 금액 업데이트 중 문제가 발생했습니다.',
+        })
+      );
+      if (!message) throw error;
+    }
   };
 
   // NOTE: Get dash for different font-size (match for rem)
