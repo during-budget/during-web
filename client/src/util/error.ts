@@ -1,24 +1,10 @@
-export const throwError = (error: any) => {
-  let message;
+import { ERROR_MESSAGE } from '../constants/error';
 
-  if (error instanceof Error) {
-    message = error.message;
-  } else {
-    message = String(error);
-  }
-
-  throw new Error(message);
-};
-
-export const getErrorMsg = (error: any) => {
+export const getErrorMessage = (error: any) => {
   if (!(error instanceof Error)) {
     return null;
   }
 
-  if (error.cause) {
-    return null;
-  }
-
   const message = error.message;
-  return message.split('\n');
+  return ERROR_MESSAGE[message];
 };
