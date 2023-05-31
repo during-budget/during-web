@@ -1,6 +1,5 @@
 import Button from './Button';
 import classes from './ConfirmCancelButtons.module.css';
-import LoadingSpinner from './LoadingSpinner';
 
 export interface ConfirmCancelButtonsProps {
   onClose?: () => void;
@@ -45,9 +44,10 @@ function ConfirmCancelButtons({
         type="submit"
         styleClass="primary"
         onClick={onConfirm}
+        isPending={isPending}
         disabled={isPending || disabled}
       >
-        {isPending ? <LoadingSpinner size="1.5rem" /> : confirmMsg || '완료'}
+        {confirmMsg || '완료'}
       </Button>
     </div>
   );
