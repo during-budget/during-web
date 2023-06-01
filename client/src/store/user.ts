@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isAuth: false,
   info: {
+    _id: '',
     email: '',
     userName: '',
     defaultBudgetId: '',
@@ -20,7 +21,7 @@ const userSlice = createSlice({
       state = initialState;
     },
     setUserInfo(state, action) {
-      state.info = { ...action.payload, chartSkin: 'basic' };
+      state.info = { ...action.payload };
     },
   },
 });

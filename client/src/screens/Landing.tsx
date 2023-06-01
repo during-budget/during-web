@@ -38,6 +38,7 @@ const Landing = () => {
   const getUserLogin = async (user: UserDataType, to: string) => {
     // get user data
     const {
+      _id,
       userName,
       email,
       basicBudgetId: defaultBudgetId,
@@ -52,6 +53,7 @@ const Landing = () => {
     dispatch(userActions.login());
     dispatch(
       userActions.setUserInfo({
+        _id,
         userName,
         email,
         defaultBudgetId,

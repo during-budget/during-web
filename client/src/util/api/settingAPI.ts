@@ -35,7 +35,7 @@ export const updateChartSkin = async (chartSkin: ChartSkinType) => {
 
   let response, data;
   try {
-    response = await fetch(BASE_URL + 's', {
+    response = await fetch(BASE_URL, {
       method: 'PATCH',
       credentials: 'include',
       body: JSON.stringify({ chartSkin }),

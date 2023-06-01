@@ -5,29 +5,29 @@ import classes from './AmountRing.module.css';
 import Ring from './Ring';
 
 interface SkinDataType {
-  [key: string]: { path: ChartSkinType; hideRoundedDeg: number; hideCoverDeg: number };
+  [key: string]: { name: ChartSkinType; hideRoundedDeg: number; hideCoverDeg: number };
 }
 
 export type ChartSkinType = 'basic' | 'cat' | 'bunny' | 'bear';
 
 export const SKIN_DATA: SkinDataType = {
   CAT: {
-    path: 'cat',
+    name: 'cat',
     hideRoundedDeg: 352,
     hideCoverDeg: 340,
   },
   BUNNY: {
-    path: 'bunny',
+    name: 'bunny',
     hideRoundedDeg: 338,
     hideCoverDeg: 320,
   },
   BEAR: {
-    path: 'bear',
+    name: 'bear',
     hideRoundedDeg: 351,
     hideCoverDeg: 340,
   },
   BASIC: {
-    path: 'basic',
+    name: 'basic',
     hideRoundedDeg: 360,
     hideCoverDeg: 340,
   },
@@ -80,7 +80,7 @@ function AmountRing(props: {
     };
   };
 
-  const isBasic = skinData.path === 'basic';
+  const isBasic = skinData.name === 'basic';
 
   const hideRounded =
     currentDeg > skinData.hideRoundedDeg ||
@@ -123,7 +123,7 @@ function AmountRing(props: {
             dash={data.dash}
             rotate={data.rotate}
             r={data.r}
-            skin={skinData ? skinData.path : 'basic'}
+            skin={skinData ? skinData.name : 'basic'}
             showEyes={data.showEyes}
             showLine={data.showLine}
             isFront={data.isFront}
