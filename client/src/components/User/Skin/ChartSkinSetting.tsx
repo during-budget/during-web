@@ -8,6 +8,7 @@ import Button from '../../UI/Button';
 import Mask from '../../UI/Mask';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
+import { RequestPayResponse } from '../../../types/portone';
 
 const { DURING_STORE_ID } = import.meta.env;
 
@@ -45,7 +46,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
         currency: 'KRW',
         custom_data: { userId },
       },
-      (response) => {
+      (response: RequestPayResponse) => {
         console.log(response);
         if (response.success) {
           alert('결제 완료~');
