@@ -1,6 +1,5 @@
 import { HydratedDocument, Types, Model } from "mongoose";
 import passport from "passport";
-import { local, register, guest } from "./localStrategy";
 import { google, googleAdmin } from "./googleStrategy";
 import { naver } from "./naverStrategy";
 import { kakao } from "./kakaoStrategy";
@@ -22,10 +21,6 @@ const config = () => {
       }
     );
   });
-
-  local(); //deprecated
-  register(); //deprecated
-  guest(); //deprecated
 
   google();
   googleAdmin();
