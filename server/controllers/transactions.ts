@@ -245,6 +245,8 @@ export const updateV2 = async (req: Request, res: Response) => {
         if (!transaction.isCurrent) {
           oldCategory.amountScheduled -= transaction.amount;
           newCategory.amountScheduled += transaction.amount;
+          oldCategory.amountScheduledRemain -= transaction.amount;
+          newCategory.amountScheduledRemain += transaction.amount;
 
           if (isUpdated["isExpense"]) {
             // 1-1. isExpense -> isIncome
@@ -360,6 +362,9 @@ export const updateV2 = async (req: Request, res: Response) => {
             isUpdated["transactionLinked"] = true;
           }
           category.amountScheduled += diff;
+          if (!transactionLinked) {
+            category.amountScheduledRemain += diff;
+          }
 
           // 1-1. expense transaction
           if (transaction.isExpense) {
@@ -433,6 +438,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         if (transaction.isCurrent) {
           category.amountCurrent -= transaction.amount;
           category.amountScheduled += transaction.amount;
+          category.amountScheduledRemain += transaction.amount;
           // 1-1. expense category
           if (transaction.isExpense) {
             budget.expenseCurrent -= transaction.amount;
@@ -459,6 +465,7 @@ export const updateV2 = async (req: Request, res: Response) => {
         // 2. scheduled -> current
         else {
           category.amountScheduled -= transaction.amount;
+          category.amountScheduledRemain -= transaction.amount;
           category.amountCurrent += transaction.amount;
           // 2-1. expense category
           if (transaction.isExpense) {
