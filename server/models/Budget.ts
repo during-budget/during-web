@@ -9,6 +9,7 @@ interface ICategory {
   title: string;
   icon: string;
   amountScheduled: number;
+  amountScheduledRemain: number;
   amountCurrent: number;
   amountPlanned: number;
 }
@@ -22,6 +23,10 @@ const categorySchema = new Schema<ICategory>(
     title: String,
     icon: String,
     amountScheduled: {
+      type: Number,
+      default: 0,
+    },
+    amountScheduledRemain: {
       type: Number,
       default: 0,
     },
