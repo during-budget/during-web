@@ -348,8 +348,17 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
 const getDefaultDate = (date: { start: Date; end: Date }) => {
   const { start, end } = date;
   const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const day = now.getDate();
 
-  if ((!start && !end) || (start <= now && now <= end)) {
+  const biggerThanStart =
+    year >= start.getFullYear() && month >= start.getMonth() && day >= start.getDate();
+
+  const smallerThanEnd =
+    year <= end.getFullYear() && month <= end.getMonth() && day <= end.getDate();
+
+  if ((!start && !end) || (biggerThanStart && smallerThanEnd)) {
     return now;
   } else {
     return start;
