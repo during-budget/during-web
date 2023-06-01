@@ -1,6 +1,7 @@
 import { BudgetDataType } from '../util/api/budgetAPI';
 import { v4 as uuid } from 'uuid';
 import Amount from './Amount';
+import dayjs from 'dayjs';
 
 class Budget {
   private _id: string;
@@ -70,6 +71,8 @@ class Budget {
       title,
       startDate,
       endDate,
+      year,
+      month,
       expenseCurrent,
       expenseScheduledRemain,
       expensePlanned,
@@ -82,8 +85,11 @@ class Budget {
       id,
       title,
       date: {
-        start: new Date(startDate),
-        end: new Date(endDate),
+        start: new Date(startDate || new Date(year, month, 1)),
+        end: new Date(
+          endDate ||
+            new Date(year, month, dayjs(new Date(year, month)).endOf('month').date())
+        ),
       },
       total: {
         expense: new Amount(expenseCurrent, expenseScheduledRemain, expensePlanned),

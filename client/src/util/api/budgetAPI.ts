@@ -10,8 +10,10 @@ export interface BudgetDataType {
   _id: string;
   userId: string;
   title: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
+  year: number;
+  month: number;
   expenseCurrent: number;
   expenseScheduled: number;
   expenseScheduledRemain: number;
