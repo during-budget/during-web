@@ -46,7 +46,7 @@ export const convertTransactionFromData = (data: TransactionDataType) => {
 export const getTransactions = async (budgetId: string) => {
   checkNetwork();
 
-  const url = `${BASE_URL}z?budgetId=${encodeURIComponent(budgetId)}`;
+  const url = `${BASE_URL}?budgetId=${encodeURIComponent(budgetId)}`;
   let response, data;
 
   try {
