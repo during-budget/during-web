@@ -24,7 +24,11 @@ type budgetKeys =
   | "incomeScheduled"
   | "incomeScheduledRemain"
   | "incomeCurrent";
-type categoryKeys = "amountPlanned" | "amountScheduled" | "amountCurrent";
+type categoryKeys =
+  | "amountPlanned"
+  | "amountScheduled"
+  | "amountScheduledRemain"
+  | "amountCurrent";
 export const validate = async (req: Request, res: Response) => {
   try {
     const budget = await Budget.findById(req.params._id);
@@ -42,6 +46,7 @@ export const validate = async (req: Request, res: Response) => {
     };
     const amountPlanned: { [key: string]: number } = {};
     const amountScheduled: { [key: string]: number } = {};
+    const amountScheduledRemain: { [key: string]: number } = {};
     const amountCurrent: { [key: string]: number } = {};
 
     let sumExpensePlanned = 0;
@@ -54,6 +59,7 @@ export const validate = async (req: Request, res: Response) => {
         amountPlanned[category.categoryId.toString()] = 0;
       }
       amountScheduled[category.categoryId.toString()] = 0;
+      amountScheduledRemain[category.categoryId.toString()] = 0;
       amountCurrent[category.categoryId.toString()] = 0;
     }
 
@@ -74,6 +80,10 @@ export const validate = async (req: Request, res: Response) => {
         }
         amountScheduled[transaction.category.categoryId.toString()] +=
           transaction.amount;
+        if (!transaction.linkId) {
+          amountScheduledRemain[transaction.category.categoryId.toString()] +=
+            transaction.amount;
+        }
       } else {
         if (transaction.category.isExpense) {
           b.expenseCurrent += transaction.amount;
@@ -119,6 +129,15 @@ export const validate = async (req: Request, res: Response) => {
         });
       }
       if (
+        category.amountScheduledRemain !==
+        amountScheduledRemain[category.categoryId.toString() ?? ""]
+      ) {
+        invalid.push({
+          category,
+          field: "amountScheduledRemain",
+        });
+      }
+      if (
         category.amountCurrent !==
         amountCurrent[category.categoryId.toString() ?? ""]
       ) {
@@ -135,6 +154,7 @@ export const validate = async (req: Request, res: Response) => {
       b,
       amountPlanned,
       amountScheduled,
+      amountScheduledRemain,
       amountCurrent,
     });
   } catch (err: any) {
@@ -163,7 +183,8 @@ export const fix = async (req: Request, res: Response) => {
     } else if (
       key === "amountPlanned" ||
       key === "amountScheduled" ||
-      key === "amountCurrent"
+      key === "amountCurrent" ||
+      key === "amountScheduledRemain"
     ) {
       const k = key as categoryKeys;
       const idx = budget.findCategoryIdx(req.body.categoryId);

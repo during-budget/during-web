@@ -25,6 +25,7 @@ function Index() {
       b,
       amountPlanned,
       amountScheduled,
+      amountScheduledRemain,
       amountCurrent,
     } = await API.GET({
       location: "budgets/" + budgetId + "/validate",
@@ -48,6 +49,9 @@ function Index() {
           } else if (val.field === "amountScheduled") {
             val.valid = amountScheduled[val.category.categoryId];
             val.exVal = val.category.amountScheduled;
+          } else if (val.field === "amountScheduledRemain") {
+            val.valid = amountScheduledRemain[val.category.categoryId];
+            val.exVal = val.category.amountScheduledRemain;
           } else {
             val.valid = amountCurrent[val.category.categoryId];
             val.exVal = val.category.amountCurrent;

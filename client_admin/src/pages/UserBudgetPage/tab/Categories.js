@@ -83,6 +83,9 @@ function Index() {
             key: "amountScheduled",
           },
           {
+            key: "amountScheduledRemain",
+          },
+          {
             key: "amountCurrent",
           },
           {
