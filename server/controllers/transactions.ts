@@ -83,6 +83,7 @@ export const create = async (req: Request, res: Response) => {
       } else {
         budget.incomeScheduledRemain -= transactionScheduled.amount;
       }
+      category.amountScheduledRemain -= transactionScheduled.amount;
     }
     if (req.body.linkedPaymentMethodId) {
       const pm = _.find(user.paymentMethods, {
@@ -100,6 +101,7 @@ export const create = async (req: Request, res: Response) => {
     // 1. scheduled transaction
     if (!transaction.isCurrent) {
       category.amountScheduled += transaction.amount;
+      category.amountScheduledRemain += transaction.amount;
 
       // 1-1. expense transaction
       if (transaction.isExpense) {
