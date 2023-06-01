@@ -694,6 +694,7 @@ export const remove = async (req: Request, res: Response) => {
     // 1. scheduled transaction
     if (!transaction.isCurrent) {
       category.amountScheduled -= transaction.amount;
+      category.amountScheduledRemain -= transaction.amount;
 
       // 1-1. expense transaction
       if (transaction.isExpense) {
@@ -709,6 +710,9 @@ export const remove = async (req: Request, res: Response) => {
     // 2. current transaction
     else {
       category.amountCurrent -= transaction.amount;
+      if (transactionLinked) {
+        category.amountScheduledRemain += transactionLinked.amount;
+      }
 
       // 2-1. expense transaction
       if (transaction.isExpense) {
