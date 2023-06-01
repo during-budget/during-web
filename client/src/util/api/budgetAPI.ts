@@ -84,7 +84,7 @@ export const getBudgetList = async () => {
 export const getBudgetByMonth = async (year: number, month: number) => {
   checkNetwork();
 
-  const url = `${BASE_URL}/?year=${year}&month=${month}`;
+  const url = `${BASE_URL}?year=${year}&month=${month}`;
 
   let response, data;
   try {

@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../store/budget';
 import { BudgetDataType, getBudgetByMonth } from '../util/api/budgetAPI';
+import { getErrorMessage } from '../util/error';
 
 function CurrentBudgetNavigator() {
   const dispatch = useDispatch();
@@ -26,7 +27,8 @@ export const loader = async () => {
   try {
     data = await getBudgetByMonth(year, month);
   } catch (error) {
-    if ((error as Error).message?.includes('NOT_FOUND')) {
+    const message = getErrorMessage(error);
+    if (message === 'NOT_FOUND') {
       data = null;
     } else {
       throw error;

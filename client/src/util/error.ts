@@ -6,5 +6,10 @@ export const getErrorMessage = (error: any) => {
   }
 
   const message = error.message;
-  return ERROR_MESSAGE[message];
+
+  if (message.includes('NOT_FOUND')) {
+    return 'NOT_FOUND';
+  } else {
+    return ERROR_MESSAGE[message];
+  }
 };
