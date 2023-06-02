@@ -70,7 +70,6 @@ function UserCategorySetting({ isOpen, setIsOpen }: UserCategorySettingProps) {
         noTransform: true,
         onClose: closeHandler,
       }}
-      formHeight="90vh"
       className={classes.container}
     >
       <div className={classes.header}>

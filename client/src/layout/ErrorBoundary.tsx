@@ -18,8 +18,6 @@ function ErrorBoundary() {
   useEffect(() => {
     let message = (routeError as Error).message || '';
 
-    console.log('ERROR', message);
-
     if (message === 'NETWORK_NOT_AVAILABLE') {
       setError({
         mark: '!',

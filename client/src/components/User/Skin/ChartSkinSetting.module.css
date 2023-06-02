@@ -1,16 +1,19 @@
 .list {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 5vw;
   margin: 3vh auto;
 }
 
 .icon {
+  flex-shrink: 0;
   position: relative;
-  width: 25vw;
-  height: 25vw;
+  width: 7rem;
+  height: 7rem;
   border-radius: 50%;
   background-color: var(--gray-1);
+  margin: 0 auto;
 }
 
 .icon img {

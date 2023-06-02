@@ -20,6 +20,7 @@ import {
   getSnsId, logoutUser, providers
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
+import PaymentOverlay from '../components/Payment/PaymentOverlay';
 
 function User() {
   const navigate = useNavigate();
@@ -207,6 +208,7 @@ function User() {
           <ChartSkinSetting isOpen={showChartSkin} setIsOpen={setShowChartSkin} />
         </section>
       </main>
+      <PaymentOverlay />
       <EmojiOverlay />
     </>
   );
