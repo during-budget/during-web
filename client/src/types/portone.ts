@@ -40,6 +40,7 @@ export interface RequestPayAdditionalResponse {
 
 export interface RequestPayResponse extends RequestPayAdditionalResponse {
   success: boolean;
+  imp_success?: boolean;
   error_code: string;
   error_msg: string;
   imp_uid: string | null;

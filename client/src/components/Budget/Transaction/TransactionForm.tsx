@@ -284,7 +284,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
           noTransition: true,
         }}
         formPadding="sm"
-        formHeight="60vh"
       >
         {/* shortField */}
         {amountField}

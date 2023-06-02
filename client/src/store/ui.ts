@@ -27,10 +27,18 @@ interface EmojiOptions {
   onSelect: (value: any) => void;
 }
 
+interface PaymentOptions {
+  isOpen: boolean;
+  itemId: string;
+  content?: React.ReactNode;
+  amount: number;
+}
+
 const initialState: {
   budget: BudgetOptions;
   emoji: EmojiOptions;
   modal: ModalOptions;
+  payment: PaymentOptions;
 } = {
   budget: {
     isCurrent: true,
@@ -57,6 +65,11 @@ const initialState: {
     onConfirm: null,
     showReport: false,
     hideCancel: undefined,
+  },
+  payment: {
+    isOpen: false,
+    itemId: '',
+    amount: 0,
   },
 };
 
@@ -111,6 +124,12 @@ const uiSlice = createSlice({
     },
     resetEmojiOverlay(state) {
       state.emoji = initialState.emoji;
+    },
+    setPayment(state, action: PayloadAction<Omit<PaymentOptions, 'isOpen'>>) {
+      state.payment = { ...action.payload, isOpen: true };
+    },
+    closePayment(state) {
+      state.payment = initialState.payment;
     },
   },
 });
