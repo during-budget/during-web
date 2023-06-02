@@ -23,7 +23,7 @@ import {
 import { Budget } from "@models/Budget";
 import { Transaction } from "@models/Transaction";
 
-const clientRedirectURL = process.env.CLIENT.trim() + "/redirect";
+const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
 const clientAdminURL = process.env.CLIENT_ADMIN.trim();
 
