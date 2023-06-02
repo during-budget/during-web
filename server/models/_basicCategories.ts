@@ -67,12 +67,12 @@ const defaultCategories = [
   {
     isExpense: true,
     title: "기타",
-    icon: "",
+    icon: "💸",
   },
   {
     isIncome: true,
     title: "기타",
-    icon: "",
+    icon: "💵",
   },
 ];
 
