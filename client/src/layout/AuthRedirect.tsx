@@ -13,7 +13,7 @@ type SocialAuthMsgType =
   | 'SNSID_IN_USE'
   | 'AT_LEAST_ONE_SNSID_IS_REQUIRED';
 
-const Redirect = () => {
+const AuthRedirect = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -81,4 +81,4 @@ const Redirect = () => {
   );
 };
 
-export default Redirect;
+export default AuthRedirect;

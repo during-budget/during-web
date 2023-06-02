@@ -27,6 +27,7 @@ jobs:
       - name: Set .env File
         run: |
           cd client
+          echo "DURING_CLIENT=${{secrets.DURING_CLIENT}}" >> .env
           echo "DURING_SERVER=${{secrets.DURING_SERVER}}" >> .env
           echo "DURING_SENTRY=${{secrets.DURING_SENTRY}}" >> .env
 

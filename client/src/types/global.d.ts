@@ -1,4 +1,4 @@
-export {};
+import { Iamport } from './portone';
 
 declare global {
   interface Window {
