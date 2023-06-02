@@ -77,6 +77,12 @@ const PaymentOverlay = () => {
     }
   };
 
+  const paymentCheckHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setPaymentState(event.target.value);
+    }
+  };
+
   return (
     <OverlayForm
       className={classes.payment}
@@ -98,46 +104,108 @@ const PaymentOverlay = () => {
               type="radio"
               name="payment"
               value="card"
-              onClick={() => {
-                setPaymentState('card');
-              }}
+              onChange={paymentCheckHandler}
               checked={paymentState === 'card'}
             />
             <label htmlFor="payment-card">
-              <p>카드결제 및</p>
+              <p>카드결제 및 간편결제</p>
               <div className={classes.pay}>
                 <img
                   className={classes.naver}
-                  src="https://developer.pay.naver.com/static/img/logo_black.png"
+                  src={`https://developer.pay.naver.com/static/img/logo_${
+                    paymentState === 'card' ? 'white' : 'black'
+                  }.png`}
                   alt="네이버페이"
                 />
-                {/* <img
+                <img
                   className={classes.kakao}
                   src="https://developers.kakao.com/tool/resource/static/img/button/pay/payment_icon_yellow_small.png"
                   alt="카카오페이"
-                /> */}
+                />
                 <img
                   className={classes.paypal}
                   src="https://www.paypalobjects.com/digitalassets/c/website/marketing/apac/C2/logos-buttons/optimize/44_Grey_PayPal_Pill_Button.png"
                   alt="PayPal"
                 />
+                <img
+                  className={classes.apple}
+                  src="/images/pay/pay_apple.svg"
+                  alt="ApplePay"
+                />
                 <img />
-
               </div>
             </label>
           </div>
-          <div className={classes.options}>
-            <input
-              id="payment-trans"
-              type="radio"
-              name="payment"
-              value="trans"
-              onClick={() => {
-                setPaymentState('trans');
-              }}
-              checked={paymentState === 'trans'}
-            />
-            <label htmlFor="payment-trans">실시간계좌이체</label>
+          <div className={classes.flex}>
+            <div className={classes.options}>
+              <input
+                id="payment-trans"
+                type="radio"
+                name="payment"
+                value="trans"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'trans'}
+              />
+              <label htmlFor="payment-trans">실시간계좌이체</label>
+            </div>
+            <div className={classes.options}>
+              <input
+                id="payment-vbank"
+                type="radio"
+                name="payment"
+                value="vbank"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'vbank'}
+              />
+              <label htmlFor="payment-vbank">무통장입금</label>
+            </div>
+          </div>
+          <div className={`${classes.flex} ${classes.culture}`}>
+            <div className={classes.options}>
+              <input
+                id="payment-cultureland"
+                type="radio"
+                name="payment"
+                value="cultureland"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'cultureland'}
+              />
+              <label htmlFor="payment-cultureland">
+                컬처랜드
+                <br />
+                문화상품권
+              </label>
+            </div>
+            <div className={classes.options}>
+              <input
+                id="payment-booknlife"
+                type="radio"
+                name="payment"
+                value="booknlife"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'booknlife'}
+              />
+              <label htmlFor="payment-booknlife">
+                북앤라이프
+                <br />
+                도서문화상품권
+              </label>
+            </div>
+            <div className={classes.options}>
+              <input
+                id="payment-smartculture"
+                type="radio"
+                name="payment"
+                value="smartculture"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'smartculture'}
+              />
+              <label htmlFor="payment-smartculture">
+                게임문화상품권
+                <br />
+                (스마트문상)
+              </label>
+            </div>
           </div>
           {/* <input id='payment-smartculture' type="radio" name="payment" value="smartculture" />
       <label htmlFor='payment-smartculture'>문화상품권</label>

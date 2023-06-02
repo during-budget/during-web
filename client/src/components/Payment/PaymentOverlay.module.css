@@ -35,9 +35,22 @@
 }
 
 .payment input {
-  width: 1rem;
-  height: 4vh;
-  accent-color: var(--primary);
+  display: none;
+}
+
+.payment input:checked + label {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.payment label {
+  background-color: var(--gray-1);
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+}
+
+.payment label p {
+  color: inherit;
 }
 
 .payment button[type='submit'] {
@@ -48,9 +61,12 @@
 .payment label {
   font-size: 1.25rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  width: 100%;
+  width: 80vw;
+  max-width: 540px;
+  text-align: center;
 }
 
 .pay {
@@ -59,14 +75,48 @@
   gap: 0.5rem;
 }
 
-.naver {
-  width: 3rem;
-}
-
+.naver,
+.apple,
 .kakao {
-  width: 3rem;
+  width: 2.5rem;
 }
 
 .paypal {
-  width: 5rem;
+  width: 3.5rem;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.flex .options {
+  width: 100%;
+}
+
+.flex .options label {
+  width: 100%;
+}
+
+.culture label {
+  font-size: 1rem;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.flex .options {
+  width: 100%;
+}
+
+.flex .options label {
+  width: 100%;
+}
+
+.culture label {
+  font-size: 1rem;
 }
