@@ -8,7 +8,7 @@ export const getErrorMessage = (error: any) => {
   const message = error.message;
 
   if (message.includes('NOT_FOUND')) {
-    return 'NOT_FOUND';
+    return null;
   } else {
     return ERROR_MESSAGE[message];
   }

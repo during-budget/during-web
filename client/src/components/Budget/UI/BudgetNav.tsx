@@ -26,7 +26,7 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
       }
     } catch (error) {
       const message = getErrorMessage(error);
-      if (message === 'NOT_FOUND') {
+      if (message === null) {
         navigateToNewBudget(year, month);
       } else {
         dispatch(

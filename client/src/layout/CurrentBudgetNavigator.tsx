@@ -28,7 +28,8 @@ export const loader = async () => {
     data = await getBudgetByMonth(year, month);
   } catch (error) {
     const message = getErrorMessage(error);
-    if (message === 'NOT_FOUND') {
+    console.log(message);
+    if (message  === null) {
       data = null;
     } else {
       throw error;
