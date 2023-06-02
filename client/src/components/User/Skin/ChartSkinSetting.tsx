@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { settingActions } from '../../../store/setting';
+import { uiActions } from '../../../store/ui';
 import { updateChartSkin } from '../../../util/api/settingAPI';
 import { ChartSkinType, SKIN_DATA } from '../../Budget/Amount/AmountRing';
 import Button from '../../UI/Button';
@@ -10,7 +11,7 @@ import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
 import { RequestPayResponse } from '../../../types/portone';
 
-const { DURING_STORE_ID } = import.meta.env;
+const { DURING_STORE_CODE, DURING_CLIENT } = import.meta.env;
 
 interface ChartSkinSettingProps {
   isOpen: boolean;
@@ -32,28 +33,63 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
   };
 
   const paymentHandler = async (id: string) => {
-    window.IMP?.init(DURING_STORE_ID);
-    window.IMP?.request_pay(
-      {
-        pg: 'tosspayments',
-        merchant_uid: 'chart_skin_' + id,
-        name: '뾰족귀링차트',
-        pay_method: 'card',
-        amount: 2000,
-        buyer_name: userName,
-        buyer_email: email,
-        buyer_tel: '010-6774-8109',
-        currency: 'KRW',
-        custom_data: { userId },
-      },
-      (response: RequestPayResponse) => {
-        console.log(response);
-        if (response.success) {
-          alert('결제 완료~');
+    const datetime = new Date()
+      .toISOString()
+      .replace(/[^0-9]/g, '')
+      .slice(0, -3);
+    window.IMP?.init(DURING_STORE_CODE);
+    try {
+      window.IMP?.request_pay(
+        {
+          pg: 'tosspayments',
+          merchant_uid: `${datetime}-${userId}-${id}`,
+          name: 'test',
+          pay_method: 'card',
+          amount: 2000,
+          buyer_name: userName,
+          buyer_email: email || '',
+          currency: 'KRW',
+          custom_data: { userId },
+          m_redirect_url: `${DURING_CLIENT}/redirect/payment`,
+        },
+        (response) => {
+          console.log(response);
+          console.log(response.success);
+
+          const {
+            imp_uid: impUid,
+            merchant_uid: merchantUid,
+            success,
+            error_code: errorCode,
+            error_msg: errorMsg,
+          } = response;
+
+          if (success !== false) {
+            // 결제 정보(impUid, merchantUid)를 서버에 전달해서 결제금액의 위변조 여부를 검증한 후 최종적으로 결제 성공 여부를 판단
+            dispatch(
+              uiActions.showModal({
+                icon: '✓',
+                title: '결제 성공',
+                description: `${merchantUid}\n${impUid}`,
+              })
+            );
+          } else {
+            dispatch(
+              uiActions.showModal({
+                icon: '!',
+                title: '결제 실패',
+                description: '결제 시도 중 문제가 발생했습니다.',
+              })
+            );
+            throw new Error(`결제오류: [${errorCode}] ${errorMsg}`);
+          }
         }
-        // PC 환경에서 결제 프로세스 완료 후 실행 될 로직
-      }
-    );
+      );
+    } catch (error) {
+      dispatch(
+        uiActions.showErrorModal({ description: '결제 요청 중 문제가 발생했습니다.' })
+      );
+    }
   };
   const closeSetting = () => {
     setIsOpen(false);
@@ -96,8 +132,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
                 <Button
                   className={classes.buy}
                   onClick={() => {
-                    console.log(item.name);
-                    setSkinState(item.name);
+                    paymentHandler(item.name);
                   }}
                 >
                   무료체험

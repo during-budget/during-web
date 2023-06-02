@@ -22,7 +22,7 @@ export interface RequestPayParams extends RequestPayAdditionalParams {
   currency?: string;
   language?: string;
   buyer_name?: string;
-  buyer_tel: string;
+  buyer_tel?: string;
   buyer_email?: string;
   buyer_addr?: string;
   buyer_postcode?: string;
@@ -65,4 +65,3 @@ export interface Iamport {
   init: (accountID: string) => void;
   request_pay: (params: RequestPayParams, callback?: RequestPayResponseCallback) => void;
 }
-

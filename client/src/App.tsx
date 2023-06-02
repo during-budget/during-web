@@ -11,8 +11,9 @@ import Budget, { loader as budgetLoader } from './screens/Budget';
 import InitialSetting from './screens/InitialSetting';
 import Landing, { loader as userLoader } from './screens/Landing';
 import NewBudget from './screens/NewBudget';
-import Redirect from './screens/Redirect';
 import User from './screens/User';
+import PaymentRedirect from './layout/PaymentRedirect';
+import AuthRedirect from './layout/AuthRedirect';
 
 const router = createBrowserRouter([
   {
@@ -84,7 +85,16 @@ const router = createBrowserRouter([
       },
       {
         path: '/redirect',
-        element: <Redirect />,
+        children: [
+          {
+            path: '/redirect/auth',
+            element: <AuthRedirect />,
+          },
+          {
+            path: '/redirect/payment',
+            element: <PaymentRedirect />,
+          },
+        ],
       },
     ],
   },
