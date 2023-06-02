@@ -87,7 +87,7 @@ const router = createBrowserRouter([
         path: '/redirect',
         children: [
           {
-            path: '/redirect',
+            path: '/redirect/auth',
             element: <AuthRedirect />,
           },
           {
