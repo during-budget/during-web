@@ -184,7 +184,7 @@ function CategoryPlan(props: { budgetId: string }) {
           className={classes.bars}
           borderRadius="0.4rem"
           amountData={allCategory.map((item) => {
-            return { label: item.icon || '', amount: item.amount.planned || 0 };
+            return { label: item.icon || ' ', amount: item.amount.planned || 0 };
           })}
         />
         {/* category - plan editors (with current, scheudled amount) */}

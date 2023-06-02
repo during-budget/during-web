@@ -32,7 +32,7 @@ const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) =
           borderRadius="0.4rem"
           amountData={assets.map((asset) => {
             return {
-              label: asset.icon,
+              label: asset.icon || ' ',
               amount: asset.amount,
             };
           })}

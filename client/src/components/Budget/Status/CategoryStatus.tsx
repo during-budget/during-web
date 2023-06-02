@@ -65,7 +65,7 @@ function CategoryStatus(props: { budgetId: string }) {
         amountData={categories.map((item: Category, i) => {
           return {
             amount: item.amount,
-            label: item.icon,
+            label: item.icon || ' ',
             isOver: item.amount.overPlanned,
             onClick: () => {
               setCurrentCategoryIdx(i);

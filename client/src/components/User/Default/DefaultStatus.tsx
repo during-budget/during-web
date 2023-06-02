@@ -123,7 +123,7 @@ const DefaultStatus = (props: { budgetId: string }) => {
           borderRadius="0.4rem"
           amountData={categories.map((item) => {
             return {
-              label: item.icon,
+              label: item.icon || ' ',
               amount: item.amount.planned,
             };
           })}
