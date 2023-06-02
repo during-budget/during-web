@@ -73,12 +73,12 @@ class Category {
       title,
       amountCurrent,
       amountPlanned,
-      amountScheduled,
+      amountScheduledRemain,
     } = category;
 
     const amount = new Amount(
       amountCurrent || 0,
-      amountScheduled || 0,
+      amountScheduledRemain || 0,
       amountPlanned || 0
     );
 
