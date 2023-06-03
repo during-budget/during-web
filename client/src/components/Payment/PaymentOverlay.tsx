@@ -109,7 +109,7 @@ const PaymentOverlay = () => {
             />
             <label htmlFor="payment-card">
               <p>카드결제 및 간편결제</p>
-              <div className={classes.pay}>
+              {/* <div className={classes.pay}>
                 <img
                   className={classes.naver}
                   src={`https://developer.pay.naver.com/static/img/logo_${
@@ -133,7 +133,7 @@ const PaymentOverlay = () => {
                   alt="ApplePay"
                 />
                 <img />
-              </div>
+              </div> */}
             </label>
           </div>
           <div className={classes.flex}>
