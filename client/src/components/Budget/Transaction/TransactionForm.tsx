@@ -62,7 +62,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
-  const [dateState, setDateState] = useState<Date | null>(defaultValue.date);
+  const [dateState, setDateState] = useState<Date>(defaultValue.date || new Date());
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
   );
@@ -89,7 +89,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   }, [dateState]);
 
   useEffect(() => {
-    setDateState(defaultValue.date);
+    setDateState(defaultValue.date || new Date());
   }, [defaultValue.date]);
 
   const titlesRef = useRef<any>(null);
@@ -109,7 +109,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       isExpense,
       icon: iconRef.current!.value() || '',
       title: titlesRef.current!.value(),
-      date: dateState,
+      date: dateState || new Date(),
       amount: +amountRef.current!.value(),
       categoryId: categoryRef.current!.value(),
       linkedPaymentMethodId: paymentState || '',
@@ -180,7 +180,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       transactionActions.setForm({
         mode: { isExpand: true },
         default: {
-          date: date ? getDefaultDate(date) : null,
+          date: date ? getDefaultDate(date) : new Date(),
           isExpense,
         },
       })
@@ -348,7 +348,13 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
 
 const getDefaultDate = (date: { start: Date; end: Date }) => {
   const { start, end } = date;
+
   const now = new Date();
+
+  if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
+    return now;
+  }
+
   const year = now.getFullYear();
   const month = now.getMonth();
   const day = now.getDate();
