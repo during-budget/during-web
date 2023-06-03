@@ -4,14 +4,14 @@ import RadioTab from '../../UI/RadioTab';
 import classes from './AmountDetail.module.css';
 import AmountDetailItem from './AmountDetailItem';
 
-function AmountDetail(props: {
+interface AmountDetailProps {
   id: string;
   amount: Amount;
   editPlanHandler?: (amount: string) => void;
-}) {
-  const [isLeft, setIsLeft] = useState(false);
+}
 
-  const amount = props.amount;
+const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
+  const [isLeft, setIsLeft] = useState(false);
 
   const tabs = [
     {
@@ -37,35 +37,35 @@ function AmountDetail(props: {
       label: isLeft ? '예정 가능' : '예정 금액',
       amountStr: amount.getScheduledStr(isLeft),
       labelColor: 'var(--secondary)',
-      fontColor: 'var(--gray-3)',
       fontSize: 'var(--size-5)',
+      fontWeight: 400,
     },
     {
       label: '현재 금액',
       amountStr: amount.getCurrentStr(),
       labelColor: 'var(--primary)',
-      fontColor: 'var(--gray-4)',
       fontSize: 'var(--size-3)',
+      fontWeight: 700,
     },
     {
       label: isLeft ? '남은 목표' : '목표 금액',
       amountStr: amount.getPlannedStr(isLeft),
       labelColor: 'var(--gray-1)',
-      fontColor: 'var(--gray-2)',
       fontSize: 'var(--size-5)',
-      editHandler: props.editPlanHandler,
+      fontWeight: 100,
+      editHandler: editPlanHandler,
     },
   ];
 
   return (
     <div className={classes.container}>
-      <RadioTab name={`${props.id}-amount-detail`} values={tabs} isBold={false} />
+      <RadioTab name={`${id}-amount-detail`} values={tabs} isBold={false} />
       <ul>
         {details.map((data, i) => (
           <AmountDetailItem
             key={i}
             labelColor={data.labelColor}
-            fontColor={data.fontColor}
+            fontWeight={data.fontWeight}
             fontSize={data.fontSize}
             label={data.label}
             amountStr={data.amountStr}
@@ -75,6 +75,6 @@ function AmountDetail(props: {
       </ul>
     </div>
   );
-}
+};
 
 export default AmountDetail;

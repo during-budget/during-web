@@ -53,7 +53,7 @@ const OverlayForm = ({
       <form onSubmit={submitHandler} className={classes[paddingClass]}>
         <div className={classes.container} style={{ height: formHeight }}>
           {children}
-          <div className={classes.polyfill} />
+          {!formHeight && <div className={classes.polyfill} />}
         </div>
         <ConfirmCancelButtons
           onClose={overlayOptions.onClose}

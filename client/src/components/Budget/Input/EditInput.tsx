@@ -52,7 +52,7 @@ const EditInput = (props: {
     />
   );
 
-  const amountSpan = <span>{props.value}</span>;
+  const amountSpan = <span onClick={editHandler}>{props.value}</span>;
 
   return (
     <div className={props.className}>

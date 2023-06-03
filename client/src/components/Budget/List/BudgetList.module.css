@@ -1,19 +1,19 @@
-.container {
+.budget-list {
   text-align: left;
   overflow: scroll;
 }
 
-.container > .year {
+.budget-list > .year {
   padding-top: 1vh;
 }
 
-.container > .year,
-.container > nav {
-  width: 90vw;
+.budget-list > .year,
+.budget-list > nav {
+  width: 90%;
   margin: 0 auto;
 }
 
-.container > nav > ol {
+.budget-list > nav > ol {
   padding: 0 0.4rem;
   display: flex;
   justify-content: space-between;
@@ -21,6 +21,14 @@
   margin-bottom: 5vh;
 }
 
-.container > ol > * {
+.budget-list > ol > * {
   margin-top: 1.6rem;
+}
+
+@media screen and (min-width: 840px) {
+  .budget-list {
+    left: 30%;
+    width: 40%;
+    height: 80vh;
+  }
 }

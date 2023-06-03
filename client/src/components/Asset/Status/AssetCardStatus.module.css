@@ -1,6 +1,5 @@
 .status {
-  width: calc(100% - 20vw) !important;
+  width: 80% !important;
   margin-bottom: 3vh;
-  padding: 0 10vw;
-  width: calc(100% - 20vw) !important;
+  padding: 0 10%;
 }

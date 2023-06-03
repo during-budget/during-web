@@ -37,7 +37,7 @@ const Developers = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
       </div>
       <ul className={classes.list}>
         {data.map((item) => (
-          <li className={classes[item.id]}>
+          <li key={item.id} className={classes[item.id]}>
             <img className={classes.profile} src={item.profile} />
             <div className={classes.info}>
               <h5>{item.name}</h5>
@@ -55,8 +55,8 @@ const Developers = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
               </ul>
             </div>
             <ul className={classes.role}>
-              {item.role.map((content) => (
-                <p>{content}</p>
+              {item.role.map((content, i) => (
+                <p key={i}>{content}</p>
               ))}
             </ul>
           </li>

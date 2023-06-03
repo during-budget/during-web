@@ -3,3 +3,17 @@
   margin-top: 10vh;
   margin-bottom: 4vh;
 }
+
+@media screen and (min-width: 840px) {
+  .asset hr {
+    display: none;
+  }
+
+  .asset main {
+    display: flex;
+  }
+
+  .asset main > * {
+    width: 50%;
+  }
+}

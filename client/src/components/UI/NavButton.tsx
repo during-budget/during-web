@@ -7,19 +7,37 @@ interface NavButtonProps {
   isNext?: boolean;
   className?: string;
   content?: string;
+  padding?: string;
 }
 
-const NavButton = ({ to, onClick, isNext, className, content }: NavButtonProps) => {
+const NavButton = ({
+  to,
+  onClick,
+  isNext,
+  className,
+  content,
+  padding,
+}: NavButtonProps) => {
   const chevron = isNext ? '>' : '<';
 
   const navLink = to && (
-    <Link className={className} to={to} onClick={onClick}>
+    <Link
+      className={className}
+      to={to}
+      onClick={onClick}
+      style={{ padding: padding || '1rem' }}
+    >
       {chevron}
     </Link>
   );
 
   const navButton = onClick && (
-    <button className={className} type="button" onClick={onClick}>
+    <button
+      className={className}
+      type="button"
+      onClick={onClick}
+      style={{ padding: padding || '1rem' }}
+    >
       {content ? content : chevron}
     </button>
   );

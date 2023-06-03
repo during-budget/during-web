@@ -1,6 +1,26 @@
 .status {
-    width: calc(100% - 20vw) !important;
-    margin-bottom: 3vh;
-    padding: 0 10vw;
-    width: calc(100% - 20vw) !important;
+  width: calc(100% - 20vw) !important;
+  margin-bottom: 3vh;
+  padding: 0 10vw;
+}
+
+@media screen and (min-width: 840px) {
+  .budget hr {
+    display: none;
+  }
+
+  .budget main > * {
+    width: 50%;
+  }
+
+  .transactions {
+    padding: 0 1.5rem;
+    width: 90%;
+    height: 60vh;
+    overflow: scroll;
+  }
+
+  .budget main {
+    display: flex;
+  }
 }

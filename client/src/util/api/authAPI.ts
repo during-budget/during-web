@@ -5,10 +5,14 @@ const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/auth`;
 
-export const providers: { provider: string; label: string; icon: string }[] = [
-  { provider: 'google', label: '구글', icon: 'G' },
-  { provider: 'naver', label: '네이버', icon: 'N' },
-  { provider: 'kakao', label: '카카오', icon: 'K' },
+export const providers: { provider: string; label: string; src: string }[] = [
+  {
+    provider: 'google',
+    label: '구글',
+    src: '/assets/svg/social_icon_google.svg',
+  },
+  { provider: 'naver', label: '네이버', src: '/assets/svg/social_icon_naver.svg' },
+  { provider: 'kakao', label: '카카오', src: '/assets/svg/social_icon_kakao.svg' },
 ];
 
 export const getAuthURL = (provider: string) => BASE_URL + '/' + provider;

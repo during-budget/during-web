@@ -46,12 +46,19 @@ function NewBudget() {
   };
 
   return (
-    <>
+    <div className={classes.new}>
       <BudgetHeader newDate={{ start: startDate, end: endDate }} />
       <main>
         {/* Status */}
         <Carousel id="status" initialIndex={0} itemClassName={classes.status}>
-          <TotalStatus />
+          <div
+            className={classes.clickable}
+            onClick={() => {
+              createNewBudget();
+            }}
+          >
+            <TotalStatus />
+          </div>
         </Carousel>
         {/* Button */}
         <div className={classes.create}>
@@ -75,7 +82,7 @@ function NewBudget() {
         {/* Overlays */}
         <BudgetList />
       </main>
-    </>
+    </div>
   );
 }
 

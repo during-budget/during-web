@@ -30,7 +30,13 @@ import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 
-function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean }) {
+interface TransactionFromProps {
+  budgetId: string;
+  isDefaultBudget?: boolean;
+  className?: string;
+}
+
+function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFromProps) {
   const dispatch = useAppDispatch();
 
   // get data from store
@@ -40,7 +46,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
     (state) => state.transaction.form
   );
 
-  const isCurrent = props.isDefaultBudget
+  const isCurrent = isDefaultBudget
     ? false
     : useAppSelector((state) => state.ui.budget.isCurrent);
 
@@ -48,8 +54,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const setIsExpense = (isExpense: boolean) => {
     dispatch(uiActions.setIsExpense(isExpense));
   };
-
-  const isDefaultBudget = props.isDefaultBudget;
 
   useEffect(() => {
     setIsExpense(defaultValue.isExpense);
@@ -94,8 +98,6 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   const iconRef = useRef<any>(null);
   const tagsRef = useRef<any>(null);
   const memoRef = useRef<any>(null);
-
-  const budgetId = props.budgetId;
 
   // handlers
   const submitHandler = async () => {
@@ -275,7 +277,7 @@ function TransactionForm(props: { budgetId: string; isDefaultBudget?: boolean })
   return (
     <>
       <OverlayForm
-        className={containerClass}
+        className={`${containerClass} ${className}`}
         onSubmit={submitHandler}
         overlayOptions={{
           isOpen: mode.isExpand,

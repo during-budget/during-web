@@ -1,6 +1,6 @@
-import classes from './AmountBars.module.css';
-import AmountBar from './AmountBar';
 import Amount from '../../../models/Amount';
+import AmountBar from './AmountBar';
+import classes from './AmountBars.module.css';
 
 const getLabel = (label: string, width: string) => (
   <span className={classes.label}>{label}</span>
@@ -44,10 +44,8 @@ function AmountBars(props: {
           typeof amountData === 'number'
             ? new Amount(amountData, amountData, amountData)
             : amountData;
-
-            console.log(amount, typeof amountData === 'number' ? amount : amount.planned > 0)
         return (
-          ((typeof amount === 'number' ? amount : amount.planned) > 0) && (
+          (typeof amount === 'number' ? amount : amount.planned) > 0 && (
             <li
               key={i}
               className={classes.bar}

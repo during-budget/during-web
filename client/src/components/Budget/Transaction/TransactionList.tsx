@@ -5,11 +5,12 @@ import { getNumericHypenDateString } from '../../../util/date';
 import TransactionGroup from './TransactionGroup';
 import classes from './TransactionList.module.css';
 
-interface Props {
+interface TransactionListProps {
   isDefault?: boolean;
+  className?: string;
 }
 
-function TransactionList({ isDefault }: Props) {
+function TransactionList({ className, isDefault }: TransactionListProps) {
   const transactions = useAppSelector((state) => state.transaction.data);
 
   const isCurrent = isDefault
@@ -28,7 +29,7 @@ function TransactionList({ isDefault }: Props) {
   const dateList = Object.keys(dateTransactionData);
 
   return (
-    <ol className={`${classes.container} ${classes.default}`}>
+    <ol className={`${classes.container} ${classes.default} ${className || ''}`}>
       {dateList.map((date) => {
         const id = isDefault ? undefined : getNumericHypenDateString(new Date(date));
 
