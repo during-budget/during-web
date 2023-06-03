@@ -34,6 +34,7 @@ import {
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getErrorMessage } from '../util/error';
 import classes from './InitialSetting.module.css';
+import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 
 const InitialSetting = () => {
   const dispatch = useDispatch();
@@ -151,6 +152,7 @@ const InitialSetting = () => {
           {/* Overlays */}
           <TransactionDetail isDefaultBudget={true} />
           <CategoryPlan budgetId={defaultBudgetId} />
+          <BudgetCategorySetting budgetId={defaultBudgetId} />
         </>
       ),
     },
@@ -164,22 +166,6 @@ const InitialSetting = () => {
   const closeEditorHandler = () => {
     setOpenEditor(false);
     setTargetState(undefined);
-  };
-
-  const createHandler = async (target: AssetCardDataType, isAsset?: boolean) => {
-    if (isAsset) {
-      const { assets, paymentMethods } = await createAsset(
-        target as Omit<AssetDataType, '_id'>
-      );
-      dispatch(assetActions.setAssets(assets));
-      dispatch(assetActions.setPaymentMethods(paymentMethods));
-    } else {
-      const { cards, paymentMethods } = await createCard(
-        target as Omit<CardDataType, '_id'>
-      );
-      dispatch(assetActions.setCards(cards));
-      dispatch(assetActions.setPaymentMethods(paymentMethods));
-    }
   };
 
   const updateHandler = async (target: AssetCardDataType, isAsset?: boolean) => {
