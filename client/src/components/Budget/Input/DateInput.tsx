@@ -3,7 +3,7 @@ import React from 'react';
 interface DateInputProps {
   className: string;
   value: Date | null;
-  onChange: React.Dispatch<React.SetStateAction<Date | null>>;
+  onChange: React.Dispatch<React.SetStateAction<Date>>;
   required?: boolean;
 }
 
