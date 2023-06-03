@@ -21,3 +21,9 @@
 .open.sns {
   transform: translateY(40%);
 }
+
+@media screen and (min-width: 840px) {
+  .auth {
+    left: auto;
+  }
+}
