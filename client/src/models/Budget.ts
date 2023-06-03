@@ -88,7 +88,13 @@ class Budget {
         start: new Date(startDate || new Date(year, month - 1, 1)),
         end: new Date(
           endDate ||
-            new Date(year, month - 1, dayjs(new Date(year, month - 1)).endOf('month').date())
+            new Date(
+              year,
+              month - 1,
+              dayjs(new Date(year, month - 1))
+                .endOf('month')
+                .date()
+            )
         ),
       },
       total: {

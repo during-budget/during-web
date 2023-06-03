@@ -1,0 +1,44 @@
+.privacy {
+  padding: 2rem;
+}
+
+.privacy button {
+  margin-top: 2rem;
+}
+
+.privacy h1 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.contents {
+  height: 70vh;
+  overflow: scroll;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.contents::-webkit-scrollbar {
+  display: none;
+}
+
+.contents section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contents section > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contents li {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
