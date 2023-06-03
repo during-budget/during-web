@@ -19,6 +19,8 @@ import LogList from "./LogPage/List.js";
 
 import TestPage from "./TestPage/Index.js";
 
+import ItemPage from "./ItemPage/Index.js";
+
 import useAPI from "../hooks/useAPI";
 import useStore from "../hooks/useStore";
 
@@ -67,6 +69,7 @@ function App() {
           {RouteUser("/DB/transactions", <TransactionList />)}
           {RouteUser("/logs", <LogList />)}
           {RouteUser("/test", <TestPage />)}
+          {RouteUser("/items", <ItemPage />)}
           <Route path="*" element={<Navigate to="/" />}></Route>
         </Routes>
       </div>

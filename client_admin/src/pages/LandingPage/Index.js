@@ -10,7 +10,7 @@ function Index() {
       title: "/ DB",
       color: "DarkOliveGreen",
     },
-    { href: "/logs", title: "/ Logs", color: "DarkOliveGreen" },
+    { href: "/items", title: "/ Items", color: "DarkOliveGreen" },
     { href: "/test", title: "/ test", color: "DarkOliveGreen" },
   ];
 
