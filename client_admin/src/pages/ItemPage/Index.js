@@ -58,20 +58,7 @@ const AddDrawer = ({ type, setIsActive, setIsLoading }) => {
       <div>
         <Form layout="vertical" autoComplete="off">
           <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item
-                name="type"
-                label="type"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input required defaultValue={type} disabled />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item
                 name="title"
                 label="title"
@@ -90,7 +77,7 @@ const AddDrawer = ({ type, setIsActive, setIsLoading }) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item
                 name="price"
                 label="price"
@@ -108,19 +95,6 @@ const AddDrawer = ({ type, setIsActive, setIsLoading }) => {
                   defaultValue={0}
                   onChange={(e) => {
                     inputRef.current.price = e.target.value;
-                  }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="description" label="description">
-                <Input.TextArea
-                  rows={4}
-                  placeholder="please enter description"
-                  onChange={(e) => {
-                    inputRef.current.description = e.target.value;
                   }}
                 />
               </Form.Item>
@@ -182,20 +156,7 @@ const EditDrawer = ({ item, setIsLoading, setIsActive }) => {
       <div>
         <Form layout="vertical" autoComplete="off">
           <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item
-                name="type"
-                label="type"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input required defaultValue={item.type} disabled />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item
                 name="title"
                 label="title"
@@ -215,7 +176,7 @@ const EditDrawer = ({ item, setIsLoading, setIsActive }) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Form.Item
                 name="price"
                 label="price"
@@ -234,20 +195,6 @@ const EditDrawer = ({ item, setIsLoading, setIsActive }) => {
                     inputRef.current.price = e.target.value;
                   }}
                   defaultValue={item.price}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="description" label="description">
-                <Input.TextArea
-                  rows={4}
-                  placeholder="please enter description"
-                  onChange={(e) => {
-                    inputRef.current.description = e.target.value;
-                  }}
-                  defaultValue={item.description ?? ""}
                 />
               </Form.Item>
             </Col>
@@ -304,14 +251,14 @@ const TabItem = ({ type }) => {
         <div
           style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
         >
-          <Button
+          {/* <Button
             type="primary"
             onClick={() => {
               setIsActiveAddDrawer(true);
             }}
           >
             + 생성
-          </Button>
+          </Button> */}
         </div>
         <div style={{ marginTop: "16px" }}>
           <Table
@@ -326,29 +273,25 @@ const TabItem = ({ type }) => {
                 align: "center",
               },
               {
-                key: "description",
-                align: "center",
-              },
-              {
                 key: "price",
                 width: "120px",
                 align: "center",
               },
-              {
-                key: "edit",
-                type: "button-detail",
-                width: "112px",
-                onClick: (e) => {
-                  setItem(e);
-                  setIsActiveEditDrawer(true);
-                },
-              },
-              {
-                key: "delete",
-                type: "button-delete",
-                width: "112px",
-                onClick: removeHandler,
-              },
+              // {
+              //   key: "edit",
+              //   type: "button-detail",
+              //   width: "112px",
+              //   onClick: (e) => {
+              //     setItem(e);
+              //     setIsActiveEditDrawer(true);
+              //   },
+              // },
+              // {
+              //   key: "delete",
+              //   type: "button-delete",
+              //   width: "112px",
+              //   onClick: removeHandler,
+              // },
             ]}
             rows={items.map((item) => {
               return { ...item, key: item._id };
