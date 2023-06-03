@@ -105,15 +105,14 @@ const localV2 = () => {
         /* isLoggedIn - updateEmail */
         const user = req.user!;
 
-        if (user.email === req.body.email) {
-          const err = new Error(CONNECTED_ALREADY);
-          return done(err, null, null);
-        }
-
-        const exUser = await User.findOne({ email: req.body.email });
-        if (exUser) {
-          const err = new Error(EMAIL_IN_USE);
-          return done(err, null, null);
+        if (user.email !== req.body.email) {
+          const exUser = await User.findOne({
+            email: req.body.email,
+          });
+          if (exUser) {
+            const err = new Error(EMAIL_IN_USE);
+            return done(err, null, null);
+          }
         }
 
         /* updateEmail - send code */
