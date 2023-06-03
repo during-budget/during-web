@@ -22,7 +22,7 @@ interface AssetCardEditItemListProps {
   id: string;
   isAsset: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setTarget: (target: AssetCardDataType) => void;
+  setTarget: (target?: AssetCardDataType) => void;
 }
 
 const AssetCardEditItemList = ({
@@ -70,7 +70,7 @@ const AssetCardEditItemList = ({
     );
   };
 
-  const editHandler = async (target: AssetCardDataType) => {
+  const editHandler = async (target?: AssetCardDataType) => {
     await setTarget(target);
     setOpen(true);
   };
@@ -111,11 +111,13 @@ const AssetCardEditItemList = ({
             <div className={classes.data}>
               <div className={classes.head}>
                 <Icon>{item.icon}</Icon>
-                <p className={classes.title}>{item.title}</p>
+                <div>
+                  <p className={classes.title}>{item.title}</p>
+                  {amount !== undefined && (
+                    <p className={classes.amount}>{Amount.getAmountStr(amount)}</p>
+                  )}
+                </div>
               </div>
-              {amount !== undefined && (
-                <p className={classes.amount}>{Amount.getAmountStr(amount)}</p>
-              )}
             </div>
           </DraggableItem>
         );

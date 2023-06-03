@@ -10,9 +10,21 @@
 
 .inform {
   margin-top: 2vh;
+  margin-bottom: 3vh;
+  cursor: pointer;
+  padding: 2rem;
+  border-radius: 0.75rem;
 }
 
 .buttons {
   display: flex;
   gap: 5vw;
+}
+
+.buttons button span {
+  font-size: 1rem;
+}
+
+.buttons button span::before {
+  top: 1.25rem;
 }

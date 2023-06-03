@@ -51,9 +51,11 @@ const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusPro
     <section className={classes.container}>
       <RadioTab name="asset-tab" values={assetTabValues} />
       {cards.length === 0 ? (
-        <Inform isError={false} className={classes.inform}>
-          계좌에 연결된 카드가 있다면 등록해주세요.
-        </Inform>
+        <div onClick={openEditor && openEditor.bind(undefined, { isAsset: false })}>
+          <Inform isError={false} className={classes.inform}>
+            사용중인 체크카드, 신용카드를 등록해주세요.
+          </Inform>
+        </div>
       ) : (
         <CardList className={classes.list} cards={currentCards} />
       )}

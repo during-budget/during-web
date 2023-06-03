@@ -23,9 +23,11 @@ const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) =
       <h6>총자산</h6>
       <p className={classes.total}>{Amount.getAmountStr(total)}</p>
       {assets.length === 0 ? (
-        <Inform isError={false}>
-          계좌, 현금 등 현재 보유하고 있는 자산을 등록해주세요
-        </Inform>
+        <div onClick={openEditor && openEditor.bind(undefined, { isAsset: true })}>
+          <Inform isError={false} className={classes.inform}>
+            계좌, 현금 등 현재 보유하고 있는 자산을 등록해주세요
+          </Inform>
+        </div>
       ) : (
         <AmountBars
           className={classes.bars}

@@ -223,24 +223,26 @@ const AssetCardItemEditor = ({
               borderRadius: '0.75rem',
             }}
           />
-          <input
-            className={classes.title}
-            value={targetState?.title || ''}
-            onChange={setTitle}
-            placeholder="이름을 입력하세요"
-          />
+          <div className={classes.fields}>
+            <input
+              className={classes.title}
+              value={targetState?.title || ''}
+              onChange={setTitle}
+              placeholder="이름을 입력하세요"
+            />
+            {isAsset ? (
+              <AssetFields
+                amount={(targetState as AssetDataType)?.amount || 0}
+                setAmount={setAmount}
+              />
+            ) : (
+              <CardFields
+                assetId={(targetState as CardDataType)?.linkedAssetId || ''}
+                setAssetId={setLinkedAssetId}
+              />
+            )}
+          </div>
         </div>
-        {isAsset ? (
-          <AssetFields
-            amount={(targetState as AssetDataType)?.amount || 0}
-            setAmount={setAmount}
-          />
-        ) : (
-          <CardFields
-            assetId={(targetState as CardDataType)?.linkedAssetId || ''}
-            setAssetId={setLinkedAssetId}
-          />
-        )}
       </div>
     </OverlayForm>
   );
