@@ -7,6 +7,7 @@ import cards from "./cards";
 import paymentMethods from "./paymentMethods";
 import auth from "./auth";
 import settings from "./settings";
+import items from "./items";
 import test from "./test";
 
 const routers = [
@@ -18,6 +19,7 @@ const routers = [
   { label: "cards", routes: cards },
   { label: "paymentMethods", routes: paymentMethods },
   { label: "auth", routes: auth },
+  { label: "items", routes: items },
   { label: "settings", routes: settings },
 ];
 
