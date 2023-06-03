@@ -24,13 +24,13 @@
 }
 
 .basic {
-  transform: translateY(5.8rem + 4vh);
-  clip-path: none;
+  transform: translateY(calc(100% - (5.8rem + 14vh)));
+  clip-path: inset(-100% -100% calc(100% - 6.5rem) -100%);
 }
 
 .info {
   position: absolute;
-  top: 5.8rem;
+  top: 5rem;
   left: 0;
   right: 0;
   text-align: center;
@@ -140,4 +140,12 @@
   gap: var(--size-6);
   opacity: 0;
   transition: 0.1s var(--fast-in);
+}
+
+@media screen and (min-width: 840px) {
+  .basic {
+
+  transform: translateY(calc(100% - (5.8rem + 5vh)));
+    clip-path: none;
+  }
 }

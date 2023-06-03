@@ -7,13 +7,28 @@
   height: 3.5rem;
 }
 
+.inform {
+  cursor: pointer;
+  padding: 2rem 1rem;
+  margin-bottom: 3vh;
+  border-radius: 0.75rem;
+}
+
 .total {
   font-size: 2.5rem;
-  padding: 10vw;
+  padding: 10%;
   border-radius: 0.4rem;
 }
 
 .buttons {
   display: flex;
   gap: 5vw;
+}
+
+.buttons button span {
+  font-size: 1rem;
+}
+
+.buttons button span::before {
+  top: 1.25rem;
 }

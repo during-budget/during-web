@@ -1,6 +1,5 @@
 .list {
   margin: 2vh 5vw;
-  margin-bottom: 20vh;
 }
 
 .data {
@@ -8,20 +7,34 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-right: 8vw;
 }
 
 .head {
   display: flex;
   align-items: center;
   gap: 3vw;
+  flex-shrink: 1;
 }
 
 .title {
   font-size: 1.25rem;
+  word-wrap: break-word;
+  width: 130px;
 }
 
 .amount {
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 900;
+}
+
+.button-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.button {
+  height: 10vh;
+  font-size: 1.25rem;
+  border-radius: 0.75rem;
 }

@@ -89,44 +89,64 @@ const InitialSetting = () => {
   const data = [
     {
       title: '자산 설정',
-      status: <AssetStatus assets={assets} {...editorProps} />,
+      status: (
+        <div className={classes.status}>
+          <AssetStatus assets={assets} {...editorProps} />
+        </div>
+      ),
       list: (
-        <>
+        <div className={classes.asset}>
           <AssetCardEditItemList
             id="asset-edit-item-list"
             isAsset={true}
             setOpen={setOpenEditor}
-            setTarget={(target: AssetCardDataType) => {
+            setTarget={(target?: AssetCardDataType) => {
               setTargetState(target);
             }}
           />
-        </>
+          <div className={classes.polyfill} />
+        </div>
       ),
     },
     {
       title: '결제수단 설정',
-      status: <CardStatus assets={assets} cards={cards} {...editorProps} />,
+      status: (
+        <div className={classes.status}>
+          <CardStatus assets={assets} cards={cards} {...editorProps} />
+        </div>
+      ),
       list: (
-        <AssetCardEditItemList
-          id="card-edit-item-list"
-          isAsset={false}
-          setOpen={setOpenEditor}
-          setTarget={(target: AssetCardDataType) => {
-            setTargetState(target);
-          }}
-        />
+        <div className={classes.card}>
+          <AssetCardEditItemList
+            id="card-edit-item-list"
+            isAsset={false}
+            setOpen={setOpenEditor}
+            setTarget={(target?: AssetCardDataType) => {
+              setTargetState(target);
+            }}
+          />
+          <div className={classes.polyfill} />
+        </div>
       ),
     },
     {
       title: '기본예산 설정',
-      status: <DefaultStatus budgetId={defaultBudgetId} />,
+      status: (
+        <div className={classes.default}>
+          <DefaultStatus budgetId={defaultBudgetId} />
+        </div>
+      ),
       list: (
         <>
           {/* Transactions */}
-          <section>
+          <section className={classes.transactions}>
             <TransactionNav id="initial_setting_layout" />
             <TransactionList isDefault={true} />
-            <TransactionForm budgetId={defaultBudgetId} isDefaultBudget={true} />
+            <TransactionForm
+              className={classes.form}
+              budgetId={defaultBudgetId}
+              isDefaultBudget={true}
+            />
           </section>
           {/* Overlays */}
           <TransactionDetail isDefaultBudget={true} />
@@ -175,24 +195,28 @@ const InitialSetting = () => {
   const { title, status, list } = data[currentIdx];
 
   return (
-    <>
-      <header className={classes.header}>
-        <h1>{title}</h1>
-      </header>
-      <main>
-        <div>{status}</div>
-        <StepNav
-          className={classes.nav}
-          idx={currentIdx}
-          setIdx={setCurrentIdx}
-          length={data.length}
-          onComplete={() => {
-            navigate('/budget');
-          }}
-        />
-        <hr />
-        {list}
-      </main>
+    <div className={`${classes.init} ${currentIdx === 2 ? classes.basic : ''}`}>
+      <div className={classes.content}>
+        <header>
+          <h1>{title}</h1>
+        </header>
+        <main>
+          <div className={classes.main}>
+            {status}
+            <hr />
+            {list}
+          </div>
+        </main>
+      </div>
+      <StepNav
+        className={classes.nav}
+        idx={currentIdx}
+        setIdx={setCurrentIdx}
+        length={data.length}
+        onComplete={() => {
+          navigate('/budget');
+        }}
+      />
       {/* Overlays */}
       {currentIdx < 2 && (
         <>
@@ -210,12 +234,12 @@ const InitialSetting = () => {
             target={targetState}
             closeEditor={closeEditorHandler}
             openEditor={openEditorHandler}
-            updateTarget={targetState ? updateHandler : createHandler}
+            updateTarget={targetState ? updateHandler : undefined}
           />
         </>
       )}
       <EmojiOverlay />
-    </>
+    </div>
   );
 };
 
