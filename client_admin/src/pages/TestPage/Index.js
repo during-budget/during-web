@@ -3,7 +3,7 @@ import Tabs from "../../components/Tabs";
 
 import { Result } from "antd";
 
-import SnsId from "./tab/snsId";
+import Email from "./tab/email";
 
 const NotReady = () => {
   return <Result title="Page is not ready" />;
@@ -14,7 +14,7 @@ function Index() {
     <div style={{ marginTop: "24px" }}>
       <Tabs
         items={[
-          { label: "snsId", child: <SnsId /> },
+          { label: "email", child: <Email /> },
           { label: "undefined", child: <NotReady /> },
         ]}
       />

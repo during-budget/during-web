@@ -11,7 +11,7 @@ function Index() {
       color: "DarkOliveGreen",
     },
     { href: "/logs", title: "/ Logs", color: "DarkOliveGreen" },
-    { href: "/API", title: "/ API (test)", color: "DarkOliveGreen" },
+    { href: "/test", title: "/ test", color: "DarkOliveGreen" },
   ];
 
   return (
