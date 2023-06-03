@@ -11,16 +11,25 @@ import { userActions } from '../store/user';
 import { deleteUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
+export interface SettingOverlayProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+import PaymentOverlay from '../components/Payment/PaymentOverlay';
+import Buisness from '../components/User/Info/Buisness';
+import Developers from '../components/User/Info/Developers';
 import { uiActions } from '../store/ui';
 import {
   SnsIdType,
   defaultSnsId,
   disconnectSnsId,
   getAuthURL,
-  getSnsId, logoutUser, providers
+  getSnsId,
+  logoutUser,
+  providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
-import PaymentOverlay from '../components/Payment/PaymentOverlay';
 
 function User() {
   const navigate = useNavigate();
@@ -28,6 +37,8 @@ function User() {
 
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
+  const [showBuisness, setShowBuisness] = useState(false);
+  const [showDevelopers, setShowDevelopers] = useState(false);
   const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
 
   const [snsId, setSnsId] = useState<SnsIdType>(defaultSnsId);
@@ -93,6 +104,39 @@ function User() {
             };
       }),
     },
+    {
+      title: '정보',
+      items: [
+        {
+          icon: '📜',
+          label: '이용약관',
+          onClick: () => {
+            navigate('/info/terms');
+          },
+        },
+        {
+          icon: '🔒',
+          label: '개인정보처리방침',
+          onClick: () => {
+            navigate('/info/privacy');
+          },
+        },
+        {
+          icon: '📑',
+          label: '사업자등록정보',
+          onClick: () => {
+            setShowBuisness(true);
+          },
+        },
+        {
+          icon: '💻',
+          label: '개발자정보',
+          onClick: () => {
+            setShowDevelopers(true);
+          },
+        },
+      ],
+    },
     // {
     //   title: '기본 설정',
     //   items: [
@@ -111,18 +155,13 @@ function User() {
     //       label: '언어 설정',
     //       onClick: () => {},
     //     },
-    //   ],
-    // },
-    // {
-    //   title: '회원 설정',
-    //   items: [
     //     {
-    //       icon: '👤',
-    //       label: '회원 정보 수정하기',
+    //       icon: '🕐',
+    //       label: '시간 설정',
     //       onClick: () => {},
     //     },
     //   ],
-    // },
+    // }
   ];
 
   const logoutHandler = async () => {
@@ -206,6 +245,8 @@ function User() {
         <section>
           <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
           <ChartSkinSetting isOpen={showChartSkin} setIsOpen={setShowChartSkin} />
+          <Buisness isOpen={showBuisness} setIsOpen={setShowBuisness} />
+          <Developers isOpen={showDevelopers} setIsOpen={setShowDevelopers} />
         </section>
       </main>
       <PaymentOverlay />

@@ -1,0 +1,59 @@
+.developers {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+.developers h4 {
+  letter-spacing: 1rem;
+}
+.developers h1 {
+  font-weight: 900;
+}
+
+.developers a img {
+  width: 1.5rem;
+}
+
+.profile {
+  width: 10rem;
+}
+
+.list {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+}
+
+.list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.link,
+.link a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.role,
+.info {
+  width: 90%;
+  text-align: left;
+}
+
+.role p {
+  line-height: 0.95;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.lynj > img {
+  width: 9rem;
+  margin: 0.5rem 0;
+}
