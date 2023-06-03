@@ -2,18 +2,18 @@ import { Schema, Types, model } from "mongoose";
 
 export interface IItem {
   _id: Types.ObjectId;
-  type: "charSkin";
+  type: "chartSkin";
   title: string;
-  description?: string;
   price: Number;
 }
 
 export const itemSchema = new Schema<IItem>({
   type: String,
-  title: { type: String, unique: true },
-  description: String,
+  title: String,
   price: { type: Number, default: 0 },
 });
+
+itemSchema.index({ type: 1, title: 1 });
 
 const Item = model<IItem>("Item", itemSchema);
 export { Item };

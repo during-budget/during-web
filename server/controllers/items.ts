@@ -27,7 +27,6 @@ export const create = async (req: Request, res: Response) => {
     const item = await Item.create({
       type: req.body.type,
       title: req.body.title,
-      description: req.body.description,
       price: req.body.price,
     });
 
@@ -69,7 +68,6 @@ export const update = async (req: Request, res: Response) => {
       req.params._id,
       {
         title: req.body.title,
-        description: req.body.description,
         price: req.body.price,
       },
       { new: true }
