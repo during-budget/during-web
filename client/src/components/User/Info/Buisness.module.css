@@ -1,0 +1,12 @@
+.buisness {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.buisness h1 {
+  font-weight: 900;
+  letter-spacing: -0.1rem;
+  margin-bottom: 0.5rem;
+}

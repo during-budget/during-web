@@ -9,13 +9,9 @@ import Button from '../../UI/Button';
 import Mask from '../../UI/Mask';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
+import { SettingOverlayProps } from '../../../screens/User';
 
-interface ChartSkinSettingProps {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const ChartSkinSetting = ({ isOpen, setIsOpen }: ChartSkinSettingProps) => {
+const ChartSkinSetting = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
   const skin = useAppSelector((state) => state.setting.data.chartSkin);
   const dispatch = useDispatch();
 

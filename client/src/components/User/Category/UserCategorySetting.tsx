@@ -7,13 +7,9 @@ import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import OverlayForm from '../../UI/OverlayForm';
 import UserCategoryList from './UserCategoryList';
 import classes from './UserCategorySetting.module.css';
+import { SettingOverlayProps } from '../../../screens/User';
 
-interface UserCategorySettingProps {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
-
-function UserCategorySetting({ isOpen, setIsOpen }: UserCategorySettingProps) {
+function UserCategorySetting({ isOpen, setIsOpen }: SettingOverlayProps) {
   const dispatch = useAppDispatch();
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
