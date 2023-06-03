@@ -10,7 +10,7 @@ export interface IItem {
 
 export const itemSchema = new Schema<IItem>({
   type: String,
-  title: String,
+  title: { type: String, unique: true },
   description: String,
   price: { type: Number, default: 0 },
 });
