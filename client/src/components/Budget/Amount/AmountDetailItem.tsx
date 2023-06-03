@@ -6,14 +6,14 @@ function AmountDetailItem(props: {
   label: string;
   amountStr: string;
   labelColor: string;
-  fontColor: string;
   fontSize: string;
+  fontWeight: number;
   editHandler?: (amount: string) => void;
   editDefaultValue?: number;
 }) {
   const style = {
     '--label-color': props.labelColor,
-    '--font-color': props.fontColor,
+    '--font-weight': props.fontWeight,
     '--font-size': props.fontSize,
   } as React.CSSProperties;
 

@@ -10,8 +10,11 @@ import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import ExpenseTab from '../UI/ExpenseTab';
 
-function TotalStatus(props: { budgetId?: string }) {
-  const { budgetId } = props;
+interface TotalStatusProps {
+  budgetId?: string;
+}
+
+const TotalStatus = ({ budgetId }: TotalStatusProps) => {
   const dispatch = useAppDispatch();
 
   // Get state from store
@@ -70,6 +73,6 @@ function TotalStatus(props: { budgetId?: string }) {
       )}
     </>
   );
-}
+};
 
 export default TotalStatus;

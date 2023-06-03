@@ -22,7 +22,8 @@ function Nav() {
     );
   });
 
-  const isDefaultBudget = loacation.search === '?isDefault';
+  const isDefaultBudget =
+    loacation.search === '?isDefault' || location.pathname.includes('/default');
   const isInit = location.pathname === '/init';
 
   return (

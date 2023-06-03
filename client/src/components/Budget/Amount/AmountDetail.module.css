@@ -1,7 +1,7 @@
 .container {
-    width: calc(100% - 16vw);
+  width: calc(100% - 2.5rem);
 }
 
 .container ul {
-    margin: var(--size-6) 0;
+  margin: var(--size-6) 0;
 }

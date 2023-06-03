@@ -67,9 +67,11 @@ const Privacy = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
           <ul>
             <li>
               <h6>- Amazon Web Services Inc.</h6>
-              <li>- 위탁업무: 데이터 보관 및 클라우드 인프라의 관리</li>
-              <li>- 이전위치: Amazon Web Services Inc.의 리전 (아시아 태평양(서울))</li>
-              <li>- 보유 및 이용기간: 본 개인정보처리방침에 규정된 보유기간과 일치</li>
+              <ul>
+                <li>- 위탁업무: 데이터 보관 및 클라우드 인프라의 관리</li>
+                <li>- 이전위치: Amazon Web Services Inc.의 리전 (아시아 태평양(서울))</li>
+                <li>- 보유 및 이용기간: 본 개인정보처리방침에 규정된 보유기간과 일치</li>
+              </ul>
             </li>
             <li>
               <h6>- Sentry</h6>

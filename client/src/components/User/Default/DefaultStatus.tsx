@@ -14,7 +14,11 @@ import CategoryPlanButtons from '../../Budget/UI/CategoryPlanButtons';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
 import classes from './DefaultStatus.module.css';
 
-const DefaultStatus = (props: { budgetId: string }) => {
+interface DefaultStatusProps {
+  budgetId: string;
+}
+
+const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
   const dispatch = useDispatch();
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
@@ -41,7 +45,7 @@ const DefaultStatus = (props: { budgetId: string }) => {
         const amount = item.amount;
 
         if (amount.planned < amount.scheduled) {
-          await updateCategoryPlan(props.budgetId, item.id, amount.scheduled);
+          await updateCategoryPlan(budgetId, item.id, amount.scheduled);
           dispatch(
             budgetCategoryActions.updateCategoryAmount({
               categoryId: item.id,
@@ -71,7 +75,7 @@ const DefaultStatus = (props: { budgetId: string }) => {
 
       // send Request
       const key = getExpensePlannedKey(isExpense);
-      const { budget } = await updateBudgetFields(props.budgetId, {
+      const { budget } = await updateBudgetFields(budgetId, {
         [key]: confirmedTotal,
       });
 
@@ -95,43 +99,41 @@ const DefaultStatus = (props: { budgetId: string }) => {
   };
 
   return (
-    <>
+    <div className={classes.defaultStatus}>
       <ExpenseTab id="default-type" className={classes.tab} />
-      <div className={classes.container}>
-        {/* Scheduled amount */}
-        <div className={classes.scheduled}>
-          <span>예정</span>
-          <p className={classes.total}>{Amount.getAmountStr(totalAmount.scheduled)}</p>
-        </div>
-        {/* Planned amount */}
-        <div className={classes.planned}>
-          <label htmlFor="default-budget-plan">목표</label>
-          <EditInput
-            id="default-budget-plan"
-            className={classes.plan}
-            editClass={classes.planEdit}
-            cancelClass={classes.planCancel}
-            value={Amount.getAmountStr(totalAmount.planned)}
-            min={totalAmount.scheduled}
-            convertDefaultValue={convertTotalHandler}
-            confirmHandler={confirmTotalHandler}
-          />
-        </div>
-        {/* Planned chart */}
-        <AmountBars
-          className={classes.bars}
-          borderRadius="0.4rem"
-          amountData={categories.map((item) => {
-            return {
-              label: item.icon || ' ',
-              amount: item.amount.planned,
-            };
-          })}
-        />
-        {/* Plan buttons */}
-        <CategoryPlanButtons />
+      {/* Scheduled amount */}
+      <div className={classes.scheduled}>
+        <span>예정</span>
+        <p className={classes.total}>{Amount.getAmountStr(totalAmount.scheduled)}</p>
       </div>
-    </>
+      {/* Planned amount */}
+      <div className={classes.planned}>
+        <label htmlFor="default-budget-plan">목표</label>
+        <EditInput
+          id="default-budget-plan"
+          className={classes.plan}
+          editClass={classes.planEdit}
+          cancelClass={classes.planCancel}
+          value={Amount.getAmountStr(totalAmount.planned)}
+          min={totalAmount.scheduled}
+          convertDefaultValue={convertTotalHandler}
+          confirmHandler={confirmTotalHandler}
+        />
+      </div>
+      {/* Planned chart */}
+      <AmountBars
+        className={classes.bars}
+        borderRadius="0.4rem"
+        amountData={categories.map((item) => {
+          return {
+            label: item.icon || ' ',
+            amount: item.amount.planned,
+          };
+        })}
+      />
+      {/* Plan buttons */}
+      <CategoryPlanButtons />
+    </div>
   );
 };
 

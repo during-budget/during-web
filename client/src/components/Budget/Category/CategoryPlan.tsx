@@ -167,6 +167,7 @@ function CategoryPlan(props: { budgetId: string }) {
         confirmCancelOptions={{
           confirmMsg: '목표 설정 완료',
         }}
+        formHeight="75vh"
         className={`${classes.container} ${isOpen ? classes.open : ''}`}
       >
         {/* total - edit input */}

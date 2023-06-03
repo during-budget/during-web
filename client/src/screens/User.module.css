@@ -1,4 +1,4 @@
-.container {
+.user main {
   width: 80%;
   margin: 0 auto;
   padding-bottom: 9vh;
@@ -8,4 +8,26 @@
   display: flex;
   align-items: center;
   margin-bottom: 3rem;
+}
+
+@media screen and (min-width: 840px) {
+  .user {
+    display: flex;
+  }
+
+  .user header,
+  .user main {
+    width: 50%;
+  }
+
+  .user header {
+    margin-top: 20vh;
+  }
+
+  .user main {
+    height: 94vh;
+    box-sizing: border-box;
+    padding: 4rem 2rem;
+    overflow: scroll;
+  }
 }

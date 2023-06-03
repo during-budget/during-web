@@ -52,7 +52,7 @@ const Asset = () => {
   }, [assets, cards, dataExists]);
 
   return (
-    <>
+    <div className={classes.asset}>
       <header className={classes.header}>
         <h1>자산 및 결제수단</h1>
       </header>
@@ -66,7 +66,7 @@ const Asset = () => {
         )}
       </main>
       <EmojiOverlay />
-    </>
+    </div>
   );
 };
 

@@ -57,26 +57,30 @@ function Budget() {
   );
 
   return (
-    <>
+    <div className={classes.budget}>
       <BudgetHeader isDefault={isDefaultBudget} />
       <main>
         {/* Status */}
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}
         <hr />
         {/* Transactions */}
-        <section>
+        <section className={classes.transactions}>
           <TransactionNav id="budget_layout" showAll={true} />
-          <TransactionList isDefault={isDefaultBudget} />
-          <TransactionForm budgetId={id} isDefaultBudget={isDefaultBudget} />
+          <TransactionList className={classes.transactions} isDefault={isDefaultBudget} />
+          <TransactionForm
+            className={classes.form}
+            budgetId={id}
+            isDefaultBudget={isDefaultBudget}
+          />
         </section>
-        {/* Overlays */}
-        <TransactionDetail isDefaultBudget={isDefaultBudget} />
-        <CategoryPlan budgetId={id} />
-        <BudgetCategorySetting budgetId={id} />
-        <BudgetList />
-        <EmojiOverlay />
       </main>
-    </>
+      {/* Overlays */}
+      <TransactionDetail isDefaultBudget={isDefaultBudget} />
+      <CategoryPlan budgetId={id} />
+      <BudgetCategorySetting budgetId={id} />
+      <BudgetList />
+      <EmojiOverlay />
+    </div>
   );
 }
 

@@ -19,6 +19,8 @@ export interface SettingOverlayProps {
 import PaymentOverlay from '../components/Payment/PaymentOverlay';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
+import Privacy from '../components/User/Info/Privacy';
+import Terms from '../components/User/Info/Terms';
 import { uiActions } from '../store/ui';
 import {
   SnsIdType,
@@ -30,8 +32,6 @@ import {
   providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
-import Terms from '../components/User/Info/Terms';
-import Privacy from '../components/User/Info/Privacy';
 
 function User() {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ function User() {
       items: providers.map((provider) => {
         return snsId[provider.provider]
           ? {
-              icon: provider.icon,
+              src: provider.src,
               label: `${provider.label} 로그인 해제`,
               onClick: async () => {
                 try {
@@ -100,7 +100,7 @@ function User() {
               },
             }
           : {
-              icon: provider.icon,
+              src: provider.src,
               label: `${provider.label} 계정 연결하기`,
               onClick: async () => {
                 window.open(getAuthURL(provider.provider), '_self');
@@ -228,10 +228,10 @@ function User() {
   }, []);
 
   return (
-    <>
+    <div className={classes.user}>
       <ScrollRestoration />
       <UserHeader email={email} svg="/assets/svg/basic_profile.svg" />
-      <main className={classes.container}>
+      <main className={classes.main}>
         <section>
           {settings.map((data, i) => (
             <SettingList key={i} title={data.title} items={data.items} />
@@ -257,7 +257,7 @@ function User() {
       </main>
       <PaymentOverlay />
       <EmojiOverlay />
-    </>
+    </div>
   );
 }
 
