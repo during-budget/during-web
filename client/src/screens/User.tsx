@@ -30,6 +30,8 @@ import {
   providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
+import Terms from '../components/User/Info/Terms';
+import Privacy from '../components/User/Info/Privacy';
 
 function User() {
   const navigate = useNavigate();
@@ -37,6 +39,8 @@ function User() {
 
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [showBuisness, setShowBuisness] = useState(false);
   const [showDevelopers, setShowDevelopers] = useState(false);
   const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
@@ -104,39 +108,6 @@ function User() {
             };
       }),
     },
-    {
-      title: '정보',
-      items: [
-        {
-          icon: '📜',
-          label: '이용약관',
-          onClick: () => {
-            navigate('/info/terms');
-          },
-        },
-        {
-          icon: '🔒',
-          label: '개인정보처리방침',
-          onClick: () => {
-            navigate('/info/privacy');
-          },
-        },
-        {
-          icon: '📑',
-          label: '사업자등록정보',
-          onClick: () => {
-            setShowBuisness(true);
-          },
-        },
-        {
-          icon: '💻',
-          label: '개발자정보',
-          onClick: () => {
-            setShowDevelopers(true);
-          },
-        },
-      ],
-    },
     // {
     //   title: '기본 설정',
     //   items: [
@@ -161,7 +132,40 @@ function User() {
     //       onClick: () => {},
     //     },
     //   ],
-    // }
+    // },
+    {
+      title: '정보',
+      items: [
+        {
+          icon: '📜',
+          label: '이용약관',
+          onClick: () => {
+            setShowTerms(true);
+          },
+        },
+        {
+          icon: '🔒',
+          label: '개인정보처리방침',
+          onClick: () => {
+            setShowPrivacy(true);
+          },
+        },
+        {
+          icon: '📑',
+          label: '사업자등록정보',
+          onClick: () => {
+            setShowBuisness(true);
+          },
+        },
+        {
+          icon: '💻',
+          label: '개발자정보',
+          onClick: () => {
+            setShowDevelopers(true);
+          },
+        },
+      ],
+    },
   ];
 
   const logoutHandler = async () => {
@@ -245,6 +249,8 @@ function User() {
         <section>
           <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
           <ChartSkinSetting isOpen={showChartSkin} setIsOpen={setShowChartSkin} />
+          <Terms isOpen={showTerms} setIsOpen={setShowTerms} />
+          <Privacy isOpen={showPrivacy} setIsOpen={setShowPrivacy} />
           <Buisness isOpen={showBuisness} setIsOpen={setShowBuisness} />
           <Developers isOpen={showDevelopers} setIsOpen={setShowDevelopers} />
         </section>

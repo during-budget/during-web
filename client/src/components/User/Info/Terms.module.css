@@ -1,0 +1,36 @@
+.terms {
+  padding: 2rem;
+}
+
+.terms button {
+  margin-top: 2rem;
+}
+
+.terms h1 {
+  text-align: center;
+  letter-spacing: 0.25rem;
+  margin-bottom: -1rem;
+}
+
+.terms h3 {
+  margin-bottom: 0.5rem;
+}
+
+.contents {
+  height: 70vh;
+  overflow: scroll;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.contents::-webkit-scrollbar {
+  display: none;
+}
+
+.contents ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
