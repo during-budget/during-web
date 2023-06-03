@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="center">
+          <div class="container" style="max-width: 640px; padding: 24px">
+            <div class="email">
+              <div class="logo" style="width: 128px">
+                <img
+                  src="https://during-logos.s3.ap-northeast-2.amazonaws.com/during_logo_256x256.png"
+                  alt="During"
+                  style="width: 100%; display: block"
+                />
+              </div>
+              <div
+                class="from"
+                style="
+                  margin-top: 24px;
+                  font-weight: 700;
+                  font-size: 2rem;
+                  color: #313338;
+                "
+              >
+                During
+              </div>
+              <div
+                class="title"
+                style="
+                  margin-top: 36px;
+                  font-weight: 700;
+                  font-size: 1.5rem;
+                  color: #313338;
+                "
+              >
+                <%= type %> 인증 코드입니다
+              </div>
+              <div
+                class="code-wrapper"
+                style="
+                  margin-top: 16px;
+                  background-color: #f8f8f8;
+                  height: 64px;
+                  border-radius: 8px;
+                  text-align: center;
+                "
+              >
+                <div
+                  class="code"
+                  style="
+                    color: #313338;
+                    font-size: 1.75rem;
+                    text-decoration-line: underline;
+                    height: 64px;
+                    line-height: 64px;
+                  "
+                >
+                  <%= code %>
+                </div>
+              </div>
+              <div
+                class="description"
+                style="margin-top: 16px; font-size: 1rem"
+              >
+                이 코드는 5분간 유효합니다
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

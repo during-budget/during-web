@@ -1,5 +1,7 @@
 import nodeMailer from "nodemailer";
 import { generateRandomNumber } from "./randomString";
+import ejs from "ejs";
+import { resolve } from "path";
 
 const sendEmail = async (props: {
   to: string;
@@ -26,7 +28,7 @@ const sendEmail = async (props: {
   await transporter.sendMail(mailOptions);
 };
 
-const emailMessage: {
+const authTypeText: {
   login: string;
   register: string;
   updateEmail: string;
@@ -35,17 +37,25 @@ const emailMessage: {
   register: "회원 가입",
   updateEmail: "이메일 변경",
 };
-export const sendCodeEmail = async (props: {
+
+export const sendAuthEmail = async (props: {
   email: string;
   type: "login" | "register" | "updateEmail";
 }) => {
   const code = generateRandomNumber(6);
 
+  const html = await ejs.renderFile(
+    resolve(__dirname, "./emailTemplates/authEmail.ejs"),
+    {
+      type: authTypeText[props.type],
+      code,
+    }
+  );
+
   await sendEmail({
     to: props.email,
-    subject: `${emailMessage[props.type]} 인증 메일입니다.`,
-    html: `${emailMessage[props.type]} 확인 코드는 [ ${code} ]입니다. <br/>
-  코드는 5분간 유효합니다.`,
+    subject: `${authTypeText[props.type]} 인증 메일입니다.`,
+    html,
   });
 
   return code;

@@ -17,14 +17,14 @@ import {
   EMAIL_IN_USE,
   INVALID_EMAIL,
 } from "../@message";
-import { sendCodeEmail } from "../utils/email";
+import { sendAuthEmail } from "../utils/email";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",
   email: string
 ) => {
   try {
-    const code = await sendCodeEmail({
+    const code = await sendAuthEmail({
       email,
       type,
     });
