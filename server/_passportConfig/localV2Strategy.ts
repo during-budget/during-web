@@ -7,7 +7,7 @@ import { User } from "@models/User";
 
 import { client } from "../_redisConfig";
 import { cipher, decipher } from "../utils/crypto";
-import { generateRandomNumber } from "../utils/randomString";
+
 import {
   LOCAL_LOGIN_DISABLED,
   VERIFICATION_CODE_EXPIRED,
@@ -17,33 +17,23 @@ import {
   EMAIL_IN_USE,
   INVALID_EMAIL,
 } from "../@message";
-import { sendEmail } from "../utils/email";
-
-const emailMessage = {
-  login: "로그인",
-  register: "회원 가입",
-  updateEmail: "이메일 변경",
-};
+import { sendCodeEmail } from "../utils/email";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",
   email: string
 ) => {
-  const code = generateRandomNumber(6);
   try {
-    await sendEmail({
-      to: email,
-      subject: `${emailMessage[type]} 인증 메일입니다.`,
-      html: `${emailMessage[type]} 확인 코드는 [ ${code} ]입니다. <br/>
-    코드는 5분간 유효합니다.`,
+    const code = await sendCodeEmail({
+      email,
+      type,
     });
+    await client.v4.hSet(email, "code", cipher(code));
+    await client.expire(email, 60 * 5);
   } catch (err) {
     const _err = new Error(INVALID_EMAIL);
     throw _err;
   }
-
-  await client.v4.hSet(email, "code", cipher(code));
-  await client.expire(email, 60 * 5);
 };
 
 const verifyCode = async (email: string, code: string) => {
