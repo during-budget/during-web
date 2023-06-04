@@ -29,6 +29,7 @@ import TitleInput from '../Input/TitleInput';
 import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
+import { useLocation } from 'react-router';
 
 interface TransactionFromProps {
   budgetId: string;
@@ -38,6 +39,7 @@ interface TransactionFromProps {
 
 function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFromProps) {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   // get data from store
   const { date } = useAppSelector((state) => state.budget.current);
@@ -270,6 +272,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
 
   const containerClass = [
     classes.transactionForm,
+    location.pathname.includes('init') ? classes.init : classes,
     isDefaultBudget ? classes.basic : '',
     mode.isExpand ? classes.expand : '',
   ].join(' ');

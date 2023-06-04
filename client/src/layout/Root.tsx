@@ -19,7 +19,7 @@ function Root() {
 
   return (
     <>
-      {isGuest && ['/user'].includes(location.pathname) && location.pathname !== '/' && (
+      {isGuest && !['/user'].includes(location.pathname) && location.pathname !== '/' && (
         <Link className={classes.guest} to="/user?register">
           ⚠️ 게스트 계정입니다. 데이터 저장을 위해서 <u>계정 등록</u>을 진행해주세요
         </Link>

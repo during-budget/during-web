@@ -24,6 +24,11 @@
 }
 
 .basic {
+  transform: translateY(calc(100% - (5.8rem + 4vh)));
+  clip-path: none;
+}
+
+.init {
   transform: translateY(calc(100% - (5.8rem + 14vh)));
   clip-path: inset(-100% -100% calc(100% - 6.5rem) -100%);
 }
@@ -144,8 +149,7 @@
 
 @media screen and (min-width: 840px) {
   .basic {
-
-  transform: translateY(calc(100% - (5.8rem + 5vh)));
+    transform: translateY(calc(100% - (5.8rem + 5vh)));
     clip-path: none;
   }
 }
