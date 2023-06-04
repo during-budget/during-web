@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import RadioTab from '../../UI/RadioTab';
 import Select from '../../UI/Select';
@@ -26,6 +26,7 @@ const PaymentInput = ({
   const [isAsset, setIsAsset] = useState(false);
   const paymentRef = useRef<any>(null);
 
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedPaymentMethods = useAppSelector((state) => state.asset.paymentMethods);
   const filteredPaymentMethods = useMemo(
     () =>
@@ -38,6 +39,14 @@ const PaymentInput = ({
       }),
     [storedPaymentMethods, isAsset]
   );
+
+  useEffect(() => {
+    if (isExpense) {
+      setIsAsset(false);
+    } else {
+      setIsAsset(true);
+    }
+  }, [isExpense]);
 
   const paymentTab = {
     element: (
@@ -61,6 +70,7 @@ const PaymentInput = ({
             onChange: () => {
               setIsAsset(false);
             },
+            hide: !isExpense,
           },
         ]}
       />

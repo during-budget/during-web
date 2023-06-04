@@ -15,6 +15,7 @@ export interface RadioTabValueType {
   checked?: boolean;
   onChange?: () => void;
   disabled?: boolean;
+  hide?: boolean;
 }
 
 function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTabProps) {
@@ -24,21 +25,23 @@ function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTa
 
   return (
     <ul className={`${classes.tab} ${lineClass} ${centerClass} ${className}`}>
-      {values.map((item) => (
-        <li key={item.value}>
-          <input
-            id={`${name}-${item.value}`}
-            type="radio"
-            name={name}
-            checked={item.checked || false}
-            onChange={item.onChange}
-            disabled={item.disabled}
-          ></input>
-          <label htmlFor={`${name}-${item.value}`} style={boldStyle}>
-            {item.label}
-          </label>
-        </li>
-      ))}
+      {values
+        .filter((item) => !item.hide)
+        .map((item) => (
+          <li key={item.value}>
+            <input
+              id={`${name}-${item.value}`}
+              type="radio"
+              name={name}
+              checked={item.checked || false}
+              onChange={item.onChange}
+              disabled={item.disabled}
+            ></input>
+            <label htmlFor={`${name}-${item.value}`} style={boldStyle}>
+              {item.label}
+            </label>
+          </li>
+        ))}
     </ul>
   );
 }
