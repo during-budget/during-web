@@ -6,5 +6,6 @@ declare global {
     IMP?: Iamport;
     ChannelIO?: IChannelIO;
     ChannelIOInitialized?: boolean;
+    adsbygoogle?: { [key: string]: unknown }[];
   }
 }
