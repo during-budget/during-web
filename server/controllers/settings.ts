@@ -65,9 +65,14 @@ export const options = async (req: Request, res: Response) => {
       return res.status(400).send({ message: FIELD_REQUIRED("field") });
     }
     if (req.query.field === "chartSkin") {
+      const payments = await Payment.find({
+        userId: req.user?._id,
+        itemType: "chartSkin",
+        status: "paid",
+      }).select("itemTitle");
       return res.status(200).send({
         default: "basic",
-        options: chartSkins,
+        options: ["basic", ...payments.map((payment) => payment.itemTitle)],
       });
     }
     if (req.query.field === "timeZone") {
