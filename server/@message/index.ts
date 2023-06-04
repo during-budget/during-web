@@ -72,3 +72,17 @@ export const AT_LEAST_ONE_SNSID_IS_REQUIRED = "AT_LEAST_ONE_SNSID_IS_REQUIRED";
 export const CATEGORY_CANOT_BE_UPDATED = "CATEGORY_CANOT_BE_UPDATED";
 export const INVALID_CATEGORY = "INVALID_CATEGORY";
 export const PM_CANNOT_BE_REMOVED = "PM_CANNOT_BE_REMOVED";
+export const PAIED_ALREADY = "PAIED_ALREADY";
+
+/**
+ * 5xx Server Error
+ * ---------------------------------------------
+ * 500 Internal Server Error
+ * ---------------------------------------------
+ */
+
+/**
+ * @code 500 Internal Server Error
+ */
+export const FETCHING_ACCESSTOKEN_FAILED = "FETCHING_ACCESSTOKEN_FAILED";
+export const FAKE_PAYMENT_ATTEMPT = "FAKE_PAYMENT_ATTEMPT";
