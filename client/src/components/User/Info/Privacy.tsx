@@ -65,26 +65,61 @@ const Privacy = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
           <h3>2. 개인정보처리 위탁 여부</h3>
           <p>회사는 서비스 제공을 위해 필요한 일부 업무 처리를 다음과 같이 위탁합니다.</p>
           <ul>
-            <li>
-              <h6>- Amazon Web Services Inc.</h6>
-              <ul>
-                <li>- 위탁업무: 데이터 보관 및 클라우드 인프라의 관리</li>
-                <li>- 이전위치: Amazon Web Services Inc.의 리전 (아시아 태평양(서울))</li>
-                <li>- 보유 및 이용기간: 본 개인정보처리방침에 규정된 보유기간과 일치</li>
-              </ul>
-            </li>
-            <li>
-              <h6>- Sentry</h6>
-              <ul>
-                <li>- 위탁업무: 크래시 수집 및 분석</li>
-                <li>
-                  - 이전위치: 미국 (45 Fremont Street 8th Floor, San Francisco, CA 94105
-                  USA)
-                </li>
-                <li>- 수집항목: 방문 일시, 서비스 이용 기록, 기기정보 등</li>
-                <li>- 보유 및 이용기간: 위탁계약 종료 시까지</li>
-              </ul>
-            </li>
+            <ul>
+              <li>
+                <h5>국내 처리 위탁 현황</h5>
+                <ul>
+                  <li>
+                    <h6>- 토스페이먼츠</h6>
+                    <ul>
+                      <li>- 위탁업무: 결제 처리</li>
+                      <li>- 이전위치: 국내</li>
+                      <li>- 수집항목: 결제 처리 관련 정보</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <h6>- 주식회사 채널코퍼레이션</h6>
+                    <ul>
+                      <li>- 위탁업무: 메신저고객센터 운영 및 고객상담(채널톡 서비스)</li>
+                      <li>- 이전위치: 국내</li>
+                      <li>
+                        - 수집항목: 상담 내용 및 휴대폰, 이메일, 유저아이디 등의 고객 식별
+                        정보
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <h5>국외 처리 위탁 현황</h5>
+                <ul>
+                  <li>
+                    <h6>- Amazon Web Services Inc.</h6>
+                    <ul>
+                      <li>- 위탁업무: 데이터 보관 및 클라우드 인프라의 관리</li>
+                      <li>
+                        - 이전위치: Amazon Web Services Inc.의 리전 (아시아 태평양(서울))
+                      </li>
+                      <li>
+                        - 보유 및 이용기간: 본 개인정보처리방침에 규정된 보유기간과 일치
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <h6>- Sentry</h6>
+                    <ul>
+                      <li>- 위탁업무: 크래시 수집 및 분석</li>
+                      <li>
+                        - 이전위치: 미국 (45 Fremont Street 8th Floor, San Francisco, CA
+                        94105 USA)
+                      </li>
+                      <li>- 수집항목: 방문 일시, 서비스 이용 기록, 기기정보 등</li>
+                      <li>- 보유 및 이용기간: 위탁계약 종료 시까지</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </ul>
         </section>
         <section>

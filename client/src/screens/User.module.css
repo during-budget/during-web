@@ -10,12 +10,48 @@
   margin-bottom: 3rem;
 }
 
+.cs {
+  text-align: center;
+  margin-top: 2vh;
+  margin-bottom: 6vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.cs button {
+  padding: 0 2rem;
+}
+
+.cs a {
+  padding: 0.5rem 2rem;
+}
+
+.pc {
+  display: none;
+}
+
+.mobile {
+  display: block;
+}
+
 @media screen and (min-width: 840px) {
+  .mobile {
+    display: none;
+  }
+
+  .pc {
+    display: block;
+    width: 60%;
+    margin: 0 auto;
+    margin-top: -7vh;
+  }
+
   .user {
     display: flex;
   }
 
-  .user header,
+  .user .header,
   .user main {
     width: 50%;
   }
