@@ -104,32 +104,30 @@ function UserCategoryList(props: {
             />
           </DraggableItem>
         ))}
+        <li className={classes.default}>
+          <div className={classes.info}>
+            <EmojiInput
+              className={classes.icon}
+              value={props.defaultCategory?.icon || ''}
+              onChange={defaultIconHandler}
+              required={true}
+            ></EmojiInput>
+            <input
+              className={classes.title}
+              type="text"
+              value={props.defaultCategory?.title || ''}
+              onChange={defaultTitleHandler}
+              required
+            />
+          </div>
+          <span className={classes.label}>기본</span>
+        </li>
       </DraggableList>
       {/* TODO: 카테고리 추가 / 디폴트 에디팅 모두 컴포넌트로 빼내서 정리하기 */}
       {/* add category button */}
       <Button styleClass="extra" className={classes.add} onClick={addHandler}>
         카테고리 추가
       </Button>
-      {/* default category input */}
-      <div className={classes.default}>
-        <div className={classes.inputs}>
-          <EmojiInput
-            className={classes.icon}
-            value={props.defaultCategory?.icon || ''}
-            onChange={defaultIconHandler}
-            isDark={true}
-            required={true}
-          ></EmojiInput>
-          <input
-            className={classes.title}
-            type="text"
-            value={props.defaultCategory?.title || ''}
-            onChange={defaultTitleHandler}
-            required
-          />
-        </div>
-        <span className={classes.label}>기본</span>
-      </div>
     </>
   );
 }
