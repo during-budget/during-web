@@ -32,7 +32,13 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.CLIENT, process.env.CLIENT_ADMIN],
+    origin: [
+      process.env.CLIENT,
+      process.env.CLIENT_ADMIN,
+      "52.78.100.19",
+      "52.78.48.223",
+      "52.78.5.241",
+    ],
     credentials: true,
   })
 );

@@ -47,3 +47,19 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     res.status(403).send({ message: NOT_LOGGED_IN });
   }
 };
+
+export const isPortOneWebHook = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (
+    req.ip === "52.78.100.19" ||
+    req.ip === "52.78.48.223" ||
+    req.ip === "52.78.5.241"
+  ) {
+    next();
+  } else {
+    res.status(403).send({ message: NOT_LOGGED_IN });
+  }
+};
