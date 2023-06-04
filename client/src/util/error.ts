@@ -1,11 +1,15 @@
 import { ERROR_MESSAGE } from '../constants/error';
 
 export const getErrorMessage = (error: any) => {
-  if (!(error instanceof Error)) {
+  let message;
+
+  if (typeof error === 'string') {
+    message = error;
+  } else if (error instanceof Error) {
+    message = error.message;
+  } else {
     return null;
   }
-
-  const message = error.message;
 
   if (message.includes('NOT_FOUND')) {
     return null;

@@ -19,6 +19,7 @@ export interface ModalOptions {
   onConfirm: (() => void) | null;
   showReport: boolean;
   hideCancel?: boolean;
+  hideChannelButtonOnClose?: boolean;
 }
 interface EmojiOptions {
   isOpen: boolean;

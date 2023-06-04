@@ -19,10 +19,14 @@ const PaymentOverlay = () => {
   const [paymentState, setPaymentState] = useState('card');
 
   const paymentHandler = async () => {
-    const { payment } = await preparePayment(itemId);
-
     window.IMP?.init(DURING_STORE_CODE);
     try {
+      const { message, payment } = await preparePayment(itemId);
+
+      if (message || !payment) {
+        throw message;
+      }
+
       window.IMP?.request_pay(
         {
           pg: 'tosspayments',
@@ -51,6 +55,7 @@ const PaymentOverlay = () => {
                 title: '결제 실패',
                 description:
                   errorMsg?.split('] ')[1] || '결제 처리 중 문제가 발생했습니다.',
+                hideChannelButtonOnClose: true,
               })
             );
             Sentry.captureMessage(
@@ -58,7 +63,7 @@ const PaymentOverlay = () => {
             );
           } else {
             try {
-              const { payment, message } = await completePayment(merchantUid);
+              const { payment, message } = await completePayment({ impUid, merchantUid });
 
               if (message) {
                 throw message;
@@ -69,6 +74,7 @@ const PaymentOverlay = () => {
                   uiActions.showModal({
                     icon: '✓',
                     title: '결제 성공',
+                    hideChannelButtonOnClose: true,
                   })
                 );
                 onComplete && onComplete(payment.itemTitle);
@@ -81,6 +87,8 @@ const PaymentOverlay = () => {
                       payment?.status === 'cancelled'
                         ? '결제가 취소되었습니다'
                         : undefined,
+
+                    hideChannelButtonOnClose: true,
                   })
                 );
               }
@@ -93,6 +101,7 @@ const PaymentOverlay = () => {
                   uiActions.showModal({
                     title: '문제가 발생했습니다',
                     description: message,
+                    hideChannelButtonOnClose: true,
                   })
                 );
               } else {
@@ -100,7 +109,8 @@ const PaymentOverlay = () => {
                   uiActions.showErrorModal({
                     icon: '!',
                     title: '결제 실패',
-                    description: '결제 시도 중 문제가 발생했습니다.',
+                    description: '결제 처리 중 문제가 발생했습니다.',
+                    hideChannelButtonOnClose: true,
                   })
                 );
                 throw error;
@@ -110,9 +120,29 @@ const PaymentOverlay = () => {
         }
       );
     } catch (error) {
-      dispatch(
-        uiActions.showErrorModal({ description: '결제 요청 중 문제가 발생했습니다.' })
-      );
+      dispatch(uiActions.closePayment());
+      const message = getErrorMessage(error);
+
+      if (message) {
+        dispatch(
+          uiActions.showModal({
+            icon: '!',
+            title: '결제 실패',
+            description: message,
+            hideChannelButtonOnClose: true,
+          })
+        );
+      } else {
+        dispatch(
+          uiActions.showErrorModal({
+            icon: '!',
+            title: '결제 실패',
+            description: '결제 처리 중 문제가 발생했습니다.',
+            hideChannelButtonOnClose: true,
+          })
+        );
+        throw error;
+      }
     }
   };
 

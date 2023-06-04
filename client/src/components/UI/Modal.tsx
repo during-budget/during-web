@@ -20,6 +20,7 @@ const Modal = () => {
     onConfirm,
     showReport,
     hideCancel,
+    hideChannelButtonOnClose,
   } = useAppSelector((state) => state.ui.modal);
 
   const closeHandler = () => {
@@ -45,7 +46,7 @@ const Modal = () => {
   useEffect(() => {
     if (isOpen) {
       Channel.hideChannelButton();
-    } else if (location.pathname === '/user') {
+    } else if (location.pathname === '/user' && !hideChannelButtonOnClose) {
       Channel.showChannelButton();
     }
   }, [isOpen]);

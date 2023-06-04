@@ -8,4 +8,5 @@ export const ERROR_MESSAGE: { [key: string]: string } = {
   VERIFICATION_CODE_WRONG: '잘못된 인증코드입니다. 코드를 다시 입력해주세요.',
   AT_LEAST_ONE_SNSID_IS_REQUIRED: '최소 하나의 로그인 수단이 필요합니다.',
   SNSID_IN_USE: '다른 계정에 이미 연결된 SNS 계정입니다.',
+  PAIED_ALREADY: '이미 결제된 상품입니다.',
 };

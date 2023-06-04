@@ -1,4 +1,4 @@
-const { DURING_SERVER, DURING_STORE_CODE } = import.meta.env;
+const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/payments`;
 
@@ -33,10 +33,13 @@ export const preparePayment = async (itemTitle: string) => {
     throw error;
   }
 
-  return data as { payment: PaymentDataType };
+  return data as { payment?: PaymentDataType; message?: string };
 };
 
-export const completePayment = async (merchant_uid: string) => {
+export const completePayment = async (info: {
+  impUid: string | null;
+  merchantUid: string;
+}) => {
   const url = `${BASE_URL}/complete`;
 
   let response, data;
@@ -46,8 +49,8 @@ export const completePayment = async (merchant_uid: string) => {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({
-        imp_uid: DURING_STORE_CODE,
-        merchant_uid,
+        imp_uid: info.impUid,
+        merchant_uid: info.merchantUid,
       }),
       headers: {
         'Content-Type': 'application/json',

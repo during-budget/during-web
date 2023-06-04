@@ -73,12 +73,13 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                               />
                             </div>
                           ),
-                          itemId: skinState,
+                          itemId: item.name,
                           amount: 2000,
                           onComplete: async (chartSkin: ChartSkinType) => {
                             try {
-                              await updateChartSkin(chartSkin);
-                              dispatch(settingActions.setChartSkin(chartSkin));
+                              // TODO: 잠금표시 해제 및 선택 가능하도록 설정~? 서버 작업 후 처리하자
+                              // await updateChartSkin(chartSkin);
+                              // dispatch(settingActions.setChartSkin(chartSkin));
                             } catch (error) {
                               const message = getErrorMessage(error);
                               if (message) {
