@@ -31,6 +31,7 @@ jobs:
           echo "DURING_SERVER=${{secrets.DURING_SERVER}}" >> .env
           echo "DURING_SENTRY=${{secrets.DURING_SENTRY}}" >> .env
           echo "DURING_STORE_CODE=${{secrets.DURING_STORE_CODE}}" >> .env
+          echo "DURING_CHANNEL_KEY=${{secrets.DURING_CHANNEL_KEY}}" >> .env
 
       - name: Install Dependencies and Build
         run: |

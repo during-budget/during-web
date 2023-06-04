@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollRestoration, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { ScrollRestoration, useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
@@ -16,15 +16,15 @@ export interface SettingOverlayProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
+import Auth from '../components/Auth/Auth';
 import PaymentOverlay from '../components/Payment/PaymentOverlay';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
 import Privacy from '../components/User/Info/Privacy';
 import Terms from '../components/User/Info/Terms';
+import Channel from '../models/Channel';
 import { uiActions } from '../store/ui';
 import {
-  SnsIdType,
-  defaultSnsId,
   disconnectLocalAuth,
   disconnectSnsId,
   getAuthURL,
@@ -33,7 +33,6 @@ import {
   providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
-import Auth from '../components/Auth/Auth';
 
 function User() {
   const navigate = useNavigate();
@@ -239,6 +238,10 @@ function User() {
   };
 
   useEffect(() => {
+    Channel.showChannelButton();
+  });
+
+  useEffect(() => {
     getSnsId()
       .then((data: any) => {
         if (data?.snsId) {
@@ -286,23 +289,42 @@ function User() {
     }
   }, [showEmailForm, isRegister]);
 
+  const cs = (
+    <div className={classes.cs}>
+      <Button
+        onClick={() => {
+          Channel.openChat();
+        }}
+      >
+        채팅 문의하기
+      </Button>
+      <a href="mailto:dev.during@gmail.com">
+        이메일 문의하기 - <u>dev.during@gmail.com</u>
+      </a>
+    </div>
+  );
+
   return (
     <div className={classes.user}>
       <ScrollRestoration />
-      <UserHeader
-        email={email}
-        userName={userName}
-        isGuest={isGuest}
-        svg="/assets/svg/basic_profile.svg"
-        openAuth={() => {
-          setShowEmailForm(false);
-        }}
-      />
+      <div className={classes.header}>
+        <UserHeader
+          email={email}
+          userName={userName}
+          isGuest={isGuest}
+          svg="/assets/svg/basic_profile.svg"
+          openAuth={() => {
+            setShowEmailForm(false);
+          }}
+        />
+        <div className={classes.pc}>{cs}</div>
+      </div>
       <main className={classes.main}>
         <section>
           {settings.map((data, i) => (
             <SettingList key={i} title={data.title} items={data.items} />
           ))}
+          <div className={classes.mobile}>{cs}</div>
           <div className={classes.buttons}>
             <Button styleClass="extra" className={classes.logout} onClick={deleteHandler}>
               계정 삭제하기

@@ -5,6 +5,7 @@ import LandingCarousel from '../components/Landing/LandingCarousel';
 import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import { useAppDispatch } from '../hooks/redux-hook';
+import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
 import { settingActions } from '../store/setting';
@@ -15,6 +16,8 @@ import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import { getErrorMessage } from '../util/error';
 import classes from './Landing.module.css';
+
+const { DURING_CHANNEL_KEY } = import.meta.env;
 
 const Landing = () => {
   const dispatch = useAppDispatch();
@@ -80,6 +83,18 @@ const Landing = () => {
     dispatch(assetActions.setCards(cards));
     dispatch(assetActions.setPaymentMethods(paymentMethods));
     dispatch(settingActions.setSettings(settings));
+
+    // Boot channel service
+    Channel.boot({
+      pluginKey: DURING_CHANNEL_KEY,
+      memberId: _id,
+      hideChannelButtonOnBoot: true,
+      profile: {
+        name: userName,
+        mobileNumber: tel,
+        isGuest,
+      },
+    });
 
     // set default budget data
     let defaultBudget;

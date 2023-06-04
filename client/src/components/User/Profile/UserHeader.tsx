@@ -26,7 +26,7 @@ function UserHeader({ email, userName, isGuest, img, svg, openAuth }: UserHeader
   );
 
   return (
-    <header className={classes.container}>
+    <header className={classes.userHeader}>
       <div
         className={classes.profile}
         style={{
