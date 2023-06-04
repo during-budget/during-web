@@ -1,10 +1,15 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hook';
 import { uiActions } from '../../store/ui';
 import Button from './Button';
 import classes from './Modal.module.css';
+import Channel from '../../models/Channel';
+import { useLocation } from 'react-router';
 
 const Modal = () => {
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
 
   const {
     isOpen,
@@ -36,6 +41,14 @@ const Modal = () => {
     );
     throw new Error('⚠️ ErrorModal - 에러 제보');
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      Channel.hideChannelButton();
+    } else if (location.pathname === '/user') {
+      Channel.showChannelButton();
+    }
+  }, [isOpen]);
 
   return (
     <div
