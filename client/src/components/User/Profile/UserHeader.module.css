@@ -44,3 +44,16 @@
   width: 60%;
   margin-top: 2vh;
 }
+
+.info-form h3 {
+  text-align: center;
+  margin-top: 1vh;
+  margin-bottom: 4vh;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  margin-bottom: 20vh;
+}

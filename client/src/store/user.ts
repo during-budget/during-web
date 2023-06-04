@@ -1,18 +1,20 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AuthDataType, SnsIdType } from '../util/api/authAPI';
 
+export interface UserInfoType {
+  _id: string;
+  defaultBudgetId: string;
+  userName: string;
+  email?: string;
+  tel?: string;
+  birthdate?: string;
+  gender?: string;
+}
+
 const initialState: {
   isAuth: boolean;
   auth: AuthDataType;
-  info: {
-    _id: string;
-    defaultBudgetId: string;
-    userName: string;
-    email?: string;
-    tel?: string;
-    birth?: string;
-    gender?: string;
-  };
+  info: UserInfoType;
 } = {
   isAuth: false,
   auth: {
@@ -31,7 +33,7 @@ const initialState: {
     userName: '',
     email: '',
     tel: '',
-    birth: '',
+    birthdate: '',
   },
 };
 
@@ -46,8 +48,11 @@ const userSlice = createSlice({
       state = initialState;
       console.log(state.auth.isGuest);
     },
-    setUserInfo(state, action) {
+    setUserInfo(state, action: PayloadAction<UserInfoType>) {
       state.info = { ...action.payload };
+    },
+    updateUserInfo(state, action: PayloadAction<Partial<UserInfoType>>) {
+      state.info = { ...state.info, ...action.payload };
     },
     setAuthInfo(state, action: PayloadAction<AuthDataType>) {
       const authInfo = action.payload;
