@@ -19,8 +19,37 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
   const [skinState, setSkinState] = useState<ChartSkinType>(skin);
 
   const submitHandler = async () => {
-    await updateChartSkin(skinState);
-    dispatch(settingActions.setChartSkin(skinState));
+    try {
+      await updateChartSkin(skinState);
+      dispatch(settingActions.setChartSkin(skinState));
+    } catch (error) {
+      const message = getErrorMessage(error);
+
+      console.log(error, (error as Error).message, message);
+      if ((error as Error).message === 'PAYMENT_NOT_FOUND') {
+        dispatch(
+          uiActions.showModal({
+            title: '구매하지 않은 상품입니다',
+            description: '구매 후 이용해주세요.',
+          })
+        );
+      } else if (message) {
+        dispatch(
+          uiActions.showModal({
+            title: '문제가 발생했습니다',
+            description: message,
+          })
+        );
+      } else {
+        dispatch(
+          uiActions.showErrorModal({
+            title: '문제가 발생했습니다',
+            description: '차트 스킨 설정을 적용할 수 없습니다.',
+          })
+        );
+        throw error;
+      }
+    }
 
     onClose();
   };

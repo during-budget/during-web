@@ -12,7 +12,11 @@ export const getErrorMessage = (error: any) => {
   }
 
   if (message.includes('NOT_FOUND')) {
-    return null;
+    if (message === 'PAYMENT_NOT_FOUND') {
+      return message;
+    } else {
+      return null;
+    }
   } else {
     return ERROR_MESSAGE[message];
   }
