@@ -18,10 +18,11 @@ import { EMAIL_IN_USE, FIELD_REQUIRED, USER_NOT_FOUND } from "../@message";
 //_____________________________________________________________________________
 
 /**
- * Update fields(birthdate, gender, tel)
+ * Update fields(userName, birthdate, gender, tel)
  */
 export const updateFields = async (req: Request, res: Response) => {
   const user = req.user!;
+  user.userName = req.body.userName;
   user.birthdate = req.body.birthdate;
   user.gender = req.body.gender;
   user.tel = req.body.tel;
@@ -29,6 +30,7 @@ export const updateFields = async (req: Request, res: Response) => {
 
   let message = undefined;
   const undefinedFields = [];
+  if (!user.userName) undefinedFields.push("userName");
   if (!user.birthdate) undefinedFields.push("birthdate");
   if (!user.gender) undefinedFields.push("gender");
   if (!user.tel) undefinedFields.push("tel");
@@ -37,9 +39,10 @@ export const updateFields = async (req: Request, res: Response) => {
   }
 
   return res.status(200).send({
-    birthdate: req.user?.birthdate,
-    gender: req.user?.gender,
-    tel: req.user?.tel,
+    userName: user.userName,
+    birthdate: user.birthdate,
+    gender: user.gender,
+    tel: user.tel,
     message,
   });
 };
