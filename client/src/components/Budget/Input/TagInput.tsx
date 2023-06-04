@@ -2,104 +2,95 @@ import React, { useImperativeHandle, useState } from 'react';
 import classes from './TagInput.module.css';
 import Tag from '../../UI/Tag';
 
-const addTag = (prevState: any, value: string) => {
-    // check empty input
-    if (!value || value === ' ') {
-        return prevState;
-    }
-
-    // check same item
-    const sameItem = prevState.find((item: string) => item === value);
-
-    // set state
-    if (sameItem) {
-        return prevState;
-    } else {
-        return [...prevState, value];
-    }
-};
-
 const TagInput = React.forwardRef(
-    (
-        props: {
-            className?: string;
-            defaultValue?: string[];
-        },
-        ref
-    ) => {
-        useImperativeHandle(ref, () => {
-            return {
-                value: () => tagState,
-            };
+  (
+    props: {
+      className?: string;
+      defaultValue?: string[];
+    },
+    ref
+  ) => {
+    useImperativeHandle(ref, () => {
+      return {
+        value: () => tagState,
+      };
+    });
+
+    const [tagState, setTagState] = useState<String[]>(props.defaultValue || []);
+
+    const keyUpHandler = (event: React.KeyboardEvent) => {
+      const input = event.target as HTMLInputElement;
+
+      if (
+        [' ', 'Enter', '#'].includes(event.key) &&
+        (input.value !== '#' || input.value.trim() !== '')
+      ) {
+        const values = input.value.split('#');
+
+        input.value = event.key === '#' ? '#' : '';
+
+        addTag(values);
+      }
+    };
+
+    const blurHandler = (event: React.FocusEvent) => {
+      const input = event.target as HTMLInputElement;
+
+      const values = input.value.split('#');
+      input.value = '';
+      addTag(values);
+    };
+
+    const addTag = (values: string[]) => {
+      setTagState((prevState) => {
+        const filteredValues = values.filter(
+          (item) =>
+            item !== '' && item !== ' ' && !prevState.find((prev) => prev === item)
+        );
+
+        return [...prevState, ...filteredValues];
+      });
+    };
+
+    const removeHandler = (event: React.MouseEvent) => {
+      const target = event.target as HTMLSpanElement;
+
+      setTagState((prevState) => {
+        return prevState.filter((item) => {
+          return item.trim() !== target.innerText.trim();
         });
+      });
+    };
 
-        const [tagState, setTagState] = useState<String[]>(
-            props.defaultValue || []
-        );
+    const preventSubmit = (event: React.KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    };
 
-        const keyUpHandler = (event: React.KeyboardEvent) => {
-            const input = event.target as HTMLInputElement;
+    const emptyClass = tagState.length === 0 ? classes.empty : '';
+    const containerClass = [classes.container, emptyClass].join(' ');
 
-            if (event.key === ' ' || event.key === 'Enter') {
-                setTagState((prevState: any) => {
-                    const value = input.value;
-                    input.value = '';
-
-                    return addTag(prevState, value);
-                });
-            }
-        };
-
-        const blurHandler = (event: React.FocusEvent) => {
-            const input = event.target as HTMLInputElement;
-
-            const value = input.value;
-            input.value = '';
-
-            setTagState((prevState: any) => {
-                return addTag(prevState, value);
-            });
-        };
-
-        const removeHandler = (event: React.MouseEvent) => {
-            const target = event.target as HTMLSpanElement;
-
-            setTagState((prevState) => {
-                return prevState.filter((item) => {
-                    return item.trim() !== target.innerText.trim();
-                });
-            });
-        };
-
-        const preventSubmit = (event: React.KeyboardEvent) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-            }
-        };
-
-        const emptyClass = tagState.length === 0 ? classes.empty : '';
-        const containerClass = [classes.container, emptyClass].join(' ');
-
-        return (
-            <ul className={containerClass}>
-                {tagState.map((item, i) => (
-                    <li key={i} onClick={removeHandler}>
-                        <Tag isDark={true}>{item}</Tag>
-                    </li>
-                ))}
-                <li>
-                    <input
-                        className={props.className}
-                        type="text"
-                        onKeyUp={keyUpHandler}
-                        onKeyDown={preventSubmit}
-                        onBlur={blurHandler}
-                        placeholder="태그를 입력하세요"
-                    />
-                </li>
-            </ul>
-        );
-    }
+    return (
+      <ul className={containerClass}>
+        {tagState.map((item, i) => (
+          <li key={i} onClick={removeHandler}>
+            <Tag isDark={true}>{item}</Tag>
+          </li>
+        ))}
+        <li>
+          <input
+            className={props.className}
+            type="text"
+            onKeyUp={keyUpHandler}
+            onKeyDown={preventSubmit}
+            onBlur={blurHandler}
+            placeholder="태그를 입력하세요"
+          />
+        </li>
+      </ul>
+    );
+  }
 );
 
 export default TagInput;

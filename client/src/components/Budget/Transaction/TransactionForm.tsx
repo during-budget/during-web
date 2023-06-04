@@ -286,6 +286,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
           noTransition: true,
         }}
         formPadding="sm"
+        formHeight='60vh'
       >
         {/* shortField */}
         {amountField}
