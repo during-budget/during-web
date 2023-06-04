@@ -166,7 +166,7 @@ function User() {
     //   ],
     // },
     {
-      title: '정보',
+      title: '서비스 정보',
       items: [
         {
           icon: '📜',
