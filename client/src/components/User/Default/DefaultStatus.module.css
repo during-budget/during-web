@@ -68,10 +68,7 @@
 }
 
 .planCancel::before {
-  position: absolute;
-  left: 15vw;
-  transform: translateY(-50%);
-  color: var(--gray-3);
+  display: none;
 }
 
 .bars {

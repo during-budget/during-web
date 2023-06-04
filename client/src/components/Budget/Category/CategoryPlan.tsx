@@ -177,7 +177,7 @@ function CategoryPlan(props: { budgetId: string }) {
           editClass={classes.totalEdit}
           cancelClass={classes.totalCancel}
           value={Amount.getAmountStr(totalPlanState)}
-          confirmHandler={confirmTotalHandler}
+          onConfirm={confirmTotalHandler}
           convertDefaultValue={convertTotalHandler}
         />
         {/* total - plan amount bars */}
