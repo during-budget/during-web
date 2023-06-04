@@ -5,6 +5,7 @@
   scrollbar-width: 0;
 }
 
+.list::-webkit-scrollbar,
 .container::-webkit-scrollbar {
   display: none;
 }
@@ -12,6 +13,8 @@
 .list {
   height: 50vh;
   overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: 0;
 }
 
 .info {
@@ -42,28 +45,13 @@
 
 .default {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  background-color: var(--gray-1);
-  padding: 1rem;
-  border-radius: 1rem;
+  align-items: center;
 }
 
-.default .icon {
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.75rem;
-}
-
-.default .inputs {
-  display: flex;
-  gap: 1rem;
-  width: 80%;
-}
-
-.default .title {
-  background-color: #fff;
+.default .info {
+  width: 77%;
+  gap: 3vw;
 }
 
 .default .label {
@@ -71,6 +59,7 @@
   width: 1.875rem;
   text-align: center;
   padding: 0.2rem 0.5rem;
+  margin: 0 1.5rem;
   background-color: var(--primary);
   color: #fff;
   border-radius: 0.2rem;
