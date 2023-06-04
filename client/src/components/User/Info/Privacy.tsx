@@ -3,12 +3,9 @@ import Button from '../../UI/Button';
 import Overlay from '../../UI/Overlay';
 import classes from './Privacy.module.css';
 
-const Privacy = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
-  const closeHandler = () => {
-    setIsOpen(false);
-  };
+const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
-    <Overlay className={classes.privacy} isOpen={isOpen} onClose={closeHandler}>
+    <Overlay className={classes.privacy} isOpen={isOpen} onClose={onClose}>
       <div className={classes.contents}>
         <section>
           <h1>개인정보 처리방침</h1>
@@ -191,7 +188,7 @@ const Privacy = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
           <strong>최종개정일: 2023. 6. 2.</strong>
         </p>
       </div>
-      <Button onClick={closeHandler}>닫기</Button>
+      <Button onClick={onClose}>닫기</Button>
     </Overlay>
   );
 };

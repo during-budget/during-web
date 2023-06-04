@@ -3,12 +3,9 @@ import Button from '../../UI/Button';
 import Overlay from '../../UI/Overlay';
 import classes from './Terms.module.css';
 
-const Terms = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
-  const closeHandler = () => {
-    setIsOpen(false);
-  };
+const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
-    <Overlay className={classes.terms} isOpen={isOpen} onClose={closeHandler}>
+    <Overlay className={classes.terms} isOpen={isOpen} onClose={onClose}>
       <div className={classes.contents}>
         <h1>이용약관</h1>
         <section>
@@ -278,7 +275,7 @@ const Terms = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
           <h3>부칙</h3>이 약관은 2023년 7월 5일부터 적용됩니다.
         </section>
       </div>
-      <Button onClick={closeHandler}>닫기</Button>
+      <Button onClick={onClose}>닫기</Button>
     </Overlay>
   );
 };

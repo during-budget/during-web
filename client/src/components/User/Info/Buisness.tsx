@@ -3,14 +3,12 @@ import Button from '../../UI/Button';
 import Overlay from '../../UI/Overlay';
 import classes from './Buisness.module.css';
 
-const Buisness = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
+const Buisness = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
     <Overlay
       className={classes.buisness}
       isOpen={isOpen}
-      onClose={() => {
-        setIsOpen(false);
-      }}
+      onClose={onClose}
     >
       <div className={classes.info}>
         <h1>Whaleap Studio</h1>
@@ -28,9 +26,7 @@ const Buisness = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
         </p>
       </div>
       <Button
-        onClick={() => {
-          setIsOpen(false);
-        }}
+        onClick={onClose}
       >
         닫기
       </Button>

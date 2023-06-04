@@ -11,7 +11,7 @@ import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
 import { SettingOverlayProps } from '../../../screens/User';
 
-const ChartSkinSetting = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
+const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
   const skin = useAppSelector((state) => state.setting.data.chartSkin);
   const dispatch = useDispatch();
 
@@ -21,11 +21,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
     await updateChartSkin(skinState);
     dispatch(settingActions.setChartSkin(skinState));
 
-    closeSetting();
-  };
-
-  const closeSetting = () => {
-    setIsOpen(false);
+    onClose();
   };
 
   useEffect(() => {
@@ -40,7 +36,7 @@ const ChartSkinSetting = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
         onSubmit={submitHandler}
         overlayOptions={{
           isOpen,
-          onClose: closeSetting,
+          onClose,
         }}
         className={classes.chartSkinSetting}
       >

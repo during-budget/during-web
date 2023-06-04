@@ -9,7 +9,7 @@ import UserCategoryList from './UserCategoryList';
 import classes from './UserCategorySetting.module.css';
 import { SettingOverlayProps } from '../../../screens/User';
 
-function UserCategorySetting({ isOpen, setIsOpen }: SettingOverlayProps) {
+function UserCategorySetting({ isOpen, onClose }: SettingOverlayProps) {
   const dispatch = useAppDispatch();
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
@@ -51,11 +51,7 @@ function UserCategorySetting({ isOpen, setIsOpen }: SettingOverlayProps) {
     dispatch(userCategoryActions.setCategories(categories));
 
     // close overlay
-    setIsOpen(false);
-  };
-
-  const closeHandler = () => {
-    setIsOpen(false);
+    onClose();
   };
 
   return (
@@ -64,7 +60,7 @@ function UserCategorySetting({ isOpen, setIsOpen }: SettingOverlayProps) {
       overlayOptions={{
         isOpen,
         noTransform: true,
-        onClose: closeHandler,
+        onClose,
       }}
       className={classes.container}
     >

@@ -3,7 +3,7 @@ import Button from '../../UI/Button';
 import Overlay from '../../UI/Overlay';
 import classes from './Developers.module.css';
 
-const Developers = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
+const Developers = ({ isOpen, onClose }: SettingOverlayProps) => {
   const data = [
     {
       id: 'lynj',
@@ -27,9 +27,7 @@ const Developers = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
     <Overlay
       className={classes.developers}
       isOpen={isOpen}
-      onClose={() => {
-        setIsOpen(false);
-      }}
+      onClose={onClose}
     >
       <div className={classes.header}>
         <h4>TEAM</h4>
@@ -63,9 +61,7 @@ const Developers = ({ isOpen, setIsOpen }: SettingOverlayProps) => {
         ))}
       </ul>
       <Button
-        onClick={() => {
-          setIsOpen(false);
-        }}
+        onClick={onClose}
       >
         닫기
       </Button>

@@ -13,7 +13,7 @@ import classes from './User.module.css';
 
 export interface SettingOverlayProps {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  onClose: () => void;
 }
 
 import Auth from '../components/Auth/Auth';
@@ -69,6 +69,7 @@ function User() {
           label: '카테고리 설정',
           onClick: () => {
             setShowCategory(true);
+            Channel.hideChannelButton();
           },
         },
         {
@@ -76,6 +77,7 @@ function User() {
           label: '차트 캐릭터 설정',
           onClick: () => {
             setShowChartSkin(true);
+            Channel.hideChannelButton();
           },
         },
       ],
@@ -134,6 +136,7 @@ function User() {
               }
             } else {
               setShowEmailForm(true);
+              Channel.hideChannelButton();
             }
           },
         },
@@ -172,6 +175,7 @@ function User() {
           label: '이용약관',
           onClick: () => {
             setShowTerms(true);
+            Channel.hideChannelButton();
           },
         },
         {
@@ -179,6 +183,7 @@ function User() {
           label: '개인정보처리방침',
           onClick: () => {
             setShowPrivacy(true);
+            Channel.hideChannelButton();
           },
         },
         {
@@ -186,6 +191,7 @@ function User() {
           label: '사업자등록정보',
           onClick: () => {
             setShowBuisness(true);
+            Channel.hideChannelButton();
           },
         },
         {
@@ -193,6 +199,7 @@ function User() {
           label: '개발자정보',
           onClick: () => {
             setShowDevelopers(true);
+            Channel.hideChannelButton();
           },
         },
       ],
@@ -300,6 +307,13 @@ function User() {
     </div>
   );
 
+  const closeHandler = (setIsOpen: React.Dispatch<boolean>) => {
+    return () => {
+      setIsOpen(false);
+      Channel.showChannelButton();
+    };
+  };
+
   return (
     <div className={classes.user}>
       <ScrollRestoration />
@@ -338,12 +352,18 @@ function User() {
           </div>
         </section>
         <section>
-          <UserCategorySetting isOpen={showCategory} setIsOpen={setShowCategory} />
-          <ChartSkinSetting isOpen={showChartSkin} setIsOpen={setShowChartSkin} />
-          <Terms isOpen={showTerms} setIsOpen={setShowTerms} />
-          <Privacy isOpen={showPrivacy} setIsOpen={setShowPrivacy} />
-          <Buisness isOpen={showBuisness} setIsOpen={setShowBuisness} />
-          <Developers isOpen={showDevelopers} setIsOpen={setShowDevelopers} />
+          <UserCategorySetting
+            isOpen={showCategory}
+            onClose={closeHandler(setShowCategory)}
+          />
+          <ChartSkinSetting
+            isOpen={showChartSkin}
+            onClose={closeHandler(setShowChartSkin)}
+          />
+          <Terms isOpen={showTerms} onClose={closeHandler(setShowTerms)} />
+          <Privacy isOpen={showPrivacy} onClose={closeHandler(setShowPrivacy)} />
+          <Buisness isOpen={showBuisness} onClose={closeHandler(setShowBuisness)} />
+          <Developers isOpen={showDevelopers} onClose={closeHandler(setShowDevelopers)} />
         </section>
       </main>
       <PaymentOverlay />
@@ -354,6 +374,7 @@ function User() {
           onClose={() => {
             setShowEmailForm(undefined);
             setShowAuth(false);
+            Channel.showChannelButton();
           }}
           hideGuest={isGuest || !isLocal}
           showEmail={showEmailForm}
