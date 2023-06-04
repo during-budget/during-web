@@ -45,8 +45,13 @@ const Landing = () => {
       categories,
       assets,
       cards,
+      tel,
+      snsId,
+      gender,
       paymentMethods,
       settings,
+      isGuest,
+      isLocal,
     } = user;
 
     // set user data
@@ -56,8 +61,18 @@ const Landing = () => {
         _id,
         userName,
         email,
+        tel,
         defaultBudgetId,
         settings,
+        gender,
+      })
+    );
+    dispatch(
+      userActions.setAuthInfo({
+        email,
+        isLocal,
+        snsId,
+        isGuest,
       })
     );
     dispatch(userCategoryActions.setCategories(categories));

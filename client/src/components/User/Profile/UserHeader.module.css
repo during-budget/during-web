@@ -26,3 +26,16 @@
 .primary {
   background-color: var(--primary);
 }
+
+.guest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5vh;
+  width: 100%;
+  text-align: center;
+}
+
+.guest button {
+  width: 50%;
+}

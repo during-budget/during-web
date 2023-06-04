@@ -1,9 +1,18 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import Modal from '../components/UI/Modal';
+import { useAppSelector } from '../hooks/redux-hook';
+import classes from './Root.module.css';
 
 function Root() {
+  const location = useLocation();
+  const { isGuest } = useAppSelector((state) => state.user.auth);
   return (
     <>
+      {isGuest && ['/user'].includes(location.pathname) && location.pathname !== '/' && (
+        <Link className={classes.guest} to="/user?register">
+          ⚠️ 게스트 계정입니다. 데이터 저장을 위해서 <u>계정 등록</u>을 진행해주세요
+        </Link>
+      )}
       <Outlet />
       <Modal />
     </>
