@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background-color: var(--gray-1);
-  padding: 1rem;
+  padding: 0 0.5rem;
+  margin-left: 3.5vw;
   border-radius: 1rem;
 }
 
@@ -20,8 +20,9 @@
   width: 80%;
 }
 
-.container .title {
-  background-color: #fff;
+.container .inputs {
+  max-width: 304.5px;
+  /* background-color: #fff; */
 }
 
 .container .label {
