@@ -53,11 +53,9 @@ export const isPortOneWebHook = (
   res: Response,
   next: NextFunction
 ) => {
-  if (
-    req.ip === "52.78.100.19" ||
-    req.ip === "52.78.48.223" ||
-    req.ip === "52.78.5.241"
-  ) {
+  const ip =
+    req.headers["x-forwarded-for"] || req.socket.remoteAddress || undefined;
+  if (ip === "52.78.100.19" || ip === "52.78.48.223" || ip === "52.78.5.241") {
     next();
   } else {
     res.status(403).send({ message: NOT_LOGGED_IN });

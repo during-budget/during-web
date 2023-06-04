@@ -59,7 +59,7 @@ function Index() {
             width: "112px",
             render: (e) => {
               let color = "grey";
-              if (e === "paid") color = "blud";
+              if (e === "paid") color = "blue";
               else if (e === "cancelled") color = "red";
 
               return (
