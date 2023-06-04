@@ -12,13 +12,9 @@ import Inform from '../UI/Inform';
 import InputField from '../UI/InputField';
 import classes from './EmailForm.module.css';
 import GuestLoginButton from './GuestLoginButton';
+import { AuthFormProps } from './Auth';
 
-interface EmailFormProps {
-  changeAuthType: () => void;
-  onLanding: (user: UserDataType, to: string) => void;
-}
-
-const EmailForm = ({ changeAuthType, onLanding }: EmailFormProps) => {
+const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -216,17 +212,23 @@ const EmailForm = ({ changeAuthType, onLanding }: EmailFormProps) => {
         )}
       </form>
       <div className={classes.buttons}>
-        <GuestLoginButton onLogin={onLanding} />
-        <span>|</span>
-        <Button
-          styleClass="extra"
-          className={classes.sns}
-          onClick={() => {
-            changeAuthType();
-          }}
-        >
-          SNS로 시작하기
-        </Button>
+        {!hideGuest && (
+          <>
+            <GuestLoginButton onLogin={onLanding} />
+            <span>|</span>
+          </>
+        )}
+        {changeAuthType && (
+          <Button
+            styleClass="extra"
+            className={classes.sns}
+            onClick={() => {
+              changeAuthType();
+            }}
+          >
+            SNS로 시작하기
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,11 @@ const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/auth`;
 
-export const providers: { provider: string; label: string; src: string }[] = [
+export const providers: {
+  provider: 'google' | 'naver' | 'kakao';
+  label: string;
+  src: string;
+}[] = [
   {
     provider: 'google',
     label: '구글',
@@ -35,7 +39,7 @@ export interface AuthDataType {
     naver?: string;
     kakao?: string;
   };
-  isGuest: false;
+  isGuest: boolean;
 }
 
 export const getAuthState = async () => {
@@ -82,10 +86,37 @@ export const localAuth = async (email: string, code?: string, persist?: boolean)
   }
 
   if (!response.ok) {
-    throw new Error(data?.ERROR_MESSAGE);
+    throw new Error(data?.message);
   }
 
   return data as { message: string; user: UserDataType };
+};
+
+export const disconnectLocalAuth = async () => {
+  checkNetwork();
+
+  const url = `${BASE_URL}/local`;
+
+  let response, data;
+  try {
+    response = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message);
+  }
+
+  return data as AuthDataType;
 };
 
 export const logoutUser = async () => {
@@ -132,7 +163,7 @@ export const disconnectSnsId = async (provider: string) => {
   }
 
   if (!response.ok) {
-    throw data?.message;
+    throw new Error(data?.message);
   }
 
   return data as { snsId: SnsIdType };
@@ -160,7 +191,7 @@ export const getSnsId = async () => {
   }
 
   if (!response.ok) {
-    throw data?.message;
+    throw new Error(data?.message);
   }
 
   return data as { snsId: SnsIdType };

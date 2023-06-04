@@ -1,0 +1,16 @@
+.guest {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: var(--primary);
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  padding: 01vh 0;
+  font-size: 0.875rem;
+}
+
+.guest u {
+  color: inherit;
+  font-weight: 900;
+}

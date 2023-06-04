@@ -1,4 +1,5 @@
 import { AssetDataType, CardDataType, PaymentDataType } from './assetAPI';
+import { AuthDataType } from './authAPI';
 import { UserCategoryType } from './categoryAPI';
 import { SettingType } from './settingAPI';
 
@@ -6,14 +7,15 @@ const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER}/api/users`;
 
-export interface UserDataType {
+export interface UserDataType extends AuthDataType {
   _id: string;
   userName: string;
   categories: UserCategoryType[];
   createdAt: string;
   updatedAt: string;
-  email: string;
-  isGuest: boolean;
+  tel: string;
+  birthdate: string;
+  gender: string;
   basicBudgetId: string;
   assets: AssetDataType[];
   cards: CardDataType[];

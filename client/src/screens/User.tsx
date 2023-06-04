@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollRestoration, useNavigate } from 'react-router-dom';
+import { ScrollRestoration, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
@@ -8,7 +8,7 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
 import { userActions } from '../store/user';
-import { deleteUser } from '../util/api/userAPI';
+import { UserDataType, deleteUser } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 export interface SettingOverlayProps {
@@ -25,6 +25,7 @@ import { uiActions } from '../store/ui';
 import {
   SnsIdType,
   defaultSnsId,
+  disconnectLocalAuth,
   disconnectSnsId,
   getAuthURL,
   getSnsId,
@@ -32,10 +33,18 @@ import {
   providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
+import Auth from '../components/Auth/Auth';
 
 function User() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [params] = useSearchParams();
+  const isRegister = params.has('register');
+
+  const { email, userName, defaultBudgetId } = useAppSelector((state) => state.user.info);
+  const { isGuest, isLocal, snsId } = useAppSelector((state) => state.user.auth);
+  const [showAuth, setShowAuth] = useState(false);
 
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
@@ -43,9 +52,7 @@ function User() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showBuisness, setShowBuisness] = useState(false);
   const [showDevelopers, setShowDevelopers] = useState(false);
-  const { email, defaultBudgetId } = useAppSelector((state) => state.user.info);
-
-  const [snsId, setSnsId] = useState<SnsIdType>(defaultSnsId);
+  const [showEmailForm, setShowEmailForm] = useState<boolean | undefined>(undefined);
 
   const settings = [
     {
@@ -76,37 +83,62 @@ function User() {
     },
     {
       title: '로그인 설정',
-      items: providers.map((provider) => {
-        return snsId[provider.provider]
-          ? {
-              src: provider.src,
-              label: `${provider.label} 로그인 해제`,
-              onClick: async () => {
-                try {
-                  const data = await disconnectSnsId(provider.provider);
-                  dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
-                  if (data?.snsId) {
-                    setSnsId(data.snsId);
+      items: [
+        ...providers.map((provider) => {
+          return snsId[provider?.provider]
+            ? {
+                src: provider.src,
+                label: `${provider.label} 로그인 해제`,
+                onClick: async () => {
+                  try {
+                    const data = await disconnectSnsId(provider.provider);
+                    dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+                    if (data?.snsId) {
+                      dispatch(userActions.setSnsId(data.snsId));
+                    }
+                  } catch (error) {
+                    const message = getErrorMessage(error);
+                    if (message) {
+                      dispatch(uiActions.showModal({ description: message }));
+                    } else {
+                      dispatch(uiActions.showErrorModal());
+                      throw error;
+                    }
                   }
-                } catch (error) {
-                  const message = getErrorMessage(error);
-                  if (message) {
-                    dispatch(uiActions.showModal({ description: message }));
-                  } else {
-                    dispatch(uiActions.showErrorModal());
-                    throw error;
-                  }
+                },
+              }
+            : {
+                src: provider.src,
+                label: `${provider.label} 계정 연결하기`,
+                onClick: async () => {
+                  window.open(getAuthURL(provider.provider), '_self');
+                },
+              };
+        }),
+        {
+          icon: '✉️',
+          label: isLocal ? '이메일 로그인 해제하기' : '이메일 등록하기',
+          onClick: async () => {
+            if (isLocal) {
+              try {
+                const data = await disconnectLocalAuth();
+                dispatch(userActions.setAuthInfo(data));
+                dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+              } catch (error) {
+                const message = getErrorMessage(error);
+                if (message) {
+                  dispatch(uiActions.showModal({ description: message }));
+                } else {
+                  dispatch(uiActions.showErrorModal());
+                  throw error;
                 }
-              },
+              }
+            } else {
+              setShowEmailForm(true);
             }
-          : {
-              src: provider.src,
-              label: `${provider.label} 계정 연결하기`,
-              onClick: async () => {
-                window.open(getAuthURL(provider.provider), '_self');
-              },
-            };
-      }),
+          },
+        },
+      ],
     },
     // {
     //   title: '기본 설정',
@@ -210,7 +242,7 @@ function User() {
     getSnsId()
       .then((data: any) => {
         if (data?.snsId) {
-          setSnsId(data.snsId);
+          dispatch(userActions.setSnsId(data.snsId));
         }
       })
       .catch((error: Error) => {
@@ -227,10 +259,45 @@ function User() {
     return () => {};
   }, []);
 
+  const landingHandler = (user: UserDataType) => {
+    console.log(user);
+    const { email, isLocal, snsId, isGuest } = user;
+    setShowAuth(false);
+    dispatch(
+      uiActions.showModal({
+        icon: '✓',
+        title: '등록 성공',
+        description: '계정 등록에 성공했습니다!',
+      })
+    );
+    dispatch(
+      userActions.setAuthInfo({
+        email,
+        isLocal,
+        snsId,
+        isGuest,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (showEmailForm !== undefined || isRegister) {
+      setShowAuth(true);
+    }
+  }, [showEmailForm, isRegister]);
+
   return (
     <div className={classes.user}>
       <ScrollRestoration />
-      <UserHeader email={email} svg="/assets/svg/basic_profile.svg" />
+      <UserHeader
+        email={email}
+        userName={userName}
+        isGuest={isGuest}
+        svg="/assets/svg/basic_profile.svg"
+        openAuth={() => {
+          setShowEmailForm(false);
+        }}
+      />
       <main className={classes.main}>
         <section>
           {settings.map((data, i) => (
@@ -238,12 +305,20 @@ function User() {
           ))}
           <div className={classes.buttons}>
             <Button styleClass="extra" className={classes.logout} onClick={deleteHandler}>
-              탈퇴하기
+              계정 삭제하기
             </Button>
-            |
-            <Button styleClass="extra" className={classes.logout} onClick={logoutHandler}>
-              로그아웃
-            </Button>
+            {!isGuest && (
+              <>
+                |
+                <Button
+                  styleClass="extra"
+                  className={classes.logout}
+                  onClick={logoutHandler}
+                >
+                  로그아웃
+                </Button>
+              </>
+            )}
           </div>
         </section>
         <section>
@@ -257,6 +332,18 @@ function User() {
       </main>
       <PaymentOverlay />
       <EmojiOverlay />
+      {(isGuest || !isLocal) && (
+        <Auth
+          isOpen={showAuth}
+          onClose={() => {
+            setShowEmailForm(undefined);
+            setShowAuth(false);
+          }}
+          hideGuest={isGuest || !isLocal}
+          showEmail={showEmailForm}
+          onLanding={landingHandler}
+        />
+      )}{' '}
     </div>
   );
 }

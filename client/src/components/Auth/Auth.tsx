@@ -9,10 +9,18 @@ interface AuthProps {
   isOpen: boolean;
   onClose: () => void;
   onLanding: (user: UserDataType, to: string) => void;
+  hideGuest?: boolean;
+  showEmail?: boolean;
 }
 
-function Auth({ isOpen, onClose, onLanding }: AuthProps) {
-  const [isEmailAuth, setIsEmailAuth] = useState(false);
+export interface AuthFormProps {
+  changeAuthType?: () => void;
+  onLanding: (user: UserDataType, to: string) => void;
+  hideGuest?: boolean;
+}
+
+function Auth({ isOpen, onClose, onLanding, hideGuest, showEmail }: AuthProps) {
+  const [isEmailAuth, setIsEmailAuth] = useState(showEmail);
 
   // Set state
   const setEmailAuth = () => {
@@ -24,7 +32,9 @@ function Auth({ isOpen, onClose, onLanding }: AuthProps) {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && showEmail) {
+      setEmailAuth();
+    } else if (isOpen) {
       setSNSAuth();
     }
   }, [isOpen]);
@@ -39,9 +49,17 @@ function Auth({ isOpen, onClose, onLanding }: AuthProps) {
         onClose={onClose}
       >
         {isEmailAuth ? (
-          <EmailForm changeAuthType={setSNSAuth} onLanding={onLanding} />
+          <EmailForm
+            changeAuthType={showEmail ? undefined : setSNSAuth}
+            onLanding={onLanding}
+            hideGuest={hideGuest}
+          />
         ) : (
-          <SNSForm changeAuthType={setEmailAuth} onLanding={onLanding} />
+          <SNSForm
+            changeAuthType={setEmailAuth}
+            onLanding={onLanding}
+            hideGuest={hideGuest}
+          />
         )}
       </Overlay>
     </>
