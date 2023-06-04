@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/redux-hook';
+import { SettingOverlayProps } from '../../../screens/User';
 import { settingActions } from '../../../store/setting';
 import { uiActions } from '../../../store/ui';
 import { updateChartSkin } from '../../../util/api/settingAPI';
+import { getErrorMessage } from '../../../util/error';
 import { ChartSkinType, SKIN_DATA } from '../../Budget/Amount/AmountRing';
 import Button from '../../UI/Button';
 import Mask from '../../UI/Mask';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
-import { SettingOverlayProps } from '../../../screens/User';
 
 const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
   const skin = useAppSelector((state) => state.setting.data.chartSkin);
@@ -68,12 +69,36 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                             <div className={`${classes.icon} ${classes.selected}`}>
                               <Mask
                                 className={classes.profile}
-                                mask={`/assets/svg/${skinState}_profile.svg`}
+                                mask={`/assets/svg/${item.name}_profile.svg`}
                               />
                             </div>
                           ),
                           itemId: skinState,
                           amount: 2000,
+                          onComplete: async (chartSkin: ChartSkinType) => {
+                            try {
+                              await updateChartSkin(chartSkin);
+                              dispatch(settingActions.setChartSkin(chartSkin));
+                            } catch (error) {
+                              const message = getErrorMessage(error);
+                              if (message) {
+                                dispatch(
+                                  uiActions.showModal({
+                                    title: '문제가 발생했습니다',
+                                    description: message,
+                                  })
+                                );
+                              } else {
+                                dispatch(
+                                  uiActions.showErrorModal({
+                                    title: '문제가 발생했습니다',
+                                    description: '차트 스킨 설정을 적용할 수 없습니다.',
+                                  })
+                                );
+                                throw error;
+                              }
+                            }
+                          },
                         })
                       );
                     }}

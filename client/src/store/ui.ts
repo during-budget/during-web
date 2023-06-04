@@ -31,6 +31,7 @@ interface PaymentOptions {
   isOpen: boolean;
   itemId: string;
   content?: React.ReactNode;
+  onComplete?: (itemTitle?: any) => void;
   amount: number;
 }
 
