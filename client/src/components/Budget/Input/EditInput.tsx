@@ -40,6 +40,20 @@ const EditInput = (props: {
     setIsEdit(false);
   };
 
+  const focusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (event.target.value === '0') {
+      event.target.value = '';
+    }
+    props.onFocus && props.onFocus(event);
+  };
+
+  const blurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      event.target.value = '0';
+    }
+    confirmHandler();
+  };
+
   const amountInput = (
     <input
       ref={editRef}
@@ -47,8 +61,8 @@ const EditInput = (props: {
       className={classes.edit}
       type="number"
       defaultValue={defaultValue || ''}
-      onFocus={props.onFocus}
-      onBlur={confirmHandler}
+      onFocus={focusHandler}
+      onBlur={blurHandler}
     />
   );
 

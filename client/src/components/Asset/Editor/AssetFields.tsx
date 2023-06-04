@@ -11,6 +11,26 @@ const AssetFields = ({ amount, setAmount }: AssetFieldsProps) => {
     setAmount(+event.target.value);
   };
 
+  const focusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (event.target.value === '0') {
+      event.target.value = '';
+    }
+  };
+
+  const blurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      setAmount(0);
+    }
+  };
+
+  const keyHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace') {
+      if (event.currentTarget.value === '0') {
+        event.currentTarget.value = '';
+      }
+    }
+  };
+
   return (
     <div className={classes.fields}>
       <label htmlFor="asset-field-amount" className={classes.label}>
@@ -22,7 +42,9 @@ const AssetFields = ({ amount, setAmount }: AssetFieldsProps) => {
         type="number"
         value={amount}
         onChange={amountHandler}
-        placeholder="잔액을 입력하세요"
+        onFocus={focusHandler}
+        onKeyUp={keyHandler}
+        onBlur={blurHandler}
       />
     </div>
   );
