@@ -30,6 +30,7 @@ import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
 import { useLocation } from 'react-router';
+import DateSelector from '../Input/DateSelector';
 
 interface TransactionFromProps {
   budgetId: string;
@@ -64,7 +65,9 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
-  const [dateState, setDateState] = useState<Date>(defaultValue.date || new Date());
+  const [dateState, setDateState] = useState<Date>(
+    isDefaultBudget ? new Date(0, 0, 1) : defaultValue.date || new Date()
+  );
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
   );
@@ -91,7 +94,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   }, [dateState]);
 
   useEffect(() => {
-    setDateState(defaultValue.date || new Date());
+    setDateState(isDefaultBudget ? new Date(0, 0, 1) : defaultValue.date || new Date());
   }, [defaultValue.date]);
 
   const titlesRef = useRef<any>(null);
@@ -104,6 +107,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   // handlers
   const submitHandler = async () => {
     // set transaction
+    console.log(dateState);
     const transaction: TransactionType = {
       _id: defaultValue._id || uuid(),
       budgetId,
@@ -289,7 +293,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
           noTransition: true,
         }}
         formPadding="sm"
-        formHeight='60vh'
+        formHeight="60vh"
       >
         {/* shortField */}
         {amountField}
@@ -297,12 +301,20 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         {mode.isExpand && (
           <>
             {/* fields */}
-            <DateInput
-              className={classes.dateField}
-              value={dateState}
-              onChange={setDateState}
-              required={true}
-            />
+            {isDefaultBudget ? (
+              <DateSelector
+                className={classes.select}
+                value={dateState}
+                onChange={setDateState}
+              />
+            ) : (
+              <DateInput
+                className={classes.dateField}
+                value={dateState}
+                onChange={setDateState}
+                required={true}
+              />
+            )}
             {selectField} {/* category, payment */}
             {noteField} {/* emoji, title */}
             <TagInput

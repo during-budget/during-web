@@ -1,4 +1,5 @@
 import React from 'react';
+import { getNumericHypenDateString } from '../../../util/date';
 
 interface DateInputProps {
   className: string;
@@ -19,8 +20,8 @@ const DateInput = ({ className, value, onChange, required }: DateInputProps) => 
       placeholder="날짜를 입력하세요"
       value={
         value && !isNaN(value.valueOf())
-          ? value.toISOString().slice(0, 10)
-          : new Date().toISOString().slice(0, 10)
+          ? getNumericHypenDateString(value)
+          : getNumericHypenDateString(new Date())
       }
       onChange={dateTimeHandler}
       required={required}
