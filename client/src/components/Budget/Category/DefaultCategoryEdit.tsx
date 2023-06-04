@@ -33,7 +33,6 @@ const DefaultCategoryEdit = ({
           className={classes.icon}
           value={defaultCategory?.icon}
           onChange={defaultIconHandler}
-          isDark={true}
           required={true}
         ></EmojiInput>
         <input

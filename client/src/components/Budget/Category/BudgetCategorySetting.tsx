@@ -213,6 +213,10 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
             </div>
           </DraggableItem>
         ))}
+        <DefaultCategoryEdit
+          defaultCategory={defaultCategory}
+          setDefaultCategory={setDefaultCategory}
+        />
       </DraggableList>
       <CategoryAddButton
         isExpense={isExpense}
@@ -226,10 +230,6 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
           ) as HTMLInputElement;
           input?.focus();
         }}
-      />
-      <DefaultCategoryEdit
-        defaultCategory={defaultCategory}
-        setDefaultCategory={setDefaultCategory}
       />
     </OverlayForm>
   );
