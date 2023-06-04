@@ -136,7 +136,7 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
             <label>휴대폰번호</label>
             <input
               type="text"
-              pattern="\d*"
+              pattern="\d[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}"
               maxLength={13}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 const entertedValue = event.target.value;
