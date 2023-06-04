@@ -109,9 +109,9 @@ export const prepare = async (req: Request, res: Response) => {
 
     const user = req.user!;
 
-    if (user.isGuest) {
-      return res.status(403).send({ message: NOT_PERMITTED });
-    }
+    // if (user.isGuest) {
+    //   return res.status(403).send({ message: NOT_PERMITTED });
+    // }
 
     if (
       await Payment.findOne({
