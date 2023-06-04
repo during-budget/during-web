@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { logger } from "@logger";
-import { FIELD_INVALID, FIELD_REQUIRED } from "@message";
+import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "@message";
 import moment from "moment";
 import { basicTimeZone, chartSkins } from "@models/_basicSettings";
+import { Payment } from "@models/Payment";
 
 export const find = async (req: Request, res: Response) => {
   try {
@@ -23,6 +24,18 @@ export const update = async (req: Request, res: Response) => {
     const user = req.user!;
 
     if ("chartSkin" in req.body) {
+      if (req.body.chartSkin !== "basic") {
+        if (
+          !(await Payment.findOne({
+            userId: user._id,
+            itemType: "chartSkin",
+            itemTitle: req.body.chartSkin,
+            status: "paid",
+          }))
+        ) {
+          return res.status(409).send({ message: NOT_FOUND("payment") });
+        }
+      }
       if (!chartSkins.includes(req.body.chartSkin)) {
         return res.status(400).send({ message: FIELD_INVALID("chartSkin") });
       }

@@ -7,11 +7,14 @@ export interface IItem {
   price: Number;
 }
 
-export const itemSchema = new Schema<IItem>({
-  type: String,
-  title: String,
-  price: { type: Number, default: 0 },
-});
+export const itemSchema = new Schema<IItem>(
+  {
+    type: String,
+    title: String,
+    price: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
 
 itemSchema.index({ type: 1, title: 1 });
 
