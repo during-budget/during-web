@@ -238,10 +238,6 @@ function User() {
   };
 
   useEffect(() => {
-    Channel.showChannelButton();
-  });
-
-  useEffect(() => {
     getSnsId()
       .then((data: any) => {
         if (data?.snsId) {

@@ -2,10 +2,21 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import Modal from '../components/UI/Modal';
 import { useAppSelector } from '../hooks/redux-hook';
 import classes from './Root.module.css';
+import { useEffect } from 'react';
+import Channel from '../models/Channel';
 
 function Root() {
   const location = useLocation();
   const { isGuest } = useAppSelector((state) => state.user.auth);
+
+  useEffect(() => {
+    if (location.pathname !== '/user') {
+      Channel.hideChannelButton();
+    } else {
+      Channel.showChannelButton();
+    }
+  }, [location.pathname]);
+
   return (
     <>
       {isGuest && ['/user'].includes(location.pathname) && location.pathname !== '/' && (
