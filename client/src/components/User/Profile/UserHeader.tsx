@@ -133,9 +133,11 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
             />
           </InputField>
           <InputField id="tel">
-            <label>전화번호</label>
+            <label>휴대폰번호</label>
             <input
               type="text"
+              pattern="\d*"
+              maxLength={13}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 const entertedValue = event.target.value;
                 const convertedValue = entertedValue
@@ -145,7 +147,6 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
                 setTelState(convertedValue);
               }}
               value={telState}
-              placeholder="연락 가능한 전화번호를 입력해주세요."
             />
           </InputField>
           <InputField id="birthdate">
