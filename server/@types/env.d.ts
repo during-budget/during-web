@@ -32,5 +32,8 @@ declare namespace NodeJS {
     S3_ACESSKEYID: string;
     S3_SECRETACCESSKEY: string;
     S3_BUCKET_LOGS: string;
+
+    PORTONE_IMP_KEY: string;
+    PORTONE_IMP_SECRET: string;
   }
 }

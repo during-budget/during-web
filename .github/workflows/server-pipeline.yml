@@ -65,6 +65,8 @@ jobs:
           echo "NAVER_CLIENT_ID= ${{secrets.NAVER_CLIENT_ID}}" >> .env.production
           echo "NAVER_CLIENT_SECRET= ${{secrets.NAVER_CLIENT_SECRET}}" >> .env.production
           echo "KAKAO_CLIENT_ID= ${{secrets.KAKAO_CLIENT_ID}}" >> .env.production
+          echo "PORTONE_IMP_KEY= ${{secrets.PORTONE_IMP_KEY}}" >> .env.production
+          echo "PORTONE_IMP_SECRET= ${{secrets.PORTONE_IMP_SECRET}}" >> .env.production
 
       # 빌드 후 푸쉬
       - name: Build and push

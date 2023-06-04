@@ -13,8 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/morgan": "^1.9.4",
     "@types/passport-google-oauth20": "^2.0.11",
+    "axios": "^1.4.0",
     "connect-redis": "^6.1.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
