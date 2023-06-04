@@ -57,3 +57,7 @@
   gap: 2vh;
   margin-bottom: 20vh;
 }
+
+.fields input[type="date"] {
+  min-width: 100%;
+}
