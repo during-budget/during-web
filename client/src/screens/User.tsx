@@ -41,7 +41,7 @@ function User() {
   const [params] = useSearchParams();
   const isRegister = params.has('register');
 
-  const { email, userName, defaultBudgetId } = useAppSelector((state) => state.user.info);
+  const { defaultBudgetId } = useAppSelector((state) => state.user.info);
   const { isGuest, isLocal, snsId } = useAppSelector((state) => state.user.auth);
   const [showAuth, setShowAuth] = useState(false);
 
@@ -309,8 +309,6 @@ function User() {
       <ScrollRestoration />
       <div className={classes.header}>
         <UserHeader
-          email={email}
-          userName={userName}
           isGuest={isGuest}
           svg="/assets/svg/basic_profile.svg"
           openAuth={() => {

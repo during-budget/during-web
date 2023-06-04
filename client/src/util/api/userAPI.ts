@@ -1,3 +1,5 @@
+import { UserInfoType } from '../../store/user';
+import { checkNetwork } from '../network';
 import { AssetDataType, CardDataType, PaymentDataType } from './assetAPI';
 import { AuthDataType } from './authAPI';
 import { UserCategoryType } from './categoryAPI';
@@ -22,6 +24,33 @@ export interface UserDataType extends AuthDataType {
   paymentMethods: PaymentDataType[];
   settings: SettingType;
 }
+
+export const updateUserInfo = async (info: Partial<UserInfoType>) => {
+  checkNetwork();
+
+  let response, data;
+  try {
+    response = await fetch(BASE_URL, {
+      method: 'PUT',
+      credentials: 'include',
+      body: JSON.stringify(info),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || '회원 정보 업데이트 처리 중 문제가 발생했습니다.');
+  }
+
+  return data as {
+    message?: string;
+  } & Partial<UserInfoType>;
+};
 
 export const deleteUser = async () => {
   const url = `${BASE_URL}`;

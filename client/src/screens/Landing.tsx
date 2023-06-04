@@ -66,7 +66,6 @@ const Landing = () => {
         email,
         tel,
         defaultBudgetId,
-        settings,
         gender,
       })
     );

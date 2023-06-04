@@ -1,17 +1,68 @@
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import Channel from '../../../models/Channel';
+import { uiActions } from '../../../store/ui';
+import { userActions } from '../../../store/user';
+import { updateUserInfo } from '../../../util/api/userAPI';
+import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/Button';
+import InputField from '../../UI/InputField';
 import Mask from '../../UI/Mask';
+import OverlayForm from '../../UI/OverlayForm';
 import classes from './UserHeader.module.css';
 
 interface UserHeaderProps {
-  email?: string;
-  userName?: string;
   isGuest?: boolean;
   img?: string;
   svg?: string;
   openAuth: () => void;
 }
 
-function UserHeader({ email, userName, isGuest, img, svg, openAuth }: UserHeaderProps) {
+function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
+  const dispatch = useAppDispatch();
+
+  const [showInfoForm, setShowInfoForm] = useState(false);
+
+  const { email, userName, birthdate, tel, gender } = useAppSelector(
+    (state) => state.user.info
+  );
+
+  const [userNameState, setUserNameState] = useState(userName);
+  const [birthdateState, setBirthdateState] = useState(birthdate);
+  const [telState, setTelState] = useState(tel);
+  const [genderState, setGenderState] = useState(gender);
+
+  const closeInfoForm = () => {
+    setShowInfoForm(false);
+    Channel.showChannelButton();
+  };
+
+  const submitHandler = async () => {
+    try {
+      const { userName, birthdate, tel, gender } = await updateUserInfo({
+        userName: userNameState,
+        birthdate: birthdateState,
+        tel: telState,
+        gender: genderState,
+      });
+
+      dispatch(userActions.updateUserInfo({ userName, birthdate, tel, gender }));
+      closeInfoForm();
+    } catch (error) {
+      const message = getErrorMessage(error);
+      if (message) {
+        dispatch(uiActions.showModal({ title: message }));
+      } else {
+        dispatch(
+          uiActions.showErrorModal({
+            description: '회원 정보 업데이트 중 문제가 발생했습니다.',
+          })
+        );
+        throw error;
+      }
+    }
+  };
+
   const guestHeader = (
     <div className={classes.guest}>
       <h3>둘러보는 중이에요</h3>
@@ -24,6 +75,13 @@ function UserHeader({ email, userName, isGuest, img, svg, openAuth }: UserHeader
       </p>
     </div>
   );
+
+  useEffect(() => {
+    setUserNameState(userName);
+    setTelState(tel);
+    setBirthdateState(birthdate);
+    setGenderState(gender);
+  }, [showInfoForm]);
 
   return (
     <header className={classes.userHeader}>
@@ -45,6 +103,72 @@ function UserHeader({ email, userName, isGuest, img, svg, openAuth }: UserHeader
           <h5>{isGuest ? userName : email}</h5>
         </>
       )}
+      {!isGuest && (
+        <Button
+          styleClass="gray"
+          className={classes.edit}
+          onClick={() => {
+            setShowInfoForm(true);
+            Channel.hideChannelButton();
+          }}
+        >
+          회원 정보 수정하기
+        </Button>
+      )}
+      <OverlayForm
+        className={classes.infoForm}
+        overlayOptions={{ isOpen: showInfoForm, onClose: closeInfoForm }}
+        onSubmit={submitHandler}
+      >
+        <h3>회원 정보 수정</h3>
+        <div className={classes.fields}>
+          <InputField id="user-name">
+            <label>이름</label>
+            <input
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setUserNameState(event.target.value);
+              }}
+              value={userNameState}
+              placeholder="이름을 입력해주세요."
+            />
+          </InputField>
+          <InputField id="tel">
+            <label>전화번호</label>
+            <input
+              type="text"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const entertedValue = event.target.value;
+                const convertedValue = entertedValue
+                  .replace(/[^0-9]/g, '')
+                  .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, '$1-$2-$3')
+                  .replace(/(\-{1,2})$/g, '');
+                setTelState(convertedValue);
+              }}
+              value={telState}
+              placeholder="연락 가능한 전화번호를 입력해주세요."
+            />
+          </InputField>
+          <InputField id="birthdate">
+            <label>생일</label>
+            <input
+              type="date"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setBirthdateState(event.target.value);
+              }}
+              value={birthdateState}
+            />
+          </InputField>
+          <InputField id="gender">
+            <label>성별</label>
+            <input
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setGenderState(event.target.value);
+              }}
+              value={genderState}
+            />
+          </InputField>
+        </div>
+      </OverlayForm>
     </header>
   );
 }
