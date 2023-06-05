@@ -62,7 +62,7 @@ export const getTransactions = async (budgetId: string) => {
     throw new Error(data?.message || '내역 조회 중 문제가 발생했습니다.');
   }
 
-  return response.json() as Promise<{ transactions: TransactionDataType[] }>;
+  return data as { transactions: TransactionDataType[] };
 };
 
 /** request - CREATE */
