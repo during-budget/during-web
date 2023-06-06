@@ -30,7 +30,6 @@ function MonthlyStatus(props: { date: { start: Date; end: Date }; dailyAmountObj
     const date = getDate(event);
 
     if (isView) {
-      await dispatch(uiActions.setIsCurrent(true));
       const dateList = document.getElementById(date);
       dateList?.scrollIntoView({ behavior: 'smooth' });
     } else {

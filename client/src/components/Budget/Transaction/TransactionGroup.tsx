@@ -13,15 +13,10 @@ interface TransactionGroupProps {
 }
 
 const TransactionGroup = ({ id, date, data, isDefaultBudget }: TransactionGroupProps) => {
-  const isLater = dayjs().endOf('day') <= dayjs(date);
-  const [isExpand, setIsExpand] = useState(!isLater);
+  const [isExpand, setIsExpand] = useState(true);
 
   return (
-    <ol
-      className={`${classes.group} ${isExpand ? classes.expand : ''} ${
-        isLater ? classes.later : ''
-      }`}
-    >
+    <ol className={`${classes.group} ${isExpand ? classes.expand : ''}`}>
       {/* Date */}
       <div className={classes.header}>
         <h5 id={id} className={classes.date}>
