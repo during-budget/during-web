@@ -42,7 +42,6 @@ const PaymentRedirect = () => {
       uiActions.showModal({
         icon: '✓',
         title: '결제 성공',
-        description: `${merchantUid}\n${impUid}`,
       })
     );
   }
