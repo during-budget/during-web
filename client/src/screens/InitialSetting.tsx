@@ -8,6 +8,7 @@ import AssetCardListEditor, {
 } from '../components/Asset/Editor/AssetCardListEditor';
 import AssetStatus from '../components/Asset/Status/AssetStatus';
 import CardStatus from '../components/Asset/Status/CardStatus';
+import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import TransactionDetail from '../components/Budget/Transaction/TransactionDetail';
 import TransactionForm from '../components/Budget/Transaction/TransactionForm';
@@ -26,15 +27,12 @@ import { uiActions } from '../store/ui';
 import {
   AssetDataType,
   CardDataType,
-  createAsset,
-  createCard,
   updateAssetById,
-  updateCardById,
+  updateCardById
 } from '../util/api/assetAPI';
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getErrorMessage } from '../util/error';
 import classes from './InitialSetting.module.css';
-import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 
 const InitialSetting = () => {
   const dispatch = useDispatch();
@@ -113,7 +111,11 @@ const InitialSetting = () => {
       title: '결제수단 설정',
       status: (
         <div className={classes.status}>
-          <CardStatus assets={assets} cards={cards} {...editorProps} />
+          <CardStatus
+            assets={assets.filter((item) => item.detail === 'account')}
+            cards={cards}
+            {...editorProps}
+          />
         </div>
       ),
       list: (

@@ -10,12 +10,14 @@ interface CardFieldsProps {
 const CardFields = ({ assetId, setAssetId, className }: CardFieldsProps) => {
   const assets = useAppSelector((state) => state.asset.assets);
 
-  const data = assets.map((item) => {
-    return {
-      value: item._id,
-      label: item.title,
-    };
-  });
+  const data = assets
+    .filter((item) => item.detail === 'account')
+    .map((item) => {
+      return {
+        value: item._id,
+        label: item.title,
+      };
+    });
 
   const changeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAssetId && setAssetId(event.target.value);

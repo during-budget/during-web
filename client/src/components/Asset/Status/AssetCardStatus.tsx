@@ -39,7 +39,7 @@ const AssetCardStatus = ({ assets, cards }: AssetProps) => {
           openEditor={openEditor}
         />
         <CardStatus
-          assets={assets}
+          assets={assets.filter((item) => item.detail === 'account')}
           cards={cards}
           openListEditor={openListEditor}
           openEditor={openEditor}

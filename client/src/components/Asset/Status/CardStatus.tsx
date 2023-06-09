@@ -14,25 +14,38 @@ export interface CardStatusProps extends AssetProps {
 const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusProps) => {
   const [currentAssetId, setCurrentAssetId] = useState(assets[0]?._id || undefined);
 
-  const assetTabValues = useMemo(() => {
-    const assetList = assets.map((asset) => {
-      return {
-        label: asset.title,
-        value: asset._id,
-        checked: asset._id === currentAssetId,
-        onChange: () => {
-          setCurrentAssetId(asset._id);
-        },
-      };
+  useEffect(() => {
+    setCurrentAssetId((prev) => {
+      if (!prev) {
+        return assets[0]?._id;
+      } else {
+        return prev;
+      }
     });
+  }, cards);
+
+  const assetTabValues = useMemo(() => {
+    const assetList = assets
+      .map((asset) => {
+        return {
+          label: asset.title,
+          value: asset._id,
+          checked: asset._id === currentAssetId,
+          onChange: () => {
+            setCurrentAssetId(asset._id);
+          },
+        };
+      });
 
     const unlinkedAssetIdExists = cards.find((card) => !card.linkedAssetId);
 
+    console.log(cards);
+
     if (unlinkedAssetIdExists) {
       assetList.push({
-        label: '연결자산 없음',
+        label: '연결계좌 없음',
         value: '',
-        checked: !currentAssetId,
+        checked: !currentAssetId || (assets.length === 0 && cards.length > 0),
         onChange: () => {
           setCurrentAssetId(undefined);
         },
@@ -43,7 +56,11 @@ const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusPro
   }, [assets, cards, currentAssetId]);
 
   const currentCards = useMemo(
-    () => cards.filter((card) => card.linkedAssetId === currentAssetId),
+    () =>
+      cards.filter((card) => {
+        console.log(card.linkedAssetId, currentAssetId);
+        return card.linkedAssetId === currentAssetId;
+      }),
     [cards, currentAssetId]
   );
 

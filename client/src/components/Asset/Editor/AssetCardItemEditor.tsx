@@ -183,7 +183,7 @@ const AssetCardItemEditor = ({
     setTargetStateProperties({ amount: value });
   };
 
-  /** 연결 자산 id 업데이트 */
+  /** 연결 계좌 id 업데이트 */
   const setLinkedAssetId = (value: string) => {
     setTargetStateProperties({ linkedAssetId: value });
   };

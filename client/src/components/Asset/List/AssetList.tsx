@@ -13,18 +13,24 @@ const AssetList = ({ assets, cards }: AssetProps) => {
           return (
             <li key={asset._id} className={classes.item}>
               {/* <a className={classes.spacing} href={`/asset/${asset._id}`}> */}
-                <div className={classes.spacing}>
-                  <div className={classes.info}>
-                    <Icon isSquare={true}>{asset.icon}</Icon>
-                    <div className={classes.titles}>
-                      <p className={classes.type}>계좌</p>
-                      <p className={classes.title}>{asset.title}</p>
-                    </div>
+              <div className={classes.spacing}>
+                <div className={classes.info}>
+                  <Icon isSquare={true}>{asset.icon}</Icon>
+                  <div className={classes.titles}>
+                    <p className={classes.type}>
+                      {asset.detail === 'account'
+                        ? '계좌'
+                        : asset.detail === 'cash'
+                        ? '현금'
+                        : '기타'}
+                    </p>
+                    <p className={classes.title}>{asset.title}</p>
                   </div>
-                  <p className={classes.amount}>{Amount.getAmountStr(asset.amount)}</p>
                 </div>
-                {/* TODO: 상세페이지 작업! - &gt; 바로가기 표시.. Link 태그로 수정? */}
-                <span className={classes.go}></span>
+                <p className={classes.amount}>{Amount.getAmountStr(asset.amount)}</p>
+              </div>
+              {/* TODO: 상세페이지 작업! - &gt; 바로가기 표시.. Link 태그로 수정? */}
+              <span className={classes.go}></span>
               {/* </a> */}
               <CardList className={classes.cards} cards={assetCards} />
             </li>
