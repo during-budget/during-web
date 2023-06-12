@@ -31,20 +31,25 @@
 
 .profile {
   background-color: var(--primary);
-  opacity: 0.2;
+  opacity: 0.5;
 }
 
 .selected .profile {
   opacity: 1;
 }
 
-.locked::before {
+.lock .icon::before {
   position: absolute;
   left: 50%;
   top: 50%;
-  font-size: 3rem;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -40%);
   content: '\f023';
   font: var(--fa-font-solid);
+  font-size: 1.35rem;
   z-index: 1;
+  pointer-events: none;
+}
+
+.lock .icon {
+  background-color: var(--gray-3);
 }

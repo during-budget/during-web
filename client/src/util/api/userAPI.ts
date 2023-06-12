@@ -3,7 +3,7 @@ import { checkNetwork } from '../network';
 import { AssetDataType, CardDataType, PaymentDataType } from './assetAPI';
 import { AuthDataType } from './authAPI';
 import { UserCategoryType } from './categoryAPI';
-import { SettingType } from './settingAPI';
+import { SettingDataType } from './settingAPI';
 
 const { DURING_SERVER } = import.meta.env;
 
@@ -22,7 +22,7 @@ export interface UserDataType extends AuthDataType {
   assets: AssetDataType[];
   cards: CardDataType[];
   paymentMethods: PaymentDataType[];
-  settings: SettingType;
+  settings: SettingDataType;
 }
 
 export const updateUserInfo = async (info: Partial<UserInfoType>) => {

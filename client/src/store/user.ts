@@ -46,7 +46,6 @@ const userSlice = createSlice({
     },
     logout(state) {
       state = initialState;
-      console.log(state.auth.isGuest);
     },
     setUserInfo(state, action: PayloadAction<UserInfoType>) {
       state.info = { ...action.payload };

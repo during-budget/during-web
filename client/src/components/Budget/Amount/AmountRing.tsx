@@ -42,7 +42,7 @@ function AmountRing(props: {
   skinScale: number;
   showMsg?: boolean;
 }) {
-  const skin = useAppSelector((state) => state.setting.data.chartSkin);
+  const skin = useAppSelector((state) => state.setting.chartSkin.selected);
   const skinKey = skin.toUpperCase();
   const skinData = Object.keys(SKIN_DATA).includes(skinKey)
     ? SKIN_DATA[skinKey]

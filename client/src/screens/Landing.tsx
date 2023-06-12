@@ -13,6 +13,7 @@ import { uiActions } from '../store/ui';
 import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
 import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
+import { getOptions } from '../util/api/settingAPI';
 import { UserDataType, getUserState } from '../util/api/userAPI';
 import { getErrorMessage } from '../util/error';
 import classes from './Landing.module.css';
@@ -81,7 +82,17 @@ const Landing = () => {
     dispatch(assetActions.setAssets(assets));
     dispatch(assetActions.setCards(cards));
     dispatch(assetActions.setPaymentMethods(paymentMethods));
-    dispatch(settingActions.setSettings(settings));
+
+    const { options } = await getOptions('chartSkin');
+    dispatch(
+      settingActions.setSettings({
+        ...settings,
+        chartSkin: {
+          selected: settings.chartSkin,
+          options,
+        },
+      })
+    );
 
     // Boot channel service
     Channel.boot({
