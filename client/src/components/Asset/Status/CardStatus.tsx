@@ -25,21 +25,18 @@ const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusPro
   }, cards);
 
   const assetTabValues = useMemo(() => {
-    const assetList = assets
-      .map((asset) => {
-        return {
-          label: asset.title,
-          value: asset._id,
-          checked: asset._id === currentAssetId,
-          onChange: () => {
-            setCurrentAssetId(asset._id);
-          },
-        };
-      });
+    const assetList = assets.map((asset) => {
+      return {
+        label: asset.title,
+        value: asset._id,
+        checked: asset._id === currentAssetId,
+        onChange: () => {
+          setCurrentAssetId(asset._id);
+        },
+      };
+    });
 
     const unlinkedAssetIdExists = cards.find((card) => !card.linkedAssetId);
-
-    console.log(cards);
 
     if (unlinkedAssetIdExists) {
       assetList.push({
@@ -58,7 +55,6 @@ const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusPro
   const currentCards = useMemo(
     () =>
       cards.filter((card) => {
-        console.log(card.linkedAssetId, currentAssetId);
         return card.linkedAssetId === currentAssetId;
       }),
     [cards, currentAssetId]

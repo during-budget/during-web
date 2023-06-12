@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import { assetActions } from '../../../store/asset';
@@ -22,6 +23,7 @@ import OverlayForm from '../../UI/OverlayForm';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';
+import DateSelector from '../Input/DateSelector';
 import MemoInput from '../Input/MemoInput';
 import PaymentInput from '../Input/PaymentInput';
 import TagInput from '../Input/TagInput';
@@ -29,8 +31,6 @@ import TitleInput from '../Input/TitleInput';
 import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
-import { useLocation } from 'react-router';
-import DateSelector from '../Input/DateSelector';
 
 interface TransactionFromProps {
   budgetId: string;
@@ -107,7 +107,6 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   // handlers
   const submitHandler = async () => {
     // set transaction
-    console.log(dateState);
     const transaction: TransactionType = {
       _id: defaultValue._id || uuid(),
       budgetId,

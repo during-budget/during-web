@@ -1,31 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { ChartSkinType, SKIN_DATA } from '../../../constants/chart-skin';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { SettingOverlayProps } from '../../../screens/User';
 import { settingActions } from '../../../store/setting';
 import { uiActions } from '../../../store/ui';
-import { updateChartSkin } from '../../../util/api/settingAPI';
+import { getOptions, updateChartSkin } from '../../../util/api/settingAPI';
 import { getErrorMessage } from '../../../util/error';
-import { ChartSkinType, SKIN_DATA } from '../../Budget/Amount/AmountRing';
 import Button from '../../UI/Button';
 import Mask from '../../UI/Mask';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './ChartSkinSetting.module.css';
 
 const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
-  const skin = useAppSelector((state) => state.setting.data.chartSkin);
+  const { selected: skinState, options } = useAppSelector(
+    (state) => state.setting.chartSkin
+  );
   const dispatch = useDispatch();
-
-  const [skinState, setSkinState] = useState<ChartSkinType>(skin);
 
   const submitHandler = async () => {
     try {
       await updateChartSkin(skinState);
-      dispatch(settingActions.setChartSkin(skinState));
+      dispatch(
+        settingActions.updateSelectedOption({ field: 'chartSkin', value: skinState })
+      );
     } catch (error) {
       const message = getErrorMessage(error);
 
-      console.log(error, (error as Error).message, message);
       if ((error as Error).message === 'PAYMENT_NOT_FOUND') {
         dispatch(
           uiActions.showModal({
@@ -54,9 +55,12 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
     onClose();
   };
 
+  // TODO: 필요한?지 체크
   useEffect(() => {
     if (isOpen) {
-      setSkinState(skin);
+      dispatch(
+        settingActions.updateSelectedOption({ field: 'chartSkin', value: skinState })
+      );
     }
   }, [isOpen]);
 
@@ -68,18 +72,33 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
           isOpen,
           onClose,
         }}
+        confirmCancelOptions={{
+          closeMsg: '닫기'
+        }}
         className={classes.chartSkinSetting}
       >
         <h5>차트 캐릭터 설정</h5>
         <ul className={classes.list}>
           {Object.values(SKIN_DATA).map((item) => {
+            const isLocked = !options.includes(item.name);
             return (
               item.name !== 'basic' && (
                 <li
                   key={item.name}
-                  className={`${skinState === item.name ? classes.selected : ''}`}
+                  className={`${isLocked ? classes.lock : classes.unlock} ${
+                    skinState === item.name ? classes.selected : ''
+                  }`}
                   onClick={() => {
-                    setSkinState(item.name);
+                    if (isLocked) {
+                      return;
+                    }
+
+                    dispatch(
+                      settingActions.updateSelectedOption({
+                        field: 'chartSkin',
+                        value: item.name,
+                      })
+                    );
                   }}
                 >
                   <div className={classes.icon}>
@@ -89,9 +108,17 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                     />
                   </div>
                   <Button
+                    styleClass={isLocked ? 'primary' : 'gray'}
                     className={classes.buy}
                     onClick={() => {
-                      setSkinState(item.name);
+                      if (!isLocked) {
+                        settingActions.updateSelectedOption({
+                          field: 'chartSkin',
+                          value: item.name,
+                        });
+                        return;
+                      }
+
                       dispatch(
                         uiActions.setPayment({
                           content: (
@@ -106,9 +133,16 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                           amount: 2000,
                           onComplete: async (chartSkin: ChartSkinType) => {
                             try {
-                              // TODO: 잠금표시 해제 및 선택 가능하도록 설정~? 서버 작업 후 처리하자
-                              // await updateChartSkin(chartSkin);
-                              // dispatch(settingActions.setChartSkin(chartSkin));
+                              await updateChartSkin(chartSkin);
+                              const { options } = await getOptions('chartSkin');
+                              dispatch(
+                                settingActions.updateSetting({
+                                  chartSkin: {
+                                    selected: chartSkin,
+                                    options,
+                                  },
+                                })
+                              );
                             } catch (error) {
                               const message = getErrorMessage(error);
                               if (message) {
@@ -133,7 +167,7 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                       );
                     }}
                   >
-                    무료체험
+                    {isLocked ? '₩2000' : skinState === item.name ? '설정중' : '설정하기'}
                   </Button>
                 </li>
               )
@@ -143,7 +177,9 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
         <Button
           styleClass="extra"
           onClick={() => {
-            setSkinState('basic');
+            dispatch(
+              settingActions.updateSelectedOption({ field: 'chartSkin', value: 'basic' })
+            );
           }}
         >
           기본 모양으로 설정

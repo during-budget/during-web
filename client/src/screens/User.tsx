@@ -266,7 +266,6 @@ function User() {
   }, []);
 
   const landingHandler = (user: UserDataType) => {
-    console.log(user);
     const { email, isLocal, snsId, isGuest } = user;
     setShowAuth(false);
     dispatch(
