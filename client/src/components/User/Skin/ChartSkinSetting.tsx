@@ -18,12 +18,18 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
   );
   const dispatch = useDispatch();
 
-  const submitHandler = async () => {
+  const clickHandler = (isLocked: boolean, skin: ChartSkinType) => {
+    if (isLocked) {
+      payHandler(skin);
+    } else {
+      submitHandler(skin);
+    }
+  };
+
+  const submitHandler = async (skin: ChartSkinType) => {
     try {
-      await updateChartSkin(skinState);
-      dispatch(
-        settingActions.updateSelectedOption({ field: 'chartSkin', value: skinState })
-      );
+      await updateChartSkin(skin);
+      dispatch(settingActions.updateSelectedOption({ field: 'chartSkin', value: skin }));
     } catch (error) {
       const message = getErrorMessage(error);
 
@@ -51,8 +57,52 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
         throw error;
       }
     }
+  };
 
-    onClose();
+  const payHandler = async (skin: ChartSkinType) => {
+    dispatch(
+      uiActions.setPayment({
+        content: (
+          <div className={`${classes.icon} ${classes.selected}`}>
+            <Mask className={classes.profile} mask={`/assets/svg/${skin}_profile.svg`} />
+          </div>
+        ),
+        itemId: skin,
+        amount: 2000,
+        onComplete: async (chartSkin: ChartSkinType) => {
+          try {
+            await updateChartSkin(chartSkin);
+            const { options } = await getOptions('chartSkin');
+            dispatch(
+              settingActions.updateSetting({
+                chartSkin: {
+                  selected: chartSkin,
+                  options,
+                },
+              })
+            );
+          } catch (error) {
+            const message = getErrorMessage(error);
+            if (message) {
+              dispatch(
+                uiActions.showModal({
+                  title: '문제가 발생했습니다',
+                  description: message,
+                })
+              );
+            } else {
+              dispatch(
+                uiActions.showErrorModal({
+                  title: '문제가 발생했습니다',
+                  description: '차트 스킨 설정을 적용할 수 없습니다.',
+                })
+              );
+              throw error;
+            }
+          }
+        },
+      })
+    );
   };
 
   // TODO: 필요한?지 체크
@@ -67,13 +117,15 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
     <>
       <OverlayForm
-        onSubmit={submitHandler}
+        onSubmit={async () => {
+          onClose();
+        }}
         overlayOptions={{
           isOpen,
           onClose,
         }}
         confirmCancelOptions={{
-          closeMsg: '닫기'
+          closeMsg: '닫기',
         }}
         className={classes.chartSkinSetting}
       >
@@ -88,18 +140,7 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                   className={`${isLocked ? classes.lock : classes.unlock} ${
                     skinState === item.name ? classes.selected : ''
                   }`}
-                  onClick={() => {
-                    if (isLocked) {
-                      return;
-                    }
-
-                    dispatch(
-                      settingActions.updateSelectedOption({
-                        field: 'chartSkin',
-                        value: item.name,
-                      })
-                    );
-                  }}
+                  onClick={clickHandler.bind(null, isLocked, item.name)}
                 >
                   <div className={classes.icon}>
                     <Mask
@@ -110,62 +151,7 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
                   <Button
                     styleClass={isLocked ? 'primary' : 'gray'}
                     className={classes.buy}
-                    onClick={() => {
-                      if (!isLocked) {
-                        settingActions.updateSelectedOption({
-                          field: 'chartSkin',
-                          value: item.name,
-                        });
-                        return;
-                      }
-
-                      dispatch(
-                        uiActions.setPayment({
-                          content: (
-                            <div className={`${classes.icon} ${classes.selected}`}>
-                              <Mask
-                                className={classes.profile}
-                                mask={`/assets/svg/${item.name}_profile.svg`}
-                              />
-                            </div>
-                          ),
-                          itemId: item.name,
-                          amount: 2000,
-                          onComplete: async (chartSkin: ChartSkinType) => {
-                            try {
-                              await updateChartSkin(chartSkin);
-                              const { options } = await getOptions('chartSkin');
-                              dispatch(
-                                settingActions.updateSetting({
-                                  chartSkin: {
-                                    selected: chartSkin,
-                                    options,
-                                  },
-                                })
-                              );
-                            } catch (error) {
-                              const message = getErrorMessage(error);
-                              if (message) {
-                                dispatch(
-                                  uiActions.showModal({
-                                    title: '문제가 발생했습니다',
-                                    description: message,
-                                  })
-                                );
-                              } else {
-                                dispatch(
-                                  uiActions.showErrorModal({
-                                    title: '문제가 발생했습니다',
-                                    description: '차트 스킨 설정을 적용할 수 없습니다.',
-                                  })
-                                );
-                                throw error;
-                              }
-                            }
-                          },
-                        })
-                      );
-                    }}
+                    onClick={clickHandler.bind(null, isLocked, item.name)}
                   >
                     {isLocked ? '₩2000' : skinState === item.name ? '설정중' : '설정하기'}
                   </Button>
