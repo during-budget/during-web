@@ -39,14 +39,14 @@ export const update = async (req: Request, res: Response) => {
       if (!chartSkins.includes(req.body.chartSkin)) {
         return res.status(400).send({ message: FIELD_INVALID("chartSkin") });
       }
-      user.settings.chartSkin = req.body.chartSkin;
+      user.settings = { ...user.settings, chartSkin: req.body.chartSkin };
     }
 
     if ("timeZone" in req.body) {
       if (!moment.tz.zone(req.body.timeZone)) {
         return res.status(400).send({ message: FIELD_INVALID("timeZone") });
       }
-      user.settings.timeZone = req.body.timeZone;
+      user.settings = { ...user.settings, timeZone: req.body.timeZone };
     }
 
     await user.saveReqUser();
