@@ -121,3 +121,9 @@
 .culture label {
   font-size: 1rem;
 }
+
+.refund {
+  margin-top: 2.5vh;
+  text-align: center;
+  font-size: 0.95rem;
+}

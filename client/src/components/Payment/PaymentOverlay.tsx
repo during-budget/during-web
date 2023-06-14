@@ -229,7 +229,7 @@ const PaymentOverlay = () => {
               <label htmlFor="payment-vbank">무통장입금</label>
             </div> */}
           </div>
-          <div className={`${classes.flex} ${classes.culture}`}>
+          {/* <div className={`${classes.flex} ${classes.culture}`}>
             <div className={classes.options}>
               <input
                 id="payment-cultureland"
@@ -275,7 +275,7 @@ const PaymentOverlay = () => {
                 (스마트문상)
               </label>
             </div>
-          </div>
+          </div> */}
           {/* <input id='payment-smartculture' type="radio" name="payment" value="smartculture" />
       <label htmlFor='payment-smartculture'>문화상품권</label>
 
@@ -286,6 +286,9 @@ const PaymentOverlay = () => {
       <label htmlFor='payment-card'>게임문화상품권</label> */}
         </div>
       </div>
+      <p className={classes.refund}>
+        ⓘ 구매 후 7일 이내에 한해 문의 채널을 통해 환불 가능합니다.
+      </p>
     </OverlayForm>
   );
 };
