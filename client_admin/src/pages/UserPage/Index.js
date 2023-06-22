@@ -8,6 +8,7 @@ import Assets from "./tab/Assets";
 import Cards from "./tab/Cards";
 import PaymentMethods from "./tab/PaymentMethods";
 import Payments from "./tab/Payments";
+import Challenges from "./tab/Challenges";
 import Settings from "./tab/Settings";
 
 import useQueries from "../../hooks/useQueries";
@@ -28,6 +29,7 @@ function Index() {
           { label: "cards", child: <Cards /> },
           { label: "payment methods", child: <PaymentMethods /> },
           { label: "payments", child: <Payments /> },
+          { label: "challenges", child: <Challenges /> },
           { label: "settings", child: <Settings /> },
         ]}
       />
