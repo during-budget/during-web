@@ -49,6 +49,10 @@ export const update = async (req: Request, res: Response) => {
       user.settings = { ...user.settings, timeZone: req.body.timeZone };
     }
 
+    if ("theme" in req.body) {
+      user.settings = { ...user.settings, theme: req.body.theme };
+    }
+
     await user.saveReqUser();
     return res.status(200).send({
       settings: user.settings,

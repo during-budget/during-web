@@ -54,6 +54,7 @@ interface IUser {
   settings: {
     chartSkin: string;
     timeZone: string;
+    theme?: any;
   };
 }
 
