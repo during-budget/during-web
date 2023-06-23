@@ -643,6 +643,17 @@ export const find = async (req: Request, res: Response) => {
         transactions,
       });
     }
+    if ("tag" in req.query) {
+      const transactions = await Transaction.find({
+        userId: user._id,
+        budgetId: { $ne: user.basicBudgetId },
+        tags: { $elemMatch: { $eq: req.query.tag } },
+      });
+
+      return res.status(200).send({
+        transactions,
+      });
+    }
     if (!("budgetId" in req.query))
       return res.status(400).send({
         message: FIELD_REQUIRED("budgetId"),
