@@ -24,7 +24,7 @@ export const update = async (req: Request, res: Response) => {
     const user = req.user!;
 
     if ("chartSkin" in req.body) {
-      if (req.body.chartSkin !== "basic") {
+      if (req.body.chartSkin !== "basic" && req.body.chartSkin !== "cat") {
         if (
           !(await Payment.findOne({
             userId: user._id,
