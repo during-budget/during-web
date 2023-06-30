@@ -115,7 +115,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       icon: iconRef.current!.value() || '',
       title: titlesRef.current!.value(),
       date: dateState || new Date(),
-      amount: +amountRef.current!.value(),
+      amount: +amountRef.current!.value,
       categoryId: categoryRef.current!.value(),
       linkedPaymentMethodId: paymentState || '',
       tags: tagsRef.current!.value(),
@@ -218,16 +218,13 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         id="transaction-form-amount"
         ref={amountRef}
         className={classes.field}
-        style={{
-          width: mode.isExpand ? '100%' : 0,
-          padding: mode.isExpand ? 'var(--size-6)' : 0,
-        }}
+        isOpen={mode.isExpand}
         onFocus={expandHandler}
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
       />
-      <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '100%' }}>
+      <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '40%' }}>
         내역 추가
       </Button>
     </div>

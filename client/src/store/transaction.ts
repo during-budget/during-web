@@ -152,6 +152,9 @@ const transactionSlice = createSlice({
     closeDetail(state) {
       state.detail.isOpen = false;
     },
+    setAmount(state, action: PayloadAction<number>) {
+      state.form.default.amount = action.payload;
+    },
   },
 });
 
