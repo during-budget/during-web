@@ -160,6 +160,7 @@ function CategoryPlan(props: { budgetId: string }) {
       <OverlayForm
         onSubmit={submitHandler}
         overlayOptions={{
+          id: 'category-plan',
           isOpen,
           noTransform: true,
           onClose: closeHandler,

@@ -5,7 +5,7 @@ import classes from './Terms.module.css';
 
 const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
-    <Overlay className={classes.terms} isOpen={isOpen} onClose={onClose}>
+    <Overlay id="terms" className={classes.terms} isOpen={isOpen} onClose={onClose}>
       <div className={classes.contents}>
         <h1>이용약관</h1>
         <section>

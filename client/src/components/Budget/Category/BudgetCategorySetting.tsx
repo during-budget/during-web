@@ -171,7 +171,12 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
 
   return (
     <OverlayForm
-      overlayOptions={{ isOpen, onClose: closeHandler, noTransform: true }}
+      overlayOptions={{
+        id: 'budget-category-setting',
+        isOpen,
+        onClose: closeHandler,
+        noTransform: true,
+      }}
       onSubmit={submitHandler}
       className={classes.budgetCategoryForm}
     >

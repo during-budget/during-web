@@ -25,6 +25,7 @@ const Developers = ({ isOpen, onClose }: SettingOverlayProps) => {
 
   return (
     <Overlay
+      id="developers-info"
       className={classes.developers}
       isOpen={isOpen}
       onClose={onClose}
@@ -60,11 +61,7 @@ const Developers = ({ isOpen, onClose }: SettingOverlayProps) => {
           </li>
         ))}
       </ul>
-      <Button
-        onClick={onClose}
-      >
-        닫기
-      </Button>
+      <Button onClick={onClose}>닫기</Button>
     </Overlay>
   );
 };

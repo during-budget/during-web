@@ -121,6 +121,7 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
           onClose();
         }}
         overlayOptions={{
+          id: 'chart-skin-setting',
           isOpen,
           onClose,
         }}

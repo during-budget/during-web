@@ -286,6 +286,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         className={`${containerClass} ${className}`}
         onSubmit={submitHandler}
         overlayOptions={{
+          id: 'transaction-form',
           isOpen: mode.isExpand,
           onClose: closeHandler,
           isClip: true,

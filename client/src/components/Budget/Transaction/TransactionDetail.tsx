@@ -105,6 +105,7 @@ function TransactionDetail({ isDefaultBudget }: Props) {
 
   return (
     <Overlay
+      id="transaction-detail"
       className={`${classes.container} ${isOpen ? classes.open : ''}`}
       isOpen={isOpen}
       onClose={closeHandler}

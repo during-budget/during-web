@@ -5,7 +5,12 @@ import classes from './Privacy.module.css';
 
 const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
-    <Overlay className={classes.privacy} isOpen={isOpen} onClose={onClose}>
+    <Overlay
+      id="privacy-policy"
+      className={classes.privacy}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       <div className={classes.contents}>
         <section>
           <h1>개인정보 처리방침</h1>

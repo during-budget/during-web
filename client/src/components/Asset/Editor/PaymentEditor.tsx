@@ -44,6 +44,7 @@ const PaymentEditor = ({ isOpen, onClose }: PaymentEditorProps) => {
     <OverlayForm
       onSubmit={submitHandler}
       overlayOptions={{
+        id: 'payment-editor',
         isOpen,
         onClose,
         noTransform: true,

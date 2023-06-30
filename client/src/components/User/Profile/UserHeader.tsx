@@ -117,7 +117,11 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
       )}
       <OverlayForm
         className={classes.infoForm}
-        overlayOptions={{ isOpen: showInfoForm, onClose: closeInfoForm }}
+        overlayOptions={{
+          id: 'user-header',
+          isOpen: showInfoForm,
+          onClose: closeInfoForm,
+        }}
         onSubmit={submitHandler}
       >
         <h3>회원 정보 수정</h3>
