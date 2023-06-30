@@ -6,6 +6,7 @@ import classes from './Buisness.module.css';
 const Buisness = ({ isOpen, onClose }: SettingOverlayProps) => {
   return (
     <Overlay
+      id="buisness-info"
       className={classes.buisness}
       isOpen={isOpen}
       onClose={onClose}
@@ -25,11 +26,7 @@ const Buisness = ({ isOpen, onClose }: SettingOverlayProps) => {
           <strong>연락처 |</strong> 0507-0177-7002
         </p>
       </div>
-      <Button
-        onClick={onClose}
-      >
-        닫기
-      </Button>
+      <Button onClick={onClose}>닫기</Button>
     </Overlay>
   );
 };

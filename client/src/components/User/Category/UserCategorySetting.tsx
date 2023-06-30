@@ -58,6 +58,7 @@ function UserCategorySetting({ isOpen, onClose }: SettingOverlayProps) {
     <OverlayForm
       onSubmit={submitHandler}
       overlayOptions={{
+        id: 'user-category-setting',
         isOpen,
         noTransform: true,
         onClose,

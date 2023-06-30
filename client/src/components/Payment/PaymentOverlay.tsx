@@ -156,6 +156,7 @@ const PaymentOverlay = () => {
     <OverlayForm
       className={classes.payment}
       overlayOptions={{
+        id: 'payment-overlay',
         isOpen,
         onClose: () => {
           dispatch(uiActions.closePayment());

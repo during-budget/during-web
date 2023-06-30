@@ -191,7 +191,7 @@ const AssetCardItemEditor = ({
   return (
     <OverlayForm
       onSubmit={submitHandler}
-      overlayOptions={{ isOpen, onClose: closeEditor }}
+      overlayOptions={{ id: 'asset-card-item-editor', isOpen, onClose: closeEditor }}
       className={`${classes.container} ${isOpen ? classes.open : ''} `}
     >
       <div className={classes.content}>

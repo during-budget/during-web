@@ -142,6 +142,7 @@ const AssetCardListEditor = ({
       <OverlayForm
         onSubmit={submitHandler}
         overlayOptions={{
+          id: 'asset-card-list-editor',
           isOpen,
           onClose: closeEditor,
           noTransform: true,

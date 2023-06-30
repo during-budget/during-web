@@ -1,9 +1,11 @@
 import { PropsWithChildren, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import classes from './Overlay.module.css';
 
 export interface OverlayProps {
+  id: string;
   isOpen: boolean;
-  onClose?: () => void;
+  onClose: () => void;
   isClip?: boolean;
   isHideBackdrop?: boolean;
   noTransform?: boolean;
@@ -13,6 +15,7 @@ export interface OverlayProps {
 }
 
 function Overlay({
+  id,
   isOpen,
   onClose,
   isClip,
@@ -23,6 +26,9 @@ function Overlay({
   className,
   children,
 }: PropsWithChildren<OverlayProps>) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // NOTE: disable body scroll
   useEffect(() => {
     const body = document.querySelector('body');
@@ -31,7 +37,19 @@ function Overlay({
     } else {
       body?.style.setProperty('overflow', 'scroll');
     }
+
+    if (isOpen) {
+      navigate(`${location.pathname}${location.search}${location.hash}#${id}`);
+    } else if (location.hash.includes(id)) {
+      navigate(-1);
+    }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && !location.hash.includes(id)) {
+      onClose();
+    }
+  }, [location]);
 
   return (
     <div
