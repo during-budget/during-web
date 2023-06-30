@@ -6,6 +6,7 @@ interface EditInputProps {
   className?: string;
   editClass?: string;
   cancelClass?: string;
+  label?: string;
   value: string;
   min?: number;
   onConfirm?: (value: string) => void;
@@ -20,6 +21,7 @@ const EditInput = React.forwardRef(
       className,
       editClass,
       cancelClass,
+      label,
       value,
       min,
       onConfirm,
@@ -97,6 +99,7 @@ const EditInput = React.forwardRef(
 
     return (
       <div className={className}>
+        <label htmlFor={`${id}`}>{label}</label>
         {!isEdit && (
           <button
             type="button"
