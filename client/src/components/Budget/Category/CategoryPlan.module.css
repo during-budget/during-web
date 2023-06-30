@@ -50,6 +50,10 @@
   color: var(--gray-3);
 }
 
+.alert {
+  margin-bottom: 1vh;
+}
+
 .bars {
   height: 6vh;
   margin-bottom: 1vh;
@@ -104,4 +108,13 @@
 
 .container > form > button {
   margin-bottom: 5vh;
+}
+
+.red {
+  color: var(--error-text);
+  background-color: var(--error-background);
+}
+
+.red > * {
+  color: inherit;
 }

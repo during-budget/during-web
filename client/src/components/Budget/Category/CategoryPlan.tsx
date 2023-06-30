@@ -16,6 +16,7 @@ import AmountBars from '../Amount/AmountBars';
 import EditInput from '../Input/EditInput';
 import classes from './CategoryPlan.module.css';
 import CategoryPlanItem from './CategoryPlanItem';
+import Inform from '../../UI/Inform';
 
 function CategoryPlan(props: { budgetId: string }) {
   const dispatch = useAppDispatch();
@@ -182,6 +183,18 @@ function CategoryPlan(props: { budgetId: string }) {
           onConfirm={confirmTotalHandler}
           convertDefaultValue={convertTotalHandler}
         />
+        {(defaultCategory?.amount.planned || 0) < 0 && (
+          <Inform className={classes.alert} isError={true}>
+            <strong>전체 목표 초과</strong>
+            <p>
+              카테고리별 목표 총합이{' '}
+              <strong>{`${Amount.getAmountStr(
+                totalPlanState + -1 * (defaultCategory?.amount.planned || 0)
+              )}`}</strong>
+              입니다.
+            </p>
+          </Inform>
+        )}
         {/* total - plan amount bars */}
         <AmountBars
           className={classes.bars}
@@ -220,7 +233,16 @@ function CategoryPlan(props: { budgetId: string }) {
           </DraggableList>
         </ul>
         {/* category - default amount (left amount) */}
-        <div className={classes.left}>
+        <div
+          className={`${classes.left} ${
+            (defaultCategory?.amount.planned || 0) -
+              (defaultCategory?.amount.current || 0) -
+              (defaultCategory?.amount.scheduled || 0) <
+            0
+              ? classes.red
+              : ''
+          }`}
+        >
           <h6>목표 가능 금액</h6>
           <p>
             {Amount.getAmountStr(
