@@ -30,6 +30,10 @@ function CategoryPlanItem({
   const [plan, setPlan] = useState(Amount.getAmountStr(amount.planned));
 
   useEffect(() => {
+    setPlan(Amount.getAmountStr(amount.planned));
+  }, [amount.planned]);
+
+  useEffect(() => {
     if (isDefault) {
       setPlan(Amount.getAmountStr(amount.planned));
     }
