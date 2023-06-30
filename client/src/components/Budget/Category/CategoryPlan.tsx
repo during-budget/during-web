@@ -172,11 +172,12 @@ function CategoryPlan(props: { budgetId: string }) {
         className={`${classes.container} ${isOpen ? classes.open : ''}`}
       >
         {/* total - edit input */}
-        <h5>{`${title} 카테고리별 ${isExpense ? '지출' : '수입'} 목표`}</h5>
+        <h5>카테고리 목표 수정</h5>
         <EditInput
           className={classes.total}
           editClass={classes.totalEdit}
           cancelClass={classes.totalCancel}
+          label={`${title} ${isExpense ? '지출' : '수입'} 목표`}
           value={Amount.getAmountStr(totalPlanState)}
           onConfirm={confirmTotalHandler}
           convertDefaultValue={convertTotalHandler}

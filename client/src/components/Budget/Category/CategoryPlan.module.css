@@ -11,12 +11,18 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-self: center;
+  justify-content: center;
   width: 100%;
   height: 8vh;
   margin-bottom: 1vh;
   border-radius: 1rem;
   background-color: var(--gray-1);
+}
+
+.total label {
+  margin-left: 1.5rem;
+  flex-shrink: 0;
+  font-weight: 800;
 }
 
 .total input,
