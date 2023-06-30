@@ -12,6 +12,7 @@ export interface OverlayProps {
   noTransition?: boolean;
   lockBody?: boolean;
   className?: string;
+  hash?: string;
 }
 
 function Overlay({
@@ -23,6 +24,7 @@ function Overlay({
   noTransform,
   noTransition,
   lockBody,
+  hash,
   className,
   children,
 }: PropsWithChildren<OverlayProps>) {
@@ -39,7 +41,9 @@ function Overlay({
     }
 
     if (isOpen) {
-      navigate(`${location.pathname}${location.search}${location.hash}#${id}`);
+      navigate(
+        `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
+      );
     } else if (location.hash.includes(id)) {
       navigate(-1);
     }

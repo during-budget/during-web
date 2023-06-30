@@ -1,9 +1,10 @@
+import { useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import AmountOverlay from '../components/Budget/Input/AmountOverlay';
 import Modal from '../components/UI/Modal';
 import { useAppSelector } from '../hooks/redux-hook';
-import classes from './Root.module.css';
-import { useEffect } from 'react';
 import Channel from '../models/Channel';
+import classes from './Root.module.css';
 
 function Root() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function Root() {
       )}
       <Outlet />
       <Modal />
+      <AmountOverlay />
     </>
   );
 }

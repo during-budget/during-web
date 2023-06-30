@@ -36,11 +36,19 @@ interface PaymentOptions {
   amount: number;
 }
 
+interface AmountOptions {
+  isOpen: boolean;
+  value: string;
+  onConfirm?: () => void;
+  onClose?: () => void;
+}
+
 const initialState: {
   budget: BudgetOptions;
   emoji: EmojiOptions;
   modal: ModalOptions;
   payment: PaymentOptions;
+  amount: AmountOptions;
 } = {
   budget: {
     isCurrent: true,
@@ -72,6 +80,10 @@ const initialState: {
     isOpen: false,
     itemId: '',
     amount: 0,
+  },
+  amount: {
+    isOpen: false,
+    value: '',
   },
 };
 
@@ -132,6 +144,19 @@ const uiSlice = createSlice({
     },
     closePayment(state) {
       state.payment = initialState.payment;
+    },
+    // NOTE: 숫자 문자열만 허용 (수식 허용 X)
+    setAmountInput(state, action: PayloadAction<Omit<AmountOptions, 'isOpen'>>) {
+      const value = action.payload.value;
+      const localeValue =
+        value && !value.includes(',') ? (+value).toLocaleString() : value;
+      state.amount = { ...action.payload, isOpen: true, value: localeValue };
+    },
+    setAmountValue(state, action: PayloadAction<string>) {
+      state.amount.value = action.payload;
+    },
+    closeAmountInput(state) {
+      state.amount = initialState.amount;
     },
   },
 });
