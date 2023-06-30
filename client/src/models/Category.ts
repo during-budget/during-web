@@ -92,6 +92,21 @@ class Category {
     });
   };
 
+  static convertToObj(category: Category) {
+    const { ...properties } = category;
+
+    const obj: { [key: string]: any } = {};
+
+    for (const key in properties) {
+      // @ts-ignore
+      obj[key.split('_')[1]] = properties[key];
+    }
+
+    delete obj.amount;
+
+    return obj;
+  }
+
   static getEmptyCategory = () => {
     return new Category({
       id: uuid(),

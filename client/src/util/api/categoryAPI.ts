@@ -132,18 +132,17 @@ export const updateCategoriesPartially = async (updatingData: {
   return data as UpdatedUserCategoryType;
 };
 
-const convertCategory = (categoryData: Category[]) => {
+export const convertCategory = (categoryData: Category[]) => {
   checkNetwork();
 
   return categoryData.map((category) => {
-    const { id, isExpense, icon, title } = category;
+    const { id, isExpense } = category;
 
     return {
+      ...Category.convertToObj(category),
       _id: isUUID(id) ? undefined : id,
-      isExpense,
       isIncome: !isExpense,
-      icon,
-      title,
+      amount: undefined,
     };
   });
 };
