@@ -16,6 +16,56 @@ import {
 
 // category settings controller
 
+export const create = async (req: Request, res: Response) => {
+  try {
+    /* validate */
+    const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
+    const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
+    if (isExpense === isIncome) {
+      return res.status(400).send({ message: FIELD_INVALID("isExpense") });
+    }
+    if (!("title" in req.body))
+      return res.status(400).send({ message: FIELD_REQUIRED("title") });
+    if (!("icon" in req.body))
+      return res.status(400).send({ message: FIELD_REQUIRED("icon") });
+
+    const user = req.user!;
+
+    const defaultExpenseCategory = {
+      ...user.findDefaultExpenseCategory(),
+    };
+    const defaultIncomeCategory = {
+      ...user.findDefaultIncomeCategory(),
+    };
+
+    const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      user.categories.filter((category) => !category.isDefault)
+    );
+
+    user.categories = new Types.DocumentArray([
+      ..._categories,
+      {
+        isExpense,
+        isIncome,
+        isDefault: false,
+        title: req.body.title,
+        icon: req.body.icon,
+      },
+      defaultExpenseCategory,
+      defaultIncomeCategory,
+    ]);
+
+    await user.saveReqUser();
+
+    return res.status(200).send({
+      categories: user.categories,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 export const updateV2 = async (req: Request, res: Response) => {
   try {
     /* validate */
