@@ -10,4 +10,6 @@ router.patch("/", isLoggedIn, categories.updateV3);
 
 router.get("/", isLoggedIn, categories.find);
 
+router.post("/", isLoggedIn, categories.create);
+
 export default router;
