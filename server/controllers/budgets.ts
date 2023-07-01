@@ -435,6 +435,7 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
         const category = {
           ...exCategory,
           amountPlanned: _category.amountPlanned,
+          autoPlanned: _category.autoPlanned,
         };
         _categories.push(category);
         delete categoryDict[key];
