@@ -1,7 +1,6 @@
 import { Parser } from 'expr-eval';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
-import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import Button from '../../UI/Button';
 import OverlayForm from '../../UI/OverlayForm';
@@ -14,14 +13,20 @@ const getEvaluatedValue = (value: string) => {
 };
 
 const AmountOverlay = () => {
-  const { isOpen, value } = useAppSelector((state) => state.ui.amount);
+  const { isOpen, value, onConfirm } = useAppSelector((state) => state.ui.amount);
   const dispatch = useAppDispatch();
 
   const [isEvaluated, setIsEvaluated] = useState(true);
 
+  useEffect(() => {
+    if (isOpen) {
+      setIsEvaluated(true);
+    }
+  }, [isOpen]);
+
   const submitHandler = async () => {
     const amount = getEvaluatedValue(value);
-    dispatch(transactionActions.setAmount(amount));
+    onConfirm && onConfirm(amount);
     dispatch(uiActions.closeAmountInput());
   };
 

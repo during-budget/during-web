@@ -11,12 +11,12 @@ import { getTransactions } from '../../../util/api/transactionAPI';
 import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
 import Button from '../../UI/Button';
 import DraggableList from '../../UI/DraggableList';
+import Inform from '../../UI/Inform';
 import OverlayForm from '../../UI/OverlayForm';
 import AmountBars from '../Amount/AmountBars';
 import EditInput from '../Input/EditInput';
 import classes from './CategoryPlan.module.css';
 import CategoryPlanItem from './CategoryPlanItem';
-import Inform from '../../UI/Inform';
 
 function CategoryPlan(props: { budgetId: string }) {
   const dispatch = useAppDispatch();
@@ -42,8 +42,10 @@ function CategoryPlan(props: { budgetId: string }) {
   // Update state <- from store
   // TODO: isExpense 일치 일반 카테고리와 기본 카테고리 분류해서 얻는 헬퍼 함수나 훅.. 만들기...
   useEffect(() => {
-    setTotalPlanState(storedTotal[getExpenseKey(isExpense)].planned);
-  }, [isExpense, storedTotal]);
+    if (isOpen) {
+      setTotalPlanState(storedTotal[getExpenseKey(isExpense)].planned);
+    }
+  }, [isOpen, isExpense, storedTotal]);
 
   useEffect(() => {
     setCategoryState([]);
@@ -175,6 +177,7 @@ function CategoryPlan(props: { budgetId: string }) {
         {/* total - edit input */}
         <h5>카테고리 목표 수정</h5>
         <EditInput
+          id="category-total-plan-edit-input"
           className={classes.total}
           editClass={classes.totalEdit}
           cancelClass={classes.totalCancel}

@@ -26,6 +26,7 @@ function AmountDetailItem(props: {
       <span className={classes.label}>{props.label}</span>
       {props.editHandler ? (
         <EditInput
+          id="total-status-detail-edit-input"
           className={classes.edit}
           editClass={classes.editButton}
           cancelClass={classes.cancelButton}

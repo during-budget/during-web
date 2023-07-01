@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
@@ -21,7 +20,6 @@ interface DefaultStatusProps {
 
 const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
   const dispatch = useDispatch();
-  const location = useLocation();
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
@@ -33,13 +31,6 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
   );
 
   const editInputRef = useRef<any>(null);
-
-  // 진입하자마자 목표 수정할 수 있도록 키보드 띄우기
-  useEffect(() => {
-    if (location.pathname === '/init') {
-      editInputRef.current.focus();
-    }
-  }, []);
 
   // 예정 내역이 추가될 경우 -> 목표가 예정보다 작으면 업데이트
   useEffect(() => {
@@ -124,7 +115,7 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
         </label>
         <EditInput
           ref={editInputRef}
-          id="default-budget-plan"
+          id="default-budget-total-plan-edit-input"
           className={classes.plan}
           editClass={classes.planEdit}
           cancelClass={classes.planCancel}

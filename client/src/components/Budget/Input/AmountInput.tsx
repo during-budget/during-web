@@ -3,23 +3,39 @@ import { useAppDispatch } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
 
+interface AmountInputProps {
+  id: string;
+  className?: string;
+  style?: React.CSSProperties;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onConfirm: (value: string) => void;
+  defaultValue?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  isOpen?: boolean;
+}
+
 const AmountInput = React.forwardRef(
   (
-    props: {
-      id: string;
-      className?: string;
-      style?: React.CSSProperties;
-      onFocus?: (event: React.FocusEvent) => void;
-      onClick?: (event: React.MouseEvent) => void;
-      defaultValue?: string;
-      required?: boolean;
-      readOnly?: boolean;
-      isOpen?: boolean;
-    },
+    {
+      id,
+      className,
+      style,
+      onFocus,
+      onBlur,
+      onClick,
+      onConfirm,
+      defaultValue,
+      required,
+      readOnly,
+      isOpen,
+    }: AmountInputProps,
     ref
   ) => {
     const dispatch = useAppDispatch();
-    const [value, setValue] = useState(props.defaultValue || '');
+    const [value, setValue] = useState(defaultValue || '');
 
     useImperativeHandle(ref, () => {
       return {
@@ -27,35 +43,39 @@ const AmountInput = React.forwardRef(
         clear: () => {
           setValue('');
         },
+        focus: () => {
+          amountRef.current?.focus();
+        },
       };
     });
 
     useEffect(() => {
       setValue(() => {
-        const value = props.defaultValue || '';
-        if (props.isOpen) {
-          dispatch(uiActions.setAmountInput({ value }));
+        const value = defaultValue || '';
+        if (isOpen) {
+          dispatch(uiActions.setAmountInput({ value, onConfirm }));
         }
         return value;
       });
-    }, [props.defaultValue]);
+    }, [defaultValue]);
 
     const amountRef = useRef<HTMLInputElement>(null);
 
     return (
       <input
         ref={amountRef}
-        id={props.id}
-        className={props.className}
-        style={props.style}
+        id={id}
+        className={className}
+        style={style}
         placeholder="금액을 입력하세요"
-        onFocus={props.onFocus}
+        onFocus={onFocus}
+        onBlur={onBlur}
         onClick={(event) => {
-          props.onClick && props.onClick(event);
-          dispatch(uiActions.setAmountInput({ value }));
+          onClick && onClick(event);
+          dispatch(uiActions.setAmountInput({ value, onConfirm }));
         }}
         value={value ? Amount.getAmountStr(+value) : value}
-        required={props.required}
+        required={required}
         readOnly
       />
     );
