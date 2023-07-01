@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Amount from '../../../models/Amount';
 import DraggableItem from '../../UI/DraggableItem';
 import Icon from '../../UI/Icon';
+import AmountInput from '../Input/AmountInput';
 import classes from './CategoryPlanItem.module.css';
 
 interface CategoryPlanItemProps {
@@ -27,10 +28,10 @@ function CategoryPlanItem({
   hideCurrent,
   preventDrag,
 }: CategoryPlanItemProps) {
-  const [plan, setPlan] = useState(Amount.getAmountStr(amount.planned));
+  const [plan, setPlan] = useState(amount.planned.toString());
 
   useEffect(() => {
-    setPlan(Amount.getAmountStr(amount.planned));
+    setPlan(amount.planned.toString());
   }, [amount.planned]);
 
   useEffect(() => {
@@ -40,39 +41,9 @@ function CategoryPlanItem({
   }, [amount.planned]);
 
   // Change - Set number
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-
+  const confirmHandler = (value: string) => {
     setPlan(value);
-
     onChange && onChange(idx, +value);
-  };
-
-  // Focus - Conver to number
-  const focusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-
-    if (value === '0') {
-      setPlan('');
-    } else {
-      setPlan(value);
-    }
-
-    event.target.scrollIntoView({
-      block: 'start',
-      behavior: 'smooth',
-    });
-  };
-
-  // Blur - Set AmountStr
-  const blurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    if (value === '' || +value <= 0) {
-      setPlan('0원');
-    } else {
-      setPlan(Amount.getAmountStr(+value));
-    }
   };
 
   return (
@@ -100,12 +71,10 @@ function CategoryPlanItem({
         {isDefault ? (
           <p className={classes.default}>{plan}</p>
         ) : (
-          <input
-            type="text"
-            value={plan}
-            onChange={changeHandler}
-            onFocus={focusHandler}
-            onBlur={blurHandler}
+          <AmountInput
+            id={`category-plan-item-amount-input-${id}`}
+            defaultValue={plan}
+            onConfirm={confirmHandler}
           />
         )}
       </div>
