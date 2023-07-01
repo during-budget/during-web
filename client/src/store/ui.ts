@@ -39,7 +39,7 @@ interface PaymentOptions {
 interface AmountOptions {
   isOpen: boolean;
   value: string;
-  onConfirm?: () => void;
+  onConfirm: (value: string) => void;
   onClose?: () => void;
 }
 
@@ -84,6 +84,7 @@ const initialState: {
   amount: {
     isOpen: false,
     value: '',
+    onConfirm: (value: string) => {}
   },
 };
 
@@ -147,7 +148,8 @@ const uiSlice = createSlice({
     },
     // NOTE: 숫자 문자열만 허용 (수식 허용 X)
     setAmountInput(state, action: PayloadAction<Omit<AmountOptions, 'isOpen'>>) {
-      const value = action.payload.value;
+      const value = action.payload.value.toString();
+    
       const localeValue =
         value && !value.includes(',') ? (+value).toLocaleString() : value;
       state.amount = { ...action.payload, isOpen: true, value: localeValue };

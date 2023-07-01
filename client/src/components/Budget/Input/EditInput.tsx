@@ -1,8 +1,10 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../../store/ui';
 import classes from './EditInput.module.css';
 
 interface EditInputProps {
-  id?: string;
+  id: string;
   className?: string;
   editClass?: string;
   cancelClass?: string;
@@ -30,31 +32,35 @@ const EditInput = React.forwardRef(
     }: EditInputProps,
     ref
   ) => {
+    const dispatch = useDispatch();
+
     useImperativeHandle(ref, () => {
       return {
-        focus: () => {
-          setIsEdit(true);
-        },
+        focus: editHandler,
       };
     });
 
-    const [isEdit, setIsEdit] = useState(false);
-    const editRef = useRef<HTMLInputElement>(null);
-
-    const defaultValue = convertDefaultValue ? convertDefaultValue(value) : value;
-
-    useEffect(() => {
-      if (isEdit) {
-        editRef.current?.focus();
-      }
-    }, [isEdit]);
-
-    const editHandler = async () => {
-      setIsEdit(true);
+    const getDefaultValue = () => {
+      return (convertDefaultValue ? convertDefaultValue(value) : value) || '';
     };
 
-    const confirmHandler = () => {
-      let value = +editRef.current!.value;
+    const [amount, setAmount] = useState(getDefaultValue());
+
+    useEffect(() => {
+      setAmount(getDefaultValue());
+    }, [value]);
+
+    const editHandler = async () => {
+      dispatch(
+        uiActions.setAmountInput({
+          value: amount,
+          onConfirm: confirmHandler,
+        })
+      );
+    };
+
+    const confirmHandler = (valueStr: string) => {
+      let value = +valueStr;
 
       if (min !== undefined && value < min) {
         value = min;
@@ -62,66 +68,19 @@ const EditInput = React.forwardRef(
       }
 
       onConfirm && onConfirm(value.toString());
-      setIsEdit(false);
     };
-
-    const cancelHandler = () => {
-      setIsEdit(false);
-    };
-
-    const focusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-      if (event.target.value === '0') {
-        event.target.value = '';
-      }
-      onFocus && onFocus(event);
-    };
-
-    const blurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.value) {
-        event.target.value = '0';
-      }
-      confirmHandler();
-    };
-
-    const amountInput = (
-      <input
-        ref={editRef}
-        id={id}
-        className={classes.edit}
-        type="number"
-        defaultValue={defaultValue || ''}
-        onFocus={focusHandler}
-        onBlur={blurHandler}
-      />
-    );
 
     const amountSpan = <span onClick={editHandler}>{value}</span>;
 
     return (
       <div className={className}>
-        <label htmlFor={`${id}`}>{label}</label>
-        {!isEdit && (
-          <button
-            type="button"
-            className={`${classes.edit} ${classes.pencil} ${editClass}`}
-            onClick={editHandler}
-          ></button>
-        )}
-        {isEdit && (
-          <button
-            type="button"
-            className={`${classes.edit} ${classes.cancel} ${cancelClass}`}
-            onClick={cancelHandler}
-          ></button>
-        )}
-        {isEdit ? amountInput : amountSpan}
-        {isEdit && (
-          <button
-            type="button"
-            className={`${classes.edit} ${classes.check} ${editClass}`}
-            onClick={confirmHandler}
-          ></button>
-        )}
+        <label htmlFor={id}>{label}</label>
+        <button
+          type="button"
+          className={`${classes.edit} ${classes.pencil} ${editClass}`}
+          onClick={editHandler}
+        ></button>
+        {amountSpan}
       </div>
     );
   }

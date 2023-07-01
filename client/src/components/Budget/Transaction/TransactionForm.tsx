@@ -219,6 +219,9 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         ref={amountRef}
         className={classes.field}
         isOpen={mode.isExpand}
+        onConfirm={(value: string) => {
+          dispatch(transactionActions.setAmount(+value));
+        }}
         onFocus={expandHandler}
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
