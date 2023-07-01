@@ -42,6 +42,7 @@ function Auth({ isOpen, onClose, onLanding, hideGuest, showEmail }: AuthProps) {
   return (
     <>
       <Overlay
+        id="auth"
         className={`${classes.auth} ${isOpen ? classes.open : ''} ${
           isEmailAuth ? classes.email : classes.sns
         }`}
