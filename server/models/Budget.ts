@@ -12,6 +12,7 @@ interface ICategory {
   amountScheduledRemain: number;
   amountCurrent: number;
   amountPlanned: number;
+  autoPlanned: boolean;
 }
 
 const categorySchema = new Schema<ICategory>(
@@ -37,6 +38,10 @@ const categorySchema = new Schema<ICategory>(
     amountPlanned: {
       type: Number,
       default: 0,
+    },
+    autoPlanned: {
+      type: Boolean,
+      default: true,
     },
   },
   { _id: false }
