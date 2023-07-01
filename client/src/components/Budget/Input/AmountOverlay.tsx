@@ -13,7 +13,7 @@ const getEvaluatedValue = (value: string) => {
 };
 
 const AmountOverlay = () => {
-  const { isOpen, value, onConfirm } = useAppSelector((state) => state.ui.amount);
+  const { isOpen, value, onConfirm, hash } = useAppSelector((state) => state.ui.amount);
   const dispatch = useAppDispatch();
 
   const [isEvaluated, setIsEvaluated] = useState(true);
@@ -78,6 +78,8 @@ const AmountOverlay = () => {
     ));
   };
 
+  console.log(hash);
+
   return (
     <OverlayForm
       overlayOptions={{
@@ -86,7 +88,7 @@ const AmountOverlay = () => {
         onClose: () => {
           dispatch(uiActions.closeAmountInput());
         },
-        hash: '#transaction-form',
+        hash,
       }}
       onSubmit={submitHandler}
     >

@@ -226,6 +226,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
+        hash="#transaction-form"
       />
       <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '40%' }}>
         내역 추가

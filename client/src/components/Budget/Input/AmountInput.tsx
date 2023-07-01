@@ -15,6 +15,7 @@ interface AmountInputProps {
   required?: boolean;
   readOnly?: boolean;
   isOpen?: boolean;
+  hash?: string;
 }
 
 const AmountInput = React.forwardRef(
@@ -31,6 +32,7 @@ const AmountInput = React.forwardRef(
       required,
       readOnly,
       isOpen,
+      hash,
     }: AmountInputProps,
     ref
   ) => {
@@ -53,7 +55,7 @@ const AmountInput = React.forwardRef(
       setValue(() => {
         const value = defaultValue || '';
         if (isOpen) {
-          dispatch(uiActions.setAmountInput({ value, onConfirm }));
+          dispatch(uiActions.setAmountOverlay({ value, onConfirm, hash }));
         }
         return value;
       });
@@ -72,7 +74,7 @@ const AmountInput = React.forwardRef(
         onBlur={onBlur}
         onClick={(event) => {
           onClick && onClick(event);
-          dispatch(uiActions.setAmountInput({ value, onConfirm }));
+          dispatch(uiActions.setAmountOverlay({ value, onConfirm, hash }));
         }}
         value={value ? Amount.getAmountStr(+value) : value}
         required={required}

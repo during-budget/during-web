@@ -52,7 +52,7 @@ const EditInput = React.forwardRef(
 
     const editHandler = async () => {
       dispatch(
-        uiActions.setAmountInput({
+        uiActions.setAmountOverlay({
           value: amount,
           onConfirm: confirmHandler,
         })
