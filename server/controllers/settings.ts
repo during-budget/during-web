@@ -3,7 +3,12 @@ import _ from "lodash";
 import { logger } from "@logger";
 import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "@message";
 import moment from "moment";
-import { basicTimeZone, chartSkins } from "@models/_basicSettings";
+import {
+  basicTimeZone,
+  chartSkins,
+  basicTheme,
+  themes,
+} from "@models/_basicSettings";
 import { Payment } from "@models/Payment";
 
 export const find = async (req: Request, res: Response) => {
@@ -50,6 +55,9 @@ export const update = async (req: Request, res: Response) => {
     }
 
     if ("theme" in req.body) {
+      if (!themes.includes(req.body.theme)) {
+        return res.status(400).send({ message: FIELD_INVALID("theme") });
+      }
       user.settings = { ...user.settings, theme: req.body.theme };
     }
 
@@ -83,6 +91,12 @@ export const options = async (req: Request, res: Response) => {
       return res.status(200).send({
         default: basicTimeZone,
         options: moment.tz.names(),
+      });
+    }
+    if (req.query.field === "theme") {
+      return res.status(200).send({
+        default: basicTheme,
+        options: themes,
       });
     }
     return res.status(400).send({ message: FIELD_INVALID("field") });
