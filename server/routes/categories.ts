@@ -12,4 +12,6 @@ router.get("/", isLoggedIn, categories.find);
 
 router.post("/", isLoggedIn, categories.create);
 
+router.put("/:_id", isLoggedIn, categories.update);
+
 export default router;
