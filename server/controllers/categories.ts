@@ -16,6 +16,41 @@ import {
 
 // category settings controller
 
+const UCategory_UBudgetsAndTransactions = async (
+  userId: Types.ObjectId,
+  category: ICategory
+) => {
+  const key = category._id;
+  const budgets = await Budget.find({
+    userId,
+    "categories.categoryId": key,
+  });
+  const transactions = await Transaction.find({
+    userId,
+    "category.categoryId": key,
+  });
+
+  await Promise.all([
+    budgets.forEach((budget) => {
+      const idx = budget.findCategoryIdx(key);
+      Object.assign(budget.categories[idx], {
+        ...category,
+        categoryId: key,
+      });
+      budget.markModified("categories");
+      budget.save();
+    }),
+    transactions.forEach((transaction) => {
+      Object.assign(transaction.category, {
+        ...category,
+        categoryId: key,
+      });
+      transaction.markModified("category");
+      transaction.save();
+    }),
+  ]);
+};
+
 export const create = async (req: Request, res: Response) => {
   try {
     /* validate */
@@ -56,6 +91,56 @@ export const create = async (req: Request, res: Response) => {
     ]);
 
     await user.saveReqUser();
+
+    return res.status(200).send({
+      categories: user.categories,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const update = async (req: Request, res: Response) => {
+  try {
+    if (!("title" in req.body))
+      return res.status(400).send({ message: FIELD_REQUIRED("title") });
+    if (!("icon" in req.body))
+      return res.status(400).send({ message: FIELD_REQUIRED("icon") });
+
+    const user = req.user!;
+
+    const defaultExpenseCategory = {
+      ...user.findDefaultExpenseCategory(),
+    };
+    const defaultIncomeCategory = {
+      ...user.findDefaultIncomeCategory(),
+    };
+
+    const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
+      user.categories.filter((category) => !category.isDefault)
+    );
+
+    const category = _.find(
+      _categories,
+      (_category) => _category._id.toString() === req.params._id
+    );
+    if (!category) {
+      return res.status(404).send({ message: NOT_FOUND("category") });
+    }
+
+    category.title = req.body.title;
+    category.icon = req.body.icon;
+
+    user.categories = new Types.DocumentArray([
+      ..._categories,
+      defaultExpenseCategory,
+      defaultIncomeCategory,
+    ]);
+
+    await user.saveReqUser();
+
+    await UCategory_UBudgetsAndTransactions(user._id, category);
 
     return res.status(200).send({
       categories: user.categories,
@@ -382,33 +467,7 @@ export const updateV3 = async (req: Request, res: Response) => {
     await user.saveReqUser();
 
     for (const category of updated) {
-      const key = category._id;
-      const budgets = await Budget.find({
-        userId: user._id,
-        "categories.categoryId": key,
-      });
-      const transactions = await Transaction.find({
-        userId: user._id,
-        "category.categoryId": key,
-      });
-
-      await Promise.all([
-        budgets.forEach((budget) => {
-          const idx = budget.findCategoryIdx(key);
-          Object.assign(budget.categories[idx], {
-            ...category,
-            categoryId: key,
-          });
-          budget.save();
-        }),
-        transactions.forEach((transaction) => {
-          Object.assign(transaction.category, {
-            ...category,
-            categoryId: key,
-          });
-          transaction.save();
-        }),
-      ]);
+      await UCategory_UBudgetsAndTransactions(user._id, category);
     }
 
     for (const category of removed) {
