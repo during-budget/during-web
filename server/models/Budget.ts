@@ -80,11 +80,19 @@ interface IBudgetProps {
   findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
   pushCategory: (category: any) => void;
   increaseDefaultExpenseCategory: (
-    field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+    field:
+      | "amountPlanned"
+      | "amountScheduled"
+      | "amountScheduledRemain"
+      | "amountCurrent",
     amount: number
   ) => void;
   increaseDefaultIncomeCategory: (
-    field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+    field:
+      | "amountPlanned"
+      | "amountScheduled"
+      | "amountScheduledRemain"
+      | "amountCurrent",
     amount: number
   ) => void;
 }
@@ -185,7 +193,11 @@ budgetSchema.methods.pushCategory = function (category: any) {
 };
 
 budgetSchema.methods.increaseDefaultExpenseCategory = function (
-  field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+  field:
+    | "amountPlanned"
+    | "amountScheduled"
+    | "amountScheduledRemain"
+    | "amountCurrent",
   amount: number
 ) {
   const idx = this.categories.length - 2;
@@ -193,7 +205,11 @@ budgetSchema.methods.increaseDefaultExpenseCategory = function (
   return;
 };
 budgetSchema.methods.increaseDefaultIncomeCategory = function (
-  field: "amountPlanned" | "amountScheduled" | "amountCurrent",
+  field:
+    | "amountPlanned"
+    | "amountScheduled"
+    | "amountScheduledRemain"
+    | "amountCurrent",
   amount: number
 ) {
   const idx = this.categories.length - 1;

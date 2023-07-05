@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { HydratedDocument, Types } from "mongoose";
+import { Types } from "mongoose";
 import { Budget } from "@models/Budget";
-import { ITransaction, Transaction } from "@models/Transaction";
+import { Transaction } from "@models/Transaction";
 
 import { ICategory } from "@models/User";
 
@@ -49,6 +49,85 @@ const UCategory_UBudgetsAndTransactions = async (
       transaction.save();
     }),
   ]);
+};
+
+const DCategory_UBudgetsAndTransactions = async (
+  userId: Types.ObjectId,
+  category: ICategory,
+  defaultExpenseCategory: ICategory,
+  defaultIncomeCategory: ICategory
+) => {
+  const key = category._id;
+  const budgets = await Budget.find({
+    userId,
+    "categories.categoryId": key,
+  });
+
+  for (let budget of budgets) {
+    const transactions = await Transaction.find({
+      userId,
+      budgetId: budget._id,
+      "category.categoryId": key,
+    });
+
+    for (let transaction of transactions) {
+      if (transaction.category.isExpense) {
+        transaction.category = {
+          ...defaultExpenseCategory,
+          categoryId: defaultExpenseCategory._id,
+        };
+      } else {
+        transaction.category = {
+          ...defaultIncomeCategory,
+          categoryId: defaultIncomeCategory._id,
+        };
+      }
+      transaction.markModified("category");
+    }
+
+    const idx = budget.findCategoryIdx(category._id!);
+    const bCategory = budget.categories[idx];
+    if (category.isExpense) {
+      budget.increaseDefaultExpenseCategory(
+        "amountPlanned",
+        bCategory.amountPlanned
+      );
+      budget.increaseDefaultExpenseCategory(
+        "amountCurrent",
+        bCategory.amountCurrent
+      );
+      budget.increaseDefaultExpenseCategory(
+        "amountScheduled",
+        bCategory.amountScheduled
+      );
+      budget.increaseDefaultExpenseCategory(
+        "amountScheduledRemain",
+        bCategory.amountScheduledRemain
+      );
+    } else {
+      budget.increaseDefaultIncomeCategory(
+        "amountPlanned",
+        bCategory.amountPlanned
+      );
+      budget.increaseDefaultIncomeCategory(
+        "amountCurrent",
+        bCategory.amountCurrent
+      );
+      budget.increaseDefaultIncomeCategory(
+        "amountScheduled",
+        bCategory.amountScheduled
+      );
+      budget.increaseDefaultIncomeCategory(
+        "amountScheduledRemain",
+        bCategory.amountScheduledRemain
+      );
+    }
+    budget.categories.splice(idx, 1);
+    budget.markModified("categories");
+
+    await Promise.all(transactions.map((tr) => tr.save()));
+    await budget.save();
+  }
 };
 
 export const create = async (req: Request, res: Response) => {
@@ -248,100 +327,16 @@ export const updateV2 = async (req: Request, res: Response) => {
     await user.saveReqUser();
 
     for (const category of updated) {
-      const key = category._id;
-      const budgets = await Budget.find({
-        userId: user._id,
-        "categories.categoryId": key,
-      });
-      const transactions = await Transaction.find({
-        userId: user._id,
-        "category.categoryId": key,
-      });
-
-      await Promise.all([
-        budgets.forEach((budget) => {
-          const idx = budget.findCategoryIdx(key);
-          Object.assign(budget.categories[idx], {
-            ...category,
-            categoryId: key,
-          });
-          budget.save();
-        }),
-        transactions.forEach((transaction) => {
-          Object.assign(transaction.category, {
-            ...category,
-            categoryId: key,
-          });
-          transaction.save();
-        }),
-      ]);
+      await UCategory_UBudgetsAndTransactions(user._id, category);
     }
 
     for (const category of removed) {
-      const key = category._id;
-      const budgets = await Budget.find({
-        userId: user._id,
-        "categories.categoryId": key,
-      });
-
-      const objToUpdate = [];
-      for (let budget of budgets) {
-        const transactions = await Transaction.find({
-          userId: user._id,
-          budgetId: budget._id,
-          "category.categoryId": key,
-        });
-
-        for (let transaction of transactions) {
-          if (transaction.category.isExpense) {
-            transaction.category = {
-              ...defaultExpenseCategory,
-              categoryId: defaultExpenseCategory._id,
-            };
-          } else {
-            transaction.category = {
-              ...defaultIncomeCategory,
-              categoryId: defaultIncomeCategory._id,
-            };
-          }
-          objToUpdate.push(transaction);
-        }
-
-        const idx = budget.findCategoryIdx(category._id!);
-        const bCategory = budget.categories[idx];
-        if (category.isExpense) {
-          budget.increaseDefaultExpenseCategory(
-            "amountPlanned",
-            bCategory.amountPlanned
-          );
-          budget.increaseDefaultExpenseCategory(
-            "amountCurrent",
-            bCategory.amountCurrent
-          );
-          budget.increaseDefaultExpenseCategory(
-            "amountScheduled",
-            bCategory.amountScheduled
-          );
-        } else {
-          budget.increaseDefaultIncomeCategory(
-            "amountPlanned",
-            bCategory.amountPlanned
-          );
-          budget.increaseDefaultIncomeCategory(
-            "amountCurrent",
-            bCategory.amountCurrent
-          );
-          budget.increaseDefaultIncomeCategory(
-            "amountScheduled",
-            bCategory.amountScheduled
-          );
-        }
-        budget.categories.splice(idx, 1);
-
-        objToUpdate.push(budget);
-      }
-
-      await Promise.all(objToUpdate.map((obj) => obj.save()));
+      await DCategory_UBudgetsAndTransactions(
+        user._id,
+        category,
+        defaultExpenseCategory,
+        defaultIncomeCategory
+      );
     }
 
     return res.status(200).send({
@@ -471,70 +466,12 @@ export const updateV3 = async (req: Request, res: Response) => {
     }
 
     for (const category of removed) {
-      const key = category._id;
-      const budgets = await Budget.find({
-        userId: user._id,
-        "categories.categoryId": key,
-      });
-
-      const objToUpdate = [];
-      for (let budget of budgets) {
-        const transactions = await Transaction.find({
-          userId: user._id,
-          budgetId: budget._id,
-          "category.categoryId": key,
-        });
-
-        for (let transaction of transactions) {
-          if (transaction.category.isExpense) {
-            transaction.category = {
-              ...defaultExpenseCategory,
-              categoryId: defaultExpenseCategory._id,
-            };
-          } else {
-            transaction.category = {
-              ...defaultIncomeCategory,
-              categoryId: defaultIncomeCategory._id,
-            };
-          }
-          objToUpdate.push(transaction);
-        }
-
-        const idx = budget.findCategoryIdx(category._id!);
-        const bCategory = budget.categories[idx];
-        if (category.isExpense) {
-          budget.increaseDefaultExpenseCategory(
-            "amountPlanned",
-            bCategory.amountPlanned
-          );
-          budget.increaseDefaultExpenseCategory(
-            "amountCurrent",
-            bCategory.amountCurrent
-          );
-          budget.increaseDefaultExpenseCategory(
-            "amountScheduled",
-            bCategory.amountScheduled
-          );
-        } else {
-          budget.increaseDefaultIncomeCategory(
-            "amountPlanned",
-            bCategory.amountPlanned
-          );
-          budget.increaseDefaultIncomeCategory(
-            "amountCurrent",
-            bCategory.amountCurrent
-          );
-          budget.increaseDefaultIncomeCategory(
-            "amountScheduled",
-            bCategory.amountScheduled
-          );
-        }
-        budget.categories.splice(idx, 1);
-
-        objToUpdate.push(budget);
-      }
-
-      await Promise.all(objToUpdate.map((obj) => obj.save()));
+      await DCategory_UBudgetsAndTransactions(
+        user._id,
+        category,
+        defaultExpenseCategory,
+        defaultIncomeCategory
+      );
     }
 
     return res.status(200).send({
@@ -563,6 +500,43 @@ export const find = async (req: Request, res: Response) => {
     });
 
     // return res.status(200).send({ categories: user.categories });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const idx = user.categories.findIndex(
+      (val) => val._id.toString() === req.params._id
+    );
+
+    if (idx === -1) {
+      return res
+        .status(404)
+        .send({ message: NOT_FOUND("category"), categories: user.categories });
+    }
+
+    const categoryToRemove = user.categories[idx];
+
+    const defaultExpenseCategory: any = user.findDefaultExpenseCategory();
+    const defaultIncomeCategory: any = user.findDefaultIncomeCategory();
+
+    await DCategory_UBudgetsAndTransactions(
+      user._id,
+      categoryToRemove,
+      defaultExpenseCategory,
+      defaultIncomeCategory
+    );
+
+    user.categories.splice(idx, 1);
+    await user.saveReqUser();
+
+    return res.status(200).send({
+      categories: user.categories,
+    });
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
