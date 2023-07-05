@@ -506,6 +506,26 @@ export const find = async (req: Request, res: Response) => {
   }
 };
 
+export const findOne = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+
+    const category = _.find(
+      user.categories,
+      (category) => category._id.toString() === req.params._id
+    );
+    if (!category) {
+      return res.status(404).send({ message: NOT_FOUND("category") });
+    }
+    return res.status(200).send({
+      category,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 export const remove = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
