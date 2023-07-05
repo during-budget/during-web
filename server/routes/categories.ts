@@ -14,4 +14,6 @@ router.post("/", isLoggedIn, categories.create);
 
 router.put("/:_id", isLoggedIn, categories.update);
 
+router.delete("/:_id", isLoggedIn, categories.remove);
+
 export default router;
