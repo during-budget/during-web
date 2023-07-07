@@ -238,7 +238,6 @@ budgetSchema.methods.calculate = async function () {
         sumIncomePlanned += this.categories[i].amountPlanned;
       }
     }
-    this.categories[i].amountPlanned = this.categories[i].amountPlanned;
     this.categories[i].amountScheduled = 0;
     this.categories[i].amountScheduledRemain = 0;
     this.categories[i].amountCurrent = 0;
