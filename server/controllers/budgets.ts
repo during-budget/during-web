@@ -209,69 +209,6 @@ export const fix = async (req: Request, res: Response) => {
  * @return budget
  */
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-
-    const budget = new Budget({
-      userId: user._id,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      title: req.body.title,
-      expensePlanned: req.body.expensePlanned,
-      incomePlanned: req.body.incomePlanned,
-    });
-
-    let sumExpenseAmountPlanned = 0;
-    let sumIncomeAmountPlanned = 0;
-
-    for (let _category of req.body.categories) {
-      const category = user.findCategory(_category.categoryId);
-
-      if (!category)
-        return res.status(404).send({ message: NOT_FOUND("category") });
-      if (category.isDefault)
-        return res.status(409).send({
-          message: CATEGORY_CANOT_BE_UPDATED,
-        });
-
-      if (!("amountPlanned" in _category))
-        return res
-          .status(400)
-          .send({ message: FIELD_REQUIRED("amountPlanned") });
-
-      if (category.isExpense)
-        sumExpenseAmountPlanned += _category.amountPlanned;
-      else sumIncomeAmountPlanned += _category.amountPlanned;
-
-      budget.categories.push({
-        ...category,
-        categoryId: category._id,
-        amountPlanned: _category.amountPlanned,
-      });
-    }
-    const defaultExpenseCategory = user.findDefaultExpenseCategory();
-    const defaultIncomeCategory = user.findDefaultIncomeCategory();
-    budget.categories.push({
-      ...defaultExpenseCategory,
-      categoryId: defaultExpenseCategory._id,
-      amountPlanned: budget.expensePlanned - sumExpenseAmountPlanned,
-    });
-    budget.categories.push({
-      ...defaultIncomeCategory,
-      categoryId: defaultIncomeCategory._id,
-      amountPlanned: budget.incomePlanned - sumIncomeAmountPlanned,
-    });
-
-    await budget.save();
-
-    return res.status(200).send({ budget });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
-};
-
 /**
  * Create budget based on basic budget
  *

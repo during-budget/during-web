@@ -6,7 +6,6 @@ import * as budgets from "@controllers/budgets";
 router.get("/:_id/validate", isAdmin, budgets.validate);
 router.put("/:_id/fix", isAdmin, budgets.fix);
 
-router.post("/", isLoggedIn, budgets.create);
 router.post("/basic", isLoggedIn, budgets.createWithBasic);
 
 router.patch("/:_id/categories", isLoggedIn, budgets.updateCategoriesV3);
