@@ -41,7 +41,8 @@ const AmountOverlay = () => {
   };
 
   const backspaceHandler = () => {
-    dispatch(uiActions.setAmountValue(value.slice(0, value.length - 1)));
+    const amount = value.slice(0, value.length - 1).replace(/,/g, '');
+    dispatch(uiActions.setAmountValue((+amount).toLocaleString()));
     setIsEvaluated(false);
   };
 
