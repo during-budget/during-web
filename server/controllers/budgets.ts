@@ -270,6 +270,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
     }
 
     await Promise.all(save);
+    await budget.calculate();
 
     return res.status(200).send({ budget, transactions });
   } catch (err: any) {
@@ -317,8 +318,6 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
       []
     );
 
-    let sumDefaultAmountPlanned = 0;
-
     for (let _category of req.body.categories) {
       if (!("amountPlanned" in _category))
         return res
@@ -340,8 +339,6 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
           return res.status(409).send({
             message: INVALID_CATEGORY,
           });
-
-        sumDefaultAmountPlanned += _category.amountPlanned;
 
         const newCategory = {
           ...category,
@@ -366,8 +363,6 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
           return res.status(409).send({
             message: INVALID_CATEGORY,
           });
-
-        sumDefaultAmountPlanned += _category.amountPlanned;
 
         const category = {
           ...exCategory,
@@ -395,19 +390,8 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
 
     const defaultExpenseCategory = budget.findDefaultExpenseCategory();
     const defaultIncomeCategory = budget.findDefaultIncomeCategory();
-    if (isExpense) {
-      _categories.push({
-        ...defaultExpenseCategory,
-        amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
-      });
-      _categories.push(defaultIncomeCategory);
-    } else {
-      _categories.push(defaultExpenseCategory);
-      _categories.push({
-        ...defaultIncomeCategory,
-        amountPlanned: budget.expensePlanned - sumDefaultAmountPlanned,
-      });
-    }
+    _categories.push(defaultExpenseCategory);
+    _categories.push(defaultIncomeCategory);
     budget.categories = _categories;
 
     for (const category of excluded) {
@@ -419,26 +403,17 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
 
       await Promise.all(
         transactions.map((transaction) => {
-          if (isExpense) {
-            transaction.category = defaultExpenseCategory;
-            budget.increaseDefaultExpenseCategory(
-              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
-              transaction.amount
-            );
-          } else {
-            transaction.category = defaultIncomeCategory;
-            budget.increaseDefaultIncomeCategory(
-              transaction.isCurrent ? "amountCurrent" : "amountScheduled",
-              transaction.amount
-            );
-          }
-
+          transaction.category = isExpense
+            ? defaultExpenseCategory
+            : defaultIncomeCategory;
           return transaction.save();
         })
       );
     }
 
     await budget.save();
+    await budget.calculate();
+
     return res.status(200).send({
       categories: budget.categories,
       included,
@@ -484,20 +459,9 @@ export const updateCategoryAmountPlanned = async (
         message: CATEGORY_CANOT_BE_UPDATED,
       });
 
-    if (category.isExpense) {
-      budget.increaseDefaultExpenseCategory(
-        "amountPlanned",
-        category.amountPlanned - req.body.amountPlanned
-      );
-    } else {
-      budget.increaseDefaultIncomeCategory(
-        "amountPlanned",
-        category.amountPlanned - req.body.amountPlanned
-      );
-    }
-
     budget.categories[categoryIdx].amountPlanned = req.body.amountPlanned;
     await budget.save();
+    await budget.calculate();
 
     return res.status(200).send({ budget });
   } catch (err: any) {
@@ -524,20 +488,13 @@ export const updateField = async (req: Request, res: Response) => {
     budget.endDate = req.body.endDate ?? budget.endDate;
     budget.title = req.body.title ?? budget.title;
     if ("expensePlanned" in req.body) {
-      budget.increaseDefaultExpenseCategory(
-        "amountPlanned",
-        req.body.expensePlanned - budget.expensePlanned
-      );
       budget.expensePlanned = req.body.expensePlanned;
     }
     if ("incomePlanned" in req.body) {
-      budget.increaseDefaultIncomeCategory(
-        "amountPlanned",
-        req.body.incomePlanned - budget.incomePlanned
-      );
       budget.incomePlanned = req.body.incomePlanned;
     }
     await budget.save();
+    await budget.calculate();
 
     return res.status(200).send({ budget });
   } catch (err: any) {
@@ -566,6 +523,7 @@ export const find = async (req: Request, res: Response) => {
         }
       }
 
+      await budget.calculate();
       const transactions = await Transaction.find({
         budgetId: budget._id,
       }).lean();
@@ -583,12 +541,14 @@ export const find = async (req: Request, res: Response) => {
         if (!budget) {
           return res.status(404).send({ message: NOT_FOUND("budget") });
         }
+        await budget.calculate();
         return res.status(200).send({ budget });
       }
       const budgets = await Budget.find({
         userId: user._id,
         year,
       });
+      await Promise.all(budgets.map((budget) => budget.calculate()));
       return res.status(200).send({ budgets });
     }
     if ("userId" in req.query) {
@@ -596,14 +556,17 @@ export const find = async (req: Request, res: Response) => {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
       if (req.query.userId === "*") {
-        const budgets = await Budget.find({}).lean();
+        const budgets = await Budget.find({});
+        await Promise.all(budgets.map((budget) => budget.calculate()));
         return res.status(200).send({ budgets });
       }
-      const budgets = await Budget.find({ userId: req.query.userId }).lean();
+      const budgets = await Budget.find({ userId: req.query.userId });
+      await Promise.all(budgets.map((budget) => budget.calculate()));
       return res.status(200).send({ budgets });
     }
 
     const budgets = await Budget.find({ userId: user._id });
+    await Promise.all(budgets.map((budget) => budget.calculate()));
     return res.status(200).send({ budgets });
   } catch (err: any) {
     logger.error(err.message);
