@@ -1,5 +1,6 @@
 import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 import _ from "lodash";
+import { Transaction } from "./Transaction";
 
 interface ICategory {
   categoryId: Types.ObjectId;
@@ -95,6 +96,7 @@ interface IBudgetProps {
       | "amountCurrent",
     amount: number
   ) => void;
+  calculate: () => Promise<void>;
 }
 
 interface BudgetModelType extends Model<IBudget, {}, IBudgetProps> {}
@@ -214,6 +216,84 @@ budgetSchema.methods.increaseDefaultIncomeCategory = function (
 ) {
   const idx = this.categories.length - 1;
   this.categories[idx][field] = (this.categories[idx][field] ?? 0) + amount;
+  return;
+};
+
+budgetSchema.methods.calculate = async function () {
+  /* init */
+  let sumExpensePlanned = 0;
+  this.expenseScheduled = 0;
+  this.expenseScheduledRemain = 0;
+  this.expenseCurrent = 0;
+  let sumIncomePlanned = 0;
+  this.incomeScheduled = 0;
+  this.incomeScheduledRemain = 0;
+  this.incomeCurrent = 0;
+  const categoryMap: Map<string, number> = new Map([]);
+  for (let i = 0; i < this.categories.length; i++) {
+    if (!this.categories[i].isDefault) {
+      if (this.categories[i].isExpense) {
+        sumExpensePlanned += this.categories[i].amountPlanned;
+      } else {
+        sumIncomePlanned += this.categories[i].amountPlanned;
+      }
+    }
+    this.categories[i].amountPlanned = this.categories[i].amountPlanned;
+    this.categories[i].amountScheduled = 0;
+    this.categories[i].amountScheduledRemain = 0;
+    this.categories[i].amountCurrent = 0;
+    categoryMap.set(this.categories[i].categoryId.toString(), i);
+  }
+
+  /* calculate transactions */
+  const transactions = await Transaction.find({ budgetId: this._id });
+  for (let i = 0; i < transactions.length; i++) {
+    const categoryIdx =
+      categoryMap.get(transactions[i].category.categoryId.toString()) ?? -1;
+
+    if (!transactions[i].isCurrent) {
+      if (transactions[i].category.isExpense) {
+        this.expenseScheduled += transactions[i].amount;
+        if (!transactions[i].linkId) {
+          this.expenseScheduledRemain += transactions[i].amount;
+        }
+      } else {
+        this.incomeScheduled += transactions[i].amount;
+        if (!transactions[i].linkId) {
+          this.incomeScheduledRemain += transactions[i].amount;
+        }
+      }
+      if (categoryIdx !== -1) {
+        this.categories[categoryIdx].amountScheduled += transactions[i].amount;
+        if (!transactions[i].linkId) {
+          this.categories[categoryIdx].amountScheduledRemain +=
+            transactions[i].amount;
+        }
+      }
+    } else {
+      if (transactions[i].category.isExpense) {
+        this.expenseCurrent += transactions[i].amount;
+      } else {
+        this.incomeCurrent += transactions[i].amount;
+      }
+      if (categoryIdx !== -1) {
+        this.categories[categoryIdx].amountCurrent += transactions[i].amount;
+      }
+    }
+  }
+
+  /* set default categories */
+  const defaultExpenseCategoryIdx = this.categories.length - 2;
+  const defualtIncomeCategoryIdx = this.categories.length - 1;
+  if (defaultExpenseCategoryIdx !== -1) {
+    this.categories[defaultExpenseCategoryIdx].amountPlanned =
+      this.expensePlanned - this.sumExpensePlanned;
+  }
+  if (defualtIncomeCategoryIdx !== -1) {
+    this.categories[defualtIncomeCategoryIdx].amountPlanned =
+      this.incomePlanned - sumIncomePlanned;
+  }
+
   return;
 };
 
