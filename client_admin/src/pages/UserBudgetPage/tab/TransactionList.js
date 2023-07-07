@@ -45,7 +45,9 @@ function Index() {
       setTransactions(_transactions);
     }
 
-    const dates = new Set(_transactions.map((tr) => tr.date.split("T")[0]));
+    const dates = new Set(
+      _transactions.filter((tr) => tr.date).map((tr) => tr.date.split("T")[0])
+    );
     setDateFilters(
       _.sortBy(Array.from(dates)).map((date) => {
         return { text: `${date}`, value: `${date}` };
