@@ -191,6 +191,16 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       })
     );
 
+    dispatch(
+      uiActions.setAmountOverlay({
+        value: defaultValue.amount ? defaultValue.amount.toString() : '',
+        onConfirm: (value: string) => {
+          dispatch(transactionActions.setAmount(+value));
+        },
+        hash: '#transaction-form',
+      })
+    );
+
     // prevent scroll for scroll down when resizing
     document.getElementById('transaction-form-amount')?.focus({ preventScroll: true });
   };
@@ -218,7 +228,6 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         id="transaction-form-amount"
         ref={amountRef}
         className={classes.field}
-        isOpen={mode.isExpand}
         onConfirm={(value: string) => {
           dispatch(transactionActions.setAmount(+value));
         }}
@@ -226,7 +235,6 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
-        hash="#transaction-form"
       />
       <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '40%' }}>
         내역 추가
