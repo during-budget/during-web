@@ -156,6 +156,7 @@ export const create = async (req: Request, res: Response) => {
       user.categories.filter((category) => !category.isDefault)
     );
 
+    const idx = _categories.length;
     user.categories = new Types.DocumentArray([
       ..._categories,
       {
@@ -172,7 +173,7 @@ export const create = async (req: Request, res: Response) => {
     await user.saveReqUser();
 
     return res.status(200).send({
-      categories: user.categories,
+      category: user.categories[idx],
     });
   } catch (err: any) {
     logger.error(err.message);
@@ -200,14 +201,15 @@ export const update = async (req: Request, res: Response) => {
       user.categories.filter((category) => !category.isDefault)
     );
 
-    const category = _.find(
+    const idx = _.findIndex(
       _categories,
       (_category) => _category._id.toString() === req.params._id
     );
-    if (!category) {
+    if (idx === -1) {
       return res.status(404).send({ message: NOT_FOUND("category") });
     }
 
+    const category = _categories[idx];
     category.title = req.body.title;
     category.icon = req.body.icon;
 
@@ -222,7 +224,7 @@ export const update = async (req: Request, res: Response) => {
     await UCategory_UBudgetsAndTransactions(user._id, category);
 
     return res.status(200).send({
-      categories: user.categories,
+      category: user.categories[idx],
     });
   } catch (err: any) {
     logger.error(err.message);
