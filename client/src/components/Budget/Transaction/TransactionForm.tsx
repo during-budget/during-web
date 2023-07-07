@@ -178,6 +178,16 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   };
 
   const expandHandler = () => {
+    dispatch(
+      uiActions.setAmountOverlay({
+        value: defaultValue.amount ? defaultValue.amount.toString() : '',
+        onConfirm: (value: string) => {
+          dispatch(transactionActions.setAmount(+value));
+        },
+        hash: '#transaction-form',
+      })
+    );
+
     if (mode.isExpand) return;
 
     // set form expand
