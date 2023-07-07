@@ -64,6 +64,11 @@ const DCategory_UBudgetsAndTransactions = async (
   });
 
   for (let budget of budgets) {
+    const idx = budget.findCategoryIdx(category._id!);
+    if (idx === -1) continue;
+    budget.categories.splice(idx, 1);
+    budget.markModified("categories");
+
     const transactions = await Transaction.find({
       userId,
       budgetId: budget._id,
@@ -85,48 +90,9 @@ const DCategory_UBudgetsAndTransactions = async (
       transaction.markModified("category");
     }
 
-    const idx = budget.findCategoryIdx(category._id!);
-    const bCategory = budget.categories[idx];
-    if (category.isExpense) {
-      budget.increaseDefaultExpenseCategory(
-        "amountPlanned",
-        bCategory.amountPlanned
-      );
-      budget.increaseDefaultExpenseCategory(
-        "amountCurrent",
-        bCategory.amountCurrent
-      );
-      budget.increaseDefaultExpenseCategory(
-        "amountScheduled",
-        bCategory.amountScheduled
-      );
-      budget.increaseDefaultExpenseCategory(
-        "amountScheduledRemain",
-        bCategory.amountScheduledRemain
-      );
-    } else {
-      budget.increaseDefaultIncomeCategory(
-        "amountPlanned",
-        bCategory.amountPlanned
-      );
-      budget.increaseDefaultIncomeCategory(
-        "amountCurrent",
-        bCategory.amountCurrent
-      );
-      budget.increaseDefaultIncomeCategory(
-        "amountScheduled",
-        bCategory.amountScheduled
-      );
-      budget.increaseDefaultIncomeCategory(
-        "amountScheduledRemain",
-        bCategory.amountScheduledRemain
-      );
-    }
-    budget.categories.splice(idx, 1);
-    budget.markModified("categories");
-
-    await Promise.all(transactions.map((tr) => tr.save()));
     await budget.save();
+    await Promise.all(transactions.map((tr) => tr.save()));
+    await budget.calculate();
   }
 };
 
