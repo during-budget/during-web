@@ -78,8 +78,6 @@ const AmountOverlay = () => {
     ));
   };
 
-  console.log(hash);
-
   return (
     <OverlayForm
       overlayOptions={{
