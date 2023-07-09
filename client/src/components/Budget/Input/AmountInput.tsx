@@ -1,6 +1,7 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useAppDispatch } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
+import { uiActions } from '../../../store/ui';
 
 interface AmountInputProps {
   id: string;
@@ -68,7 +69,19 @@ const AmountInput = React.forwardRef(
         onFocus={onFocus}
         onBlur={onBlur}
         onClick={(event) => {
-          onClick && onClick(event);
+          if (onClick) {
+            onClick(event);
+          } else {
+            dispatch(
+              uiActions.setAmountOverlay({
+                value,
+                onConfirm: (value: string) => {
+                  setValue(value);
+                  onConfirm(value);
+                },
+              })
+            );
+          }
         }}
         value={value ? Amount.getAmountStr(+value) : value}
         required={required}
