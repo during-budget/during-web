@@ -1,5 +1,9 @@
 .buttons {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between;  
+}
+
+.buttons button {
+  /* height: 1rem; */
 }

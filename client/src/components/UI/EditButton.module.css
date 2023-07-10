@@ -4,18 +4,9 @@
   font-size: var(--size-7);
 }
 
-.button::before {
-  font: var(--fa-font-solid);
+.button i {
   font-size: var(--size-8);
   position: absolute;
   top: var(--size-5);
   left: calc(-1 * var(--size-5));
-}
-
-.edit::before {
-  content: '\f303';
-}
-
-.add::before {
-  content: '\f055';
 }

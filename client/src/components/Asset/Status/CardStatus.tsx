@@ -83,7 +83,7 @@ const CardStatus = ({ assets, cards, openEditor, openListEditor }: CardStatusPro
         {openEditor && (
           <EditButton
             label="카드 추가"
-            isAdd={true}
+            icon='plus'
             onClick={openEditor.bind(undefined, { isAsset: false })}
           />
         )}
