@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development npm run build:live",
     "prod": "cross-env NODE_ENV=production node -r ./tsconfig-paths-bootstrap.js dist/index.js",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch *.ts --exec ts-node -r tsconfig-paths/register index.ts",
+    "build:live": "ts-node -r tsconfig-paths/register index.ts",
     "test": "jest -c ./jest.config.json --detectOpenHandles --forceExit"
   },
   "author": "",

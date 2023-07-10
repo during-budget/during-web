@@ -50,7 +50,7 @@ const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) =
         {openEditor && (
           <EditButton
             label="자산 추가"
-            isAdd={true}
+            icon='plus'
             onClick={openEditor.bind(null, { isAsset: true })}
           />
         )}

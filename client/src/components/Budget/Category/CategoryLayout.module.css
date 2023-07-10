@@ -1,0 +1,87 @@
+.top {
+  width: 100%;
+  position: relative;
+}
+
+.top button {
+  position: absolute;
+  font-size: var(--size-7);
+  top: 0;
+  left: 40%;
+}
+
+.content {
+  display: flex;
+}
+
+.link {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.data {
+  width: 100%;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-weight: 800;
+  font-size: var(--size-5);
+}
+
+.amount {
+  font-size: var(--size-6);
+  font-weight: 600;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 300;
+}
+
+.divider {
+  font-size: var(--size-8);
+}
+
+.sub {
+  display: flex;
+  justify-content: space-between;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.header {
+  box-sizing: border-box;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem auto;
+  padding: 0.5rem 3.5rem;
+  border-radius: 0.5rem;
+  font-size: var(--size-7);
+  color: #fff;
+  background-color: var(--primary);
+  font-weight: 600;
+}
+
+.header > span {
+  color: inherit;
+}

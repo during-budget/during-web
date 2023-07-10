@@ -22,6 +22,7 @@ import { transactionActions } from '../store/transaction';
 import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
 import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
+import CategoryLayout from '../components/Budget/Category/CategoryLayout';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -63,16 +64,25 @@ function Budget() {
         {/* Status */}
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}
         <hr />
-        {/* Transactions */}
-        <section className={classes.transactions}>
-          <TransactionNav id="budget_layout" showAll={true} />
-          <TransactionList className={classes.transactions} isDefault={isDefaultBudget} />
-          <TransactionForm
-            className={classes.form}
-            budgetId={id}
-            isDefaultBudget={isDefaultBudget}
-          />
-        </section>
+        <div>
+          {/* Category */}
+          <section id="category-layout">
+            <CategoryLayout />
+          </section>
+          {/* Transactions */}
+          <section className={classes.transactions}>
+            <TransactionNav id="budget_layout" showAll={true} />
+            <TransactionList
+              className={classes.transactions}
+              isDefault={isDefaultBudget}
+            />
+            <TransactionForm
+              className={classes.form}
+              budgetId={id}
+              isDefaultBudget={isDefaultBudget}
+            />
+          </section>
+        </div>
       </main>
       {/* Overlays */}
       <TransactionDetail isDefaultBudget={isDefaultBudget} />

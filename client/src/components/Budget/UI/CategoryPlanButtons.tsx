@@ -17,20 +17,22 @@ const CategoryPlanButtons = () => {
   };
 
   return (
-    <div className={classes.buttons}>
-      <EditButton
-        onClick={() => {
-          openCategoryPlan({ isExpense: true });
-        }}
-        label="지출 세부 목표 설정"
-      />
-      <EditButton
-        onClick={() => {
-          openCategoryPlan({ isExpense: false });
-        }}
-        label="수입 세부 목표 설정"
-      />
-    </div>
+    <>
+      <div className={classes.buttons}>
+        <EditButton
+          onClick={() => {
+            openCategoryPlan({ isExpense: true });
+          }}
+          label="지출 세부 목표 설정"
+        />
+        <EditButton
+          onClick={() => {
+            openCategoryPlan({ isExpense: false });
+          }}
+          label="수입 세부 목표 설정"
+        />
+      </div>
+    </>
   );
 };
 
