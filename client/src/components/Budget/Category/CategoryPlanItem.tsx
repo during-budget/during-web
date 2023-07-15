@@ -45,8 +45,6 @@ function CategoryPlanItem({
     }
   }, [autoPlanChecked]);
 
-  console.log(title, autoPlanned, autoPlanChecked);
-
   useEffect(() => {
     if (resetAutoPlan) {
       setAutoPlanChecked(autoPlanned);
