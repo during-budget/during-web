@@ -15,8 +15,8 @@ const AmountBars = ({ data }: AmountBarsProps) => {
 
   return (
     <ul className={classes.bars}>
-      {data.map((item) => {
-        const { id, amount, label, onClick } = item;
+      {data.map((item, idx) => {
+        const { amount, label, onClick } = item;
         const current = max && (amount.current / max) * 100;
         const scheduled = max && ((amount.scheduled + amount.current) / max) * 100;
         const planned = max && (amount.planned / max) * 100;
@@ -28,22 +28,24 @@ const AmountBars = ({ data }: AmountBarsProps) => {
           },
           {
             height: scheduled,
-            className: classes.scheduled,
+            className: `${classes.scheduled} ${
+              current + scheduled > planned && classes.over
+            }`,
           },
           {
             height: current,
-            className: classes.current,
+            className: `${classes.current} ${current > planned && classes.over}`,
           },
         ];
 
         amountBarData.sort((prev, next) => next.height - prev.height);
 
         return (
-          <li key={`amount-bars-${id}`} onClick={onClick}>
+          <li key={idx} onClick={onClick}>
             <ul className={classes.grouped}>
               {amountBarData.map((item, i) => (
                 <li
-                  key={`amount-bars-${id}-${i}`}
+                  key={`${idx}-${i}`}
                   className={`${classes.bar} ${item.className}`}
                   style={{
                     height: item.height + '%',

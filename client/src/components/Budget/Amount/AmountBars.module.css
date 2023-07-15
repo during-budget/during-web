@@ -26,6 +26,7 @@
   bottom: 0;
   width: 1rem;
   transform: translateX(-50%);
+  transition: 0.5s var(--fast-in);
 }
 
 .current {
@@ -34,6 +35,14 @@
 
 .scheduled {
   background-color: var(--secondary);
+}
+
+.scheduled.over {
+  background-color: var(--error-background);
+}
+
+.current.over {
+  background-color: var(--error-text);
 }
 
 .planned {
