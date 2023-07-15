@@ -6,6 +6,7 @@ function OptionButton(props: {
     onSelect?: () => void;
     className?: string;
     contextStyle?: any;
+    disabled?: boolean;
 }) {
     const [isShowMenu, setIsShowMenu] = useState(false);
 
@@ -54,6 +55,7 @@ function OptionButton(props: {
                     onClick={() => {
                         setIsShowMenu(true);
                     }}
+                    disabled={props.disabled}
                 >
                     ・・・
                 </button>

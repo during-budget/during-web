@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { budgetActions } from '../store/budget';
 import { BudgetDataType, getBudgetByMonth } from '../util/api/budgetAPI';
+import { getCurrentYearMonth } from '../util/date';
 import { getErrorMessage } from '../util/error';
 
 function CurrentBudgetNavigator() {
@@ -35,15 +36,6 @@ export const loader = async () => {
     }
   }
   return data;
-};
-
-const getCurrentYearMonth = () => {
-  const now = new Date();
-
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-
-  return { year, month };
 };
 
 export default CurrentBudgetNavigator;

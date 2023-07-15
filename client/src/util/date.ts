@@ -130,3 +130,12 @@ export const getWeekDays = (weekIdx: number, startDate: Date) => {
 
   return dates;
 };
+
+export const getCurrentYearMonth = () => {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+
+  return { year, month };
+};

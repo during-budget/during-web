@@ -1,5 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
+import CategoryDetail, {
+  loader as categoryLoader,
+} from './components/Budget/Category/CategoryDetail';
 import AuthRedirect from './layout/AuthRedirect';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
@@ -60,6 +63,17 @@ const router = createBrowserRouter([
             path: '/budget/:isDefault/:budgetId',
             element: <Budget />,
             loader: budgetLoader,
+          },
+        ],
+      },
+      {
+        path: '/category',
+        element: <Nav />,
+        children: [
+          {
+            path: '/category/:categoryId/:budgetId',
+            element: <CategoryDetail />,
+            loader: categoryLoader,
           },
         ],
       },

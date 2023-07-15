@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
@@ -10,6 +10,8 @@ import classes from './CategoryLayout.module.css';
 
 const CategoryLayout = () => {
   const dispatch = useAppDispatch();
+
+  const { budgetId } = useParams();
 
   const showLayout = useAppSelector((state) => state.ui.budget.category.showLayout);
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
@@ -51,10 +53,10 @@ const CategoryLayout = () => {
             const currentScheduledStr = Amount.getAmountStr(currentScheduled);
             const remainingStr = Amount.getAmountStr(Math.abs(remaining));
 
-            const link = `/category/${category.id}`;
+            const link = `/category/${category.id}/${budgetId}`;
 
             return (
-              <li>
+              <li key={category.id}>
                 <Link to={link} className={classes.item}>
                   <Icon>{category.icon}</Icon>
                   <div className={classes.data}>
@@ -73,7 +75,7 @@ const CategoryLayout = () => {
                       </div>
                     </div>
                   </div>
-                  <NavButton isNext={true} to={link} />
+                  <NavButton isNext={true} onClick={() => {}} />
                 </Link>
               </li>
             );
