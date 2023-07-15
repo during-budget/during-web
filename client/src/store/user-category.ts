@@ -27,6 +27,14 @@ const categorySlice = createSlice({
         }
       });
     },
+    addCategory(state, action: PayloadAction<UserCategoryType>) {
+      const category = Category.getCategoryFromData(action.payload);
+      if (category.isExpense) {
+        state.expense = [...state.expense, category];
+      } else {
+        state.income = [...state.income, category];
+      }
+    },
   },
 });
 

@@ -22,6 +22,7 @@ const EmojiInput = React.forwardRef((props: EmojiInputProps, ref) => {
   useImperativeHandle(ref, () => {
     return {
       value: () => iconRef.current!.value,
+      clear: clearHandler,
     };
   });
 
