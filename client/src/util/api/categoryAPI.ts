@@ -48,13 +48,14 @@ export interface UpdatedUserCategoryType {
   removed: UserCategoryType[];
 }
 
-export const getCategories = async () => {
+export const getCategory = async (id?: string) => {
   checkNetwork();
 
+  const url = `${BASE_URL}${id ? '/' + id : ''}`;
   let response, data;
 
   try {
-    response = await fetch(BASE_URL, {
+    response = await fetch(url, {
       credentials: 'include',
     });
     data = await response.json();
@@ -65,7 +66,7 @@ export const getCategories = async () => {
   if (!response.ok) {
     throw new Error(data?.message || '카테고리 목록 조회 중 문제가 발생했습니다.');
   }
-  return data as UserCategoryType[];
+  return data as UserCategoryType[] | { category: UserCategoryType };
 };
 
 export const updateCategories = async (categories: { categoryData: Category[] }) => {

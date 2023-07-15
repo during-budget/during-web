@@ -148,9 +148,7 @@ const Landing = () => {
 
   if (isFirstLoad) {
     return (
-      <div className={`${classes.full} ${classes.center}`}>
-        <LoadingSpinner />
-      </div>
+        <LoadingSpinner isFull={true} />
     );
   } else {
     return (

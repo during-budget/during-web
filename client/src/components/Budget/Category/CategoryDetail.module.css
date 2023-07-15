@@ -1,0 +1,25 @@
+.nav {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.data {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
