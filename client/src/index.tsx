@@ -8,7 +8,10 @@ const { DURING_SENTRY } = import.meta.env;
 if (import.meta.env.MODE === 'production') {
   Sentry.init({
     dsn: DURING_SENTRY,
-    integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+    integrations: [new Sentry.BrowserTracing(), new Sentry.Replay({
+      networkDetailAllowUrls: ['https://api.during.money']
+    }),
+  ],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
     // Session Replay
