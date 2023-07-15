@@ -1,74 +1,79 @@
 import Amount from '../../../models/Amount';
-import AmountBar from './AmountBar';
 import classes from './AmountBars.module.css';
 
-const getLabel = (label: string, width: string) => (
-  <span className={classes.label}>{label}</span>
-);
-
-function AmountBars(props: {
-  amountData: {
-    amount: Amount | number;
+interface AmountBarsProps {
+  data: {
+    id: string;
+    amount: Amount;
     label: string;
-    isOver?: boolean;
-    onClick?: (i: number) => void;
+    onClick?: () => void;
   }[];
-  borderRadius?: string;
-  isTop?: boolean;
-  isExpense?: boolean;
-  className?: string;
-}) {
-  const containerAmount = props.amountData.map((data) => {
-    if (typeof data.amount === 'number') {
-      return data.amount;
-    } else {
-      return data.amount.planned;
-    }
-  });
-  const total = containerAmount.reduce((curr, next) => curr + next, 0);
-  const widths = containerAmount.map((data) => {
-    if (!total) {
-      return '0';
-    } else {
-      return (data / total) * 90 + '%';
-    }
-  });
+}
+
+const AmountBars = ({ data }: AmountBarsProps) => {
+  const max = getMaxAmount(data.map((item) => item.amount));
+  console.log(max);
 
   return (
-    <ul className={`${classes.container} ${props.className}`}>
-      {props.amountData.map((data, i) => {
-        const width = widths[i];
+    <ul className={classes.bars}>
+      {data.map((item) => {
+        const { id, amount, label, onClick } = item;
+        const current = max && (amount.current / max) * 100;
+        const scheduled = max && ((amount.scheduled + amount.current) / max) * 100;
+        const planned = max && (amount.planned / max) * 100;
 
-        const amountData = data.amount;
-        const amount =
-          typeof amountData === 'number'
-            ? new Amount(amountData, amountData, amountData)
-            : amountData;
+        const amountBarData = [
+          {
+            height: planned,
+            className: classes.planned,
+          },
+          {
+            height: scheduled,
+            className: classes.scheduled,
+          },
+          {
+            height: current,
+            className: classes.current,
+          },
+        ];
+
+        amountBarData.sort((prev, next) => next.height - prev.height);
+
         return (
-          (typeof amount === 'number' ? amount : amount.planned) > 0 && (
-            <li
-              key={i}
-              className={classes.bar}
-              onClick={() => {
-                data.onClick && data.onClick(i);
-              }}
-              style={{ width }}
-            >
-              {/* over mark */}
-              {data.isOver && (
-                <i className={`fa-solid fa-circle-exclamation ${classes.mark}`}></i>
-              )}
-
-              {/* bar */}
-              {props.isTop && getLabel(data.label, width)}
-              <AmountBar amount={amount} borderRadius={props.borderRadius} />
-              {!props.isTop && getLabel(data.label, width)}
-            </li>
-          )
+          <li key={`amount-bars-${id}`} onClick={onClick}>
+            <ul className={classes.grouped}>
+              {amountBarData.map((item, i) => (
+                <li
+                  key={`amount-bars-${id}-${i}`}
+                  className={`${classes.bar} ${item.className}`}
+                  style={{
+                    height: item.height + '%',
+                    zIndex: i,
+                  }}
+                />
+              ))}
+            </ul>
+            <span className={classes.label}>{label}</span>
+          </li>
         );
       })}
     </ul>
   );
-}
+};
 
 export default AmountBars;
+
+const getMaxAmount = (amounts: Amount[]) => {
+  let max = 0;
+
+  amounts.forEach((amount) => {
+    const scheduledCurrent = amount.current + amount.scheduled;
+    if (amount.planned <= scheduledCurrent && scheduledCurrent > max) {
+      max = scheduledCurrent;
+    } else if (scheduledCurrent <= amount.planned && amount.planned > max) {
+      max = amount.planned;
+    }
+  });
+
+  return max;
+};

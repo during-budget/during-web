@@ -8,7 +8,7 @@ import { uiActions } from '../../../store/ui';
 import { updateBudgetFields, updateCategoryPlan } from '../../../util/api/budgetAPI';
 import { getErrorMessage } from '../../../util/error';
 import { getExpensePlannedKey } from '../../../util/filter';
-import AmountBars from '../../Budget/Amount/AmountBars';
+import AmountArea from '../../Budget/Amount/AmountArea';
 import EditInput from '../../Budget/Input/EditInput';
 import CategoryPlanButtons from '../../Budget/UI/CategoryPlanButtons';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
@@ -126,7 +126,7 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
         />
       </div>
       {/* Planned chart */}
-      <AmountBars
+      <AmountArea
         className={classes.bars}
         borderRadius="0.4rem"
         amountData={categories.map((item) => {

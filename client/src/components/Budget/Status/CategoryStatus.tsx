@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
-import Category from '../../../models/Category';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { uiActions } from '../../../store/ui';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
@@ -65,11 +63,11 @@ function CategoryStatus(props: { budgetId: string }) {
         tab={<ExpenseTab id="category-status-type-tab" />}
       />
       <AmountBars
-        amountData={categories.map((item: Category, i) => {
+        data={categories.map((item, i) => {
           return {
+            id: item.id,
             amount: item.amount,
-            label: item.icon || ' ',
-            isOver: item.amount.overPlanned,
+            label: item.icon,
             onClick: () => {
               setCurrentCategoryIdx(i);
             },
@@ -83,12 +81,15 @@ function CategoryStatus(props: { budgetId: string }) {
           !categories[currentCategoryIdx]?.isDefault ? updatePlan : undefined
         }
       />
-        <IndexNav
-          idx={currentCategoryIdx}
-          setIdx={setCurrentCategoryIdx}
-          data={categoryNames}
-          to={`/category/${categories[currentCategoryIdx].id}/${props.budgetId}`}
-        />
+      <IndexNav
+        idx={currentCategoryIdx}
+        setIdx={setCurrentCategoryIdx}
+        data={categoryNames}
+        to={
+          categories[currentCategoryIdx] &&
+          `/category/${categories[currentCategoryIdx].id}/${props.budgetId}`
+        }
+      />
       <CategoryPlanButtons />
       <Button
         onClick={() => {

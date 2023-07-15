@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import Amount from '../../../models/Amount';
 import { AssetDataType } from '../../../util/api/assetAPI';
-import AmountBars from '../../Budget/Amount/AmountBars';
+import AmountArea from '../../Budget/Amount/AmountArea';
 import EditButton from '../../UI/EditButton';
 import Inform from '../../UI/Inform';
 import classes from './AssetStatus.module.css';
@@ -29,7 +29,7 @@ const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) =
           </Inform>
         </div>
       ) : (
-        <AmountBars
+        <AmountArea
           className={classes.bars}
           borderRadius="0.4rem"
           amountData={assets.map((asset) => {
@@ -50,7 +50,7 @@ const AssetStatus = ({ assets, openEditor, openListEditor }: AssetStatusProps) =
         {openEditor && (
           <EditButton
             label="자산 추가"
-            icon='plus'
+            icon="plus"
             onClick={openEditor.bind(null, { isAsset: true })}
           />
         )}

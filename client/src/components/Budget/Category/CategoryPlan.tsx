@@ -13,7 +13,7 @@ import Button from '../../UI/Button';
 import DraggableList from '../../UI/DraggableList';
 import Inform from '../../UI/Inform';
 import OverlayForm from '../../UI/OverlayForm';
-import AmountBars from '../Amount/AmountBars';
+import AmountArea from '../Amount/AmountArea';
 import EditInput from '../Input/EditInput';
 import classes from './CategoryPlan.module.css';
 import CategoryPlanItem from './CategoryPlanItem';
@@ -199,7 +199,7 @@ function CategoryPlan(props: { budgetId: string }) {
           </Inform>
         )}
         {/* total - plan amount bars */}
-        <AmountBars
+        <AmountArea
           className={classes.bars}
           borderRadius="0.4rem"
           amountData={allCategory.map((item) => {

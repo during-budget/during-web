@@ -1,29 +1,45 @@
-.container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+.bars {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bars > li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bars ul {
+  height: 100%;
+}
+
+.grouped {
+  position: relative;
+  display: flex;
 }
 
 .bar {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 100%;
-    transition: 0.5s var(--fast-in);
-    cursor: pointer;
+  border-radius: 0.3rem;
+  position: absolute;
+  bottom: 0;
+  width: 1rem;
+  transform: translateX(-50%);
 }
 
-.bar i {
-    margin-bottom: 1rem;
+.current {
+  background-color: var(--primary);
 }
 
-.bar .label {
-    width: var(--size-3);
-    margin: var(--size-11);
-    font-size: var(--size-3);
-    line-height: var(--size-3);
+.scheduled {
+  background-color: var(--secondary);
+}
+
+.planned {
+  background-color: var(--gray-1);
+}
+
+.label {
+  font-size: 1.25rem;
 }
