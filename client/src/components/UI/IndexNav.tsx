@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import classes from './IndexNav.module.css';
 import NavButton from './NavButton';
 
@@ -6,11 +7,12 @@ interface IndexNavProps {
   setIdx?: (param: any) => void;
   data?: any[];
   title?: string;
+  to?: string;
   onNext?: () => void;
   onPrev?: () => void;
 }
 
-function IndexNav({ idx, setIdx, data, title, onNext, onPrev }: IndexNavProps) {
+function IndexNav({ idx, setIdx, data, title, to, onNext, onPrev }: IndexNavProps) {
   const lastIdx = data ? data.length - 1 : 0;
 
   const plusIdx = () => {
@@ -36,7 +38,7 @@ function IndexNav({ idx, setIdx, data, title, onNext, onPrev }: IndexNavProps) {
   return (
     <div className={classes.container}>
       <NavButton onClick={minusIdx} isNext={false} />
-      <div>{label}</div>
+      {to ? <Link to={to}>{label}</Link> : <div>{label}</div>}
       <NavButton onClick={plusIdx} isNext={true} />
     </div>
   );

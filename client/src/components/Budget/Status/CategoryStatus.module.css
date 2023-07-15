@@ -1,3 +1,7 @@
+.link {
+  width: 100%;
+}
+
 .more {
   flex-direction: column;
 }
