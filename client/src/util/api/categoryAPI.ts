@@ -48,6 +48,40 @@ export interface UpdatedUserCategoryType {
   removed: UserCategoryType[];
 }
 
+export const createCategory = async (
+  category: Pick<CategoryBaisis, 'isExpense' | 'title' | 'icon'>
+) => {
+  checkNetwork();
+
+  let response, data;
+
+  const { isExpense, title, icon } = category;
+
+  try {
+    response = await fetch(BASE_URL, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        isExpense,
+        title,
+        icon,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || `카테고리 생성 중 문제가 발생했습니다: ${title}`);
+  }
+
+  return data as { category: UserCategoryType };
+};
+
 export const getCategory = async (id?: string) => {
   checkNetwork();
 

@@ -8,12 +8,12 @@ import { userCategoryActions } from '../../../store/user-category';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { updateCategoriesPartially } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
+import Button from '../../UI/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import EmojiInput from '../../UI/EmojiInput';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
-import CategoryAddButton from './CategoryAddButton';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
 
 interface BudgetCategorySettingProps {
@@ -223,7 +223,16 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
           setDefaultCategory={setDefaultCategory}
         />
       </DraggableList>
-      <CategoryAddButton
+      <Button
+        styleClass="extra"
+        style={{ height: '4rem' }}
+        onClick={() => {
+          dispatch(uiActions.setCategoryAdd({ isExpense }));
+        }}
+      >
+        카테고리 추가
+      </Button>
+      {/* <CategoryAddButton
         isExpense={isExpense}
         setCategories={setCategories}
         onAdd={(category) => {
@@ -235,7 +244,7 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
           ) as HTMLInputElement;
           input?.focus();
         }}
-      />
+      /> */}
     </OverlayForm>
   );
 };

@@ -29,6 +29,12 @@ interface EmojiOptions {
   onSelect: (value: any) => void;
 }
 
+interface CategoryAddOptions {
+  isOpen: boolean;
+  isExpense: boolean;
+  onClose?: () => void;
+}
+
 interface PaymentOptions {
   isOpen: boolean;
   itemId: string;
@@ -51,6 +57,7 @@ const initialState: {
   modal: ModalOptions;
   payment: PaymentOptions;
   amount: AmountOptions;
+  category: { add: CategoryAddOptions };
 } = {
   budget: {
     isCurrent: true,
@@ -68,6 +75,13 @@ const initialState: {
     onClose: () => {},
     onClear: () => {},
     onSelect: (value: any) => {},
+  },
+  category: {
+    add: {
+      isOpen: false,
+      isExpense: false,
+      onClose: () => {},
+    },
   },
   modal: {
     isOpen: false,
@@ -139,8 +153,8 @@ const uiSlice = createSlice({
     showCategoryLayer(state, action: PayloadAction<boolean>) {
       state.budget.category.showLayout = action.payload;
       document
-      .getElementById('category-layout')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        .getElementById('category-layout')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     },
     setEmojiOverlay(state, action: PayloadAction<Partial<EmojiOptions>>) {
       const options = action.payload;
@@ -148,6 +162,12 @@ const uiSlice = createSlice({
     },
     resetEmojiOverlay(state) {
       state.emoji = initialState.emoji;
+    },
+    setCategoryAdd(state, action: PayloadAction<Omit<CategoryAddOptions, 'isOpen'>>) {
+      state.category.add = { ...action.payload, isOpen: true };
+    },
+    closeCategoryAdd(state) {
+      state.category.add.isOpen = false;
     },
     setPayment(state, action: PayloadAction<Omit<PaymentOptions, 'isOpen'>>) {
       state.payment = { ...action.payload, isOpen: true };

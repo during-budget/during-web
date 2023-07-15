@@ -23,6 +23,7 @@ import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
 import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
 import CategoryLayout from '../components/Budget/Category/CategoryLayout';
+import CategoryAddOverlay from '../components/Budget/Category/CategoryAddOverlay';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -89,6 +90,7 @@ function Budget() {
       <CategoryPlan budgetId={id} />
       <BudgetCategorySetting budgetId={id} />
       <BudgetList />
+      <CategoryAddOverlay />
       <EmojiOverlay />
     </div>
   );

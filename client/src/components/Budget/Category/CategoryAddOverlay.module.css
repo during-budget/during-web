@@ -1,0 +1,35 @@
+/* container - open */
+.open .button {
+  position: absolute;
+  top: 0;
+  transform: translateY(-100%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 6vh;
+  height: 50vh;
+}
+
+/* title & emoji area */
+.data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  margin-top: 2vh;
+  margin-bottom: 0.5vh;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.title {
+  text-align: center;
+}
