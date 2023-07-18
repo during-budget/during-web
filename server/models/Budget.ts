@@ -281,6 +281,15 @@ budgetSchema.methods.calculate = async function () {
     }
   }
 
+  /* autoPlanned categories */
+  for (let i = 0; i < this.categories.length; i++) {
+    if (this.categories[i].autoPlanned) {
+      this.categories[i].amountPlanned =
+        this.categories[i].amountScheduledRemain +
+        this.categories[i].amountCurrent;
+    }
+  }
+
   /* set default categories */
   const defaultExpenseCategoryIdx = this.categories.length - 2;
   const defualtIncomeCategoryIdx = this.categories.length - 1;
