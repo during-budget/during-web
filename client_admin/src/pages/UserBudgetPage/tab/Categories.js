@@ -7,7 +7,7 @@ import Table from "../../../components/Table";
 import Detail from "../../../components/Detail";
 import Loading from "../../../components/Loading";
 
-import { Radio } from "antd";
+import { Radio, Tag } from "antd";
 
 function Index() {
   const navigate = useNavigate();
@@ -90,6 +90,17 @@ function Index() {
           },
           {
             key: "amountPlanned",
+          },
+          {
+            key: "autoPlanned",
+            width: "112px",
+            render: (e) => {
+              return e === true ? (
+                <Tag color={"blue"}>TRUE</Tag>
+              ) : (
+                <Tag color={"red"}>FALSE</Tag>
+              );
+            },
           },
           {
             key: "detail",
