@@ -104,10 +104,11 @@ function CategoryPlan(props: { budgetId: string }) {
     // category - request
     // NOTE: 마운트 이후에는(useEffect 이후) 항상 defaultCategory가 존재함
     const categoryReqData = categoryState.map((item) => {
-      const { id, amount } = item;
+      const { id, amount, autoPlanned } = item;
       return {
         categoryId: id,
         amountPlanned: amount.planned,
+        autoPlanned,
       };
     });
 
@@ -131,7 +132,7 @@ function CategoryPlan(props: { budgetId: string }) {
   };
 
   // Handler for category plan - updating category plan amount onChange item's input
-  const updateCategoryPlanHandler = (i: number, value: number) => {
+  const updateCategoryPlanHandler = (i: number, value: number, autoPlanned: boolean) => {
     let planDiff = 0;
 
     // Update target category
@@ -140,7 +141,7 @@ function CategoryPlan(props: { budgetId: string }) {
       const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
       const nextCategories = [...prev];
 
-      nextCategories[i] = Category.clone(prev[i], { amount: nextAmount });
+      nextCategories[i] = Category.clone(prev[i], { amount: nextAmount, autoPlanned });
 
       planDiff = prevAmount.planned - nextAmount.planned;
 
@@ -212,12 +213,12 @@ function CategoryPlan(props: { budgetId: string }) {
           <DraggableList
             id="category-plan-draggable-list"
             list={allCategory}
-            setList={(list: any[]) => {
+            setList={(list: Category[]) => {
               setCategoryState(list.filter((item) => !item.isDefault));
             }}
           >
             {allCategory.map(
-              (item: any, i: number) =>
+              (item, i: number) =>
                 item && (
                   <CategoryPlanItem
                     key={item.id}
@@ -227,6 +228,7 @@ function CategoryPlan(props: { budgetId: string }) {
                     title={item.title}
                     amount={item.amount}
                     isDefault={item.isDefault}
+                    autoPlanned={item.autoPlanned}
                     onChange={updateCategoryPlanHandler}
                     hideCurrent={isDefaultBudget}
                     preventDrag={item.isDefault}

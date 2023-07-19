@@ -12,7 +12,8 @@ interface CategoryPlanItemProps {
   title: string;
   amount: Amount;
   isDefault: boolean;
-  onChange?: (i: number, value: number) => void;
+  autoPlanned: boolean;
+  onChange: (i: number, value: number, autoPlanned: boolean) => void;
   hideCurrent?: boolean;
   preventDrag?: boolean;
 }
@@ -24,10 +25,12 @@ function CategoryPlanItem({
   title,
   amount,
   isDefault,
+  autoPlanned,
   onChange,
   hideCurrent,
   preventDrag,
 }: CategoryPlanItemProps) {
+  const [autoPlanChecked, setAutoPlanChecked] = useState(autoPlanned);
   const [plan, setPlan] = useState(amount.planned.toString());
 
   useEffect(() => {
@@ -35,15 +38,15 @@ function CategoryPlanItem({
   }, [amount.planned]);
 
   useEffect(() => {
-    if (isDefault) {
-      setPlan(Amount.getAmountStr(amount.planned));
+    if (autoPlanChecked && !isDefault) {
+      onChange(idx, amount.current + amount.scheduled, autoPlanChecked);
     }
-  }, [amount.planned]);
+  }, [autoPlanChecked]);
 
   // Change - Set number
   const confirmHandler = (value: string) => {
     setPlan(value);
-    onChange && onChange(idx, +value);
+    onChange(idx, +value, autoPlanChecked);
   };
 
   return (
@@ -67,17 +70,42 @@ function CategoryPlanItem({
             </div>
           </div>
         </div>
-        {/* TODO: number input으로 대체 */}
         {isDefault ? (
-          <p className={classes.default}>{plan}</p>
+          <p className={classes.default}>{Amount.getAmountStr(+plan)}</p>
         ) : (
           <AmountInput
             id={`category-plan-item-amount-input-${id}`}
-            defaultValue={plan}
+            defaultValue={
+              autoPlanChecked ? (amount.current + amount.scheduled).toString() : plan
+            }
+            onClick={() => {
+              setAutoPlanChecked(false);
+            }}
             onConfirm={confirmHandler}
           />
         )}
       </div>
+      {!isDefault && (
+        <>
+          <label htmlFor={`auto-planned-${id}`} className={classes.auto}>
+            <i
+              className="fa-solid fa-wand-magic-sparkles"
+              style={{ opacity: autoPlanChecked ? 1 : 0.3 }}
+            ></i>
+          </label>
+          <input
+            id={`auto-planned-${id}`}
+            type="checkbox"
+            checked={autoPlanChecked}
+            onChange={() => {
+              if (!autoPlanChecked) {
+                setAutoPlanChecked(true);
+              }
+            }}
+            style={{ display: 'none' }}
+          />
+        </>
+      )}
     </DraggableItem>
   );
 }

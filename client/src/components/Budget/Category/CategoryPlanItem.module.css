@@ -46,3 +46,9 @@
   padding: 1rem;
   font-size: var(--size-5);
 }
+
+.auto {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}

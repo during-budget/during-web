@@ -12,7 +12,6 @@ interface AmountBarsProps {
 
 const AmountBars = ({ data }: AmountBarsProps) => {
   const max = getMaxAmount(data.map((item) => item.amount));
-  console.log(max);
 
   return (
     <ul className={classes.bars}>
