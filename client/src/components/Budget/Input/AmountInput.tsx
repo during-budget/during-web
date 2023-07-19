@@ -9,13 +9,13 @@ interface AmountInputProps {
   style?: React.CSSProperties;
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onConfirm: (value: string) => void;
+  onConfirm?: (value: string) => void;
   defaultValue?: string;
   required?: boolean;
-  readOnly?: boolean;
+  disabled?: boolean;
   isOpen?: boolean;
-  hash?: string;
 }
 
 const AmountInput = React.forwardRef(
@@ -27,11 +27,11 @@ const AmountInput = React.forwardRef(
       onFocus,
       onBlur,
       onClick,
+      onChange,
       onConfirm,
       defaultValue,
       required,
-      readOnly,
-      hash,
+      disabled,
     }: AmountInputProps,
     ref
   ) => {
@@ -69,22 +69,19 @@ const AmountInput = React.forwardRef(
         onFocus={onFocus}
         onBlur={onBlur}
         onClick={(event) => {
-          if (onClick) {
-            onClick(event);
-          } else {
+          onClick && onClick(event);
+          onConfirm &&
             dispatch(
               uiActions.setAmountOverlay({
-                value,
-                onConfirm: (value: string) => {
-                  setValue(value);
-                  onConfirm(value);
-                },
+                onConfirm,
+                value: defaultValue === undefined ? '' : defaultValue,
               })
             );
-          }
         }}
+        onChange={onChange}
         value={value ? Amount.getAmountStr(+value) : value}
         required={required}
+        disabled={disabled}
         readOnly
       />
     );

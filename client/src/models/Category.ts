@@ -1,6 +1,6 @@
+import { v4 as uuid } from 'uuid';
 import { BudgetCategoryType, UserCategoryType } from '../util/api/categoryAPI';
 import Amount from './Amount';
-import { v4 as uuid } from 'uuid';
 
 class Category {
   private _id: string;
@@ -9,6 +9,7 @@ class Category {
   private _isExpense: boolean;
   private _isDefault: boolean;
   private _amount: Amount;
+  private _autoPlanned: boolean;
 
   constructor(category: {
     id: string;
@@ -17,14 +18,16 @@ class Category {
     isExpense: boolean;
     isDefault: boolean;
     amount?: Amount;
+    autoPlanned?: boolean;
   }) {
-    const { id, title, icon, isExpense, isDefault, amount } = category;
+    const { id, title, icon, isExpense, isDefault, amount, autoPlanned } = category;
     this._id = id;
     this._title = title;
     this._icon = icon;
     this._isExpense = isExpense;
     this._isDefault = isDefault;
     this._amount = amount ? amount : new Amount(0, 0, 0);
+    this._autoPlanned = autoPlanned === undefined ? true : autoPlanned;
   }
 
   get id() {
@@ -51,6 +54,10 @@ class Category {
     return this._amount;
   }
 
+  get autoPlanned() {
+    return this._autoPlanned;
+  }
+
   set icon(icon: string) {
     this._icon = icon;
   }
@@ -61,6 +68,10 @@ class Category {
 
   set amount(amount: Amount) {
     this._amount = amount;
+  }
+
+  set autoPlanned(autoPlanned: boolean) {
+    this._autoPlanned = autoPlanned;
   }
 
   static getCategoryFromData = (category: UserCategoryType | BudgetCategoryType) => {
@@ -74,6 +85,7 @@ class Category {
       amountCurrent,
       amountPlanned,
       amountScheduledRemain,
+      autoPlanned,
     } = category;
 
     const amount = new Amount(
@@ -89,6 +101,7 @@ class Category {
       isExpense,
       isDefault,
       amount,
+      autoPlanned,
     });
   };
 

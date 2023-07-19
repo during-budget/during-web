@@ -20,6 +20,7 @@ export interface UserCategoryType extends CategoryBaisis {
   amountPlanned: never;
   amountScheduled: never;
   amountScheduledRemain: never;
+  autoPlanned: never;
 }
 export interface BudgetCategoryType extends CategoryBaisis {
   _id: never;
@@ -28,6 +29,7 @@ export interface BudgetCategoryType extends CategoryBaisis {
   amountPlanned: number;
   amountScheduled: number;
   amountScheduledRemain: number;
+  autoPlanned: boolean;
 }
 
 export interface TransactionCategoryType extends Omit<CategoryBaisis, 'isDefault'> {
