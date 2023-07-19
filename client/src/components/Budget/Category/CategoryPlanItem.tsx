@@ -16,6 +16,7 @@ interface CategoryPlanItemProps {
   onChange: (i: number, value: number, autoPlanned: boolean) => void;
   hideCurrent?: boolean;
   preventDrag?: boolean;
+  resetAutoPlan?: boolean;
 }
 
 function CategoryPlanItem({
@@ -29,6 +30,7 @@ function CategoryPlanItem({
   onChange,
   hideCurrent,
   preventDrag,
+  resetAutoPlan,
 }: CategoryPlanItemProps) {
   const [autoPlanChecked, setAutoPlanChecked] = useState(autoPlanned);
   const [plan, setPlan] = useState(amount.planned.toString());
@@ -42,6 +44,14 @@ function CategoryPlanItem({
       onChange(idx, amount.current + amount.scheduled, autoPlanChecked);
     }
   }, [autoPlanChecked]);
+
+  console.log(title, autoPlanned, autoPlanChecked);
+
+  useEffect(() => {
+    if (resetAutoPlan) {
+      setAutoPlanChecked(autoPlanned);
+    }
+  }, [resetAutoPlan]);
 
   // Change - Set number
   const confirmHandler = (value: string) => {
@@ -98,7 +108,7 @@ function CategoryPlanItem({
             type="checkbox"
             checked={autoPlanChecked}
             onChange={() => {
-                setAutoPlanChecked((prev) => !prev);
+              setAutoPlanChecked((prev) => !prev);
             }}
             style={{ display: 'none' }}
           />

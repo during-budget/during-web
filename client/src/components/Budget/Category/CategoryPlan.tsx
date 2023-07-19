@@ -232,6 +232,7 @@ function CategoryPlan(props: { budgetId: string }) {
                     onChange={updateCategoryPlanHandler}
                     hideCurrent={isDefaultBudget}
                     preventDrag={item.isDefault}
+                    reset={isOpen}
                   />
                 )
             )}
