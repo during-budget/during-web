@@ -4,10 +4,11 @@
 }
 
 .top button {
+  width: 20%;
   position: absolute;
   font-size: var(--size-7);
   top: 0;
-  left: 40%;
+  right: 0;
 }
 
 .content {
