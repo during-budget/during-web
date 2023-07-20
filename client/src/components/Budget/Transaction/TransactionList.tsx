@@ -26,7 +26,11 @@ function TransactionList({ className, isDefault }: TransactionListProps) {
     isDefault,
   });
 
-  const dateList = Object.keys(dateTransactionData);
+  const dateList = Object.keys(dateTransactionData).sort((a, b) => {
+    const dayA = a.replace(/[^0-9]/g, '');
+    const dayB = b.replace(/[^0-9]/g, '');
+    return +dayB - +dayA;
+  });
 
   return (
     <ol className={`${classes.container} ${classes.default} ${className || ''}`}>
