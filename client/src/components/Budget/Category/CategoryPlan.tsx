@@ -198,13 +198,13 @@ function CategoryPlan(props: { budgetId: string }) {
           onConfirm={confirmTotalHandler}
           convertDefaultValue={convertTotalHandler}
         />
-        {(defaultCategory?.amount.planned || 0) < 0 && (
+        {(leftPlanState || 0) < 0 && (
           <Inform className={classes.alert} isError={isExpense}>
             <strong>전체 목표 초과</strong>
             <p>
               카테고리별 목표 총합이{' '}
               <strong>{`${Amount.getAmountStr(
-                totalPlanState + -1 * (defaultCategory?.amount.planned || 0)
+                totalPlanState + -1 * (leftPlanState || 0)
               )}`}</strong>
               입니다.
             </p>
