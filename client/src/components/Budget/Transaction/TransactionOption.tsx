@@ -36,7 +36,6 @@ function TransactionOption({
   const edit = (transaction.isCurrent || !transaction.linkId) && {
     name: '내역 수정',
     action: () => {
-      console.log(transaction);
       dispatch(
         transactionActions.setForm({
           mode: { isExpand: true, isEdit: true },

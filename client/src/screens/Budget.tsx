@@ -60,7 +60,7 @@ function Budget() {
 
   return (
     <div className={classes.budget}>
-      <BudgetHeader isDefault={isDefaultBudget} />
+      <BudgetHeader budgetId={id} isDefault={isDefaultBudget} />
       <main>
         {/* Status */}
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}

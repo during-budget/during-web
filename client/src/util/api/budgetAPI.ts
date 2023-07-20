@@ -235,3 +235,25 @@ export const updateBudgetCategories = async (
 
   return data as UpdatedBudgetCategoryType;
 };
+
+export const deleteBudget = async (budgetId: string) => {
+  checkNetwork();
+
+  const url = `${BASE_URL}/${encodeURIComponent(budgetId)}`;
+
+  let response, data;
+
+  try {
+    response = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    data = await response.json();
+  } catch (error) {
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(data?.message || '내역 삭제 중 문제가 발생했습니다.');
+  }
+};

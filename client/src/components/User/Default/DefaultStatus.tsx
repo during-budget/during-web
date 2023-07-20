@@ -72,7 +72,6 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
 
   // Handlers for plan amounts
   const confirmTotalHandler = async (total: string) => {
-    console.log(total);
     try {
       const confirmedTotal = +total.replace(/[^0-9.]+/g, '');
 

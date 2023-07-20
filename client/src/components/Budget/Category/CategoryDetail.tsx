@@ -12,7 +12,6 @@ import Icon from '../../UI/Icon';
 import IndexNav from '../../UI/IndexNav';
 import LoadingSpinner from '../../UI/LoadingSpinner';
 import NavButton from '../../UI/NavButton';
-import OptionButton from '../../UI/OptionButton';
 import AmountDetail from '../Amount/AmountDetail';
 import TransactionList from '../Transaction/TransactionList';
 import classes from './CategoryDetail.module.css';
@@ -89,7 +88,7 @@ const CategoryDetail = () => {
               <h1>{category?.title}</h1>
             </div>
             {/* TODO: 카테고리 개별 수정/삭제 구현 */}
-            <OptionButton menu={[]} disabled={true} />
+            {/* <OptionButton menu={[]} disabled={true} /> */}
           </div>
           {/* TODO: GroupedBar 차트... 만들기.. 월별로..? 나중에.... 지금은 힘들다.. */}
           <AmountDetail id="budget-amount-detail-by-category" amount={amount} />
