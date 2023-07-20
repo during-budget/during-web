@@ -66,7 +66,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
   const [dateState, setDateState] = useState<Date>(
-    isDefaultBudget ? new Date(0, 0, 1) : defaultValue.date || new Date()
+    defaultValue.date || new Date()
   );
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
@@ -92,10 +92,6 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       dispatch(uiActions.setIsCurrent(!isLater));
     }
   }, [dateState]);
-
-  useEffect(() => {
-    setDateState(isDefaultBudget ? new Date(0, 0, 1) : defaultValue.date || new Date());
-  }, [defaultValue.date]);
 
   const titlesRef = useRef<any>(null);
   const amountRef = useRef<any>(null);
