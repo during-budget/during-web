@@ -1,20 +1,24 @@
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import { uiActions } from '../../../store/ui';
+import { deleteBudget } from '../../../util/api/budgetAPI';
 import { getMonthName, getNumericDotDateString } from '../../../util/date';
 import NavButton from '../../UI/NavButton';
+import OptionButton from '../../UI/OptionButton';
 import classes from './BudgetHeader.module.css';
 import BudgetNav from './BudgetNav';
 
 interface BudgetHeaderProps {
+  budgetId: string;
   newDate?: { start: Date; end: Date };
   isDefault?: boolean;
 }
 
-function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
+function BudgetHeader({ budgetId, newDate, isDefault }: BudgetHeaderProps) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get budget Data
   const { title, date } = useAppSelector((state) => state.budget.current);
@@ -40,7 +44,7 @@ function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
   );
 
   const calendarButton = (
-    <button type="button" onClick={openBudgetList}>
+    <button className={classes.calendar} type="button" onClick={openBudgetList}>
       <i className="fa-regular fa-calendar"></i>
     </button>
   );
@@ -61,10 +65,26 @@ function BudgetHeader({ newDate, isDefault }: BudgetHeaderProps) {
       <div className={classes.date} onClick={openBudgetList}>
         {isDefault ? defaultHeader : dateHeader}
       </div>
-      {/* TODO: Search 구현 */}
-      <button type="button">
-        <i className="fa-solid fa-magnifying-glass"></i>
-      </button>
+      <OptionButton
+        className={classes.option}
+        menu={[
+          {
+            name: '예산 삭제하기',
+            action: () => {
+              dispatch(
+                uiActions.showModal({
+                  title: '정말 삭제하시겠습니까?',
+                  description: '예산 내의 모든 내역이 삭제됩니다.',
+                  onConfirm: () => {
+                    deleteBudget(budgetId);
+                    navigate('/');
+                  },
+                })
+              );
+            },
+          },
+        ]}
+      />
     </>
   );
 

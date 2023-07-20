@@ -10,14 +10,12 @@
   padding: 2vh 0;
 }
 
-.top button:first-child,
-.top a:first-child {
+.calendar {
   position: absolute;
   left: 5vw;
 }
 
-.top button:last-child,
-.top a:last-child {
+.option {
   position: absolute;
   right: 5vw;
 }
