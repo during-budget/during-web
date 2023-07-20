@@ -8,8 +8,12 @@ import classes from './AmountOverlay.module.css';
 
 const parser = new Parser();
 const getEvaluatedValue = (value: string) => {
-  const expr = parser.parse(value.replace(/,/g, ''));
-  return expr.evaluate();
+  if (value) {
+    const expr = parser.parse(value.replace(/,/g, ''));
+    return expr.evaluate();
+  } else {
+    return 0;
+  }
 };
 
 const AmountOverlay = () => {

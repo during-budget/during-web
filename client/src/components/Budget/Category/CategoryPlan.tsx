@@ -162,7 +162,7 @@ function CategoryPlan(props: { budgetId: string }) {
 
   // Handlers for plan amounts
   const confirmTotalHandler = (total: string) => {
-    const confirmedTotal = +total.replace(/[^0-9]+/g, '');
+    const confirmedTotal = +total.replace(/[^0-9.]+/g, '');
     setTotalPlanState(confirmedTotal);
   };
 

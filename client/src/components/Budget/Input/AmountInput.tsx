@@ -40,7 +40,7 @@ const AmountInput = React.forwardRef(
 
     useImperativeHandle(ref, () => {
       return {
-        value,
+        value: value || 0,
         clear: () => {
           setValue('');
         },
