@@ -108,7 +108,10 @@ function CategoryPlanItem({
             type="checkbox"
             checked={autoPlanChecked}
             onChange={() => {
-              setAutoPlanChecked((prev) => !prev);
+              setAutoPlanChecked((prev) => {
+                onChange(idx, +plan, !prev);
+                return !prev;
+              });
             }}
             style={{ display: 'none' }}
           />
