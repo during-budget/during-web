@@ -65,13 +65,15 @@ const CategoryLayout = () => {
                       <div className={classes.description}>
                         <p className={classes.amount}>
                           {currentScheduledStr} <span className={classes.divider}>/</span>{' '}
-                          {plannedStr}
+                          {category.isDefault ? currentScheduledStr : plannedStr}
                         </p>
-                        <p className={classes.label}>
-                          {remaining === 0
-                            ? ''
-                            : `${remainingStr} ${remaining < 0 ? '초과' : '남음'}`}
-                        </p>
+                        {!category.isDefault && (
+                          <p className={classes.label}>
+                            {remaining === 0
+                              ? ''
+                              : `${remainingStr} ${remaining < 0 ? '초과' : '남음'}`}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

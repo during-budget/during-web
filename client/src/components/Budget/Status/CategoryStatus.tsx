@@ -13,6 +13,7 @@ import CategoryPlanButtons from '../UI/CategoryPlanButtons';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryStatus.module.css';
 import StatusHeader from './StatusHeader';
+import Category from '../../../models/Category';
 
 function CategoryStatus(props: { budgetId: string }) {
   const dispatch = useAppDispatch();
@@ -20,6 +21,8 @@ function CategoryStatus(props: { budgetId: string }) {
   // Get state from store
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedCategories = useAppSelector((state) => state.budgetCategory);
+
+  const [currentCategory, setCurrentCategory] = useState(Category.getEmptyCategory());
 
   // CategoryIdx -Set current category idx
   const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
@@ -30,14 +33,19 @@ function CategoryStatus(props: { budgetId: string }) {
 
   // Get category data
   const categories = isExpense ? storedCategories.expense : storedCategories.income;
-
   const categoryNames = categories.map((item) => `${item.icon} ${item.title}`);
+
+  useEffect(() => {
+    const nextCategory = Category.clone(categories[currentCategoryIdx]);
+    nextCategory.amount.planned = nextCategory.amount.current + nextCategory.amount.scheduled;
+    setCurrentCategory(nextCategory);
+  }, [currentCategoryIdx, categories]);
 
   // Update category plan (in AmountDetail)
   const updatePlan = async (amountStr: string) => {
     try {
       const amount = +amountStr;
-      const categoryId = categories[currentCategoryIdx].id;
+      const categoryId = currentCategory.id;
 
       // Send request
       const { budget } = await updateCategoryPlan(props.budgetId, categoryId, amount);
@@ -76,19 +84,15 @@ function CategoryStatus(props: { budgetId: string }) {
       />
       <AmountDetail
         id="category"
-        amount={categories[currentCategoryIdx]?.amount || new Amount(0, 0, 0)}
-        editPlanHandler={
-          !categories[currentCategoryIdx]?.isDefault ? updatePlan : undefined
+        amount={currentCategory?.amount || new Amount(0, 0, 0)
         }
+        editPlanHandler={!currentCategory?.isDefault ? updatePlan : undefined}
       />
       <IndexNav
         idx={currentCategoryIdx}
         setIdx={setCurrentCategoryIdx}
         data={categoryNames}
-        to={
-          categories[currentCategoryIdx] &&
-          `/category/${categories[currentCategoryIdx].id}/${props.budgetId}`
-        }
+        to={currentCategory && `/category/${currentCategory.id}/${props.budgetId}`}
       />
       <CategoryPlanButtons />
       <Button
