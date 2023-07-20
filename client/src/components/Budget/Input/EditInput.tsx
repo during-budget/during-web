@@ -64,7 +64,12 @@ const EditInput = React.forwardRef(
 
       if (min !== undefined && value < min) {
         value = min;
-        //TODO: 예정보다 작을 수 없습니다 표 띄우기.... onChange를 쓰도록 수정해야겠네.
+        dispatch(
+          uiActions.showModal({
+            title: '전체 목표 초과',
+            description: '전체 목표가 예정보다 작을 수 없습니다',
+          })
+        );
       }
 
       onConfirm && onConfirm(value.toString());

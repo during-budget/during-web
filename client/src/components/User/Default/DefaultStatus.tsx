@@ -72,8 +72,9 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
 
   // Handlers for plan amounts
   const confirmTotalHandler = async (total: string) => {
+    console.log(total);
     try {
-      const confirmedTotal = +total.replace(/[^0-9]+/g, '');
+      const confirmedTotal = +total.replace(/[^0-9.]+/g, '');
 
       // send Request
       const key = getExpensePlannedKey(isExpense);
@@ -97,7 +98,7 @@ const DefaultStatus = ({ budgetId }: DefaultStatusProps) => {
   };
 
   const convertTotalHandler = (value: string) => {
-    return value.replace(/[^0-9]/g, '');
+    return value.replace(/[^0-9.]/g, '');
   };
 
   return (
