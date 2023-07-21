@@ -44,7 +44,9 @@ function ErrorBoundary() {
         title: '문제가 발생했습니다',
         description: '다시 시도해주세요.',
       });
+      alert((routeError as Error));
       Sentry.captureException(routeError);
+      
     }
   }, [routeError]);
 
