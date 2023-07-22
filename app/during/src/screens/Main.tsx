@@ -1,5 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {BackHandler, Dimensions, StyleSheet} from 'react-native';
+import {BackHandler, Dimensions, Platform, StyleSheet} from 'react-native';
+import {
+  BannerAdSize,
+  GAMBannerAd,
+  TestIds,
+} from 'react-native-google-mobile-ads';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {WebViewNativeEvent} from 'react-native-webview/lib/RNCWebViewNativeComponent';
@@ -7,6 +12,14 @@ import {WebViewNativeEvent} from 'react-native-webview/lib/RNCWebViewNativeCompo
 const Main = () => {
   const ref = useRef<WebView>(null);
   const [navState, setNaveState] = useState<WebViewNativeEvent>();
+
+  const unitID =
+    Platform.select({
+      ios: 'ca-app-pub-7896727622535419/3140414754',
+      android: 'ca-app-pub-7896727622535419/9945496251',
+    }) || '';
+
+  const adUnitId = __DEV__ ? TestIds.BANNER : unitID;
 
   useEffect(() => {
     const canGoBack = navState?.canGoBack;
@@ -35,6 +48,13 @@ const Main = () => {
           source={{uri: 'https://during.money'}}
           style={styles.webview}
           onNavigationStateChange={event => setNaveState(event)}
+        />
+        <GAMBannerAd
+          unitId={adUnitId}
+          sizes={[BannerAdSize.FULL_BANNER]}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
         />
       </SafeAreaView>
     </SafeAreaProvider>

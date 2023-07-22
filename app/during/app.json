@@ -1,4 +1,8 @@
 {
   "name": "during",
-  "displayName": "during"
+  "displayName": "during",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7896727622535419~1451627243",
+    "ios_app_id": "ca-app-pub-7896727622535419~8193430888"
+  }
 }
