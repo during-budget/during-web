@@ -76,7 +76,7 @@ jobs:
           context: server
           file: ./server/Dockerfile
           push: true
-          tags: "ghcr.io/whaleap/during-budget_server_01:latest"
+          tags: "ghcr.io/whaleap/during-budget_server:latest"
           # (3)
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -119,13 +119,13 @@ jobs:
       # Pull images
       - name: Docker pull
         run: |
-          docker pull ghcr.io/whaleap/during-budget_server_01:latest
+          docker pull ghcr.io/whaleap/during-budget_server:latest
 
       # Run containers
       - name: Docker run
         run: |
           docker rm -f during-budget_server_1 &>/dev/null && echo 'Removed old container'
-          docker run --name during-budget_server_1  --restart on-failure -p ${{secrets.SERVER_PORT}}:${{secrets.SERVER_PORT}} -d ghcr.io/whaleap/during-budget_server_01:latest
+          docker run --name during-budget_server_1  --restart on-failure -p ${{secrets.SERVER_PORT}}:${{secrets.SERVER_PORT}} -d ghcr.io/whaleap/during-budget_server:latest
 
       # 이전 이미지 삭제
       - name: Prune images
