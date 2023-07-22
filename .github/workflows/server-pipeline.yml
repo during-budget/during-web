@@ -8,6 +8,9 @@ jobs:
   server-CI:
     name: server-CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       # 체크아웃
