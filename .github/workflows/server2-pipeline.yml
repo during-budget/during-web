@@ -1,8 +1,8 @@
-name: server-pipeline
+name: server2-pipeline
 
 on:
   push:
-    branches: [server]
+    branches: [server2]
 
 jobs:
   server-CI:
@@ -18,27 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.14.2
-
-      # docker build 세팅
-      - name: Docker Setup Buildx
-        uses: docker/setup-buildx-action@v2.0.0
-
-      # 캐시 받아오기
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      # GitHub 컨테이너 레지스트리에 로그인
-      - name: Login to ghcr
-        uses: docker/login-action@v2.0.0
-        with:
-          registry: ghcr.io/whaleap
-          username: ${{ github.actor }}
-          password: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
 
       # .env.production 파일 생성
       - name: Set .env.production File
@@ -68,6 +47,28 @@ jobs:
           echo "PORTONE_IMP_KEY= ${{secrets.PORTONE_IMP_KEY}}" >> .env.production
           echo "PORTONE_IMP_SECRET= ${{secrets.PORTONE_IMP_SECRET}}" >> .env.production
 
+      # 💡 Use docker hub instead of ghcr
+      # Docker hub에 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # docker build 세팅
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.0.0
+
+      # 캐시 받아오기
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # 💡 Use docker hub instead of ghcr
       # 빌드 후 푸쉬
       - name: Build and push
         id: docker-build
@@ -76,7 +77,7 @@ jobs:
           context: server
           file: ./server/Dockerfile
           push: true
-          tags: "ghcr.io/whaleap/during-budget_server:latest"
+          tags: "whaleap/during-budget_server:latest"
           # (3)
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -108,19 +109,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # 💡 Use docker hub instead of ghcr
       # GitHub 컨테이너 레지스트리에 로그인
-      - name: Login to ghcr
-        uses: docker/login-action@v2.0.0
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          registry: ghcr.io/whaleap
-          username: ${{ github.actor }}
-          password: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # 💡 Use docker hub instead of ghcr
       # Pull images
       - name: Docker pull
         run: |
-          docker pull ghcr.io/whaleap/during-budget_server:latest
+          docker pull whaleap/during-budget_server:latest
 
+      # NEED TO UPDATE
       # Run containers
       - name: Docker run
         run: |
