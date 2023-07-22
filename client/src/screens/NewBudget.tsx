@@ -47,7 +47,7 @@ function NewBudget() {
 
   return (
     <div className={classes.new}>
-      <BudgetHeader newDate={{ start: startDate, end: endDate }} />
+      <BudgetHeader budgetId={defaultBudgetId} newDate={{ start: startDate, end: endDate }} />
       <main>
         {/* Status */}
         <Carousel id="status" initialIndex={0} itemClassName={classes.status}>
