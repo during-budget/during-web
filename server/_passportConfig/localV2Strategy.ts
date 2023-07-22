@@ -31,7 +31,7 @@ const sendCode = async (
     await client.v4.hSet(email, "code", cipher(code));
     await client.expire(email, 60 * 5);
   } catch (err) {
-    console.error(err);
+    console.log(err);
 
     const _err = new Error(INVALID_EMAIL);
     throw _err;
