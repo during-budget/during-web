@@ -1,8 +1,8 @@
-name: server2-pipeline
+name: server-v2-pipeline
 
 on:
   push:
-    branches: [server2]
+    branches: [server]
 
 jobs:
   server-CI:
