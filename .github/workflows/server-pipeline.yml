@@ -77,15 +77,15 @@ jobs:
           file: ./server/Dockerfile
           push: true
           tags: "ghcr.io/whaleap/during-budget_server:latest"
-      #     # (3)
-      #     cache-from: type=local,src=/tmp/.buildx-cache
-      #     cache-to: type=local,dest=/tmp/.buildx-cache-new
+          # (3)
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      # # 이전 캐시 지우고 새로운 캐시 옮기기
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      # 이전 캐시 지우고 새로운 캐시 옮기기
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       # 디스코드 알림
       - name: Send Discord Notification
