@@ -4,13 +4,14 @@ import Overlay from '../UI/Overlay';
 import classes from './Auth.module.css';
 import EmailForm from './EmailForm';
 import SNSForm from './SNSForm';
+import Button from '../UI/Button';
 
 interface AuthProps {
   isOpen: boolean;
   onClose: () => void;
   onLanding: (user: UserDataType, to: string) => void;
   hideGuest?: boolean;
-  showEmail?: boolean;
+  showEmail?: boolean; 
 }
 
 export interface AuthFormProps {
@@ -19,7 +20,13 @@ export interface AuthFormProps {
   hideGuest?: boolean;
 }
 
-function Auth({ isOpen, onClose, onLanding, hideGuest, showEmail }: AuthProps) {
+function Auth({
+  isOpen,
+  onClose,
+  onLanding,
+  hideGuest,
+  showEmail,
+}: AuthProps) {
   const [isEmailAuth, setIsEmailAuth] = useState(showEmail);
 
   // Set state
