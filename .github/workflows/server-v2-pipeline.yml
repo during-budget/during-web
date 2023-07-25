@@ -101,7 +101,7 @@ jobs:
     needs: server-CI
     strategy:
       matrix:
-        labels: [L0]
+        labels: [L2]
     runs-on: ${{ matrix.labels }}
 
     steps:
