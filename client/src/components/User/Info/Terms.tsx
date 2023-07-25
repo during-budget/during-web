@@ -65,7 +65,7 @@ const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
           <h3>제 3조 (약관의 명시와 설명 및 개정)</h3>
           <ol>
             <li>
-              1. 듀링은 본 약관의 내용을 이용자가 확인할 수 있도록 듀링 내 설정 탭에
+              1. 듀링은 본 약관의 내용을 이용자가 확인할 수 있도록 메인 랜딩화면과 듀링 내 설정 탭에
               게시합니다.
             </li>
             <li>
@@ -272,7 +272,7 @@ const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
         </section>
 
         <section>
-          <h3>부칙</h3>이 약관은 2023년 7월 5일부터 적용됩니다.
+          <h3>부칙</h3>이 약관은 2023년 8월 5일부터 적용됩니다.
         </section>
       </div>
       <Button onClick={onClose}>닫기</Button>

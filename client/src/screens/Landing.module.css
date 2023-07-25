@@ -23,6 +23,13 @@
   align-items: center;
 }
 
+.policy {
+  width: 80%;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .logo {
   width: 2.5rem;
 }

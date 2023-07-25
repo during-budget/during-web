@@ -4,6 +4,8 @@ import Auth from '../components/Auth/Auth';
 import LandingCarousel from '../components/Landing/LandingCarousel';
 import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
+import Privacy from '../components/User/Info/Privacy';
+import Terms from '../components/User/Info/Terms';
 import { useAppDispatch } from '../hooks/redux-hook';
 import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';
@@ -25,6 +27,8 @@ const Landing = () => {
   const navigate = useNavigate();
 
   const [showLogin, setShowLogin] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const location = useLocation();
@@ -146,10 +150,16 @@ const Landing = () => {
     navigate('/user');
   };
 
+  const showTermsHandler = () => {
+    setShowTerms(true);
+  };
+
+  const showPrivacyHandler = () => {
+    setShowPrivacy(true);
+  };
+
   if (isFirstLoad) {
-    return (
-        <LoadingSpinner isFull={true} />
-    );
+    return <LoadingSpinner isFull={true} />;
   } else {
     return (
       <div className={classes.landing}>
@@ -163,12 +173,33 @@ const Landing = () => {
         >
           듀링 가계부 시작하기
         </Button>
+        <div className={classes.policy}>
+          <Button styleClass="extra" onClick={showTermsHandler}>
+            이용약관
+          </Button>
+          <span>{' | '}</span>
+          <Button styleClass="extra" onClick={showPrivacyHandler}>
+            개인정보처리방침
+          </Button>
+        </div>
         <Auth
           isOpen={showLogin}
           onClose={() => {
             setShowLogin(false);
           }}
           onLanding={getUserLogin}
+        />
+        <Terms
+          isOpen={showTerms}
+          onClose={() => {
+            setShowTerms(false);
+          }}
+        />
+        <Privacy
+          isOpen={showPrivacy}
+          onClose={() => {
+            setShowPrivacy(false);
+          }}
         />
       </div>
     );
