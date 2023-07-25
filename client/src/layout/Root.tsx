@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import AmountOverlay from '../components/Budget/Input/AmountOverlay';
+import PaymentOverlay from '../components/Payment/PaymentOverlay';
 import Modal from '../components/UI/Modal';
 import { useAppSelector } from '../hooks/redux-hook';
 import Channel from '../models/Channel';
@@ -28,6 +29,7 @@ function Root() {
       <Outlet />
       <Modal />
       <AmountOverlay />
+      <PaymentOverlay />
     </>
   );
 }

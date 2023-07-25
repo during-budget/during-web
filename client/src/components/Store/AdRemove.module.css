@@ -1,0 +1,19 @@
+.adContainer {
+  background-color: var(--gray-1);
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.item {
+  gap: 1rem;
+  margin: 2.5rem;
+}
+
+.detail {
+  margin: 0 2rem;
+}

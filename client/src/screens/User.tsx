@@ -17,7 +17,6 @@ export interface SettingOverlayProps {
 }
 
 import Auth from '../components/Auth/Auth';
-import PaymentOverlay from '../components/Payment/PaymentOverlay';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
 import Privacy from '../components/User/Info/Privacy';
@@ -365,7 +364,6 @@ function User() {
           <Developers isOpen={showDevelopers} onClose={closeHandler(setShowDevelopers)} />
         </section>
       </main>
-      <PaymentOverlay />
       <EmojiOverlay />
       {(isGuest || !isLocal) && (
         <Auth
