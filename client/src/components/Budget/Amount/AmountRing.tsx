@@ -41,6 +41,7 @@ function AmountRing(props: {
   amount: Amount;
   skinScale: number;
   showMsg?: boolean;
+  preview?: string;
 }) {
   const skin = useAppSelector((state) => state.setting.chartSkin.selected);
   const skinKey = skin.toUpperCase();
@@ -48,7 +49,7 @@ function AmountRing(props: {
     ? SKIN_DATA[skinKey]
     : SKIN_DATA.BASIC;
 
-  const { size, amount, r, showMsg } = props;
+  const { size, amount, r, showMsg, preview } = props;
 
   const rawCurrentRatio = amount.getCurrentRatio();
   const rawScheduledRatio = rawCurrentRatio + amount.getScheduledRatio();
@@ -123,7 +124,7 @@ function AmountRing(props: {
             dash={data.dash}
             rotate={data.rotate}
             r={data.r}
-            skin={skinData ? skinData.name : 'basic'}
+            skin={preview ? preview : skinData ? skinData.name : 'basic'}
             showEyes={data.showEyes}
             showLine={data.showLine}
             isFront={data.isFront}

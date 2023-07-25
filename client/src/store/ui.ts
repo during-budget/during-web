@@ -52,6 +52,7 @@ interface AmountOptions {
 }
 
 const initialState: {
+  platform: 'android' | 'ios' | undefined;
   budget: BudgetOptions;
   emoji: EmojiOptions;
   modal: ModalOptions;
@@ -59,6 +60,7 @@ const initialState: {
   amount: AmountOptions;
   category: { add: CategoryAddOptions };
 } = {
+  platform: undefined,
   budget: {
     isCurrent: true,
     isExpense: true,
@@ -188,6 +190,9 @@ const uiSlice = createSlice({
     },
     closeAmountInput(state) {
       state.amount = initialState.amount;
+    },
+    setPlatform(state, action: PayloadAction<'android' | 'ios' | undefined>) {
+      state.platform = action.payload;
     },
   },
 });

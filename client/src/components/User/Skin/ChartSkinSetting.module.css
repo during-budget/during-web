@@ -54,3 +54,9 @@
 .lock .icon {
   background-color: var(--gray-3);
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

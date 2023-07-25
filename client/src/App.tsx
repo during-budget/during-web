@@ -16,6 +16,7 @@ import Budget, { loader as budgetLoader } from './screens/Budget';
 import InitialSetting from './screens/InitialSetting';
 import Landing, { loader as userLoader } from './screens/Landing';
 import NewBudget from './screens/NewBudget';
+import Store from './screens/Store';
 import User from './screens/User';
 
 const router = createBrowserRouter([
@@ -84,6 +85,16 @@ const router = createBrowserRouter([
           {
             path: '/asset',
             element: <Asset />,
+          },
+        ],
+      },
+      {
+        path: '/store',
+        element: <Nav />,
+        children: [
+          {
+            path: '/store',
+            element: <Store />,
           },
         ],
       },
