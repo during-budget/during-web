@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development npm run build:live",
     "prod": "cross-env NODE_ENV=production node -r ./tsconfig-paths-bootstrap.js dist/index.js",
-    "build": "tsc -p .",
+    "build": "tsc -p . && npm run build:copy-files",
     "build:live": "ts-node -r tsconfig-paths/register index.ts",
+    "build:copy-files": "cp utils/emailTemplates/authEmail.ejs dist/utils/emailTemplates/authEmail.ejs",
     "test": "jest -c ./jest.config.json --detectOpenHandles --forceExit"
   },
   "author": "",
