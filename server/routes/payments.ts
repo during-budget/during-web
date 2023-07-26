@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn, isPortOneWebHook } from "../middleware/auth";
+import { isLoggedIn, isPortOneWebHook, isAdmin } from "../middleware/auth";
 
 import * as payments from "@controllers/payments";
 
@@ -9,5 +9,7 @@ router.post("/complete", isLoggedIn, payments.completeByUser);
 router.post("/complete/webhook", isPortOneWebHook, payments.completeByWebhook);
 
 router.get("/", isLoggedIn, payments.find);
+
+router.delete("/:_id", isAdmin, payments.remove);
 
 export default router;
