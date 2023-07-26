@@ -18,7 +18,7 @@ function Index() {
   const [isLoading, setIsLoading] = useState(true);
 
   const updateData = async () => {
-    const { payments } = await API.GET({ location: "payments?userId" + _id });
+    const { payments } = await API.GET({ location: "payments?userId=" + _id });
     setPayments(payments);
   };
 
