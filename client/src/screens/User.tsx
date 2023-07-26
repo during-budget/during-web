@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { ScrollRestoration, useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/UI/Button';
@@ -206,6 +207,9 @@ function User() {
   ];
 
   const logoutHandler = async () => {
+    // set sentry
+    Sentry.setUser(null);
+
     try {
       await logoutUser();
       dispatch(userActions.logout());
@@ -221,6 +225,9 @@ function User() {
   };
 
   const deleteHandler = () => {
+    // set sentry
+    Sentry.setUser(null);
+
     dispatch(
       uiActions.showModal({
         title: '계정을 삭제할까요?',

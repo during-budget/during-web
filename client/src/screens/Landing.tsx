@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { useLoaderData, useLocation, useNavigate } from 'react-router';
 import Auth from '../components/Auth/Auth';
@@ -72,6 +73,9 @@ const Landing = () => {
       isGuest,
       isLocal,
     } = user;
+
+    // set sentry
+    Sentry.setUser({ id: _id, username: userName, email, snsId });
 
     // set user data
     dispatch(userActions.login());
