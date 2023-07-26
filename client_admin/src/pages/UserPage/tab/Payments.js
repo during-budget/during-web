@@ -94,6 +94,22 @@ function Index() {
             key: "_detail",
             type: "expand-detail",
           },
+          {
+            key: "delete",
+            type: "button-delete",
+            onClick: async (e) => {
+              if (window.confirm("정말 삭제하시겠습니까?") === true) {
+                try {
+                  await API.DELETE({ location: "payments/" + e._id });
+                  setIsLoading(true);
+                  alert("success");
+                } catch (err) {
+                  alert("ERROR!");
+                }
+              }
+            },
+            width: "112px",
+          },
         ]}
         rows={payments.map((payment) => {
           return { ...payment, key: payment._id };

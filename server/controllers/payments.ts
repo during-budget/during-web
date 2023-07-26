@@ -254,3 +254,17 @@ export const find = async (req: Request, res: Response) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const payment = await Payment.findByIdAndDelete(req.params._id);
+
+    if (!payment) {
+      return res.status(404).send({ message: NOT_FOUND("payment") });
+    }
+    return res.status(200).send({});
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
