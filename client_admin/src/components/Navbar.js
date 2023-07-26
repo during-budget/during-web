@@ -93,9 +93,11 @@ const Navbar = () => {
             type="link"
             onClick={async () => {
               try {
-                await API.GET({ location: "users/logout" });
-              } finally {
+                await API.GET({ location: "auth/logout" });
                 logOut();
+                navigate("/login");
+              } catch (err) {
+                alert("ERROR!");
               }
             }}
           >
