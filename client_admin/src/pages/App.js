@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 // pages for this product
@@ -27,17 +27,20 @@ import useStore from "../hooks/useStore";
 function App() {
   const API = useAPI();
   const { user, logIn, logOut } = useStore((state) => state);
+  const navigate = useNavigate();
 
-  API.GET({ location: "users/current" }, (user, error) => {
-    if (error) {
-      alert("ERROR!");
-      logOut();
-      return;
-    }
+  useEffect(() => {
+    API.GET({ location: "users/current" })
+      .then(({ user }) => {
+        logIn(user);
+      })
+      .catch((err) => {
+        logOut();
+        navigate("/login");
+      });
 
-    if (user) logIn(user);
-    else logOut();
-  });
+    return () => {};
+  }, []);
 
   const RouteUser = (path, child) => (
     <Route
