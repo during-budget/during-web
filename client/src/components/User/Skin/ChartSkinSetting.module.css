@@ -1,5 +1,6 @@
 .list {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 5vw;
@@ -56,6 +57,13 @@
 }
 
 .center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.center > * {
   display: flex;
   justify-content: center;
   align-items: center;

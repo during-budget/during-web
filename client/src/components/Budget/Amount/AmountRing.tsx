@@ -1,37 +1,9 @@
+import { SKIN_DATA } from '../../../constants/chart-skin';
 import { useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
 import Inform from '../../UI/Inform';
 import classes from './AmountRing.module.css';
 import Ring from './Ring';
-
-interface SkinDataType {
-  [key: string]: { name: ChartSkinType; hideRoundedDeg: number; hideCoverDeg: number };
-}
-
-export type ChartSkinType = 'basic' | 'cat' | 'bunny' | 'bear';
-
-export const SKIN_DATA: SkinDataType = {
-  CAT: {
-    name: 'cat',
-    hideRoundedDeg: 352,
-    hideCoverDeg: 340,
-  },
-  BUNNY: {
-    name: 'bunny',
-    hideRoundedDeg: 338,
-    hideCoverDeg: 320,
-  },
-  BEAR: {
-    name: 'bear',
-    hideRoundedDeg: 351,
-    hideCoverDeg: 340,
-  },
-  BASIC: {
-    name: 'basic',
-    hideRoundedDeg: 360,
-    hideCoverDeg: 340,
-  },
-};
 
 function AmountRing(props: {
   size: string;
@@ -44,10 +16,9 @@ function AmountRing(props: {
   preview?: string;
 }) {
   const skin = useAppSelector((state) => state.setting.chartSkin.selected);
-  const skinKey = skin.toUpperCase();
-  const skinData = Object.keys(SKIN_DATA).includes(skinKey)
-    ? SKIN_DATA[skinKey]
-    : SKIN_DATA.BASIC;
+  const skinData = Object.keys(SKIN_DATA).includes(skin)
+    ? SKIN_DATA[skin]
+    : SKIN_DATA.basic;
 
   const { size, amount, r, showMsg, preview } = props;
 
