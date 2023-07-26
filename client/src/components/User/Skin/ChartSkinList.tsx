@@ -10,7 +10,11 @@ import Button from '../../UI/Button';
 import Mask from '../../UI/Mask';
 import classes from './ChartSkinSetting.module.css';
 
-const ChartSkinList = () => {
+interface ChartSkinListProps {
+  price?: number;
+}
+
+const ChartSkinList = ({ price }: ChartSkinListProps) => {
   const dispatch = useAppDispatch();
 
   const { selected: skinState, options } = useAppSelector(
@@ -77,10 +81,12 @@ const ChartSkinList = () => {
               skinScale={0.87}
               preview={skin}
             />
+            <h3>{SKIN_DATA[skin].name}</h3>
+            <p>해당 상품 구매 후 적용 시 차트가 위와 같이 표시됩니다.</p>
           </div>
         ),
         itemId: skin,
-        amount: 2000,
+        amount: price || 2000,
         onComplete: async (chartSkin: ChartSkinType) => {
           try {
             await updateChartSkin(chartSkin);
@@ -119,29 +125,33 @@ const ChartSkinList = () => {
 
   return (
     <ul className={classes.list}>
-      {Object.values(SKIN_DATA).map((item) => {
-        const isLocked = !options.includes(item.name);
+      {Object.values(SKIN_DATA).map(({ id }) => {
+        const isLocked = !options.includes(id);
         return (
-          item.name !== 'basic' && (
+          id !== 'basic' && (
             <li
-              key={item.name}
+              key={id}
               className={`${isLocked ? classes.lock : classes.unlock} ${
-                skinState === item.name ? classes.selected : ''
+                skinState === id ? classes.selected : ''
               }`}
-              onClick={clickHandler.bind(null, isLocked, item.name)}
+              onClick={clickHandler.bind(null, isLocked, id)}
             >
               <div className={classes.icon}>
                 <Mask
                   className={classes.profile}
-                  mask={`/assets/svg/${item.name}_profile.svg`}
+                  mask={`/assets/svg/${id}_profile.svg`}
                 />
               </div>
               <Button
                 styleClass={isLocked ? 'primary' : 'gray'}
                 className={classes.buy}
-                onClick={clickHandler.bind(null, isLocked, item.name)}
+                onClick={clickHandler.bind(null, isLocked, id)}
               >
-                {isLocked ? '₩2000' : skinState === item.name ? '설정중' : '설정하기'}
+                {isLocked
+                  ? `₩${price?.toLocaleString() || '2,000'}`
+                  : skinState === id
+                  ? '설정중'
+                  : '설정하기'}
               </Button>
             </li>
           )

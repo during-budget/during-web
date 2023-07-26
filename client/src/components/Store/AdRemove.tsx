@@ -4,7 +4,11 @@ import { getErrorMessage } from '../../util/error';
 import Button from '../UI/Button';
 import classes from './AdRemove.module.css';
 
-const AdRemove = () => {
+interface AddRemoveProps {
+  price?: number;
+}
+
+const AdRemove = ({ price }: AddRemoveProps) => {
   const dispatch = useAppDispatch();
 
   const payHandler = async (itemId: string) => {
@@ -17,7 +21,7 @@ const AdRemove = () => {
           </div>
         ),
         itemId,
-        amount: 6000,
+        amount: price || 6000,
         onComplete: async (itemId: string) => {
           try {
             // await updateChartSkin(chartSkin);
@@ -62,7 +66,7 @@ const AdRemove = () => {
           payHandler('ad');
         }}
       >
-        6,000원
+        {`₩${price?.toLocaleString() || '2,000'}`}
       </Button>
     </div>
   );

@@ -10,7 +10,7 @@ import WebView from 'react-native-webview';
 import {WebViewNativeEvent} from 'react-native-webview/lib/RNCWebViewNativeComponent';
 
 const Main = () => {
-  const ref = useRef<WebView>(null);
+  const webview = useRef<WebView>(null);
   const [navState, setNaveState] = useState<WebViewNativeEvent>();
 
   const unitID =
@@ -22,11 +22,19 @@ const Main = () => {
   const adUnitId = __DEV__ ? TestIds.BANNER : unitID;
 
   useEffect(() => {
+    webview.current?.postMessage(
+      JSON.stringify({
+        platform: Platform.OS,
+      }),
+    );
+  }, []);
+
+  useEffect(() => {
     const canGoBack = navState?.canGoBack;
 
     const onPress = () => {
       if (canGoBack) {
-        ref?.current?.goBack();
+        webview?.current?.goBack();
         return true;
       } else {
         return false;
@@ -44,7 +52,7 @@ const Main = () => {
     <SafeAreaProvider>
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
         <WebView
-          ref={ref}
+          ref={webview}
           source={{uri: 'https://during.money'}}
           style={styles.webview}
           onNavigationStateChange={event => setNaveState(event)}

@@ -14,12 +14,13 @@ const Store = () => {
       </div>
       {showAdRemove && (
         <section className={classes.full}>
-          <AdRemove />
+          <AdRemove price={platform ? 6900 : 6000} />
         </section>
       )}
       <section className={showAdRemove ? '' : classes.marginTop}>
-        <h4 className={classes.center}>링 차트 꾸미기</h4>
-        <ChartSkinList />
+        <h4 className={classes.center}>듀링 구매하기</h4>
+        <p className={classes.center}>듀링 캐릭터를 통해 차트를 꾸밀 수 있습니다.</p>
+        <ChartSkinList price={platform ? 2300 : 2000} />
       </section>
     </div>
   );
