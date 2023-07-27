@@ -22,14 +22,6 @@ const Main = () => {
   const adUnitId = __DEV__ ? TestIds.BANNER : unitID;
 
   useEffect(() => {
-    webview.current?.postMessage(
-      JSON.stringify({
-        platform: Platform.OS,
-      }),
-    );
-  }, []);
-
-  useEffect(() => {
     const canGoBack = navState?.canGoBack;
 
     const onPress = () => {
@@ -56,6 +48,13 @@ const Main = () => {
           source={{uri: 'https://during.money'}}
           style={styles.webview}
           onNavigationStateChange={event => setNaveState(event)}
+          onLoadEnd={() => {
+            webview.current?.postMessage(
+              JSON.stringify({
+                platform: Platform.OS,
+              }),
+            );
+          }}
         />
         <GAMBannerAd
           unitId={adUnitId}

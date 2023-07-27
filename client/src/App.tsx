@@ -18,6 +18,9 @@ import Landing, { loader as userLoader } from './screens/Landing';
 import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
 import User from './screens/User';
+import { useEffect } from 'react';
+import { useAppDispatch } from './hooks/redux-hook';
+import { uiActions } from './store/ui';
 
 const router = createBrowserRouter([
   {
@@ -126,6 +129,24 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // event: Message Event
+    const setPlatform = (event: any) => {
+      const { platform } = JSON.parse(event.data);
+
+      if (platform === 'android' || platform === 'ios') {
+        dispatch(uiActions.setPlatform(platform));
+      }
+    };
+
+    // android
+    document.addEventListener('message', setPlatform);
+    // ios
+    window.addEventListener('message', setPlatform);
+  }, []);
+
   return <RouterProvider router={router} />;
 }
 
