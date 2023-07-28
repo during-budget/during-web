@@ -12,9 +12,9 @@ const Index = (record, style) => (
   >
     {[
       <Input key="copyAll" label={""} value={JSON.stringify(record)} disable />,
-      ...Object.keys(record).map((key) => (
-        <Input label={key} value={record[key]} disable />
-      )),
+      ...Object.keys(record)
+        .sort()
+        .map((key) => <Input label={key} value={record[key]} disable />),
     ]}
   </div>
 );
