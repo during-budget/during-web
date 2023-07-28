@@ -60,10 +60,12 @@ interface IBudget {
   expenseScheduledRemain: number;
   expenseCurrent: number;
   expensePlanned: number;
+  expensePlannedRemain: number;
   incomeScheduled: number;
   incomeScheduledRemain: number;
   incomeCurrent: number;
   incomePlanned: number;
+  incomePlannedRemain: number;
   categories: ICategory[];
   updatedAt?: Date;
   createdAt?: Date;
@@ -131,6 +133,10 @@ const budgetSchema = new Schema<IBudget, BudgetModelType, IBudgetProps>(
       type: Number,
       default: 0,
     },
+    expensePlannedRemain: {
+      type: Number,
+      default: 0,
+    },
 
     //예정 수입
     incomeScheduled: {
@@ -154,7 +160,10 @@ const budgetSchema = new Schema<IBudget, BudgetModelType, IBudgetProps>(
       type: Number,
       default: 0,
     },
-
+    incomePlannedRemain: {
+      type: Number,
+      default: 0,
+    },
     categories: [categorySchema],
   },
   { timestamps: true }
@@ -221,23 +230,22 @@ budgetSchema.methods.increaseDefaultIncomeCategory = function (
 
 budgetSchema.methods.calculate = async function () {
   /* init */
+  /* expense */
   let sumExpensePlanned = 0;
   this.expenseScheduled = 0;
   this.expenseScheduledRemain = 0;
   this.expenseCurrent = 0;
+  this.expensePlannedRemain = 0;
+  /* income */
   let sumIncomePlanned = 0;
   this.incomeScheduled = 0;
   this.incomeScheduledRemain = 0;
   this.incomeCurrent = 0;
+  this.incomePlannedRemain = 0;
+
   const categoryMap: Map<string, number> = new Map([]);
+
   for (let i = 0; i < this.categories.length; i++) {
-    if (!this.categories[i].isDefault) {
-      if (this.categories[i].isExpense) {
-        sumExpensePlanned += this.categories[i].amountPlanned;
-      } else {
-        sumIncomePlanned += this.categories[i].amountPlanned;
-      }
-    }
     this.categories[i].amountScheduled = 0;
     this.categories[i].amountScheduledRemain = 0;
     this.categories[i].amountCurrent = 0;
@@ -283,24 +291,20 @@ budgetSchema.methods.calculate = async function () {
 
   /* autoPlanned categories */
   for (let i = 0; i < this.categories.length; i++) {
-    if (this.categories[i].autoPlanned) {
+    if (this.categories[i].autoPlanned || this.categories[i].isDefault) {
       this.categories[i].amountPlanned =
         this.categories[i].amountScheduledRemain +
         this.categories[i].amountCurrent;
     }
+    if (this.categories[i].isExpense) {
+      sumExpensePlanned += this.categories[i].amountPlanned;
+    } else {
+      sumIncomePlanned += this.categories[i].amountPlanned;
+    }
   }
 
-  /* set default categories */
-  const defaultExpenseCategoryIdx = this.categories.length - 2;
-  const defualtIncomeCategoryIdx = this.categories.length - 1;
-  if (defaultExpenseCategoryIdx !== -1) {
-    this.categories[defaultExpenseCategoryIdx].amountPlanned =
-      this.expensePlanned - this.sumExpensePlanned;
-  }
-  if (defualtIncomeCategoryIdx !== -1) {
-    this.categories[defualtIncomeCategoryIdx].amountPlanned =
-      this.incomePlanned - sumIncomePlanned;
-  }
+  this.expensePlannedRemain = this.expensePlanned - sumExpensePlanned;
+  this.incomePlannedRemain = this.incomePlanned - sumIncomePlanned;
 
   return;
 };
