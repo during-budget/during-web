@@ -10,6 +10,18 @@ import {
 
 router.put("/", isLoggedIn, users.updateFields);
 
+router.put("/agreement", isLoggedIn, users.updateAgreement);
+router.put(
+  "/agreement/termsOfUse",
+  isLoggedIn,
+  users.updateAgreementTermsOfUse
+);
+router.put(
+  "/agreement/privacyPolicy",
+  isLoggedIn,
+  users.updateAgreementPrivacyPolicy
+);
+
 router.get("/current", isLoggedIn, users.current);
 
 /* delete account */
