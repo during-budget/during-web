@@ -48,6 +48,59 @@ export const updateFields = async (req: Request, res: Response) => {
 };
 
 /**
+ * Update agreement
+ */
+export const updateAgreement = async (req: Request, res: Response) => {
+  const user = req.user!;
+
+  user.agreement = {
+    termsOfUse: req.body.termsOfUse,
+    privacyPolicy: req.body.privacyPolicy,
+  };
+  await user.saveReqUser();
+
+  return res.status(200).send({
+    agreement: user.agreement,
+  });
+};
+
+export const updateAgreementTermsOfUse = async (
+  req: Request,
+  res: Response
+) => {
+  const user = req.user!;
+
+  if (user.agreement) {
+    user.agreement.termsOfUse = req.body.termsOfUse;
+  } else {
+    user.agreement = { termsOfUse: req.body.termsOfUse };
+  }
+  await user.saveReqUser();
+
+  return res.status(200).send({
+    agreement: user.agreement,
+  });
+};
+
+export const updateAgreementPrivacyPolicy = async (
+  req: Request,
+  res: Response
+) => {
+  const user = req.user!;
+
+  if (user.agreement) {
+    user.agreement.privacyPolicy = req.body.privacyPolicy;
+  } else {
+    user.agreement = { privacyPolicy: req.body.privacyPolicy };
+  }
+  await user.saveReqUser();
+
+  return res.status(200).send({
+    agreement: user.agreement,
+  });
+};
+
+/**
  * Read current user's info
  */
 export const current = (req: Request, res: Response) => {

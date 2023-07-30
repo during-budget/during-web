@@ -56,6 +56,10 @@ interface IUser {
     timeZone: string;
     theme: string;
   };
+  agreement?: {
+    termsOfUse?: string;
+    privacyPolicy?: string;
+  };
 }
 
 interface IUserProps {
@@ -139,6 +143,10 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
         timeZone: basicTimeZone,
         theme: basicTheme,
       },
+    },
+    agreement: {
+      type: Object,
+      default: {},
     },
   },
   { timestamps: true }
