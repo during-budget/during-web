@@ -24,7 +24,12 @@ const AmountBars = ({ data }: AmountBarsProps) => {
         const amountBarData = [
           {
             height: planned,
-            className: classes.planned,
+            className:
+              planned <= current
+                ? classes.current
+                : planned <= scheduled
+                ? classes.scheduled
+                : classes.planned,
           },
           {
             height: scheduled,
