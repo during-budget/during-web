@@ -79,9 +79,7 @@ function CategoryPlanItem({
           </div>
         </div>
         {isDefault ? (
-          <p className={classes.default}>
-            {Amount.getAmountStr(amount.scheduled + amount.current)}
-          </p>
+          <p className={classes.default}>{Amount.getAmountStr(+plan)}</p>
         ) : (
           <AmountInput
             id={`category-plan-item-amount-input-${id}`}

@@ -49,9 +49,7 @@ const CategoryDetail = () => {
       new Amount(
         budgetCategory?.amountCurrent || 0,
         budgetCategory?.amountScheduledRemain || 0,
-        budgetCategory?.isDefault
-          ? (budgetCategory?.amountCurrent || 0) + (budgetCategory?.amountScheduled || 0)
-          : budgetCategory?.amountPlanned || 0
+        budgetCategory?.amountPlanned || 0
       )
     );
   }, [transactions]);

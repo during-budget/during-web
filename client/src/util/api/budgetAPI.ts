@@ -18,10 +18,12 @@ export interface BudgetDataType {
   expenseScheduled: number;
   expenseScheduledRemain: number;
   expensePlanned: number;
+  expensePlannedRemain: number;
   incomeCurrent: number;
   incomeScheduled: number;
   incomeScheduledRemain: number;
   incomePlanned: number;
+  incomePlannedRemain: number;
   categories: BudgetCategoryType[];
 }
 

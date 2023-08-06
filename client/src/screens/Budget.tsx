@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
+import CategoryAddOverlay from '../components/Budget/Category/CategoryAddOverlay';
+import CategoryLayout from '../components/Budget/Category/CategoryLayout';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import BudgetList from '../components/Budget/List/BudgetList';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
@@ -22,8 +24,6 @@ import { transactionActions } from '../store/transaction';
 import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
 import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
-import CategoryLayout from '../components/Budget/Category/CategoryLayout';
-import CategoryAddOverlay from '../components/Budget/Category/CategoryAddOverlay';
 
 function Budget() {
   const dispatch = useAppDispatch();
@@ -54,7 +54,7 @@ function Budget() {
     <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
       <DateStatus budgetId={id} />
       <TotalStatus budgetId={id} />
-      <CategoryStatus budgetId={id} />
+      <CategoryStatus budgetId={id}  />
     </Carousel>
   );
 
