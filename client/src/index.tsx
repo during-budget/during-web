@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import App from './App';
 import store from './store/index';
-const { DURING_SENTRY } = import.meta.env;
+const { DURING_SENTRY, DURING_SERVER } = import.meta.env;
 
 if (import.meta.env.MODE === 'production') {
   Sentry.init({
     dsn: DURING_SENTRY,
     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay({
-      networkDetailAllowUrls: ['https://api.during.money']
+      networkDetailAllowUrls: [DURING_SERVER]
     }),
   ],
     // Performance Monitoring
