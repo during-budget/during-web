@@ -52,7 +52,7 @@ function AmountRing(props: {
     };
   };
 
-  const isBasic = skinData.name === 'basic';
+  const isBasic = skinData.id === 'basic';
 
   const hideRounded =
     currentDeg > skinData.hideRoundedDeg ||
@@ -95,7 +95,7 @@ function AmountRing(props: {
             dash={data.dash}
             rotate={data.rotate}
             r={data.r}
-            skin={preview ? preview : skinData ? skinData.name : 'basic'}
+            skin={preview ? preview : skinData ? skinData.id : 'basic'}
             showEyes={data.showEyes}
             showLine={data.showLine}
             isFront={data.isFront}

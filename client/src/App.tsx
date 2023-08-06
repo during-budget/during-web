@@ -134,11 +134,13 @@ function App() {
   useEffect(() => {
     // event: Message Event
     const setPlatform = (event: any) => {
-      const { platform } = JSON.parse(event.data);
+      try {
+        const { platform } = JSON.parse(event.data);
 
-      if (platform === 'android' || platform === 'ios') {
-        dispatch(uiActions.setPlatform(platform));
-      }
+        if (platform === 'android' || platform === 'ios') {
+          dispatch(uiActions.setPlatform(platform));
+        }
+      } catch (e) {}
     };
 
     // android
