@@ -107,7 +107,6 @@ function CategoryPlan(props: { budgetId: string }) {
       };
     });
 
-    // TODO: 여기서 remaining 설정하기
     const { categories, excluded } = await updateBudgetCategories(
       props.budgetId,
       isExpense,
@@ -136,6 +135,8 @@ function CategoryPlan(props: { budgetId: string }) {
       const prevAmount = prev[i].amount;
       const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
       const nextCategories = [...prev];
+
+      console.log(i, value, autoPlanned);
 
       nextCategories[i] = Category.clone(prev[i], { amount: nextAmount, autoPlanned });
 

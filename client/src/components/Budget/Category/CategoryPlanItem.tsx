@@ -53,8 +53,11 @@ function CategoryPlanItem({
 
   // Change - Set number
   const confirmHandler = (value: string) => {
-    setPlan(value);
-    onChange(idx, +value, autoPlanChecked);
+    if (+value !== amount.planned) {
+      setPlan(value);
+      setAutoPlanChecked(false);
+      onChange(idx, +value, false);
+    }
   };
 
   return (
@@ -86,9 +89,6 @@ function CategoryPlanItem({
             defaultValue={
               autoPlanChecked ? (amount.current + amount.scheduled).toString() : plan
             }
-            onClick={() => {
-              setAutoPlanChecked(false);
-            }}
             onConfirm={confirmHandler}
           />
         )}
