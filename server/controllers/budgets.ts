@@ -460,6 +460,7 @@ export const updateCategoryAmountPlanned = async (
       });
 
     budget.categories[categoryIdx].amountPlanned = req.body.amountPlanned;
+    budget.categories[categoryIdx].autoPlanned = false;
     await budget.save();
     await budget.calculate();
 
