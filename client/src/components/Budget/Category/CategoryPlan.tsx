@@ -35,10 +35,10 @@ function CategoryPlan(props: { budgetId: string }) {
 
   // Set states - from store
   const [totalPlanState, setTotalPlanState] = useState<number>(0);
-  const [leftPlanState, setLeftPlanState] = useState<number>(0);
   const [categoryState, setCategoryState] = useState<Category[]>([]);
-  const [allCategoryState, setAllCategoryState] = useState<Category[]>([]);
   const [defaultCategory, setDefaultCategory] = useState<Category | undefined>(undefined);
+  const [allCategory, setAllCategoryState] = useState<Category[]>([]);
+  const [remaining, setRemaining] = useState(0);
 
   // Update state <- from store
   // TODO: isExpense 일치 일반 카테고리와 기본 카테고리 분류해서 얻는 헬퍼 함수나 훅.. 만들기...
@@ -61,21 +61,6 @@ function CategoryPlan(props: { budgetId: string }) {
     });
   }, [isExpense, currentCategories]);
 
-  // Update default state <- category, total
-  useEffect(() => {
-    setDefaultCategory((prev) => {
-      const nextDefault = Category.clone(prev);
-      const categoryPlanSum = categoryState.reduce(
-        (acc, curr) => acc + curr.amount.planned,
-        0
-      );
-
-      nextDefault.amount.planned = totalPlanState - categoryPlanSum;
-      return nextDefault;
-    });
-  }, [categoryState, totalPlanState]);
-
-
   useEffect(() => {
     setAllCategoryState([
       ...categoryState,
@@ -83,19 +68,18 @@ function CategoryPlan(props: { budgetId: string }) {
     ]);
   }, [categoryState, defaultCategory]);
 
-
-  useEffect(() => {
-    setLeftPlanState(
-      (defaultCategory?.amount.planned || 0) -
-        (defaultCategory?.amount.current || 0) -
-        (defaultCategory?.amount.scheduled || 0)
-    );
-  }, [defaultCategory]);
-
   // Handlers for Overlay
   const closeHandler = () => {
     dispatch(uiActions.showCategoryPlanEditor({ isExpense, showEditPlan: false }));
   };
+
+  useEffect(() => {
+    const categoryPlanSum = allCategory.reduce(
+      (acc, item) => acc + item.amount.planned,
+      0
+    );
+    setRemaining(totalPlanState - categoryPlanSum);
+  }, [totalPlanState, allCategory]);
 
   const submitHandler = async () => {
     // total - request
@@ -123,6 +107,7 @@ function CategoryPlan(props: { budgetId: string }) {
       };
     });
 
+    // TODO: 여기서 remaining 설정하기
     const { categories, excluded } = await updateBudgetCategories(
       props.budgetId,
       isExpense,
@@ -198,14 +183,13 @@ function CategoryPlan(props: { budgetId: string }) {
           onConfirm={confirmTotalHandler}
           convertDefaultValue={convertTotalHandler}
         />
-        {(leftPlanState || 0) < 0 && (
+        {remaining < 0 && (
           <Inform className={classes.alert} isError={isExpense}>
             <strong>전체 목표 초과</strong>
+
             <p>
               카테고리별 목표 총합이{' '}
-              <strong>{`${Amount.getAmountStr(
-                totalPlanState + -1 * (leftPlanState || 0)
-              )}`}</strong>
+              <strong>{`${Amount.getAmountStr(totalPlanState + -1 * remaining)}`}</strong>
               입니다.
             </p>
           </Inform>
@@ -214,7 +198,7 @@ function CategoryPlan(props: { budgetId: string }) {
         <AmountArea
           className={classes.bars}
           borderRadius="0.4rem"
-          amountData={allCategoryState.map((item) => {
+          amountData={allCategory.map((item) => {
             return { label: item.icon || ' ', amount: item.amount.planned || 0 };
           })}
         />
@@ -223,12 +207,12 @@ function CategoryPlan(props: { budgetId: string }) {
           <h5>목표 예산</h5>
           <DraggableList
             id="category-plan-draggable-list"
-            list={allCategoryState}
+            list={allCategory}
             setList={(list: Category[]) => {
               setCategoryState(list.filter((item) => !item.isDefault));
             }}
           >
-            {allCategoryState.map(
+            {allCategory.map(
               (item, i: number) =>
                 item && (
                   <CategoryPlanItem
@@ -250,12 +234,22 @@ function CategoryPlan(props: { budgetId: string }) {
           </DraggableList>
         </ul>
         {/* category - default amount (left amount) */}
-        {isExpense && (
-          <div className={`${classes.left} ${leftPlanState < 0 ? classes.red : ''}`}>
-            <h6>남은 목표 금액</h6>
-            <p>{Amount.getAmountStr(leftPlanState)}</p>
-          </div>
-        )}
+        <div
+          className={`${classes.left} ${
+            (defaultCategory?.amount.planned || 0) -
+              (defaultCategory?.amount.current || 0) -
+              (defaultCategory?.amount.scheduled || 0) <
+            0
+              ? classes.red
+              : ''
+          }`}
+        >
+          <h6>남은 금액</h6>
+          <p>
+            {/* TODO: 서버에서 remained 가져오기 */}
+            {Amount.getAmountStr(remaining)}
+          </p>
+        </div>
         {/* buttons */}
         <Button
           className={classes.edit}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
 import Amount from '../../../models/Amount';
+import { budgetActions } from '../../../store/budget';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { uiActions } from '../../../store/ui';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
@@ -13,7 +14,6 @@ import CategoryPlanButtons from '../UI/CategoryPlanButtons';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryStatus.module.css';
 import StatusHeader from './StatusHeader';
-import Category from '../../../models/Category';
 
 function CategoryStatus(props: { budgetId: string }) {
   const dispatch = useAppDispatch();
@@ -21,8 +21,6 @@ function CategoryStatus(props: { budgetId: string }) {
   // Get state from store
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedCategories = useAppSelector((state) => state.budgetCategory);
-
-  const [currentCategory, setCurrentCategory] = useState(Category.getEmptyCategory());
 
   // CategoryIdx -Set current category idx
   const [currentCategoryIdx, setCurrentCategoryIdx] = useState(0);
@@ -35,23 +33,18 @@ function CategoryStatus(props: { budgetId: string }) {
   const categories = isExpense ? storedCategories.expense : storedCategories.income;
   const categoryNames = categories.map((item) => `${item.icon} ${item.title}`);
 
-  useEffect(() => {
-    const nextCategory = Category.clone(categories[currentCategoryIdx]);
-    nextCategory.amount.planned = nextCategory.amount.current + nextCategory.amount.scheduled;
-    setCurrentCategory(nextCategory);
-  }, [currentCategoryIdx, categories]);
-
   // Update category plan (in AmountDetail)
   const updatePlan = async (amountStr: string) => {
     try {
       const amount = +amountStr;
-      const categoryId = currentCategory.id;
+      const categoryId = categories[currentCategoryIdx].id;
 
       // Send request
       const { budget } = await updateCategoryPlan(props.budgetId, categoryId, amount);
 
       // Dispatch budget state (for plan update)
       dispatch(budgetCategoryActions.setCategoryFromData(budget.categories));
+      dispatch(budgetActions.setCurrentBudget(budget));
     } catch (error) {
       const message = getErrorMessage(error);
       dispatch(
@@ -84,15 +77,19 @@ function CategoryStatus(props: { budgetId: string }) {
       />
       <AmountDetail
         id="category"
-        amount={currentCategory?.amount || new Amount(0, 0, 0)
+        amount={categories[currentCategoryIdx]?.amount || new Amount(0, 0, 0)}
+        editPlanHandler={
+          !categories[currentCategoryIdx]?.isDefault ? updatePlan : undefined
         }
-        editPlanHandler={!currentCategory?.isDefault ? updatePlan : undefined}
       />
       <IndexNav
         idx={currentCategoryIdx}
         setIdx={setCurrentCategoryIdx}
         data={categoryNames}
-        to={currentCategory && `/category/${currentCategory.id}/${props.budgetId}`}
+        to={
+          categories[currentCategoryIdx] &&
+          `/category/${categories[currentCategoryIdx].id}/${props.budgetId}`
+        }
       />
       <CategoryPlanButtons />
       <Button
