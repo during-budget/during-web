@@ -70,11 +70,10 @@ export const updateAgreementTermsOfUse = async (
 ) => {
   const user = req.user!;
 
-  if (user.agreement) {
-    user.agreement.termsOfUse = req.body.termsOfUse;
-  } else {
-    user.agreement = { termsOfUse: req.body.termsOfUse };
-  }
+  user.agreement = {
+    ...(user.agreement ?? {}),
+    termsOfUse: req.body.termsOfUse,
+  };
   await user.saveReqUser();
 
   return res.status(200).send({
@@ -88,11 +87,10 @@ export const updateAgreementPrivacyPolicy = async (
 ) => {
   const user = req.user!;
 
-  if (user.agreement) {
-    user.agreement.privacyPolicy = req.body.privacyPolicy;
-  } else {
-    user.agreement = { privacyPolicy: req.body.privacyPolicy };
-  }
+  user.agreement = {
+    ...(user.agreement ?? {}),
+    privacyPolicy: req.body.privacyPolicy,
+  };
   await user.saveReqUser();
 
   return res.status(200).send({
