@@ -34,12 +34,12 @@ const AmountBars = ({ data }: AmountBarsProps) => {
           {
             height: scheduled,
             className: `${classes.scheduled} ${
-              current + scheduled > planned && classes.over
+              scheduled > planned ? classes.over : ''
             }`,
           },
           {
             height: current,
-            className: `${classes.current} ${current > planned && classes.over}`,
+            className: `${classes.current} ${current > planned ? classes.over : ''}`,
           },
         ];
 
