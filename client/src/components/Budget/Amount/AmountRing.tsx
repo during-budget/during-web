@@ -1,5 +1,5 @@
 import { SKIN_DATA } from '../../../constants/chart-skin';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import Inform from '../../UI/Inform';
 import classes from './AmountRing.module.css';

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import Amount from '../../models/Amount';
 import { uiActions } from '../../store/ui';
 import { completePayment, preparePayment } from '../../util/api/paymentAPI';

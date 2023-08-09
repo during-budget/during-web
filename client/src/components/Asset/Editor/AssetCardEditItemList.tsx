@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { assetActions } from '../../../store/asset';
 import { uiActions } from '../../../store/ui';

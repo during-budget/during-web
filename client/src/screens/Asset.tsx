@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import AssetList from '../components/Asset/List/AssetList';
 import AssetCardStatus from '../components/Asset/Status/AssetCardStatus';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
-import { useAppSelector } from '../hooks/redux-hook';
+import { useAppSelector } from '../hooks/useRedux';
 import { assetActions } from '../store/asset';
 import { uiActions } from '../store/ui';
 import { AssetDataType, CardDataType, getAssets, getCards } from '../util/api/assetAPI';

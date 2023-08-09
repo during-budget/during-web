@@ -1,5 +1,5 @@
 import { ChartSkinType, SKIN_DATA } from '../../../constants/chart-skin';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { settingActions } from '../../../store/setting';
 import { uiActions } from '../../../store/ui';

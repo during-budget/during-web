@@ -2,7 +2,7 @@ import Picker from '@emoji-mart/react';
 import data from 'emoji_data_kr';
 import { BiEraser } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
-import { useAppSelector } from '../../hooks/redux-hook';
+import { useAppSelector } from '../../hooks/useRedux';
 import classes from './EmojiOverlay.module.css';
 import Overlay from './Overlay';
 

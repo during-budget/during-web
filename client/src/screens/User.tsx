@@ -7,7 +7,7 @@ import UserCategorySetting from '../components/User/Category/UserCategorySetting
 import UserHeader from '../components/User/Profile/UserHeader';
 import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { userActions } from '../store/user';
 import { UserDataType, deleteUser } from '../util/api/userAPI';
 import classes from './User.module.css';
@@ -17,7 +17,7 @@ export interface SettingOverlayProps {
   onClose: () => void;
 }
 
-import Auth from '../components/Auth/Auth';
+import Auth from '../components/Auth/AuthOverlay';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
 import Privacy from '../components/User/Info/Privacy';

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
 import { getBudgetList } from '../../../util/api/budgetAPI';

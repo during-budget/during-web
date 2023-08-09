@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { assetActions } from '../../../store/asset';
 import { PaymentDataType, updatePayments } from '../../../util/api/assetAPI';
 import DraggableItem from '../../UI/DraggableItem';

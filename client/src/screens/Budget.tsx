@@ -16,7 +16,7 @@ import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
-import { useAppDispatch } from '../hooks/redux-hook';
+import { useAppDispatch } from '../hooks/useRedux';
 import { budgetActions } from '../store/budget';
 import { budgetCategoryActions } from '../store/budget-category';
 import { totalActions } from '../store/total';

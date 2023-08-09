@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import AmountOverlay from '../components/Budget/Input/AmountOverlay';
 import PaymentOverlay from '../components/Payment/PaymentOverlay';
 import Modal from '../components/UI/Modal';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import Channel from '../models/Channel';
 import { uiActions } from '../store/ui';
 import classes from './Root.module.css';

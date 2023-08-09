@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { transactionActions } from '../../../store/transaction';
 import { getNumericDotDateString } from '../../../util/date';

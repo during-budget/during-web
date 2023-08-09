@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import { userCategoryActions } from '../../../store/user-category';
 import { createCategory } from '../../../util/api/categoryAPI';

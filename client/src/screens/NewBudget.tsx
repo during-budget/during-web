@@ -6,7 +6,7 @@ import TotalStatus from '../components/Budget/Status/TotalStatus';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Button from '../components/UI/Button';
 import Carousel from '../components/UI/Carousel';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { uiActions } from '../store/ui';
 import { createBudgetFromBasic } from '../util/api/budgetAPI';
 import { getErrorMessage } from '../util/error';

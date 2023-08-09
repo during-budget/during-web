@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { ASSET_CARD_DETAIL_TYPE } from '../../../constants/type';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { assetActions } from '../../../store/asset';
 import {
   AssetDataType,

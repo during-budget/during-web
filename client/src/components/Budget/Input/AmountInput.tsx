@@ -1,5 +1,5 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { useAppDispatch } from '../../../hooks/redux-hook';
+import { useAppDispatch } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
 

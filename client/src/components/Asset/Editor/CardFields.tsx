@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import classes from './CardFields.module.css';
 
 interface CardFieldsProps {

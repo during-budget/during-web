@@ -4,7 +4,7 @@ import { uiActions } from '../../../store/ui';
 import Calendar from '../../UI/Calendar';
 import RadioTab from '../../UI/RadioTab';
 import IncomeExpenseAmount from '../Amount/IncomeExpenseAmount';
-import { useAppDispatch } from '../../../hooks/redux-hook';
+import { useAppDispatch } from '../../../hooks/useRedux';
 
 function MonthlyStatus(props: { date: { start: Date; end: Date }; dailyAmountObj: any }) {
   const dispatch = useAppDispatch();

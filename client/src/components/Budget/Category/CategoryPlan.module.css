@@ -112,7 +112,7 @@
 
 .red {
   color: var(--error-text);
-  background-color: var(--error-background);
+  background-color: var(--error-bg);
 }
 
 .red > * {

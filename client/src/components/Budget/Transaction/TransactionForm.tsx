@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { v4 as uuid } from 'uuid';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { assetActions } from '../../../store/asset';
 import { budgetActions } from '../../../store/budget';
 import { budgetCategoryActions } from '../../../store/budget-category';

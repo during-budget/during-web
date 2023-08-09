@@ -17,7 +17,7 @@ import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import StepNav from '../components/UI/StepNav';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
-import { useAppSelector } from '../hooks/redux-hook';
+import { useAppSelector } from '../hooks/useRedux';
 import { assetActions } from '../store/asset';
 import { budgetActions } from '../store/budget';
 import { budgetCategoryActions } from '../store/budget-category';

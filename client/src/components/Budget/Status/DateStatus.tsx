@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
 import MonthlyStatus from '../Date/MonthlyStatus';

@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
 import Button from '../../UI/Button';

@@ -1,6 +1,6 @@
 import AdRemove from '../components/Store/AdRemove';
 import ChartSkinList from '../components/User/Skin/ChartSkinList';
-import { useAppSelector } from '../hooks/redux-hook';
+import { useAppSelector } from '../hooks/useRedux';
 import classes from './Store.module.css';
 
 const Store = () => {

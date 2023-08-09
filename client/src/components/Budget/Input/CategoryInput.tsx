@@ -1,5 +1,5 @@
 import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
 import Select from '../../UI/Select';

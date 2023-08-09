@@ -3,7 +3,7 @@
     width: 100%;
     text-align: left;
     display: flex;
-    gap: var(--size-10);
+    gap: 0.5rem;
 }
 
 .field label {

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import { deleteBudget } from '../../../util/api/budgetAPI';
 import { getMonthName, getNumericDotDateString } from '../../../util/date';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
 import Button from './Button';
 import classes from './Modal.module.css';

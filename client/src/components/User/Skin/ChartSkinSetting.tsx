@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../hooks/redux-hook';
+import { useAppSelector } from '../../../hooks/useRedux';
 import { SettingOverlayProps } from '../../../screens/User';
 import { settingActions } from '../../../store/setting';
 import Button from '../../UI/Button';

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { useAppDispatch } from '../../hooks/redux-hook';
+import { useAppDispatch } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
 import { getErrorMessage } from '../../util/error';
 import ConfirmCancelButtons, { ConfirmCancelButtonsProps } from './ConfirmCancelButtons';

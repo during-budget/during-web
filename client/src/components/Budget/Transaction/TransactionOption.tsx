@@ -1,4 +1,4 @@
-import { useAppDispatch } from '../../../hooks/redux-hook';
+import { useAppDispatch } from '../../../hooks/useRedux';
 import Category from '../../../models/Category';
 import { assetActions } from '../../../store/asset';
 import { budgetActions } from '../../../store/budget';

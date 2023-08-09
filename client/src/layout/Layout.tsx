@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import classes from './Nav.module.css';
+import classes from './Layout.module.css';
 import RequireAuth from './RequireAuth';
 
 function Nav() {

@@ -1,40 +1,85 @@
 import { PropsWithChildren } from 'react';
 import classes from './Button.module.css';
 import LoadingSpinner from './LoadingSpinner';
+import { css } from '@emotion/react';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   className?: string;
-  style?: React.CSSProperties;
+  css?: React.CSSProperties;
   onClick?: (event?: React.MouseEvent) => void;
   isPending?: boolean;
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
-  sizeClass?: 'lg' | 'md' | 'sm';
+  sizeClass?: 'xl' | 'lg' | 'md' | 'sm';
   children?: React.ReactNode;
 }
 
 function Button({
   type,
   className,
-  style,
   onClick,
   isPending,
   disabled,
   styleClass,
   sizeClass,
+  css,
   children,
 }: PropsWithChildren<ButtonProps>) {
-  const styleClassName = classes[styleClass!] || classes.primary;
-  const sizeClassName = classes[sizeClass!] || classes.lg;
+  let style: React.CSSProperties = {
+    color: 'var(--white)',
+    backgroundColor: 'var(--primary)',
+  };
+
+  let size: React.CSSProperties = {
+    height: '3rem',
+    fontSize: 'var(--text-base)',
+  };
+
+  switch (styleClass) {
+    case 'secondary':
+      style = {
+        color: 'var(--primary)',
+        backgroundColor: 'var(--secondary)',
+      };
+      break;
+    case 'extra':
+      style = {
+        color: 'var(--black)',
+        backgroundColor: 'transparent',
+      };
+      break;
+    case 'gray':
+      style = {
+        color: 'var(--gray-300)',
+        backgroundColor: 'var(--gray-0)',
+      };
+      break;
+  }
+
+  switch (sizeClass) {
+    case 'lg':
+      size = {
+        height: '3.5rem',
+        fontSize: 'var(--text-base)',
+        fontWeight: 700
+      };
+      break;
+    case 'sm':
+      size = {
+        fontSize: 'var(--text-md)',
+        width: 'fit-content',
+        height: '2rem',
+        padding: '1rem',
+      };
+      break;
+  }
 
   return (
     <button
       type={type || 'button'}
-      className={`${classes.button} ${styleClassName} ${sizeClassName} ${
-        className || ''
-      }`}
-      style={style}
+      className={`w-100 flex-center semi-bold round-sm ${className || ''}`}
+      css={{ ...style, ...size, ...css }}
       onClick={onClick}
       disabled={disabled}
     >

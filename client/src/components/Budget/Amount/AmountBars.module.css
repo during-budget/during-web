@@ -38,7 +38,7 @@
 }
 
 .scheduled.over {
-  background-color: var(--error-background);
+  background-color: var(--error-bg);
 }
 
 .current.over {

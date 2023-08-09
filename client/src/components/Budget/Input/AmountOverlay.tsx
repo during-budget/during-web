@@ -1,6 +1,6 @@
 import { Parser } from 'expr-eval';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux-hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import Button from '../../UI/Button';
 import OverlayForm from '../../UI/OverlayForm';
