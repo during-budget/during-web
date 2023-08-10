@@ -1,3 +1,5 @@
+import { FormMethod } from "react-router-dom";
+
 const { DURING_SERVER } = import.meta.env;
 
 const BASE_URL = `${DURING_SERVER as string}/api`;
@@ -5,7 +7,7 @@ const BASE_URL = `${DURING_SERVER as string}/api`;
 interface requestParams {
   url: string;
   body?: unknown;
-  method: string;
+  method?: FormMethod;
   errorMessage?: string;
 }
 
@@ -20,11 +22,11 @@ const getConfig = (method?: string, body?: unknown) => {
   } as RequestInit;
 };
 
-interface ResponseType {
+interface MessageResponseType {
   message?: string;
 }
 
-export const fetchRequest = async <T extends ResponseType>({
+export const fetchRequest = async <T>({
   url,
   body,
   method,
@@ -38,7 +40,7 @@ export const fetchRequest = async <T extends ResponseType>({
 
   try {
     response = await fetch(BASE_URL + url, getConfig(method, body));
-    data = (await response.json()) as T | Error;
+    data = (await response.json()) as (T & MessageResponseType) | Error;
 
     if (data instanceof Error) {
       throw data;

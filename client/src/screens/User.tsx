@@ -1,6 +1,13 @@
 import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
-import { ScrollRestoration, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  ActionFunctionArgs,
+  ScrollRestoration,
+  redirect,
+  useNavigate,
+  useSearchParams,
+  useSubmit
+} from 'react-router-dom';
 import Button from '../components/UI/Button';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
@@ -9,7 +16,7 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { userActions } from '../store/user';
-import { UserDataType, deleteUser } from '../util/api/userAPI';
+import { UserDataType } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 export interface SettingOverlayProps {
@@ -17,7 +24,7 @@ export interface SettingOverlayProps {
   onClose: () => void;
 }
 
-import Auth from '../components/Auth/AuthOverlay.tsx';
+import Auth from '../components/Auth/AuthOverlay';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
 import Privacy from '../components/User/Info/Privacy';
@@ -29,12 +36,13 @@ import {
   disconnectSnsId,
   getAuthURL,
   getSnsId,
-  logoutUser,
-  providers,
+  providers
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
+import { fetchRequest } from '../util/request';
 
 function User() {
+  const submit = useSubmit();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -52,6 +60,11 @@ function User() {
   const [showBuisness, setShowBuisness] = useState(false);
   const [showDevelopers, setShowDevelopers] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    // NOTE: 오버레이를 닫아도 전체 페이지를 리로드하지 않도록 해시를 추가하여 해시 간의 이동으로 간주되도록 처리
+    navigate('/user#base', { replace: true });
+  }, []);
 
   const settings = [
     {
@@ -211,9 +224,8 @@ function User() {
     Sentry.setUser(null);
 
     try {
-      await logoutUser();
+      submit({ intent: 'logout' }, { method: 'post' });
       dispatch(userActions.logout());
-      navigate('/', { replace: true });
     } catch (error) {
       dispatch(
         uiActions.showErrorModal({
@@ -234,9 +246,8 @@ function User() {
         description: '모든 정보가 삭제되며 복구할 수 없습니다.',
         onConfirm: async () => {
           try {
-            await deleteUser();
+            submit({ intent: 'delete' }, { method: 'post' });
             dispatch(userActions.logout());
-            navigate('/', { replace: true });
           } catch (error) {
             dispatch(
               uiActions.showErrorModal({
@@ -382,11 +393,28 @@ function User() {
           }}
           hideGuest={isGuest || !isLocal}
           showEmail={showEmailForm}
-          onLanding={landingHandler}
         />
       )}{' '}
     </div>
   );
 }
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const intent = formData.get('intent');
+
+  switch (intent) {
+    case 'disconnectLocal':
+      break;
+    case 'disconnentSnsId':
+      break;
+    case 'logout':
+      await fetchRequest({ url: '/auth/logout' });
+      return redirect('/landing');
+    case 'delete':
+      await fetchRequest({ url: '/users', method: 'delete' });
+      return redirect('/landing');
+  }
+};
 
 export default User;
