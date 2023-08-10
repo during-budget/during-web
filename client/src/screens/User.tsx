@@ -17,7 +17,7 @@ export interface SettingOverlayProps {
   onClose: () => void;
 }
 
-import Auth from '../components/Auth/AuthOverlay';
+import Auth from '../components/Auth/AuthOverlay.tsx';
 import Buisness from '../components/User/Info/Buisness';
 import Developers from '../components/User/Info/Developers';
 import Privacy from '../components/User/Info/Privacy';

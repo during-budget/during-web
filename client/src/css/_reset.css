@@ -1,0 +1,115 @@
+@import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
+
+:root {
+  --fast-in: cubic-bezier(0.4, 0.39, 0.08, 1.02);
+  --slow-in: cubic-bezier(0.56, -0.01, 0.56, 0.89);
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  color: var(--black);
+}
+
+body {
+  height: 100%;
+  font-family: 'SUIT Variable', SUIT, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  padding: 1rem;
+  width: 100%;
+  height: 3.5rem;
+  font-size: var(--text-base);
+  font-family: inherit;
+  border-radius: var(--round-sm);
+  background-color: var(--gray-0);
+  border: none;
+  outline: none;
+}
+
+input:focus {
+  outline: none;
+}
+
+input:disabled {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 0.6;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--primary);
+  width: 0.875rem;
+}
+
+textarea {
+  font-family: inherit;
+}
+
+select {
+  appearance: none;
+}
+
+button {
+  font-family: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  transition: opacity 0.3s var(--fast-in);
+  will-change: opacity;
+}
+
+button:disabled {
+  opacity: 0.2;
+}
+
+ul,
+ol,
+li {
+  list-style-type: none;
+}
+
+hr {
+  margin-top: var(--size-1);
+  width: 100%;
+  height: var(--size-1);
+  border: none;
+  background-color: #f6f6f6;
+}
+
+main {
+  margin-bottom: 9vh; /* NOTE: Nav height */
+}
+
+html {
+  font-size: 16px;
+}
+
+@media screen and (min-width: 480px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  html {
+    font-size: 12px;
+  }
+}

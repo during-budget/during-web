@@ -1,44 +1,9 @@
-.sns {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 8vh;
-}
-
-.sns img {
-  width: 6vh;
-  margin-bottom: 0.5vh;
-}
-
-.sns h2 {
-  font-weight: 800;
-  margin-top: 1.5vh;
-}
-
-.form {
-  margin-top: 3vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .social {
   display: flex;
   width: 100%;
   justify-content: center;
   gap: 2vh;
   margin: 2vh 0;
-}
-
-.social .label {
-  width: 100%;
-  text-align: left;
-  font-weight: 600;
-}
-
-.social img {
-  width: 9.5vh;
 }
 
 .buttons {

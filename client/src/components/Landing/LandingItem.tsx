@@ -18,7 +18,7 @@ const LandingItem = ({
 }: LandingItemProps) => {
   return (
     <div className={`${classes.landingItem} ${className || ''}`}>
-      <h2>{title}</h2>
+      <h2 className="text-2xl tracking-tightest heavy">{title}</h2>
       <Lottie className={`${lottieClassName || ''}`} animationData={animationData} />
       <p>{description}</p>
     </div>

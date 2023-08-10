@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { useAppDispatch } from '../../hooks/redux-hook';
+import { useAppDispatch } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
 import { localAuth } from '../../util/api/authAPI';
-import { UserDataType } from '../../util/api/userAPI';
 import { getErrorMessage } from '../../util/error';
 import { validateEmail } from '../../util/validate';
 import CodeField from '../Auth/CodeField';
 import Button from '../UI/Button';
 import Inform from '../UI/Inform';
 import InputField from '../UI/InputField';
-import classes from './EmailForm.module.css';
-import GuestLoginButton from './GuestLoginButton';
-import { AuthFormProps } from './Auth';
+import { AuthFormProps } from './AuthOverlay';
 
-const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
+const EmailForm = ({ changeAuthType, onLogin, hideGuest }: AuthFormProps) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
@@ -93,9 +90,9 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
       const persist = persistRef.current!.checked;
       const { message, user } = await localAuth(emailState, code, persist);
       if (message === 'REGISTER_SUCCESS') {
-        onLanding(user, '/init');
+        onLogin(user, '/init');
       } else {
-        onLanding(user, from || '/budget');
+        onLogin(user, from || '/budget');
       }
     } catch (error) {
       setIsPending(false);
@@ -129,21 +126,21 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
 
   // Error message JSXElement
   const errorMessage = errorState.length !== 0 && (
-    <Inform isError={true} className={classes.error} isFlex={true} isLeft={true}>
+    <Inform
+      isError={true}
+      css={{ marginTop: '0.5vh', marginBottom: '2vh' }}
+      isFlex={true}
+      isLeft={true}
+    >
       <p>{errorState}</p>
     </Inform>
   );
 
   return (
-    <div className={classes.email}>
-      <img src="/images/logo.png" alt="듀링 가계부 로고" />
-      <h2>시작하기</h2>
-      <form className={classes.form}>
-        <InputField
-          id="auth-email-field"
-          className={`${classes.field} ${classes.emailField}`}
-        >
-          <div className={classes.emailLabel}>
+    <div className="flex-column i-center mx-3" css={{ marginTop: '8vh' }}>
+      <form className="w-100">
+        <InputField id="auth-email-field" className="mb-0.5">
+          <div className="flex j-between i-center">
             <label htmlFor="auth-email-input">이메일로 시작</label>
             {isVerify && (
               <Button sizeClass="sm" onClick={sendHandler}>
@@ -164,18 +161,13 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
 
         {isVerify ? (
           <>
-            <CodeField className={classes.code} ref={codeRef} />
+            <CodeField className="mb-1.25" ref={codeRef} />
             {errorMessage}
-            <Button
-              type="submit"
-              className={classes.submit}
-              onClick={verifyHandler}
-              isPending={isPending}
-            >
+            <Button type="submit" onClick={verifyHandler} isPending={isPending}>
               인증하기
             </Button>
-            <div className={classes.options}>
-              <div className={classes.persist}>
+            <div className="flex j-between i-center mb-0.625 px-0.5">
+              <div className="flex i-center shrink-0 gap-xs text-md">
                 <input
                   id="auth-email-persist"
                   ref={persistRef}
@@ -186,50 +178,26 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
               </div>
               <Button
                 styleClass="extra"
-                className={classes.restart}
+                className="j-end"
                 onClick={async () => {
                   setEmailState('');
                   setIsDisabled(false);
                   setIsVerify(false);
                 }}
               >
-                <u>이메일 다시 입력하기</u>
+                <u className="text-md regular">이메일 다시 입력하기</u>
               </Button>
             </div>
           </>
         ) : (
           <>
             {errorMessage}
-            <Button
-              type="submit"
-              className={classes.submit}
-              onClick={sendHandler}
-              isPending={isPending}
-            >
+            <Button type="submit" onClick={sendHandler} isPending={isPending}>
               인증코드 전송
             </Button>
           </>
         )}
       </form>
-      <div className={classes.buttons}>
-        {!hideGuest && (
-          <>
-            <GuestLoginButton onLogin={onLanding} />
-            <span>|</span>
-          </>
-        )}
-        {changeAuthType && (
-          <Button
-            styleClass="extra"
-            className={classes.sns}
-            onClick={() => {
-              changeAuthType();
-            }}
-          >
-            SNS로 시작하기
-          </Button>
-        )}
-      </div>
     </div>
   );
 };
