@@ -21,3 +21,12 @@ export const getErrorMessage = (error: any) => {
     return ERROR_MESSAGE[message];
   }
 };
+
+export const throwError = (error: any) => {
+  const message = ERROR_MESSAGE[(error as Error)?.message];
+  if (message) {
+    return new Error(message);
+  } else {
+    throw error;
+  }
+};

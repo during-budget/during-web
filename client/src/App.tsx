@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { action as emailAction } from './components/Auth/EmailForm';
 import './css/_reset.css';
 import './css/color.css';
 import './css/layout.css';
@@ -28,7 +29,8 @@ const router = createBrowserRouter([
       {
         path: '/landing',
         element: <Landing />,
-        action: userLoader,
+        action: emailAction,
+        loader: userLoader,
       },
       {
         path: '/',
