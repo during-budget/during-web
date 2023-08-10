@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom';
+import { LoaderFunctionArgs, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { transactionActions } from '../../../store/transaction';
@@ -19,6 +19,14 @@ import classes from './CategoryDetail.module.css';
 const CategoryDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // NOTE: 오버레이를 닫아도 전체 페이지를 리로드하지 않도록 해시를 추가하여 해시 간의 이동으로 간주되도록 처리
+    navigate(location.pathname + '#base', { replace: true });
+  }, []);
+
 
   const [isLoading, setIsLoading] = useState(true);
   const data = useLoaderData() as Awaited<ReturnType<typeof loader>>;

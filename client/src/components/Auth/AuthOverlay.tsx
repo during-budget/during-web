@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { useToggle } from '../../hooks/useToggle';
 import { uiActions } from '../../store/ui';
 import { guestLogin } from '../../util/api/authAPI';
-import { UserDataType } from '../../util/api/userAPI';
 import Button from '../UI/Button';
 import Overlay from '../UI/Overlay';
 import EmailForm from './EmailForm';
@@ -12,13 +12,13 @@ import SNSButtons from './SNSButtons';
 interface AuthProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: UserDataType, to: string) => void;
   hideGuest?: boolean;
   showEmail?: boolean;
 }
 
-function AuthOverlay({ isOpen, onClose, onLogin, hideGuest, showEmail }: AuthProps) {
+function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [isSns, setSnsAuth, setEmailAuth] = useToggle(true);
 
@@ -33,7 +33,11 @@ function AuthOverlay({ isOpen, onClose, onLogin, hideGuest, showEmail }: AuthPro
   const guestHandler = async () => {
     try {
       const data = await guestLogin();
-      onLogin(data.user, '/init');
+      if (data.user) {
+        navigate('/budget/init');
+      } else {
+        throw new Error('계정을 생성하지 못했습니다.');
+      }
     } catch (error) {
       const message = (error as Error).message;
       dispatch(uiActions.showErrorModal({ description: message }));

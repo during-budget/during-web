@@ -35,7 +35,7 @@ const AuthRedirect = () => {
         navigate('/budget');
         return;
       case 'REGISTER_SUCCESS':
-        navigate('/init');
+        navigate('/budget/init');
         return;
       case 'EMAIL_IN_USE':
         dispatch(

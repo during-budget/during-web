@@ -25,7 +25,7 @@ function ErrorBoundary() {
         description: '네트워크 연결을 확인해주세요',
       });
     } else if (message === 'NOT_LOGGED_IN') {
-      navigate('/');
+      navigate('/landing');
     } else if (message === 'NOT_PERMITTED') {
       setError({
         mark: '!',
@@ -44,9 +44,8 @@ function ErrorBoundary() {
         title: '문제가 발생했습니다',
         description: '다시 시도해주세요.',
       });
-      alert((routeError as Error));
+      console.error(routeError as Error);
       Sentry.captureException(routeError);
-      
     }
   }, [routeError]);
 
