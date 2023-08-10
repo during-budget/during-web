@@ -17,12 +17,6 @@ interface AuthProps {
   showEmail?: boolean;
 }
 
-export interface AuthFormProps {
-  changeAuthType?: () => void;
-  onLogin: (user: UserDataType, to: string) => void;
-  hideGuest?: boolean;
-}
-
 function AuthOverlay({ isOpen, onClose, onLogin, hideGuest, showEmail }: AuthProps) {
   const dispatch = useAppDispatch();
 
@@ -72,7 +66,7 @@ function AuthOverlay({ isOpen, onClose, onLogin, hideGuest, showEmail }: AuthPro
           <h2>시작하기</h2>
           {isSns && <p>SNS 계정으로 시작</p>}
         </header>
-        {isSns ? <SNSButtons /> : <EmailForm onLogin={onLogin} />}
+        {isSns ? <SNSButtons /> : <EmailForm />}
         <div className="w-80 mx-auto flex-center">
           <Button styleClass="extra" onClick={guestHandler}>
             가입 없이 둘러보기

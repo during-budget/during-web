@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import InputField from '../UI/InputField';
 
-const CODE_LENGTH = 6;
+export const CODE_LENGTH = 6;
 
 const CodeField = React.forwardRef((props: { className?: string }, ref) => {
   const [inputState, setInputState] = useState<NodeListOf<HTMLInputElement>>();
@@ -33,7 +33,6 @@ const CodeField = React.forwardRef((props: { className?: string }, ref) => {
   });
 
   useEffect(() => {
-    console.log('why');
     Array.from(new Array(CODE_LENGTH)).forEach((_, i) => {
       const input = document.createElement('input');
       input.type = 'number';
