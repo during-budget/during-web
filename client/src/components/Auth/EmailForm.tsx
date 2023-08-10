@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ActionFunctionArgs, useLocation, useNavigate } from 'react-router';
+import { ActionFunctionArgs, useNavigate } from 'react-router';
 import { useFetcher } from 'react-router-dom';
 import { ERROR_MESSAGE } from '../../constants/error';
 import useInput from '../../hooks/useInput';
@@ -17,10 +17,7 @@ const EMAIL_VALIDATE_REGEX =
 
 const EmailForm = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const fetcher = useFetcher<LocalAuthResponse>();
-
-  const from = location.state?.from?.pathname;
 
   const codeRef = useRef<any>(null);
   const persistRef = useRef<HTMLInputElement>(null);
@@ -49,7 +46,11 @@ const EmailForm = () => {
 
     switch (intent) {
       case 'send':
-        if (data?.message === 'LOGIN_VERIFICATION_CODE_SENT') {
+        if (
+          data?.message === 'LOGIN_VERIFICATION_CODE_SENT' ||
+          'REGISTER_VERIFICATION_CODE_SENT' ||
+          'EMAIL_UPDATE_VERIFICATION_CODE_SENT'
+        ) {
           disableEmail();
           setIsVerify(true);
         }
@@ -66,9 +67,9 @@ const EmailForm = () => {
         }
 
         if (message === 'REGISTER_SUCCESS') {
-          // navigate('/init');
+          navigate('/budget/init');
         } else if (message === 'LOGIN_SUCCESS') {
-          // navigate(from || '/budget');
+          navigate('/budget');
         } else {
           setErrorState(ERROR_MESSAGE[message]);
         }
@@ -104,7 +105,7 @@ const EmailForm = () => {
 
   return (
     <div className="flex-column i-center mx-3" css={{ marginTop: '8vh' }}>
-      <fetcher.Form className="w-100" action="/landing" method="POST" noValidate>
+      <fetcher.Form className="w-100" action="/landing" method="post" noValidate>
         <InputField id="auth-email-field" className="mb-0.5">
           <div className="flex j-between i-center">
             <label htmlFor="auth-email-input">이메일로 시작</label>
@@ -205,7 +206,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     try {
       const response = await fetchRequest<LocalAuthResponse>({
         url: '/auth/local',
-        method: 'POST',
+        method: 'post',
         body: { email },
       });
       return response;
@@ -231,7 +232,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const response = await fetchRequest<LocalAuthResponse>({
       url: '/auth/local',
-      method: 'POST',
+      method: 'post',
       body: { email, code, persist },
     });
     return response;

@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { action as emailAction } from './components/Auth/EmailForm';
+import CategoryDetail, {
+  loader as categoryLoader,
+} from './components/Budget/Category/CategoryDetail';
 import './css/_reset.css';
 import './css/color.css';
 import './css/layout.css';
@@ -11,12 +14,16 @@ import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
 } from './layout/CurrentBudgetNavigator';
 import ErrorBoundary from './layout/ErrorBoundary';
-import Layout from './layout/Layout';
+import Index from './layout/Index';
 import PaymentRedirect from './layout/PaymentRedirect';
-import Root, { loader as networkLoader } from './layout/Root';
+import Root, { loader as userLoader } from './layout/Root';
+import Asset from './screens/Asset';
 import Budget, { loader as budgetLoader } from './screens/Budget';
-import Landing, { loader as userLoader } from './screens/Landing';
+import InitialSetting from './screens/InitialSetting';
+import Landing from './screens/Landing';
 import NewBudget from './screens/NewBudget';
+import Store from './screens/Store';
+import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
 
 const router = createBrowserRouter([
@@ -24,18 +31,22 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorBoundary />,
-    loader: networkLoader,
     children: [
       {
         path: '/landing',
         element: <Landing />,
-        action: emailAction,
         loader: userLoader,
+        action: emailAction,
       },
       {
         path: '/',
-        element: <Layout />,
+        element: <Index />,
+        loader: userLoader,
         children: [
+          {
+            path: '/',
+            element: <Navigate to="/budget" />,
+          },
           {
             path: '/budget',
             children: [
@@ -43,6 +54,10 @@ const router = createBrowserRouter([
                 path: '/budget',
                 element: <CurrentBudgetNavigator />,
                 loader: currentBudgetLoader,
+              },
+              {
+                path: '/budget/init',
+                element: <InitialSetting />,
               },
               {
                 path: '/budget/new',
@@ -60,6 +75,24 @@ const router = createBrowserRouter([
               },
             ],
           },
+          {
+            path: '/category/:categoryId/:budgetId',
+            element: <CategoryDetail />,
+            loader: categoryLoader,
+          },
+          {
+            path: '/asset',
+            element: <Asset />,
+          },
+          {
+            path: '/store',
+            element: <Store />,
+          },
+          {
+            path: '/user',
+            element: <User />,
+            action: userAction,
+          },
         ],
       },
       {
@@ -76,104 +109,6 @@ const router = createBrowserRouter([
         ],
       },
     ],
-
-    // children: [
-    //   {
-    //     path: '/',
-    //     index: true,
-    //     element: <Landing />,
-    //     loader: userLoader, // get user state
-    //   },
-    //   {
-    //     path: '/init',
-    //     element: <Root />,
-    //     children: [
-    //       {
-    //         path: '/init',
-    //         element: <InitialSetting />,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/budget',
-    //     element: <Root />,
-    //     children: [
-    //       {
-    //         path: '/budget',
-    //         element: <CurrentBudgetNavigator />,
-    //         loader: currentBudgetLoader,
-    //       },
-    //       {
-    //         path: '/budget/new',
-    //         element: <NewBudget />,
-    //       },
-    //       {
-    //         path: '/budget/:budgetId',
-    //         element: <Budget />,
-    //         loader: budgetLoader,
-    //       },
-    //       {
-    //         path: '/budget/:isDefault/:budgetId',
-    //         element: <Budget />,
-    //         loader: budgetLoader,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/category',
-    //     element: <Nav />,
-    //     children: [
-    //       {
-    //         path: '/category/:categoryId/:budgetId',
-    //         element: <CategoryDetail />,
-    //         loader: categoryLoader,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/asset',
-    //     element: <Nav />,
-    //     children: [
-    //       {
-    //         path: '/asset',
-    //         element: <Asset />,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/store',
-    //     element: <Nav />,
-    //     children: [
-    //       {
-    //         path: '/store',
-    //         element: <Store />,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/user',
-    //     element: <Nav />,
-    //     children: [
-    //       {
-    //         path: '/user',
-    //         element: <User />,
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     path: '/redirect',
-    //     children: [
-    //       {
-    //         path: '/redirect/auth',
-    //         element: <AuthRedirect />,
-    //       },
-    //       {
-    //         path: '/redirect/payment',
-    //         element: <PaymentRedirect />,
-    //       },
-    //     ],
-    //   },
-    // ],
   },
 ]);
 

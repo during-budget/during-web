@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
+import {
+  LoaderFunctionArgs,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 import CategoryAddOverlay from '../components/Budget/Category/CategoryAddOverlay';
 import CategoryLayout from '../components/Budget/Category/CategoryLayout';
@@ -26,7 +31,14 @@ import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
 
 function Budget() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    // NOTE: 오버레이를 닫아도 전체 페이지를 리로드하지 않도록 해시를 추가하여 해시 간의 이동으로 간주되도록 처리
+    navigate(location.pathname + '#base', { replace: true });
+  }, []);
 
   // get loaderData
   const { id, isDefaultBudget, data } = useLoaderData() as Awaited<
@@ -54,7 +66,7 @@ function Budget() {
     <Carousel id="status" initialIndex={1} itemClassName={classes.status}>
       <DateStatus budgetId={id} />
       <TotalStatus budgetId={id} />
-      <CategoryStatus budgetId={id}  />
+      <CategoryStatus budgetId={id} />
     </Carousel>
   );
 

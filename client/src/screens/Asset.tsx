@@ -9,16 +9,23 @@ import { uiActions } from '../store/ui';
 import { AssetDataType, CardDataType, getAssets, getCards } from '../util/api/assetAPI';
 import { getErrorMessage } from '../util/error';
 import classes from './Asset.module.css';
+import { useNavigate } from 'react-router';
 export interface AssetProps {
   assets: AssetDataType[];
   cards: CardDataType[];
 }
 
 const Asset = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { assets, cards } = useAppSelector((state) => state.asset);
 
   const dataExists = assets && cards;
+
+  useEffect(() => {
+    // NOTE: 오버레이를 닫아도 전체 페이지를 리로드하지 않도록 해시를 추가하여 해시 간의 이동으로 간주되도록 처리
+    navigate('/asset#base', { replace: true });
+  }, []);
 
   useEffect(() => {
     if (!assets || !cards) {
