@@ -10,6 +10,7 @@ import {
   NOT_FOUND,
   NOT_PERMITTED,
   PAIED_ALREADY,
+  PAYMENT_NOT_PAID,
 } from "../@message";
 import { Item } from "@models/Item";
 import { Payment, TRawPayment } from "@models/Payment";
@@ -185,7 +186,7 @@ export const completeByUser = async (req: Request, res: Response) => {
         }
         return res.status(200).send({ payment });
       }
-      return res.status(404).send({});
+      return res.status(409).send({ message: PAYMENT_NOT_PAID });
     }
 
     return res.status(409).send({ message: FAKE_PAYMENT_ATTEMPT });
@@ -227,7 +228,7 @@ export const completeByWebhook = async (req: Request, res: Response) => {
         await payment.save();
         return res.status(200).send();
       }
-      return res.status(404).send();
+      return res.status(409).send({ message: PAYMENT_NOT_PAID });
     }
     return res.status(409).send({ message: FAKE_PAYMENT_ATTEMPT });
   } catch (err: any) {
