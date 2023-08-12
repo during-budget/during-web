@@ -24,7 +24,7 @@ export default (config: configType) => {
   });
 
   google(config.OAUTH_CLIENT.GOOGLE);
-  googleAdmin(config.OAUTH_CLIENT.GOOGLE);
+  googleAdmin(config.OAUTH_CLIENT.GOOGLE_ADMIN);
 
   naver(config.OAUTH_CLIENT.NAVER);
   kakao(config.OAUTH_CLIENT.KAKAO);
