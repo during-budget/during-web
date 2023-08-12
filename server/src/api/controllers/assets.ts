@@ -6,7 +6,7 @@ import { IAsset } from "@models/User";
 import { Transaction } from "@models/Transaction";
 
 import { logger } from "@logger";
-import { FIELD_REQUIRED, NOT_FOUND } from "../../../@message";
+import { FIELD_REQUIRED, NOT_FOUND } from "../message";
 
 export const create = async (req: Request, res: Response) => {
   try {

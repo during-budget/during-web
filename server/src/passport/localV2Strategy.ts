@@ -16,7 +16,7 @@ import {
   CONNECTED_ALREADY,
   EMAIL_IN_USE,
   INVALID_EMAIL,
-} from "../../@message";
+} from "../api/message";
 import { sendAuthEmail } from "../../utils/email";
 
 const sendCode = async (

@@ -5,11 +5,7 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "@models/User";
 
 import { logger } from "@logger";
-import {
-  FIELD_REQUIRED,
-  NOT_FOUND,
-  PM_CANNOT_BE_REMOVED,
-} from "../../../@message";
+import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../message";
 
 export const update = async (req: Request, res: Response) => {
   try {

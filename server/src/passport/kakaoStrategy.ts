@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { User } from "@models/User";
 import { Request } from "express";
-import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../../@message";
+import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../api/message";
 
 const getEmail = (profile: Profile): string | undefined => {
   return profile._json.kakao_account?.email;

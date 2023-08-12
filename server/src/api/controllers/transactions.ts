@@ -13,7 +13,7 @@ import {
   FIELD_REQUIRED,
   NOT_FOUND,
   NOT_PERMITTED,
-} from "../../../@message";
+} from "../message";
 import { basicTimeZone } from "@models/_basicSettings";
 
 // transaction controller

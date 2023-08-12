@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { ALREADY_LOGGED_IN, NOT_LOGGED_IN, NOT_PERMITTED } from "../@message";
+import {
+  ALREADY_LOGGED_IN,
+  NOT_LOGGED_IN,
+  NOT_PERMITTED,
+} from "src/api/message";
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
