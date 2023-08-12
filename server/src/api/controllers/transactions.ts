@@ -5,7 +5,7 @@ import { ITransaction, Transaction } from "@models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
 import moment from "moment-timezone";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { User } from "@models/User";
 import {
   CATEGORY_CANOT_BE_UPDATED,

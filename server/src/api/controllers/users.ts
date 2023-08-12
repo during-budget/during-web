@@ -11,7 +11,7 @@ import {
 } from "../../../utils/randomString";
 import { cipher, decipher } from "../../../utils/crypto";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { EMAIL_IN_USE, FIELD_REQUIRED, USER_NOT_FOUND } from "../message";
 
 //_____________________________________________________________________________

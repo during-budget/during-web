@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 import { ICard } from "@models/User";
 import { Transaction } from "@models/Transaction";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { FIELD_REQUIRED, NOT_FOUND } from "../message";
 
 export const create = async (req: Request, res: Response) => {

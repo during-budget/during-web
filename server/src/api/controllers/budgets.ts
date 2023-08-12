@@ -4,7 +4,7 @@ import { HydratedDocument, Types } from "mongoose";
 import { Budget, ICategory } from "@models/Budget";
 import { Transaction } from "@models/Transaction";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,

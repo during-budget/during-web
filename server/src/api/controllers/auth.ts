@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { IUser, IUserProps, User } from "@models/User";
 import { NextFunction } from "express-serve-static-core";
 

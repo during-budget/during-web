@@ -6,7 +6,7 @@ import { Transaction } from "@models/Transaction";
 
 import { ICategory } from "@models/User";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import {
   FIELD_INVALID,
   FIELD_REQUIRED,

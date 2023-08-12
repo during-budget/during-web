@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import {
   FAKE_PAYMENT_ATTEMPT,
   FETCHING_ACCESSTOKEN_FAILED,

@@ -7,8 +7,7 @@
   "clearMocks": true,
   "moduleNameMapper": {
     "@models/(.*)$": "<rootDir>/models/$1",
-    "@controllers/(.*)$": "<rootDir>/controllers/$1",
-    "@logger": "<rootDir>/log/logger"
+    "@controllers/(.*)$": "<rootDir>/controllers/$1"
   },
   "setupFiles": ["<rootDir>/_setup.ts"]
 }

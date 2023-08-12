@@ -11,7 +11,7 @@ import passport from "passport";
 import morgan, { TokenIndexer } from "morgan";
 
 import { client as redisClient } from "./redis";
-import { logger } from "./logger";
+import { logger } from "src/loggers";
 
 const setupDefault = (app: Express) => {
   app.use(express.json());

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "src/api/message";
 import moment from "moment";
 import {

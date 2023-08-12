@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 
 import { IPaymentMethod } from "@models/User";
 
-import { logger } from "@logger";
+import { logger } from "src/loggers";
 import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../message";
 import { Item } from "@models/Item";
 import { FIELD_INVALID } from "../message";
