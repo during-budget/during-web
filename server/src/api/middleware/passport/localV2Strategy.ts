@@ -6,7 +6,7 @@ import { Strategy as CustomStrategy } from "passport-custom";
 import { User } from "src/models/User";
 
 import { client } from "src/loaders/redis";
-import { cipher, decipher } from "utils/crypto";
+import { cipher, decipher } from "src/utils/crypto";
 
 import {
   LOCAL_LOGIN_DISABLED,
@@ -17,7 +17,7 @@ import {
   EMAIL_IN_USE,
   INVALID_EMAIL,
 } from "src/api/message";
-import { sendAuthEmail } from "utils/email";
+import { sendAuthEmail } from "src/utils/email";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",

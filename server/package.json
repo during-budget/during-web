@@ -8,7 +8,7 @@
     "prod": "cross-env NODE_ENV=production node -r ./tsconfig-paths-bootstrap.js dist/app.js",
     "build": "tsc -p . && npm run build:copy-files",
     "build:live": "nodemon --watch src/**/*.ts --exec ts-node -r tsconfig-paths/register app.ts",
-    "build:copy-files": "mkdir dist/utils/emailTemplates && cp utils/emailTemplates/authEmail.ejs dist/utils/emailTemplates/authEmail.ejs",
+    "build:copy-files": "mkdir dist/src/utils/emailTemplates && cp src/utils/emailTemplates/authEmail.ejs dist/src/utils/emailTemplates/authEmail.ejs",
     "test": "jest -c ./jest.config.json --detectOpenHandles --forceExit"
   },
   "author": "",
