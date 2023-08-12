@@ -25,15 +25,20 @@ const getPicture = (profile: Profile): string | undefined => {
   return undefined;
 };
 
-const google = () => {
+type clientType = {
+  ID: string;
+  SECRET: string;
+  callbackURL: string;
+};
+
+const google = (client: clientType) => {
   passport.use(
     "google",
     new GogoleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID.trim() ?? "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim() ?? "",
-        callbackURL:
-          (process.env.SERVER_URL?.trim() ?? "") + "/api/auth/google/callback",
+        clientID: client.ID,
+        clientSecret: client.SECRET,
+        callbackURL: client.callbackURL,
         passReqToCallback: true,
       },
       async (
@@ -98,16 +103,14 @@ const google = () => {
   );
 };
 
-const googleAdmin = () => {
+const googleAdmin = (client: clientType) => {
   passport.use(
     "googleAdmin",
     new GogoleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID.trim() ?? "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET.trim() ?? "",
-        callbackURL:
-          (process.env.SERVER_URL?.trim() ?? "") +
-          "/api/auth/google/admin/callback",
+        clientID: client.ID,
+        clientSecret: client.SECRET,
+        callbackURL: client.callbackURL,
         passReqToCallback: true,
       },
       async (

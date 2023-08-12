@@ -5,7 +5,7 @@ import { Strategy as CustomStrategy } from "passport-custom";
 
 import { User } from "@models/User";
 
-import { client } from "../_redisConfig";
+import { client } from "src/loaders/redis";
 import { cipher, decipher } from "../utils/crypto";
 
 import {

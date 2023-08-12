@@ -12,13 +12,13 @@ const getPicture = (profile: Profile): string | undefined => {
   return profile._json.properties.thumbnail_image;
 };
 
-const kakao = () => {
+const kakao = (client: { ID: string; callbackURL: string }) => {
   passport.use(
     "kakao",
     new KakaoStrategy(
       {
-        clientID: process.env.KAKAO_CLIENT_ID.trim() ?? "",
-        callbackURL: "/api/auth/kakao/callback",
+        clientID: client.ID,
+        callbackURL: client.callbackURL,
         passReqToCallback: true,
       },
       async (

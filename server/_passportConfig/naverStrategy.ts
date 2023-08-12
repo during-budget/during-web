@@ -15,14 +15,14 @@ const getPicture = (profile: any): string | undefined => {
   return profile._json?.profile_image;
 };
 
-const naver = () => {
+const naver = (client: { ID: string; SECRET: string; callbackURL: string }) => {
   passport.use(
     "naver",
     new NaverStrategy(
       {
-        clientID: process.env.NAVER_CLIENT_ID.trim() ?? "",
-        clientSecret: process.env.NAVER_CLIENT_SECRET.trim() ?? "",
-        callbackURL: "/api/auth/naver/callback",
+        clientID: client.ID,
+        clientSecret: client.SECRET,
+        callbackURL: client.callbackURL,
         passReqToCallback: true,
       },
       async (

@@ -9,7 +9,6 @@ import {
   generateRandomString,
   generateRandomNumber,
 } from "../utils/randomString";
-import { client } from "../_redisConfig";
 import { cipher, decipher } from "../utils/crypto";
 
 import { logger } from "@logger";
