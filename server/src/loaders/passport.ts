@@ -1,3 +1,3 @@
-import passportConfig from "../../_passportConfig";
+import passportConfig from "src/passport";
 
 export default passportConfig;

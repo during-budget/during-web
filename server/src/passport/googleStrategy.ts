@@ -7,7 +7,7 @@ import {
   EMAIL_IN_USE,
   SNSID_IN_USE,
   USER_NOT_FOUND,
-} from "../@message";
+} from "../../@message";
 
 const getEmail = (profile: Profile): string | undefined => {
   if (profile.emails) {

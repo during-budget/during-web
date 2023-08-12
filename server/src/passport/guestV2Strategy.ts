@@ -4,7 +4,7 @@ import { Strategy as CustomStrategy } from "passport-custom";
 
 import { User } from "@models/User";
 
-import { generateRandomString } from "../utils/randomString";
+import { generateRandomString } from "../../utils/randomString";
 
 const guestV2 = () => {
   passport.use(

@@ -1,23 +1,27 @@
-import passport from "passport";
-import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
-import { User } from "@models/User";
 import { Request } from "express";
-import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../@message";
+import passport, { Profile } from "passport";
+import { Strategy as NaverStrategy } from "passport-naver";
+import { User } from "@models/User";
+import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../../@message";
 
 const getEmail = (profile: Profile): string | undefined => {
-  return profile._json.kakao_account?.email;
+  if (profile.emails && profile.emails.length > 0) {
+    return profile.emails[0].value;
+  }
+  return undefined;
 };
 
-const getPicture = (profile: Profile): string | undefined => {
-  return profile._json.properties.thumbnail_image;
+const getPicture = (profile: any): string | undefined => {
+  return profile._json?.profile_image;
 };
 
-const kakao = (client: { ID: string; callbackURL: string }) => {
+const naver = (client: { ID: string; SECRET: string; callbackURL: string }) => {
   passport.use(
-    "kakao",
-    new KakaoStrategy(
+    "naver",
+    new NaverStrategy(
       {
         clientID: client.ID,
+        clientSecret: client.SECRET,
         callbackURL: client.callbackURL,
         passReqToCallback: true,
       },
@@ -32,7 +36,7 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* isNotLoggedIn - login or register */
           if (!req.isAuthenticated()) {
             /* login */
-            const user = await User.findOne({ "snsId.kakao": profile.id });
+            const user = await User.findOne({ "snsId.naver": profile.id });
             if (user) {
               return done(null, user, "login");
             }
@@ -48,10 +52,10 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
             }
 
             const newUser = new User({
-              email,
+              email: getEmail(profile),
               picture: getPicture(profile),
               userName: profile.displayName,
-              snsId: { kakao: profile.id },
+              snsId: { naver: profile.id },
             });
             await newUser.initialize();
             return done(null, newUser, "register");
@@ -59,18 +63,18 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (user.snsId?.["kakao"]) {
+          if (user.snsId?.["naver"]) {
             const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
 
-          const exUser = await User.findOne({ "snsId.kakao": profile.id });
+          const exUser = await User.findOne({ "snsId.naver": profile.id });
           if (exUser) {
             const err = new Error(SNSID_IN_USE);
             return done(err, null, null);
           }
 
-          user.snsId = { ...user.snsId, kakao: profile.id };
+          user.snsId = { ...user.snsId, naver: profile.id };
           if (user.isGuest) user.isGuest = false;
           await user.saveReqUser();
           return done(null, user, "connect");
@@ -82,4 +86,4 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
   );
 };
 
-export { kakao };
+export { naver };
