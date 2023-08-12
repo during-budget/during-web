@@ -1,11 +1,11 @@
-import React, { useEffect, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import InputField from '../UI/InputField';
-import classes from './CodeField.module.css';
 
-const CODE_LENGTH = 6;
+export const CODE_LENGTH = 6;
 
 const CodeField = React.forwardRef((props: { className?: string }, ref) => {
   const [inputState, setInputState] = useState<NodeListOf<HTMLInputElement>>();
+  const fieldsRef = useRef<HTMLInputElement>(null);
 
   useImperativeHandle(ref, () => {
     return {
@@ -33,12 +33,19 @@ const CodeField = React.forwardRef((props: { className?: string }, ref) => {
   });
 
   useEffect(() => {
-    const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
-      '#register-code-inputs input'
-    );
+    Array.from(new Array(CODE_LENGTH)).forEach((_, i) => {
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = `code-${i}`;
+      input.classList.add('text-center');
+      input.classList.add('round-sm');
+      fieldsRef.current?.appendChild(input);
+    });
+
+    const inputs = fieldsRef.current?.childNodes as NodeListOf<HTMLInputElement>;
     setInputState(inputs);
 
-    inputs.forEach((input, inputIdx) => {
+    inputs?.forEach((input, inputIdx) => {
       input.addEventListener('input', () => {
         // strip non-numeric value
         const value = input.value.replace(/[^0-9]+/g, '');
@@ -72,15 +79,8 @@ const CodeField = React.forwardRef((props: { className?: string }, ref) => {
 
   return (
     <InputField id="register-code-field" className={props.className}>
-      <div id="register-code-inputs" className={classes.code}>
-        <input type="number"></input>
-        <input type="number"></input>
-        <input type="number"></input>
-        <input type="number"></input>
-        <input type="number"></input>
-        <input type="number"></input>
-      </div>
-      <p className={classes.codeInform}>
+      <div ref={fieldsRef} id="register-code-inputs" className="flex gap-xs"></div>
+      <p className="text-ms text-center">
         이메일로 보내드린 확인 코드 여섯 자리를 입력하세요.
       </p>
     </InputField>

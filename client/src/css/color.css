@@ -1,0 +1,124 @@
+:root {
+    --primary: #313338;
+    --secondary: #d9d9d9;
+  
+    --error-text: #e51010;
+    --error-bg: #fdefef;
+  
+    /* grayscale */
+    --black: #313338;
+    --gray-500: #42444a;
+    --gray-400: #5a5d64;
+    --gray-300: #7c7f86;
+    --gray-200: #b0b3bc;
+    --gray-100: #d9dbe0;
+    --gray-0: #f6f6f6;
+    --white: #fff;
+  
+    /* --gray-0: #F6F6F6;
+    --gray-: #D9DBE0;
+    --gray-2: #d9d9d9;
+    --gray-3: #a5a5a5;
+    --gray-4: #313338;
+    --gray-4-opacity: rgba(49, 51, 56, 0.5); */
+  }
+  
+  /* text */
+  .text-black {
+    color: var(--black);
+  }
+  
+  .text-white {
+    color: var(--white);
+  }
+  
+  .text-gray-0 {
+    color: var(--gray-0);
+  }
+  
+  .text-gray-100 {
+    color: var(--gray-100);
+  }
+  
+  .text-gray-200 {
+    color: var(--gray-200);
+  }
+  
+  .text-gray-300 {
+    color: var(--gray-300);
+  }
+  
+  .text-gray-400 {
+    color: var(--gray-400);
+  }
+  
+  .text-gray-500 {
+    color: var(--gray-500);
+  }
+  
+  .text-primary {
+    color: var(--primary);
+  }
+  
+  /* bg */
+  .bg {
+    background-color: var(--gray-0);
+  }
+  
+  .bg-light {
+    background-color: var(--gray-100);
+  }
+  
+  .bg-primary {
+    background-color: var(--primary);
+  }
+  
+  .bg-white {
+    background-color: var(--white);
+  }
+  
+  .bg-gray {
+    background-color: var(--gray);
+  }
+  
+  .bg-gray-50 {
+    background-color: var(--gray-50);
+  }
+  
+  /* fill */
+  .fill-black {
+    fill: var(--black);
+  }
+  
+  .fill-primary {
+    fill: var(--primary);
+  }
+  
+  .fill-white {
+    fill: var(--white);
+  }
+  
+  .fill-gray-500 {
+    fill: var(--gray-500);
+  }
+  
+  .fill-gray-400 {
+    fill: var(--gray-400);
+  }
+  
+  .fill-gray-300 {
+    fill: var(--gray-300);
+  }
+  
+  .fill-gray-200 {
+    fill: var(--gray-200);
+  }
+  
+  .fill-gray-100 {
+    fill: var(--gray-100);
+  }
+  
+  .fill-gray-0 {
+    fill: var(--gray-0);
+  }
+  

@@ -136,8 +136,6 @@ function CategoryPlan(props: { budgetId: string }) {
       const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
       const nextCategories = [...prev];
 
-      console.log(i, value, autoPlanned);
-
       nextCategories[i] = Category.clone(prev[i], { amount: nextAmount, autoPlanned });
 
       planDiff = prevAmount.planned - nextAmount.planned;

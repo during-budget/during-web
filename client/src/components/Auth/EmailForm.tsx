@@ -1,122 +1,81 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router';
-import { useAppDispatch } from '../../hooks/redux-hook';
-import { uiActions } from '../../store/ui';
-import { localAuth } from '../../util/api/authAPI';
+import { ActionFunctionArgs, useNavigate } from 'react-router';
+import { useFetcher } from 'react-router-dom';
+import { ERROR_MESSAGE } from '../../constants/error';
+import useInput from '../../hooks/useInput';
+import { useToggle } from '../../hooks/useToggle';
 import { UserDataType } from '../../util/api/userAPI';
-import { getErrorMessage } from '../../util/error';
-import { validateEmail } from '../../util/validate';
-import CodeField from '../Auth/CodeField';
+import { throwError } from '../../util/error';
+import { fetchRequest } from '../../util/request';
+import CodeField, { CODE_LENGTH } from '../Auth/CodeField';
 import Button from '../UI/Button';
 import Inform from '../UI/Inform';
 import InputField from '../UI/InputField';
-import classes from './EmailForm.module.css';
-import GuestLoginButton from './GuestLoginButton';
-import { AuthFormProps } from './Auth';
 
-const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
-  const dispatch = useAppDispatch();
-  const location = useLocation();
+const EMAIL_VALIDATE_REGEX =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  const from = location.state?.from?.pathname;
+const EmailForm = () => {
+  const navigate = useNavigate();
+  const fetcher = useFetcher<LocalAuthResponse>();
 
   const codeRef = useRef<any>(null);
   const persistRef = useRef<HTMLInputElement>(null);
 
-  const [emailState, setEmailState] = useState('');
+  const submitting = fetcher.state === 'submitting';
+
+  const [values, changeHandler, _, clearForm] = useInput();
+  const [isDisabled, disableEmail, enableEmail] = useToggle(false);
+
   const [isVerify, setIsVerify] = useState(false);
-  const [isPending, setIsPending] = useState(false);
   const [errorState, setErrorState] = useState<String>('');
-  const [isDisabled, setIsDisabled] = useState(false);
 
-  // Handlers
-  const sendHandler = async (event?: React.MouseEvent) => {
-    event!.preventDefault();
-    setErrorState('');
-    setIsPending(true);
+  useEffect(() => {
+    const { data, formData } = fetcher;
 
-    if (isVerify) {
-      codeRef.current.clear();
-      codeRef.current.focus();
+    const intent = formData?.get('intent');
+
+    if (intent) {
+      setErrorState('');
     }
 
-    if (!emailState.trim()) {
-      setErrorState('이메일을 입력하세요');
-      setIsPending(false);
+    if (data instanceof Error) {
+      setErrorState(data.message);
       return;
     }
 
-    if (!validateEmail(emailState)) {
-      setErrorState('올바른 이메일을 입력해주세요');
-      setIsPending(false);
-      return;
+    switch (intent) {
+      case 'send':
+        if (
+          data?.message === 'LOGIN_VERIFICATION_CODE_SENT' ||
+          'REGISTER_VERIFICATION_CODE_SENT' ||
+          'EMAIL_UPDATE_VERIFICATION_CODE_SENT'
+        ) {
+          disableEmail();
+          setIsVerify(true);
+        }
+        break;
+      case 'verify':
+        if (!data) {
+          break;
+        }
+
+        const { message, user } = data;
+
+        if (!user) {
+          throw new Error('사용자 정보를 불러올 수 없습니다.');
+        }
+
+        if (message === 'REGISTER_SUCCESS') {
+          navigate('/budget/init');
+        } else if (message === 'LOGIN_SUCCESS') {
+          navigate('/budget');
+        } else {
+          setErrorState(ERROR_MESSAGE[message]);
+        }
+        break;
     }
-
-    setIsDisabled(true);
-
-    try {
-      setIsVerify(true);
-      await localAuth(emailState);
-      setIsPending(false);
-    } catch (error) {
-      setIsPending(false);
-      setIsVerify(false);
-      setIsDisabled(false);
-
-      const message = getErrorMessage(error);
-      if (message) {
-        setErrorState(message);
-      } else {
-        dispatch(uiActions.showErrorModal());
-        throw error;
-      }
-    }
-  };
-
-  const verifyHandler = async (event?: React.MouseEvent) => {
-    event!.preventDefault();
-    setErrorState('');
-    setIsPending(true);
-
-    if (!emailState.trim()) {
-      setErrorState('이메일을 입력하세요');
-      return;
-    }
-
-    const code = codeRef.current!.value();
-    if (code.trim().length < 6) {
-      setErrorState('인증 코드 여섯자리를 모두 입력하세요');
-      return;
-    }
-
-    try {
-      const persist = persistRef.current!.checked;
-      const { message, user } = await localAuth(emailState, code, persist);
-      if (message === 'REGISTER_SUCCESS') {
-        onLanding(user, '/init');
-      } else {
-        onLanding(user, from || '/budget');
-      }
-    } catch (error) {
-      setIsPending(false);
-      const message = getErrorMessage(error);
-      if (message) {
-        setErrorState(message);
-      } else {
-        dispatch(uiActions.showErrorModal());
-        throw error;
-      }
-    }
-  };
-
-  const emailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailState(event.target.value);
-  };
-
-  const focusEmail = () => {
-    const emailInput = document.getElementById('auth-email-input') as HTMLInputElement;
-    emailInput?.focus({ preventScroll: true });
-  };
+  }, [fetcher.data]);
 
   // Focus email input on First load
   useEffect(() => {
@@ -127,26 +86,37 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
     }
   }, [isVerify, isDisabled]);
 
+  const focusEmail = () => {
+    const emailInput = document.getElementById('auth-email-input') as HTMLInputElement;
+    emailInput?.focus({ preventScroll: true });
+  };
+
   // Error message JSXElement
-  const errorMessage = errorState.length !== 0 && (
-    <Inform isError={true} className={classes.error} isFlex={true} isLeft={true}>
+  const errorMessage = errorState && (
+    <Inform
+      isError={true}
+      css={{ marginTop: '0.5vh', marginBottom: '2vh' }}
+      isFlex={true}
+      isLeft={true}
+    >
       <p>{errorState}</p>
     </Inform>
   );
 
   return (
-    <div className={classes.email}>
-      <img src="/images/logo.png" alt="듀링 가계부 로고" />
-      <h2>시작하기</h2>
-      <form className={classes.form}>
-        <InputField
-          id="auth-email-field"
-          className={`${classes.field} ${classes.emailField}`}
-        >
-          <div className={classes.emailLabel}>
+    <div className="flex-column i-center mx-3" css={{ marginTop: '8vh' }}>
+      <fetcher.Form className="w-100" action="/landing" method="post" noValidate>
+        <InputField id="auth-email-field" className="mb-0.5">
+          <div className="flex j-between i-center">
             <label htmlFor="auth-email-input">이메일로 시작</label>
             {isVerify && (
-              <Button sizeClass="sm" onClick={sendHandler}>
+              <Button
+                type="submit"
+                sizeClass="sm"
+                name="intent"
+                value="send"
+                onClick={disableEmail}
+              >
                 재전송
               </Button>
             )}
@@ -155,27 +125,28 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
           <input
             id="auth-email-input"
             type="email"
-            value={emailState}
-            onChange={emailHandler}
-            disabled={isDisabled}
+            name="email"
+            value={values.get('email') || ''}
+            onChange={changeHandler}
+            readOnly={isDisabled}
             required
           />
         </InputField>
-
         {isVerify ? (
           <>
-            <CodeField className={classes.code} ref={codeRef} />
+            <CodeField className="mb-1.25" ref={codeRef} />
             {errorMessage}
             <Button
               type="submit"
-              className={classes.submit}
-              onClick={verifyHandler}
-              isPending={isPending}
+              name="intent"
+              value="verify"
+              onClick={disableEmail}
+              isPending={submitting}
             >
               인증하기
             </Button>
-            <div className={classes.options}>
-              <div className={classes.persist}>
+            <div className="flex j-between i-center mb-0.625 px-0.5">
+              <div className="flex i-center shrink-0 gap-xs text-md">
                 <input
                   id="auth-email-persist"
                   ref={persistRef}
@@ -186,52 +157,86 @@ const EmailForm = ({ changeAuthType, onLanding, hideGuest }: AuthFormProps) => {
               </div>
               <Button
                 styleClass="extra"
-                className={classes.restart}
+                className="j-end"
                 onClick={async () => {
-                  setEmailState('');
-                  setIsDisabled(false);
+                  clearForm();
+                  enableEmail();
                   setIsVerify(false);
                 }}
               >
-                <u>이메일 다시 입력하기</u>
+                <u className="text-md regular">이메일 다시 입력하기</u>
               </Button>
             </div>
           </>
         ) : (
           <>
             {errorMessage}
-            <Button
-              type="submit"
-              className={classes.submit}
-              onClick={sendHandler}
-              isPending={isPending}
-            >
+            <Button type="submit" name="intent" value="send" isPending={submitting}>
               인증코드 전송
             </Button>
           </>
         )}
-      </form>
-      <div className={classes.buttons}>
-        {!hideGuest && (
-          <>
-            <GuestLoginButton onLogin={onLanding} />
-            <span>|</span>
-          </>
-        )}
-        {changeAuthType && (
-          <Button
-            styleClass="extra"
-            className={classes.sns}
-            onClick={() => {
-              changeAuthType();
-            }}
-          >
-            SNS로 시작하기
-          </Button>
-        )}
-      </div>
+      </fetcher.Form>
     </div>
   );
 };
 
 export default EmailForm;
+
+interface LocalAuthResponse {
+  message: string;
+  user?: UserDataType;
+}
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const intent = formData.get('intent');
+
+  // send email - get email
+  const email = formData.get('email') as string;
+
+  if (!email) {
+    return new Error('이메일을 입력하세요.');
+  } else if (!EMAIL_VALIDATE_REGEX.test(email)) {
+    return new Error('올바른 이메일을 입력하세요.');
+  }
+
+  // send email - send request
+  if (intent === 'send') {
+    try {
+      const response = await fetchRequest<LocalAuthResponse>({
+        url: '/auth/local',
+        method: 'post',
+        body: { email },
+      });
+      return response;
+    } catch (error) {
+      return throwError(error);
+    }
+  }
+
+  // verify code - get code, persist
+  const code = Array.from(new Array(CODE_LENGTH))
+    .map((_, i) => {
+      return formData.get(`code-${i}`);
+    })
+    .join('');
+
+  if (code.trim().length < 6) {
+    return new Error('인증 코드 여섯자리를 모두 입력하세요.');
+  }
+
+  const persist = formData.get('persist');
+
+  // verify code - send request
+  try {
+    const response = await fetchRequest<LocalAuthResponse>({
+      url: '/auth/local',
+      method: 'post',
+      body: { email, code, persist },
+    });
+    return response;
+  } catch (error) {
+    return throwError(error);
+  }
+};

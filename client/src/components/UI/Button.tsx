@@ -1,13 +1,13 @@
 import { PropsWithChildren } from 'react';
-import classes from './Button.module.css';
 import LoadingSpinner from './LoadingSpinner';
-import { css } from '@emotion/react';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   className?: string;
   css?: React.CSSProperties;
   onClick?: (event?: React.MouseEvent) => void;
+  name?: string;
+  value?: string;
   isPending?: boolean;
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
@@ -20,6 +20,8 @@ function Button({
   className,
   onClick,
   isPending,
+  name,
+  value,
   disabled,
   styleClass,
   sizeClass,
@@ -62,7 +64,7 @@ function Button({
       size = {
         height: '3.5rem',
         fontSize: 'var(--text-base)',
-        fontWeight: 700
+        fontWeight: 700,
       };
       break;
     case 'sm':
@@ -82,6 +84,8 @@ function Button({
       css={{ ...style, ...size, ...css }}
       onClick={onClick}
       disabled={disabled}
+      name={name}
+      value={value}
     >
       {isPending ? <LoadingSpinner size="1.5rem" /> : children}
     </button>

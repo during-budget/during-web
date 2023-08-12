@@ -1,15 +1,17 @@
 .landing-carousel {
-  width: 100vw;
+  width: 100%;
 }
 
-.lottie-lg {
-  width: 20rem;
+.lottie {
+  width: 100%;
+  margin: 0 auto;
 }
 
 .lottie-md {
-  width: 15rem;
+  width: 18rem;
 }
 
 .lottie-sm {
-  width: 10rem;
+  width: 50%;
+  margin: 0 auto;
 }

@@ -1,25 +1,29 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './App.css';
+import { useEffect } from 'react';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { action as emailAction } from './components/Auth/EmailForm';
 import CategoryDetail, {
   loader as categoryLoader,
 } from './components/Budget/Category/CategoryDetail';
+import './css/_reset.css';
+import './css/color.css';
+import './css/layout.css';
+import './css/text.css';
+import { useAppDispatch } from './hooks/useRedux';
 import AuthRedirect from './layout/AuthRedirect';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
 } from './layout/CurrentBudgetNavigator';
 import ErrorBoundary from './layout/ErrorBoundary';
-import Nav from './layout/Nav';
+import Index from './layout/Index';
 import PaymentRedirect from './layout/PaymentRedirect';
-import Root, { loader as networkLoader } from './layout/Root';
+import Root, { loader as userLoader } from './layout/Root';
 import Asset from './screens/Asset';
 import Budget, { loader as budgetLoader } from './screens/Budget';
 import InitialSetting from './screens/InitialSetting';
-import Landing, { loader as userLoader } from './screens/Landing';
+import Landing from './screens/Landing';
 import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
-import User from './screens/User';
-import { useEffect } from 'react';
-import { useAppDispatch } from './hooks/redux-hook';
+import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
 
 const router = createBrowserRouter([
@@ -27,87 +31,67 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorBoundary />,
-    loader: networkLoader,
     children: [
       {
-        path: '/',
-        index: true,
+        path: '/landing',
         element: <Landing />,
-        loader: userLoader, // get user state
+        loader: userLoader,
+        action: emailAction,
       },
       {
-        path: '/init',
-        element: <Nav />,
+        path: '/',
+        element: <Index />,
+        loader: userLoader,
         children: [
           {
-            path: '/init',
-            element: <InitialSetting />,
+            path: '/',
+            element: <Navigate to="/budget" />,
           },
-        ],
-      },
-      {
-        path: '/budget',
-        element: <Nav />,
-        children: [
           {
             path: '/budget',
-            element: <CurrentBudgetNavigator />,
-            loader: currentBudgetLoader,
+            children: [
+              {
+                path: '/budget',
+                element: <CurrentBudgetNavigator />,
+                loader: currentBudgetLoader,
+              },
+              {
+                path: '/budget/init',
+                element: <InitialSetting />,
+              },
+              {
+                path: '/budget/new',
+                element: <NewBudget />,
+              },
+              {
+                path: '/budget/:budgetId',
+                element: <Budget />,
+                loader: budgetLoader,
+              },
+              {
+                path: '/budget/:isDefault/:budgetId',
+                element: <Budget />,
+                loader: budgetLoader,
+              },
+            ],
           },
-          {
-            path: '/budget/new',
-            element: <NewBudget />,
-          },
-          {
-            path: '/budget/:budgetId',
-            element: <Budget />,
-            loader: budgetLoader,
-          },
-          {
-            path: '/budget/:isDefault/:budgetId',
-            element: <Budget />,
-            loader: budgetLoader,
-          },
-        ],
-      },
-      {
-        path: '/category',
-        element: <Nav />,
-        children: [
           {
             path: '/category/:categoryId/:budgetId',
             element: <CategoryDetail />,
             loader: categoryLoader,
           },
-        ],
-      },
-      {
-        path: '/asset',
-        element: <Nav />,
-        children: [
           {
             path: '/asset',
             element: <Asset />,
           },
-        ],
-      },
-      {
-        path: '/store',
-        element: <Nav />,
-        children: [
           {
             path: '/store',
             element: <Store />,
           },
-        ],
-      },
-      {
-        path: '/user',
-        element: <Nav />,
-        children: [
           {
             path: '/user',
             element: <User />,
+            action: userAction,
           },
         ],
       },
