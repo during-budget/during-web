@@ -12,7 +12,7 @@ import {
   FIELD_REQUIRED,
   INVALID_CATEGORY,
   NOT_FOUND,
-} from "../@message";
+} from "../../../@message";
 
 // category settings controller
 

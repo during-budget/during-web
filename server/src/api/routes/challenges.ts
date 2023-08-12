@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "../middleware/auth";
+import { isLoggedIn } from "../../../middleware/auth";
 
-import * as challenges from "@controllers/challenges";
+import * as challenges from "src/api/controllers/challenges";
 
 router.post("/", isLoggedIn, challenges.create);
 router.get("/", isLoggedIn, challenges.find);

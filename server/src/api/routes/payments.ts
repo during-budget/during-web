@@ -1,8 +1,12 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn, isPortOneWebHook, isAdmin } from "../middleware/auth";
+import {
+  isLoggedIn,
+  isPortOneWebHook,
+  isAdmin,
+} from "../../../middleware/auth";
 
-import * as payments from "@controllers/payments";
+import * as payments from "src/api/controllers/payments";
 
 router.post("/prepare", isLoggedIn, payments.prepare);
 router.post("/complete", isLoggedIn, payments.completeByUser);

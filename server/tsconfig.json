@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@models/*": ["models/*"],
-      "@controllers/*": ["controllers/*"],
+      "@controllers/*": ["src/api/controllers/*"],
       "@logger": ["log/logger"]
     },
     "skipLibCheck": true

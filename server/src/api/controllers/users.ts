@@ -8,11 +8,15 @@ import { HydratedDocument } from "mongoose";
 import {
   generateRandomString,
   generateRandomNumber,
-} from "../utils/randomString";
-import { cipher, decipher } from "../utils/crypto";
+} from "../../../utils/randomString";
+import { cipher, decipher } from "../../../utils/crypto";
 
 import { logger } from "@logger";
-import { EMAIL_IN_USE, FIELD_REQUIRED, USER_NOT_FOUND } from "../@message";
+import {
+  EMAIL_IN_USE,
+  FIELD_REQUIRED,
+  USER_NOT_FOUND,
+} from "../../../@message";
 
 //_____________________________________________________________________________
 

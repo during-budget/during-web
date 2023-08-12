@@ -11,7 +11,7 @@ import {
   NOT_PERMITTED,
   PAIED_ALREADY,
   PAYMENT_NOT_PAID,
-} from "../@message";
+} from "../../../@message";
 import { Item } from "@models/Item";
 import { Payment, TRawPayment } from "@models/Payment";
 import axios from "axios";

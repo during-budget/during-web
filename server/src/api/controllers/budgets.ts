@@ -12,7 +12,7 @@ import {
   INVALID_CATEGORY,
   NOT_FOUND,
   NOT_PERMITTED,
-} from "../@message";
+} from "../../../@message";
 import moment from "moment-timezone";
 import { basicTimeZone } from "@models/_basicSettings";
 

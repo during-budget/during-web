@@ -19,7 +19,7 @@ import {
   LOGIN_VERIFICATION_CODE_SENT,
   REGISTER_VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_VERIFICATION_CODE_SENT,
-} from "../@message";
+} from "../../../@message";
 import { Budget } from "@models/Budget";
 import { Transaction } from "@models/Transaction";
 

@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 
 jest.mock("@models/Transaction");
 import { Transaction } from "@models/Transaction";
-import * as transactions from "@controllers/transactions";
+import * as transactions from "src/api/controllers/transactions";
 
 describe("GET /transactions?linkedPaymentMethodId=*** (결제 수단으로 카드 찾는 API)", () => {
   const card = {

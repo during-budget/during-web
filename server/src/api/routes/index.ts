@@ -1,3 +1,6 @@
+import { Express } from "express";
+import { configType } from "src/config/type";
+
 import users from "./users";
 import budgets from "./budgets";
 import transactions from "./transactions";
@@ -27,11 +30,11 @@ const routers = [
   { label: "challenges", routes: challenges },
 ];
 
-if (
-  process.env.NODE_ENV?.trim() === "development" ||
-  process.env.NODE_ENV?.trim() === "test"
-) {
-  routers.push({ label: "test", routes: test });
-}
-
-export { routers };
+export default (app: Express, config: configType) => {
+  if (config.NODE_ENV === "development") {
+    routers.push({ label: "test", routes: test });
+  }
+  routers.forEach((router) => {
+    app.use("/api/" + router.label, router.routes);
+  });
+};

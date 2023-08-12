@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isAdmin, isLoggedIn } from "../middleware/auth";
+import { isAdmin, isLoggedIn } from "../../../middleware/auth";
 
-import * as items from "@controllers/items";
+import * as items from "src/api/controllers/items";
 
 router.post("/", isAdmin, items.create);
 router.get("/", isLoggedIn, items.find);

@@ -5,9 +5,13 @@ import { Types } from "mongoose";
 import { IPaymentMethod } from "@models/User";
 
 import { logger } from "@logger";
-import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../@message";
+import {
+  FIELD_REQUIRED,
+  NOT_FOUND,
+  PM_CANNOT_BE_REMOVED,
+} from "../../../@message";
 import { Item } from "@models/Item";
-import { FIELD_INVALID } from "../@message";
+import { FIELD_INVALID } from "../../../@message";
 
 export const create = async (req: Request, res: Response) => {
   try {

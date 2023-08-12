@@ -5,8 +5,8 @@ import { ObjectId, Types } from "mongoose";
 import { IPaymentMethod, IUser, User } from "@models/User";
 
 import { logger } from "@logger";
-import { FIELD_REQUIRED, NOT_FOUND, NOT_PERMITTED } from "../@message";
-import { FIELD_INVALID } from "../@message";
+import { FIELD_REQUIRED, NOT_FOUND, NOT_PERMITTED } from "../../../@message";
+import { FIELD_INVALID } from "../../../@message";
 import { Challenge, IChallenge } from "@models/Challenge";
 import { Transaction } from "@models/Transaction";
 
