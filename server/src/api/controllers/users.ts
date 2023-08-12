@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import _ from "lodash";
-import { User, IUser, IUserProps } from "@models/User";
-import { Budget } from "@models/Budget";
-import { Transaction } from "@models/Transaction";
+import { User, IUser, IUserProps } from "src/models/User";
+import { Budget } from "src/models/Budget";
+import { Transaction } from "src/models/Transaction";
 import passport from "passport";
 import { HydratedDocument } from "mongoose";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../../../utils/randomString";
 import { cipher, decipher } from "../../../utils/crypto";
 
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import { EMAIL_IN_USE, FIELD_REQUIRED, USER_NOT_FOUND } from "../message";
 
 //_____________________________________________________________________________

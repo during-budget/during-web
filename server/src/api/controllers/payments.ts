@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import {
   FAKE_PAYMENT_ATTEMPT,
   FETCHING_ACCESSTOKEN_FAILED,
@@ -12,8 +12,8 @@ import {
   PAIED_ALREADY,
   PAYMENT_NOT_PAID,
 } from "../message";
-import { Item } from "@models/Item";
-import { Payment, TRawPayment } from "@models/Payment";
+import { Item } from "src/models/Item";
+import { Payment, TRawPayment } from "src/models/Payment";
 import axios from "axios";
 
 /**

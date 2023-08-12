@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import _ from "lodash";
 import { ObjectId, Types } from "mongoose";
 
-import { IPaymentMethod, IUser, User } from "@models/User";
+import { IPaymentMethod, IUser, User } from "src/models/User";
 
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import { FIELD_REQUIRED, NOT_FOUND, NOT_PERMITTED } from "../message";
 import { FIELD_INVALID } from "../message";
-import { Challenge, IChallenge } from "@models/Challenge";
-import { Transaction } from "@models/Transaction";
+import { Challenge, IChallenge } from "src/models/Challenge";
+import { Transaction } from "src/models/Transaction";
 
 const findTransactions = async (opts: {
   challenge: IChallenge;

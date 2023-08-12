@@ -1,3 +1,3 @@
-import passportConfig from "src/passport";
+import passportConfig from "src/api/middleware/passport";
 
 export default passportConfig;

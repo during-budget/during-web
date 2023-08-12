@@ -6,7 +6,7 @@ import {
   IPaymentMethod,
   IUser,
   IUserProps,
-} from "@models/User";
+} from "src/models/User";
 
 declare global {
   namespace Express {

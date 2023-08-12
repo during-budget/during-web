@@ -5,7 +5,7 @@ import { naver } from "./naverStrategy";
 import { kakao } from "./kakaoStrategy";
 import { localV2 } from "./localV2Strategy";
 import { guestV2 } from "./guestV2Strategy";
-import { User, IUser, IUserProps } from "@models/User";
+import { User, IUser, IUserProps } from "src/models/User";
 import { configType } from "src/config/type";
 
 export default (config: configType) => {

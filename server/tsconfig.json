@@ -12,7 +12,7 @@
     "typeRoots": ["./node_modules/@types", "./@types"],
     "baseUrl": ".",
     "paths": {
-      "@models/*": ["models/*"],
+      "@models/*": ["src/models/*"],
       "@controllers/*": ["src/api/controllers/*"]
     },
     "skipLibCheck": true

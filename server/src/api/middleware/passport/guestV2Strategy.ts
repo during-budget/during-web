@@ -2,9 +2,9 @@ import { Request } from "express";
 import passport from "passport";
 import { Strategy as CustomStrategy } from "passport-custom";
 
-import { User } from "@models/User";
+import { User } from "src/models/User";
 
-import { generateRandomString } from "../../utils/randomString";
+import { generateRandomString } from "utils/randomString";
 
 const guestV2 = () => {
   passport.use(

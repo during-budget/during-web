@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "src/api/message";
 import moment from "moment";
 import {
@@ -8,8 +8,8 @@ import {
   chartSkins,
   basicTheme,
   themes,
-} from "@models/_basicSettings";
-import { Payment } from "@models/Payment";
+} from "src/models/_basicSettings";
+import { Payment } from "src/models/Payment";
 
 export const find = async (req: Request, res: Response) => {
   try {

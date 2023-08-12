@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import _ from "lodash";
 import { Types } from "mongoose";
 
-import { IPaymentMethod } from "@models/User";
+import { IPaymentMethod } from "src/models/User";
 
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../message";
-import { Item } from "@models/Item";
+import { Item } from "src/models/Item";
 import { FIELD_INVALID } from "../message";
 
 export const create = async (req: Request, res: Response) => {

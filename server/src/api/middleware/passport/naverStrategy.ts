@@ -1,8 +1,8 @@
 import { Request } from "express";
 import passport, { Profile } from "passport";
 import { Strategy as NaverStrategy } from "passport-naver";
-import { User } from "@models/User";
-import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "../api/message";
+import { User } from "src/models/User";
+import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "src/api/message";
 
 const getEmail = (profile: Profile): string | undefined => {
   if (profile.emails && profile.emails.length > 0) {

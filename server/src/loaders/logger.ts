@@ -1,3 +1,3 @@
-import { loader } from "src/loggers";
+import { loader } from "src/api/middleware/loggers";
 
 export default loader;

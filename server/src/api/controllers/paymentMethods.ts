@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import _ from "lodash";
 import { Types } from "mongoose";
 
-import { IPaymentMethod } from "@models/User";
+import { IPaymentMethod } from "src/models/User";
 
-import { logger } from "src/loggers";
+import { logger } from "src/api/middleware/loggers";
 import { FIELD_REQUIRED, NOT_FOUND, PM_CANNOT_BE_REMOVED } from "../message";
 
 export const update = async (req: Request, res: Response) => {

@@ -3,10 +3,10 @@ import { Request } from "express";
 import passport from "passport";
 import { Strategy as CustomStrategy } from "passport-custom";
 
-import { User } from "@models/User";
+import { User } from "src/models/User";
 
 import { client } from "src/loaders/redis";
-import { cipher, decipher } from "../../utils/crypto";
+import { cipher, decipher } from "utils/crypto";
 
 import {
   LOCAL_LOGIN_DISABLED,
@@ -16,8 +16,8 @@ import {
   CONNECTED_ALREADY,
   EMAIL_IN_USE,
   INVALID_EMAIL,
-} from "../api/message";
-import { sendAuthEmail } from "../../utils/email";
+} from "src/api/message";
+import { sendAuthEmail } from "utils/email";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { logger } from "src/loggers";
-import { IUser, IUserProps, User } from "@models/User";
+import { logger } from "src/api/middleware/loggers";
+import { IUser, IUserProps, User } from "src/models/User";
 import { NextFunction } from "express-serve-static-core";
 
 import passport from "passport";
@@ -20,8 +20,8 @@ import {
   REGISTER_VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_VERIFICATION_CODE_SENT,
 } from "../message";
-import { Budget } from "@models/Budget";
-import { Transaction } from "@models/Transaction";
+import { Budget } from "src/models/Budget";
+import { Transaction } from "src/models/Transaction";
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
