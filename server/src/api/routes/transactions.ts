@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "../../../middleware/auth";
+import { isLoggedIn } from "src/api/middleware/auth";
 import * as transactions from "src/api/controllers/transactions";
 
 router.post("/", isLoggedIn, transactions.create);

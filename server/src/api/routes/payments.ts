@@ -1,10 +1,6 @@
 import express from "express";
 const router = express.Router();
-import {
-  isLoggedIn,
-  isPortOneWebHook,
-  isAdmin,
-} from "../../../middleware/auth";
+import { isLoggedIn, isPortOneWebHook, isAdmin } from "src/api/middleware/auth";
 
 import * as payments from "src/api/controllers/payments";
 

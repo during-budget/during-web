@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "../../../middleware/auth";
+import { isLoggedIn } from "src/api/middleware/auth";
 
 import * as challenges from "src/api/controllers/challenges";
 

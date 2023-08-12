@@ -6,7 +6,7 @@ import {
   isNotLoggedIn,
   forceNotLoggedIn,
   isAdmin,
-} from "../../../middleware/auth";
+} from "src/api/middleware/auth";
 
 router.put("/", isLoggedIn, users.updateFields);
 

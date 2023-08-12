@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn, isNotLoggedIn } from "../../../middleware/auth";
+import { isLoggedIn, isNotLoggedIn } from "src/api/middleware/auth";
 import * as auth from "src/api/controllers/auth";
 import passport from "passport";
 

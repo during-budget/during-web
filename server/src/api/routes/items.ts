@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { isAdmin, isLoggedIn } from "../../../middleware/auth";
+import { isAdmin, isLoggedIn } from "src/api/middleware/auth";
 
 import * as items from "src/api/controllers/items";
 
