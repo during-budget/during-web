@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 import {
   IAsset,
   ICard,
@@ -6,11 +6,11 @@ import {
   IPaymentMethod,
   IUser,
   IUserProps,
-} from "@models/User";
+} from "src/models/User";
 
 declare global {
   namespace Express {
-    interface User extends IUser, IUserProps {
+    interface User extends HydratedDocument<IUser, IUserProps> {
       categories: Types.DocumentArray<ICategory>;
       assets: Types.DocumentArray<IAsset>;
       cards: Types.DocumentArray<ICard>;

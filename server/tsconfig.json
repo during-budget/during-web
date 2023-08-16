@@ -12,9 +12,8 @@
     "typeRoots": ["./node_modules/@types", "./@types"],
     "baseUrl": ".",
     "paths": {
-      "@models/*": ["models/*"],
-      "@controllers/*": ["controllers/*"],
-      "@logger": ["log/logger"]
+      "@models/*": ["src/models/*"],
+      "@controllers/*": ["src/api/controllers/*"]
     },
     "skipLibCheck": true
   },

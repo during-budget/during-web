@@ -1,7 +1,7 @@
 // 테스트할 함수를 가져오기
 import { Request, Response } from "express";
 import httpMocks from "node-mocks-http";
-import { isLoggedIn, isNotLoggedIn } from "./../middleware/auth";
+import { isLoggedIn, isNotLoggedIn } from "../src/api/middleware/auth";
 
 describe("isLoggedIn", () => {
   const res = httpMocks.createResponse();
