@@ -1,9 +1,10 @@
-import { User as UserModel } from "src/models/User";
+import { IUser, User as UserModel } from "src/models/User";
 import * as BudgetService from "./budget";
 import { generateRandomString } from "src/utils/randomString";
 import { Types } from "mongoose";
 import { AT_LEAST_ONE_SNSID_IS_REQUIRED, NOT_FOUND } from "src/api/message";
 import { CustomError } from "src/api/middleware/error";
+import _ from "lodash";
 
 type snsType = "google" | "naver" | "kakao";
 
@@ -57,6 +58,19 @@ export const findBySnsId = async (sns: snsType, id: string) => {
 
 export const findByEmail = async (email: string) => {
   return UserModel.findOne({ email });
+};
+
+export const findCategory = (
+  userRecord: IUser,
+  _categoryId: string | Types.ObjectId
+) => {
+  const categoryId = new Types.ObjectId(_categoryId);
+  for (let i = 0; i < userRecord.categories.length; i++) {
+    if (userRecord.categories[i]._id.equals(categoryId)) {
+      return { idx: i, category: userRecord.categories[i] };
+    }
+  }
+  return { idx: -1, category: undefined };
 };
 
 export const updateEmailAndEnableLocalLogin = async (
