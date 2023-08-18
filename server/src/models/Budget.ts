@@ -75,29 +75,7 @@ interface IBudgetProps {
   /* subdocument array */
   categories: Types.DocumentArray<ICategory>;
   /* methods */
-  findCategory: (
-    categoryId: string | Types.ObjectId
-  ) => HydratedDocument<ICategory> | undefined;
   findCategoryIdx: (categoryId: string | Types.ObjectId) => number;
-  findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
-  findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
-  pushCategory: (category: any) => void;
-  increaseDefaultExpenseCategory: (
-    field:
-      | "amountPlanned"
-      | "amountScheduled"
-      | "amountScheduledRemain"
-      | "amountCurrent",
-    amount: number
-  ) => void;
-  increaseDefaultIncomeCategory: (
-    field:
-      | "amountPlanned"
-      | "amountScheduled"
-      | "amountScheduledRemain"
-      | "amountCurrent",
-    amount: number
-  ) => void;
   calculate: () => Promise<void>;
 }
 
@@ -174,58 +152,12 @@ budgetSchema.index({
   startDate: -1,
 });
 
-budgetSchema.methods.findCategory = function (
-  categoryId: string | Types.ObjectId
-) {
-  return _.find(this.categories, {
-    categoryId: new Types.ObjectId(categoryId),
-  })?.toObject();
-};
-
 budgetSchema.methods.findCategoryIdx = function (
   categoryId: string | Types.ObjectId
 ) {
   return _.findIndex(this.categories, {
     categoryId: new Types.ObjectId(categoryId),
   });
-};
-
-budgetSchema.methods.findDefaultExpenseCategory = function () {
-  return this.categories[this.categories.length - 2].toObject();
-};
-
-budgetSchema.methods.findDefaultIncomeCategory = function () {
-  return this.categories[this.categories.length - 1].toObject();
-};
-
-budgetSchema.methods.pushCategory = function (category: any) {
-  this.categories.splice(this.categories.length - 2, 0, category);
-  return;
-};
-
-budgetSchema.methods.increaseDefaultExpenseCategory = function (
-  field:
-    | "amountPlanned"
-    | "amountScheduled"
-    | "amountScheduledRemain"
-    | "amountCurrent",
-  amount: number
-) {
-  const idx = this.categories.length - 2;
-  this.categories[idx][field] = (this.categories[idx][field] ?? 0) + amount;
-  return;
-};
-budgetSchema.methods.increaseDefaultIncomeCategory = function (
-  field:
-    | "amountPlanned"
-    | "amountScheduled"
-    | "amountScheduledRemain"
-    | "amountCurrent",
-  amount: number
-) {
-  const idx = this.categories.length - 1;
-  this.categories[idx][field] = (this.categories[idx][field] ?? 0) + amount;
-  return;
 };
 
 budgetSchema.methods.calculate = async function () {

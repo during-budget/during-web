@@ -1,213 +1,12 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { HydratedDocument, Types } from "mongoose";
-import { Budget, ICategory } from "src/models/Budget";
-import { Transaction } from "src/models/Transaction";
-
-import { logger } from "src/api/middleware/loggers";
+import * as BudgetService from "src/services/budget";
 import {
-  CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,
   FIELD_REQUIRED,
-  INVALID_CATEGORY,
   NOT_FOUND,
   NOT_PERMITTED,
 } from "../message";
-import moment from "moment-timezone";
-import { basicTimeZone } from "src/models/_basicSettings";
-
-// budget controller
-type budgetKeys =
-  | "expenseScheduled"
-  | "expenseScheduledRemain"
-  | "expenseCurrent"
-  | "incomeScheduled"
-  | "incomeScheduledRemain"
-  | "incomeCurrent";
-type categoryKeys =
-  | "amountPlanned"
-  | "amountScheduled"
-  | "amountScheduledRemain"
-  | "amountCurrent";
-export const validate = async (req: Request, res: Response) => {
-  try {
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) {
-      return res.status(404).send({ message: NOT_FOUND("budget") });
-    }
-
-    const b: { [key: string]: number } = {
-      expenseScheduled: 0,
-      expenseScheduledRemain: 0,
-      expenseCurrent: 0,
-      incomeScheduled: 0,
-      incomeScheduledRemain: 0,
-      incomeCurrent: 0,
-    };
-    const amountPlanned: { [key: string]: number } = {};
-    const amountScheduled: { [key: string]: number } = {};
-    const amountScheduledRemain: { [key: string]: number } = {};
-    const amountCurrent: { [key: string]: number } = {};
-
-    let sumExpensePlanned = 0;
-    let sumIncomePlanned = 0;
-    for (let category of budget.categories) {
-      if (!category.isDefault) {
-        if (category.isExpense) sumExpensePlanned += category.amountPlanned;
-        else sumIncomePlanned += category.amountPlanned;
-      } else {
-        amountPlanned[category.categoryId.toString()] = 0;
-      }
-      amountScheduled[category.categoryId.toString()] = 0;
-      amountScheduledRemain[category.categoryId.toString()] = 0;
-      amountCurrent[category.categoryId.toString()] = 0;
-    }
-
-    const transactions = await Transaction.find({ budgetId: budget._id });
-
-    for (let transaction of transactions) {
-      if (!transaction.isCurrent) {
-        if (transaction.category.isExpense) {
-          b.expenseScheduled += transaction.amount;
-          if (!transaction.linkId) {
-            b.expenseScheduledRemain += transaction.amount;
-          }
-        } else {
-          b.incomeScheduled += transaction.amount;
-          if (!transaction.linkId) {
-            b.incomeScheduledRemain += transaction.amount;
-          }
-        }
-        amountScheduled[transaction.category.categoryId.toString()] +=
-          transaction.amount;
-        if (!transaction.linkId) {
-          amountScheduledRemain[transaction.category.categoryId.toString()] +=
-            transaction.amount;
-        }
-      } else {
-        if (transaction.category.isExpense) {
-          b.expenseCurrent += transaction.amount;
-        } else {
-          b.incomeCurrent += transaction.amount;
-        }
-        amountCurrent[transaction.category.categoryId.toString()] +=
-          transaction.amount;
-      }
-    }
-    amountPlanned[budget.findDefaultExpenseCategory()?.categoryId.toString()] =
-      budget.expensePlanned - sumExpensePlanned;
-    amountPlanned[budget.findDefaultIncomeCategory()?.categoryId.toString()] =
-      budget.incomePlanned - sumIncomePlanned;
-
-    /* validate */
-    const invalid: {
-      category?: any;
-      field: string;
-    }[] = [];
-
-    for (let [key, value] of Object.entries(b)) {
-      const k = key as budgetKeys;
-      if (!(k in budget) || budget[k] !== value) {
-        invalid.push({ field: key });
-      }
-    }
-
-    for (let category of budget.categories) {
-      if (
-        category.isDefault &&
-        category.amountPlanned !== amountPlanned[category.categoryId.toString()]
-      ) {
-        invalid.push({ category, field: "amountPlanned" });
-      }
-      if (
-        category.amountScheduled !==
-        amountScheduled[category.categoryId.toString() ?? ""]
-      ) {
-        invalid.push({
-          category,
-          field: "amountScheduled",
-        });
-      }
-      if (
-        category.amountScheduledRemain !==
-        amountScheduledRemain[category.categoryId.toString() ?? ""]
-      ) {
-        invalid.push({
-          category,
-          field: "amountScheduledRemain",
-        });
-      }
-      if (
-        category.amountCurrent !==
-        amountCurrent[category.categoryId.toString() ?? ""]
-      ) {
-        invalid.push({
-          category,
-          field: "amountCurrent",
-        });
-      }
-    }
-
-    return res.status(200).send({
-      budget,
-      invalid,
-      b,
-      amountPlanned,
-      amountScheduled,
-      amountScheduledRemain,
-      amountCurrent,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
-};
-export const fix = async (req: Request, res: Response) => {
-  try {
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) {
-      return res.status(404).send({ message: NOT_FOUND("budget") });
-    }
-
-    const key = req.body.key;
-    if (
-      key === "expenseScheduled" ||
-      key === "expenseScheduledRemain" ||
-      key === "expenseCurrent" ||
-      key === "incomeScheduled" ||
-      key === "incomeScheduledRemain" ||
-      key === "incomeCurrent"
-    ) {
-      const k = key as budgetKeys;
-      budget[k] = req.body.amount;
-    } else if (
-      key === "amountPlanned" ||
-      key === "amountScheduled" ||
-      key === "amountCurrent" ||
-      key === "amountScheduledRemain"
-    ) {
-      const k = key as categoryKeys;
-      const idx = budget.findCategoryIdx(req.body.categoryId);
-      budget.categories[idx][k] = req.body.amount;
-    } else {
-      return res.status(400).send({ message: FIELD_INVALID("key") });
-    }
-    budget.isModified("categories");
-    await budget.save();
-
-    return res.status(200).send({ budget });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
-};
-
-/**
- * Create budget
- *
- * @body { startDate,endDate, title, expensePlanned,incomePlanned,categories}
- * @return budget
- */
 
 /**
  * Create budget based on basic budget
@@ -216,214 +15,57 @@ export const fix = async (req: Request, res: Response) => {
  * @return budget
  */
 export const createWithBasic = async (req: Request, res: Response) => {
-  try {
-    for (let field of ["year", "month"]) {
-      if (!(field in req.body)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-      }
+  for (let field of ["year", "month"]) {
+    if (!(field in req.body)) {
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
-    const year = parseInt(req.body.year);
-    const month = parseInt(req.body.month);
-
-    const user = req.user!;
-
-    const budget = await Budget.findById(user.basicBudgetId);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-
-    const transactions = await Transaction.find({
-      budgetId: budget._id,
-    });
-
-    budget.isNew = true;
-    budget._id = new Types.ObjectId();
-    budget.title = req.body.title ?? budget.title;
-    budget.year = year;
-    budget.month = month;
-    budget.createdAt = undefined;
-    budget.updatedAt = undefined;
-
-    const save: Promise<any>[] = [budget.save()];
-
-    const tz = user.settings.timeZone ?? basicTimeZone;
-    const lastDayOfTheMonth = new Date(year, month, 0).getDate();
-
-    for (let transaction of transactions) {
-      const date = moment.tz(transaction.date, tz).toDate();
-      let mmt = moment.tz(
-        [
-          year,
-          month - 1,
-          Math.min(date.getDate(), lastDayOfTheMonth),
-          date.getHours(),
-          date.getMinutes(),
-        ],
-        tz
-      );
-
-      transaction.isNew = true;
-      transaction._id = new Types.ObjectId();
-      transaction.budgetId = budget._id;
-      transaction.date = mmt.toDate();
-      transaction.createdAt = undefined;
-      transaction.updatedAt = undefined;
-      save.push(transaction.save());
-    }
-
-    await Promise.all(save);
-    await budget.calculate();
-
-    return res.status(200).send({ budget, transactions });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
   }
+  const year = parseInt(req.body.year);
+  const month = parseInt(req.body.month);
+  const title = req.body.title;
+
+  const user = req.user!;
+
+  const { budget, transactions } = await BudgetService.createWithBasicBudget(
+    user,
+    year,
+    month,
+    title
+  );
+
+  return res.status(200).send({ budget, transactions });
 };
 
 export const updateCategoriesV3 = async (req: Request, res: Response) => {
-  try {
-    /* validate */
-    if (!("isExpense" in req.body) && !("isIncome" in req.body))
-      return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
-    if (!("categories" in req.body))
-      return res.status(400).send({ message: FIELD_REQUIRED("categories") });
+  /* validate */
+  if (!("isExpense" in req.body) && !("isIncome" in req.body))
+    return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
+  if (!("categories" in req.body))
+    return res.status(400).send({ message: FIELD_REQUIRED("categories") });
 
-    const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
-    const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
-    if (isExpense === isIncome) {
-      return res.status(400).send({ message: FIELD_INVALID("isExpense") });
-    }
-
-    const user = req.user!;
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-    if (!budget.userId.equals(user._id)) {
-      return res.status(403).send({ message: NOT_PERMITTED });
-    }
-
-    const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
-      budget.categories.map((category) => [
-        category.categoryId,
-        category.toObject(),
-      ])
-    );
-
-    const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
-      []
-    );
-    const included: Types.DocumentArray<ICategory> = new Types.DocumentArray(
-      []
-    );
-    const updated: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
-    const excluded: Types.DocumentArray<ICategory> = new Types.DocumentArray(
-      []
-    );
-
-    for (let _category of req.body.categories) {
-      if (!("amountPlanned" in _category))
-        return res
-          .status(400)
-          .send({ message: FIELD_REQUIRED("amountPlanned") });
-      if (!("categoryId" in _category))
-        return res.status(400).send({ message: FIELD_REQUIRED("categoryId") });
-
-      /* include category */
-      if (!categoryDict[_category.categoryId]) {
-        const category = user.findCategory(_category.categoryId);
-        if (!category)
-          return res.status(404).send({ message: NOT_FOUND("category") });
-        if (category.isDefault)
-          return res.status(409).send({
-            message: CATEGORY_CANOT_BE_UPDATED,
-          });
-        if (category.isExpense !== isExpense)
-          return res.status(409).send({
-            message: INVALID_CATEGORY,
-          });
-
-        const newCategory = {
-          ...category,
-          categoryId: category._id,
-          amountPlanned: _category.amountPlanned,
-        };
-        _categories.push(newCategory);
-        included.push(newCategory);
-      } /* update category */ else {
-        const key = _category.categoryId;
-        const exCategory = categoryDict[key];
-        if (!exCategory)
-          return res.status(404).send({
-            message: "category not found in budget.categories",
-            category: _category,
-          });
-        if (exCategory.isDefault)
-          return res.status(409).send({
-            message: CATEGORY_CANOT_BE_UPDATED,
-          });
-        if (exCategory.isExpense !== isExpense)
-          return res.status(409).send({
-            message: INVALID_CATEGORY,
-          });
-
-        const category = {
-          ...exCategory,
-          amountPlanned: _category.amountPlanned,
-          autoPlanned: _category.autoPlanned,
-        };
-        _categories.push(category);
-        delete categoryDict[key];
-
-        if (category.amountPlanned !== exCategory.amountPlanned) {
-          updated.push(category);
-        }
-      }
-    }
-    /* exclude category */
-    for (const category of Object.values(categoryDict)) {
-      if (!category.isDefault) {
-        if (category.isExpense === isExpense) {
-          excluded.push(category);
-        } else {
-          _categories.push(category);
-        }
-      }
-    }
-
-    const defaultExpenseCategory = budget.findDefaultExpenseCategory();
-    const defaultIncomeCategory = budget.findDefaultIncomeCategory();
-    _categories.push(defaultExpenseCategory);
-    _categories.push(defaultIncomeCategory);
-    budget.categories = _categories;
-
-    for (const category of excluded) {
-      const transactions = await Transaction.find({
-        userId: user._id,
-        budgetId: budget._id,
-        "category.categoryId": category.categoryId,
-      });
-
-      await Promise.all(
-        transactions.map((transaction) => {
-          transaction.category = isExpense
-            ? defaultExpenseCategory
-            : defaultIncomeCategory;
-          return transaction.save();
-        })
-      );
-    }
-
-    await budget.save();
-    await budget.calculate();
-
-    return res.status(200).send({
-      categories: budget.categories,
-      included,
-      updated,
-      excluded,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
+  const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
+  if (isExpense === isIncome) {
+    return res.status(400).send({ message: FIELD_INVALID("isExpense") });
   }
+
+  const user = req.user!;
+  const budget = await BudgetService.findById(req.params._id);
+  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget.userId.equals(user._id)) {
+    return res.status(403).send({ message: NOT_PERMITTED });
+  }
+
+  await BudgetService.updateCategories(
+    user,
+    budget,
+    isExpense,
+    req.body.categories
+  );
+
+  return res.status(200).send({
+    categories: budget.categories,
+  });
 };
 
 /**
@@ -437,38 +79,23 @@ export const updateCategoryAmountPlanned = async (
   req: Request,
   res: Response
 ) => {
-  try {
-    if (!("amountPlanned" in req.body))
-      return res.status(400).send({ message: FIELD_REQUIRED("amountPlanned") });
+  if (!("amountPlanned" in req.body))
+    return res.status(400).send({ message: FIELD_REQUIRED("amountPlanned") });
 
-    const user = req.user!;
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-    if (!budget.userId.equals(user._id))
-      return res.status(403).send({ message: NOT_PERMITTED });
+  const user = req.user!;
 
-    const categoryIdx = budget.findCategoryIdx(
-      req.params.categoryId.toString()
-    );
-    const category = budget.categories[categoryIdx];
-    if (!category)
-      return res.status(404).send({ message: NOT_FOUND("category") });
+  const budget = await BudgetService.findById(req.params._id);
+  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget.userId.equals(user._id))
+    return res.status(403).send({ message: NOT_PERMITTED });
 
-    if (category.isDefault)
-      return res.status(409).send({
-        message: CATEGORY_CANOT_BE_UPDATED,
-      });
+  await BudgetService.updateCategoryAmountPlanned(
+    budget,
+    req.params.categoryId,
+    req.body.amountPlanned
+  );
 
-    budget.categories[categoryIdx].amountPlanned = req.body.amountPlanned;
-    budget.categories[categoryIdx].autoPlanned = false;
-    await budget.save();
-    await budget.calculate();
-
-    return res.status(200).send({ budget });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
+  return res.status(200).send({ budget });
 };
 
 /**
@@ -478,30 +105,15 @@ export const updateCategoryAmountPlanned = async (
  * @return budget
  */
 export const updateField = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-    if (!budget.userId.equals(user._id))
-      return res.status(403).send({ message: NOT_PERMITTED });
+  const user = req.user!;
+  const budget = await BudgetService.findById(req.params._id);
+  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget.userId.equals(user._id))
+    return res.status(403).send({ message: NOT_PERMITTED });
 
-    budget.startDate = req.body.startDate ?? budget.startDate;
-    budget.endDate = req.body.endDate ?? budget.endDate;
-    budget.title = req.body.title ?? budget.title;
-    if ("expensePlanned" in req.body) {
-      budget.expensePlanned = req.body.expensePlanned;
-    }
-    if ("incomePlanned" in req.body) {
-      budget.incomePlanned = req.body.incomePlanned;
-    }
-    await budget.save();
-    await budget.calculate();
+  await BudgetService.updateFields(budget, req.body);
 
-    return res.status(200).send({ budget });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
+  return res.status(200).send({ budget });
 };
 
 /**
@@ -511,68 +123,51 @@ export const updateField = async (req: Request, res: Response) => {
  * @return budget or budgets
  */
 export const find = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
+  const user = req.user!;
 
-    if (req.params._id) {
-      const budget = await Budget.findById(req.params._id);
-      if (!budget)
-        return res.status(404).send({ message: NOT_FOUND("budget") });
-      if (!budget.userId.equals(user._id)) {
-        if (user.auth !== "admin") {
-          return res.status(403).send({ message: NOT_PERMITTED });
-        }
-      }
+  if (req.params._id) {
+    const { budget, transactions } =
+      await BudgetService.findByIdWithTransactions(req.params._id);
 
-      await budget.calculate();
-      const transactions = await Transaction.find({
-        budgetId: budget._id,
-      }).lean();
-      return res.status(200).send({ budget, transactions });
-    }
-    if ("year" in req.query) {
-      const year = parseInt(req.query.year as string);
-      if ("month" in req.query) {
-        const month = parseInt(req.query.month as string);
-        const budget = await Budget.findOne({
-          userId: user._id,
-          year,
-          month,
-        });
-        if (!budget) {
-          return res.status(404).send({ message: NOT_FOUND("budget") });
-        }
-        await budget.calculate();
-        return res.status(200).send({ budget });
-      }
-      const budgets = await Budget.find({
-        userId: user._id,
-        year,
-      });
-      await Promise.all(budgets.map((budget) => budget.calculate()));
-      return res.status(200).send({ budgets });
-    }
-    if ("userId" in req.query) {
+    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+    if (!budget.userId.equals(user._id)) {
       if (user.auth !== "admin") {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
-      if (req.query.userId === "*") {
-        const budgets = await Budget.find({});
-        await Promise.all(budgets.map((budget) => budget.calculate()));
-        return res.status(200).send({ budgets });
-      }
-      const budgets = await Budget.find({ userId: req.query.userId });
-      await Promise.all(budgets.map((budget) => budget.calculate()));
-      return res.status(200).send({ budgets });
     }
 
-    const budgets = await Budget.find({ userId: user._id });
-    await Promise.all(budgets.map((budget) => budget.calculate()));
-    return res.status(200).send({ budgets });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+    return res.status(200).send({ budget, transactions });
   }
+  if ("year" in req.query) {
+    const year = parseInt(req.query.year as string);
+    if ("month" in req.query) {
+      const month = parseInt(req.query.month as string);
+      const { budget } = await BudgetService.findByYearAndMonth(
+        user._id,
+        year,
+        month
+      );
+      return res.status(200).send({ budget });
+    }
+    const { budgets } = await BudgetService.findByYear(user._id, year);
+    return res.status(200).send({ budgets });
+  }
+  if ("userId" in req.query) {
+    if (user.auth !== "admin") {
+      return res.status(403).send({ message: NOT_PERMITTED });
+    }
+    if (req.query.userId === "*") {
+      const { budgets } = await BudgetService.findAllBudgets();
+      return res.status(200).send({ budgets });
+    }
+    const { budgets } = await BudgetService.findByUserId(
+      req.query.userId as string
+    );
+    return res.status(200).send({ budgets });
+  }
+
+  const { budgets } = await BudgetService.findByUserId(user._id);
+  return res.status(200).send({ budgets });
 };
 
 /**
@@ -581,22 +176,16 @@ export const find = async (req: Request, res: Response) => {
  * @param { _id}
  */
 export const remove = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const budget = await Budget.findById(req.params._id);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  const user = req.user!;
+  const budget = await BudgetService.findById(req.params._id);
+  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
-    if (!budget.userId.equals(user._id)) {
-      if (user.auth !== "admin") {
-        return res.status(403).send({ message: NOT_PERMITTED });
-      }
+  if (!budget.userId.equals(user._id)) {
+    if (user.auth !== "admin") {
+      return res.status(403).send({ message: NOT_PERMITTED });
     }
-
-    await Transaction.deleteMany({ budgetId: budget._id });
-    await budget.remove();
-    return res.status(200).send();
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
   }
+
+  await BudgetService.remove(budget);
+  return res.status(200).send();
 };

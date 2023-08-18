@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { User } from "src/models/User";
-import { Budget } from "src/models/Budget";
+import { User } from "src/models/User"; // admin
 import { Transaction } from "src/models/Transaction";
 
 import * as UserService from "src/services/user";
-
+import * as BudgetService from "src/services/budget";
 //_____________________________________________________________________________
 
 /**
@@ -79,7 +78,7 @@ export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
   await Promise.all([
     Transaction.deleteMany({ userId: user._id }),
-    Budget.deleteMany({ userId: user._id }),
+    BudgetService.removeByUserId(user._id),
   ]);
   await UserService.remove(user._id);
   return res.status(200).send({});
@@ -108,7 +107,7 @@ export const remove2 = async (req: Request, res: Response) => {
   try {
     await Promise.all([
       Transaction.deleteMany({ userId: req.params._id }),
-      Budget.deleteMany({ userId: req.params._id }),
+      BudgetService.removeByUserId(req.params._id),
     ]);
     await User.findByIdAndRemove(req.params._id);
     return res.status(200).send({});
