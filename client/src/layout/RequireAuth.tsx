@@ -11,12 +11,9 @@ import LoadingSpinner from '../components/UI/LoadingSpinner';
 import { useAppDispatch } from '../hooks/useRedux';
 import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';
-import { budgetActions } from '../store/budget';
 import { uiActions } from '../store/ui';
 import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
-import { getBudgetById, getBudgetList } from '../util/api/budgetAPI';
-import { getErrorMessage } from '../util/error';
 import { loader as userLoader } from './Root';
 
 const { DURING_CHANNEL_KEY } = import.meta.env;
@@ -39,48 +36,24 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
         _id,
         userName,
         email,
-        basicBudgetId: defaultBudgetId,
+        tel,
+        snsId,
+        isGuest,
         categories,
         assets,
         cards,
-        tel,
-        snsId,
-        gender,
         paymentMethods,
-        settings,
-        isGuest,
-        isLocal,
       } = userData;
 
-      // set sentry
-      Sentry.setUser({ id: _id, username: userName, email, snsId });
-
-      // set auth state
-      dispatch(userActions.login());
-
       // set user data
-      dispatch(
-        userActions.setUserInfo({
-          _id,
-          userName,
-          email,
-          tel,
-          defaultBudgetId,
-          gender,
-        })
-      );
-      dispatch(
-        userActions.setAuthInfo({
-          email,
-          isLocal,
-          snsId,
-          isGuest,
-        })
-      );
+      dispatch(userActions.login(userData)); // set login, user info, auth info
       dispatch(userCategoryActions.setCategories(categories));
       dispatch(assetActions.setAssets(assets));
       dispatch(assetActions.setCards(cards));
       dispatch(assetActions.setPaymentMethods(paymentMethods));
+
+      // set sentry
+      Sentry.setUser({ id: _id, username: userName, email, snsId });
 
       // Boot channel service
       Channel.boot({
@@ -93,60 +66,8 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
           isGuest,
         },
       });
-
-      // const { options } = await getOptions('chartSkin');
-      // dispatch(
-      //   settingActions.setSettings({
-      //     ...settings,
-      //     chartSkin: {
-      //       selected: settings.chartSkin,
-      //       options,
-      //     },
-      //   })
-      // );
-
-      // set default budget data
-      const setData = async () => {
-        let defaultBudget;
-        try {
-          const { budget } = await getBudgetById(defaultBudgetId);
-          defaultBudget = budget;
-          dispatch(budgetActions.setDefaultBudget(defaultBudget));
-        } catch (error) {
-          const message = getErrorMessage(error);
-          showError(message || '기본 예산을 로드할 수 없습니다.');
-          if (!message) throw error;
-        }
-
-        // set budget data
-        let budgets;
-        try {
-          const budgetList = await getBudgetList();
-          budgets = budgetList.budgets;
-          dispatch(budgetActions.setBudgetList(budgets));
-          // navigate(to, { replace: true });
-        } catch (error) {
-          const message = getErrorMessage(error);
-          showError(message || '예산 목록을 로드할 수 없습니다.');
-          if (!message) throw error;
-        }
-        // navigate(from || '/');
-        // redirect(from || '/');
-      };
-      setData();
     }
   }, [userData]);
-
-  const showError = async (message: string) => {
-    dispatch(userActions.logout());
-    dispatch(
-      uiActions.showErrorModal({
-        description: message,
-      })
-    );
-
-    navigate('/user');
-  };
 
   if (navigation.state === 'loading') {
     return <LoadingSpinner isFull={true} />;
