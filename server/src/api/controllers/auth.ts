@@ -250,7 +250,7 @@ export const disconnect = async (req: Request, res: Response) => {
         return res.status(404).send({ message: NOT_FOUND("snsId") });
       }
       if (
-        UserService.isLocal(user) &&
+        UserService.isLocalLoginActive(user) &&
         UserService.countActiveSnsId(user) === 1
       ) {
         return res

@@ -1,18 +1,25 @@
-import { IUser, User as UserModel } from "src/models/User";
-import { generateRandomString } from "src/utils/randomString";
 import { HydratedDocument, Types } from "mongoose";
+
+import { IUser, User as UserModel } from "src/models/User";
+import { ITransaction } from "src/models/Transaction";
 
 import * as BudgetService from "./budget";
 import * as TransactionService from "./transaction";
-import { ITransaction } from "@models/Transaction";
+
+import { generateRandomString } from "src/utils/randomString";
+import { findDocumentById } from "src/utils/document";
+
+/* auth: localLogin, snsId */
 
 type snsType = "google" | "naver" | "kakao";
 
-export const isLocal = (userRecord: HydratedDocument<IUser>) =>
+export const isLocalLoginActive = (userRecord: HydratedDocument<IUser>) =>
   userRecord.isLocal;
 
-export const hasActiveSnsId = (userRecord: HydratedDocument<IUser>) =>
-  countActiveSnsId(userRecord) > 0;
+export const checkSnsIdActive = (
+  userRecord: HydratedDocument<IUser>,
+  sns: snsType
+) => userRecord.snsId && sns in userRecord.snsId && userRecord.snsId[sns];
 
 export const countActiveSnsId = (userRecord: HydratedDocument<IUser>) => {
   let cnt = 0;
@@ -22,7 +29,60 @@ export const countActiveSnsId = (userRecord: HydratedDocument<IUser>) => {
   return cnt;
 };
 
-const createUser = async (field: object) => {
+export const hasActiveSnsId = (userRecord: HydratedDocument<IUser>) =>
+  countActiveSnsId(userRecord) > 0;
+
+export const disableLocalLogin = async (
+  userRecord: HydratedDocument<IUser>
+) => {
+  userRecord.isLocal = false;
+  await userRecord.save();
+};
+
+export const updateSnsId = async (
+  userRecord: HydratedDocument<IUser>,
+  sns: snsType,
+  id: string
+) => {
+  userRecord.snsId = { ...userRecord.snsId, [sns]: id };
+  userRecord.isGuest = false;
+  await userRecord.save();
+};
+
+export const updateEmailAndActivateLocalLogin = async (
+  userRecord: HydratedDocument<IUser>,
+  email: string
+) => {
+  userRecord.email = email;
+  userRecord.isLocal = true;
+  userRecord.isGuest = false;
+  await userRecord.save();
+};
+
+export const removeSnsId = async (
+  userRecord: HydratedDocument<IUser>,
+  sns: snsType
+) => {
+  userRecord.snsId = { ...userRecord.snsId, [sns]: undefined };
+  await userRecord.save();
+};
+
+/* auth: admin */
+
+export const findAdmin = async (id: string) => {
+  const userRecord = await UserModel.findOne({
+    ["snsId.google"]: id,
+    auth: "admin",
+  });
+
+  return { user: userRecord };
+};
+
+export const isAdmin = async (userRecord: IUser) => userRecord.auth === "admin";
+
+/* create user */
+
+export const createUser = async (field: object) => {
   const userRecord = await UserModel.create(field);
   const { budget: budgetRecord } = await BudgetService.createBasicBudget(
     userRecord
@@ -60,6 +120,8 @@ export const createSnsUser = async (
   return { user };
 };
 
+/* find users */
+
 export const findAll = async () => {
   const userRecordList = await UserModel.find({})
     .lean()
@@ -74,18 +136,6 @@ export const findById = async (_id: Types.ObjectId | string) => {
   return { user: userRecord };
 };
 
-export const findAdmin = async (id: string) => {
-  const userRecord = await UserModel.findOne({
-    ["snsId.google"]: id,
-    auth: "admin",
-  });
-
-  return { user: userRecord };
-};
-
-export const checkAdmin = async (userRecord: IUser) =>
-  userRecord.auth === "admin";
-
 export const findBySnsId = async (sns: snsType, id: string) => {
   const userRecord = await UserModel.findOne({ ["snsId." + sns]: id });
 
@@ -98,62 +148,47 @@ export const findByEmail = async (email: string) => {
   return { user: userRecord };
 };
 
+/* find category/paymentMethod/asset/card of users */
+
 export const findCategory = (
   userRecord: IUser,
-  _categoryId: string | Types.ObjectId
+  categoryId: string | Types.ObjectId
 ) => {
-  const categoryId = new Types.ObjectId(_categoryId);
-  for (let i = 0; i < userRecord.categories.length; i++) {
-    if (userRecord.categories[i]._id.equals(categoryId)) {
-      return { idx: i, category: userRecord.categories[i] };
-    }
-  }
-  return { idx: -1, category: undefined };
+  const { idx, value } = findDocumentById({
+    arr: userRecord.categories,
+    id: categoryId,
+  });
+  return { idx, category: value };
 };
 
 export const findPaymentMethod = (
   userRecord: IUser,
-  _paymentMethodId: string | Types.ObjectId
+  paymentMethodId: string | Types.ObjectId
 ) => {
-  const paymentMethodId = new Types.ObjectId(_paymentMethodId);
-  for (let i = 0; i < userRecord.paymentMethods.length; i++) {
-    if (userRecord.paymentMethods[i]._id.equals(paymentMethodId)) {
-      return { idx: i, paymentMethod: userRecord.paymentMethods[i] };
-    }
-  }
-
-  return { idx: -1, paymentMethod: undefined };
+  const { idx, value } = findDocumentById({
+    arr: userRecord.paymentMethods,
+    id: paymentMethodId,
+  });
+  return { idx, paymentMethod: value };
 };
 
 export const findAsset = (userRecord: IUser, _id: Types.ObjectId) => {
-  for (let i = 0; i < userRecord.assets.length; i++) {
-    if (userRecord.assets[i]._id.equals(_id)) {
-      return { idx: i, asset: userRecord.assets[i] };
-    }
-  }
-
-  return { idx: -1, asset: undefined };
+  const { idx, value } = findDocumentById({
+    arr: userRecord.assets,
+    id: _id,
+  });
+  return { idx, asset: value };
 };
 
 export const findCard = (userRecord: IUser, _id: Types.ObjectId) => {
-  for (let i = 0; i < userRecord.cards.length; i++) {
-    if (userRecord.cards[i]._id.equals(_id)) {
-      return { idx: i, card: userRecord.cards[i] };
-    }
-  }
-
-  return { idx: -1, card: undefined };
+  const { idx, value } = findDocumentById({
+    arr: userRecord.cards,
+    id: _id,
+  });
+  return { idx, card: value };
 };
 
-export const updateEmailAndEnableLocalLogin = async (
-  userRecord: HydratedDocument<IUser>,
-  email: string
-) => {
-  userRecord.email = email;
-  userRecord.isGuest = true;
-  userRecord.isGuest = false;
-  await userRecord.save();
-};
+/* update */
 
 export const updateFields = async (
   userRecord: HydratedDocument<IUser>,
@@ -199,6 +234,8 @@ export const updateAssetByTransaction = async (
   }
 };
 
+/* exec/cancel payment method */
+
 export const execPaymentMethod = async (
   userRecord: HydratedDocument<IUser>,
   transactionRecord: HydratedDocument<ITransaction>
@@ -224,35 +261,7 @@ export const execPaymentMethod = async (
   }
 };
 
-export const disableLocalLogin = async (
-  userRecord: HydratedDocument<IUser>
-) => {
-  userRecord.isLocal = false;
-  await userRecord.save();
-};
-
-export const checkSnsIdActive = (
-  userRecord: HydratedDocument<IUser>,
-  sns: snsType
-) => userRecord.snsId?.[sns];
-
-export const updateSnsId = async (
-  userRecord: HydratedDocument<IUser>,
-  sns: snsType,
-  id: string
-) => {
-  userRecord.snsId = { ...userRecord.snsId, [sns]: id };
-  userRecord.isGuest = false;
-  await userRecord.save();
-};
-
-export const removeSnsId = async (
-  userRecord: HydratedDocument<IUser>,
-  sns: snsType
-) => {
-  userRecord.snsId = { ...userRecord.snsId, [sns]: undefined };
-  await userRecord.save();
-};
+/* remove */
 
 export const remove = async (userId: Types.ObjectId) => {
   await Promise.all([

@@ -155,7 +155,7 @@ export const find = async (req: Request, res: Response) => {
 
     if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
     if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-      if (!UserService.checkAdmin(user)) {
+      if (!UserService.isAdmin(user)) {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
     }
@@ -177,7 +177,7 @@ export const find = async (req: Request, res: Response) => {
     return res.status(200).send({ budgets });
   }
   if ("userId" in req.query) {
-    if (!UserService.checkAdmin(user)) {
+    if (!UserService.isAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
     if (req.query.userId === "*") {
@@ -205,7 +205,7 @@ export const remove = async (req: Request, res: Response) => {
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-    if (!UserService.checkAdmin(user)) {
+    if (!UserService.isAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
   }

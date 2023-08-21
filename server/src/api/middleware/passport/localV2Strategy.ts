@@ -115,7 +115,10 @@ const localV2 = () => {
         /* updateEmail  - verify code */
         await verifyCode(req.body.email, req.body.code);
 
-        await UserService.updateEmailAndEnableLocalLogin(user, req.body.email);
+        await UserService.updateEmailAndActivateLocalLogin(
+          user,
+          req.body.email
+        );
 
         return done(null, user, "updateEmailVerify");
       } catch (err) {
