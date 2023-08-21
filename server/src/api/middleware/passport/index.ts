@@ -12,12 +12,13 @@ export default (config: configType) => {
     done(null, { _id: user._id, isGuest: user?.isGuest });
   });
 
-  passport.deserializeUser(({ _id }, done) => {
-    UserService.findById(_id)
-      .then((user: Express.User | null) => {
-        done(null, user);
-      })
-      .catch((err) => done(err, null));
+  passport.deserializeUser(async ({ _id }, done) => {
+    try {
+      const { user } = await UserService.findById(_id);
+      done(null, user);
+    } catch (err) {
+      done(err, null);
+    }
   });
 
   google(config.OAUTH_CLIENT.GOOGLE);
