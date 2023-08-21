@@ -67,6 +67,8 @@ export const removeSnsId = async (
   await userRecord.save();
 };
 
+export const isGuest = (userRecord: IUser) => userRecord.isGuest;
+
 /* auth: admin */
 
 export const findAdmin = async (id: string) => {
@@ -263,10 +265,10 @@ export const execPaymentMethod = async (
 
 /* remove */
 
-export const remove = async (userId: Types.ObjectId) => {
+export const remove = async (userRecord: HydratedDocument<IUser>) => {
   await Promise.all([
-    TransactionService.removeByUserId(userId),
-    BudgetService.removeByUserId(userId),
-    UserModel.findByIdAndDelete(userId),
+    TransactionService.removeByUserId(userRecord._id),
+    BudgetService.removeByUserId(userRecord._id),
+    userRecord.remove(),
   ]);
 };

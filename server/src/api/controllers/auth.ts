@@ -250,7 +250,7 @@ export const disconnect = async (req: Request, res: Response) => {
         return res.status(404).send({ message: NOT_FOUND("snsId") });
       }
       if (
-        UserService.isLocalLoginActive(user) &&
+        !UserService.isLocalLoginActive(user) &&
         UserService.countActiveSnsId(user) === 1
       ) {
         return res
@@ -283,16 +283,15 @@ export const disconnect = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  const userId = req.user!._id;
-  const isGuest = req.user!.isGuest;
+  const user = req.user!;
 
   req.logout(async (err: Error) => {
     try {
       if (err) throw err;
       req.session.destroy(() => {});
       res.clearCookie("connect.sid");
-      if (isGuest) {
-        await UserService.remove(userId);
+      if (UserService.isGuest(user)) {
+        await UserService.remove(user);
       }
       return res.status(200).send({});
     } catch (err: any) {
