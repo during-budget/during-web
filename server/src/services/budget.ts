@@ -371,6 +371,8 @@ export const updateCategories = async (
 
   await budgetRecord.save();
   await calculate(budgetRecord);
+
+  return { excluded, included, updated };
 };
 
 export const updateCategoryAmountPlanned = async (
@@ -419,6 +421,8 @@ export const removeByUserId = async (userId: Types.ObjectId | string) => {
 };
 
 export const remove = async (budgetRecord: HydratedDocument<IBudget>) => {
-  await TransactionService.removeByBudgetId(budgetRecord._id),
-    await budgetRecord.remove();
+  await Promise.all([
+    TransactionService.removeByBudgetId(budgetRecord._id),
+    budgetRecord.remove(),
+  ]);
 };
