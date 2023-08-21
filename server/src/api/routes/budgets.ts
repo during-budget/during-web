@@ -18,7 +18,7 @@ router.put(
   wrapAsync(budgets.updateCategoryAmountPlanned)
 );
 
-router.patch("/:_id", isLoggedIn, budgets.updateField);
+router.patch("/:_id", isLoggedIn, wrapAsync(budgets.updateField));
 
 router.get("/:_id?", isLoggedIn, wrapAsync(budgets.find));
 
