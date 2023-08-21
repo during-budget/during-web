@@ -23,3 +23,7 @@ export const replaceTransactionsCategory = async (
 
   return { transactions: transactionRecordList };
 };
+
+export const removeByUserId = async (userId: Types.ObjectId | string) => {
+  return await TransactionModel.deleteMany({ userId });
+};

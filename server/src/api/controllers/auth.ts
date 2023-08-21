@@ -16,10 +16,8 @@ import {
   REGISTER_VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_VERIFICATION_CODE_SENT,
 } from "../message";
-import { Transaction } from "src/models/Transaction";
 
 import * as UserService from "src/services/user";
-import * as BudgetService from "src/services/budget";
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
@@ -275,11 +273,7 @@ export const logout = async (req: Request, res: Response) => {
       req.session.destroy(() => {});
       res.clearCookie("connect.sid");
       if (isGuest) {
-        await Promise.all([
-          UserService.remove(userId),
-          BudgetService.removeByUserId(userId),
-          Transaction.deleteMany({ userId }),
-        ]);
+        await UserService.remove(userId);
       }
       return res.status(200).send({});
     } catch (err: any) {

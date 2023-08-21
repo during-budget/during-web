@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { User } from "src/models/User"; // admin
-import { Transaction } from "src/models/Transaction";
 
 import * as UserService from "src/services/user";
-import * as BudgetService from "src/services/budget";
+
 //_____________________________________________________________________________
 
 /**
@@ -76,42 +74,27 @@ export const current = (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
-  await Promise.all([
-    Transaction.deleteMany({ userId: user._id }),
-    BudgetService.removeByUserId(user._id),
-  ]);
+
   await UserService.remove(user._id);
+
   return res.status(200).send({});
 };
 
 /* admin */
-export const list = async (req: Request, res: Response) => {
-  try {
-    const users = await User.find({})
-      .lean()
-      .select(["email", "userName", "snsId", "createdAt", "updatedAt"]);
-    return res.status(200).send({ users });
-  } catch (err: any) {
-    return res.status(err.status || 500).send({ message: err.message });
-  }
+export const listByAdmin = async (req: Request, res: Response) => {
+  const { users } = await UserService.findAll();
+  return res.status(200).send({ users });
 };
-export const find = async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.params._id).lean();
-    return res.status(200).send({ user });
-  } catch (err: any) {
-    return res.status(err.status || 500).send({ message: err.message });
-  }
+
+export const findByAdmin = async (req: Request, res: Response) => {
+  const { user } = await UserService.findById(req.params._id);
+  return res.status(200).send({ user });
 };
-export const remove2 = async (req: Request, res: Response) => {
-  try {
-    await Promise.all([
-      Transaction.deleteMany({ userId: req.params._id }),
-      BudgetService.removeByUserId(req.params._id),
-    ]);
-    await User.findByIdAndRemove(req.params._id);
-    return res.status(200).send({});
-  } catch (err: any) {
-    return res.status(err.status || 500).send({ message: err.message });
-  }
+
+export const removeByAdmin = async (req: Request, res: Response) => {
+  const user = req.user!;
+
+  await UserService.remove(user._id);
+
+  return res.status(200).send({});
 };

@@ -36,14 +36,16 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* isNotLoggedIn - login or register */
           if (!req.isAuthenticated()) {
             /* login */
-            const user = await UserService.findBySnsId(sns, profile.id);
+            const { user } = await UserService.findBySnsId(sns, profile.id);
             if (user) {
               return done(null, user, "login");
             }
 
             /* register */
             if (profile.email) {
-              const exUser = await UserService.findByEmail(profile.email);
+              const { user: exUser } = await UserService.findByEmail(
+                profile.email
+              );
               if (exUser) {
                 const err = new Error(EMAIL_IN_USE);
                 return done(err, null, null);
@@ -60,12 +62,15 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (user.snsId?.[sns]) {
+          if (UserService.checkSnsIdExistence(user, sns)) {
             const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
 
-          const exUser = await UserService.findBySnsId(sns, profile.id);
+          const { user: exUser } = await UserService.findBySnsId(
+            sns,
+            profile.id
+          );
           if (exUser) {
             const err = new Error(SNSID_IN_USE);
             return done(err, null, null);

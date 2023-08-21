@@ -24,8 +24,8 @@ router.get("/current", isLoggedIn, users.current);
 router.delete("/", isLoggedIn, wrapAsync(users.remove));
 
 /* admin */
-router.get("/", isAdmin, users.list);
-router.get("/:_id", isAdmin, users.find);
-router.delete("/:_id", isAdmin, users.remove2);
+router.get("/", isAdmin, wrapAsync(users.listByAdmin));
+router.get("/:_id", isAdmin, wrapAsync(users.findByAdmin));
+router.delete("/:_id", isAdmin, wrapAsync(users.removeByAdmin));
 
 export default router;
