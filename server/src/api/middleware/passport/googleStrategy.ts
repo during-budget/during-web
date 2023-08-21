@@ -79,7 +79,7 @@ const google = (client: {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (UserService.checkSnsIdExistence(user, sns)) {
+          if (UserService.checkSnsIdActive(user, sns)) {
             const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }

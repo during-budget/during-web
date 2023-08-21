@@ -1,11 +1,5 @@
 import { HydratedDocument, Types } from "mongoose";
-import {
-  CATEGORY_CANOT_BE_UPDATED,
-  FIELD_REQUIRED,
-  INVALID_CATEGORY,
-  NOT_FOUND,
-} from "src/api/message";
-import { CustomError } from "src/api/middleware/error";
+
 import { Budget as BudgetModel, IBudget, ICategory } from "src/models/Budget";
 import * as TransactionService from "./transaction";
 import { basicTimeZone } from "@models/_basicSettings";
@@ -129,6 +123,8 @@ export const findCategory = (
   return { idx: -1, category: undefined };
 };
 
+export const isDefaultCategory = (category: ICategory) => category.isDefault;
+
 const findDefaultExpenseCategory = (budgetRecord: IBudget) => {
   return {
     category: budgetRecord.categories[budgetRecord.categories.length - 2],
@@ -161,15 +157,11 @@ export const createBasicBudget = async (user: {
 
 export const createWithBasicBudget = async (
   user: { basicBudgetId: Types.ObjectId; settings: { timeZone?: string } },
+  basicBudgetRecord: HydratedDocument<IBudget>,
   year: number,
   month: number,
   title?: string
 ) => {
-  const basicBudgetRecord = await BudgetModel.findById(user.basicBudgetId);
-  if (!basicBudgetRecord) {
-    throw new CustomError(404, NOT_FOUND("budget"));
-  }
-
   const { transactions: transactionRecordList } =
     await TransactionService.findByBudgetId(basicBudgetRecord._id);
 
@@ -301,10 +293,8 @@ export const updateCategories = async (
   const excluded: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
 
   for (let _category of categories) {
-    if (!("amountPlanned" in _category))
-      throw new CustomError(400, FIELD_REQUIRED("amountPlanned"));
-    if (!("categoryId" in _category))
-      throw new CustomError(400, FIELD_REQUIRED("categoryId"));
+    if (!("amountPlanned" in _category)) continue;
+    if (!("categoryId" in _category)) continue;
 
     /* include category */
     if (!categoryDict[_category.categoryId]) {
@@ -312,13 +302,10 @@ export const updateCategories = async (
         userRecord,
         _category.categoryId
       );
-      if (!category) throw new CustomError(404, NOT_FOUND("category"));
+      if (!category) continue;
 
-      if (category.isDefault)
-        throw new CustomError(409, CATEGORY_CANOT_BE_UPDATED);
-
-      if (category.isExpense !== isExpense)
-        throw new CustomError(409, INVALID_CATEGORY);
+      if (category.isDefault) continue;
+      if (category.isExpense !== isExpense) continue;
 
       const newCategory = {
         ...category,
@@ -330,12 +317,9 @@ export const updateCategories = async (
     } /* update category */ else {
       const key = _category.categoryId;
       const exCategory = categoryDict[key];
-      if (!exCategory)
-        throw new CustomError(404, "category not found in budget.categories");
-      if (exCategory.isDefault)
-        throw new CustomError(409, CATEGORY_CANOT_BE_UPDATED);
-      if (exCategory.isExpense !== isExpense)
-        throw new CustomError(409, INVALID_CATEGORY);
+      if (!exCategory) continue;
+      if (exCategory.isDefault) continue;
+      if (exCategory.isExpense !== isExpense) continue;
 
       const category = {
         ...exCategory,
@@ -391,15 +375,11 @@ export const updateCategories = async (
 
 export const updateCategoryAmountPlanned = async (
   budgetRecord: HydratedDocument<IBudget>,
-  categoryId: Types.ObjectId | string,
+  category: ICategory,
   amountPlanned: number
 ) => {
-  const { idx, category } = findCategory(budgetRecord, categoryId);
-  if (!category) throw new CustomError(404, NOT_FOUND("category"));
-  if (category.isDefault) throw new CustomError(409, CATEGORY_CANOT_BE_UPDATED);
-
-  budgetRecord.categories[idx].amountPlanned = amountPlanned;
-  budgetRecord.categories[idx].autoPlanned = false;
+  category.amountPlanned = amountPlanned;
+  category.autoPlanned = false;
   await budgetRecord.save();
   await calculate(budgetRecord);
 };

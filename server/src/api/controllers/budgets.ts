@@ -4,6 +4,7 @@ import * as BudgetService from "src/services/budget";
 import * as UserService from "src/services/user";
 
 import {
+  CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,
   FIELD_REQUIRED,
   NOT_FOUND,
@@ -28,8 +29,16 @@ export const createWithBasic = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
+  const { budget: basicBudget } = await BudgetService.findById(
+    user.basicBudgetId
+  );
+  if (!basicBudget) {
+    return res.status(404).send({ message: NOT_FOUND("budget") });
+  }
+
   const { budget, transactions } = await BudgetService.createWithBasicBudget(
     user,
+    basicBudget,
     year,
     month,
     title
@@ -92,9 +101,20 @@ export const updateCategoryAmountPlanned = async (
     return res.status(403).send({ message: NOT_PERMITTED });
   }
 
+  const { category } = BudgetService.findCategory(
+    budget,
+    req.params.categoryId
+  );
+  if (!category) {
+    return res.status(404).send({ message: NOT_FOUND("category") });
+  }
+  if (BudgetService.isDefaultCategory(category)) {
+    return res.status(409).send({ message: CATEGORY_CANOT_BE_UPDATED });
+  }
+
   await BudgetService.updateCategoryAmountPlanned(
     budget,
-    req.params.categoryId,
+    category,
     req.body.amountPlanned
   );
 

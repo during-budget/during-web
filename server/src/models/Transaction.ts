@@ -22,7 +22,7 @@ const categorySchema = new Schema<ICategory>(
 interface ITransaction {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
-  budgetId?: Types.ObjectId;
+  budgetId: Types.ObjectId;
   date: Date;
   isCurrent: boolean;
   isExpense?: boolean;
