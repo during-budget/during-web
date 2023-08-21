@@ -47,6 +47,18 @@ export const createWithBasic = async (req: Request, res: Response) => {
   return res.status(200).send({ budget, transactions });
 };
 
+export const findBasicBudget = async (req: Request, res: Response) => {
+  const user = req.user!;
+
+  const { budget, transactions } = await BudgetService.findByIdWithTransactions(
+    user.basicBudgetId
+  );
+
+  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+
+  return res.status(200).send({ budget, transactions });
+};
+
 export const updateCategoriesV3 = async (req: Request, res: Response) => {
   /* validate */
   if (!("isExpense" in req.body) && !("isIncome" in req.body))
@@ -67,7 +79,7 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
     return res.status(403).send({ message: NOT_PERMITTED });
   }
 
-  await BudgetService.updateCategories(
+  const { updated, excluded, included } = await BudgetService.updateCategories(
     user,
     budget,
     isExpense,
@@ -76,6 +88,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
 
   return res.status(200).send({
     categories: budget.categories,
+    updated,
+    excluded,
+    included,
   });
 };
 

@@ -20,6 +20,7 @@ router.put(
 
 router.patch("/:_id", isLoggedIn, wrapAsync(budgets.updateField));
 
+router.get("/basic", isLoggedIn, wrapAsync(budgets.findBasicBudget));
 router.get("/:_id?", isLoggedIn, wrapAsync(budgets.find));
 
 router.delete("/:_id", isLoggedIn, wrapAsync(budgets.remove));
