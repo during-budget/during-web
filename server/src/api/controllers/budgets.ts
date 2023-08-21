@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import * as BudgetService from "src/services/budget";
+import * as UserService from "src/services/user";
+
 import {
   FIELD_INVALID,
   FIELD_REQUIRED,
@@ -50,9 +52,9 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
   }
 
   const user = req.user!;
-  const budget = await BudgetService.findById(req.params._id);
+  const { budget } = await BudgetService.findById(req.params._id);
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-  if (!budget.userId.equals(user._id)) {
+  if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
     return res.status(403).send({ message: NOT_PERMITTED });
   }
 
@@ -84,10 +86,11 @@ export const updateCategoryAmountPlanned = async (
 
   const user = req.user!;
 
-  const budget = await BudgetService.findById(req.params._id);
+  const { budget } = await BudgetService.findById(req.params._id);
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-  if (!budget.userId.equals(user._id))
+  if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
     return res.status(403).send({ message: NOT_PERMITTED });
+  }
 
   await BudgetService.updateCategoryAmountPlanned(
     budget,
@@ -106,10 +109,11 @@ export const updateCategoryAmountPlanned = async (
  */
 export const updateField = async (req: Request, res: Response) => {
   const user = req.user!;
-  const budget = await BudgetService.findById(req.params._id);
+  const { budget } = await BudgetService.findById(req.params._id);
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-  if (!budget.userId.equals(user._id))
+  if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
     return res.status(403).send({ message: NOT_PERMITTED });
+  }
 
   await BudgetService.updateFields(budget, req.body);
 
@@ -130,8 +134,8 @@ export const find = async (req: Request, res: Response) => {
       await BudgetService.findByIdWithTransactions(req.params._id);
 
     if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-    if (!budget.userId.equals(user._id)) {
-      if (user.auth !== "admin") {
+    if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
+      if (!UserService.checkAdmin(user)) {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
     }
@@ -153,7 +157,7 @@ export const find = async (req: Request, res: Response) => {
     return res.status(200).send({ budgets });
   }
   if ("userId" in req.query) {
-    if (user.auth !== "admin") {
+    if (!UserService.checkAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
     if (req.query.userId === "*") {
@@ -177,11 +181,11 @@ export const find = async (req: Request, res: Response) => {
  */
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
-  const budget = await BudgetService.findById(req.params._id);
+  const { budget } = await BudgetService.findById(req.params._id);
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
-  if (!budget.userId.equals(user._id)) {
-    if (user.auth !== "admin") {
+  if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
+    if (!UserService.checkAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
   }

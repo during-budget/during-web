@@ -21,6 +21,7 @@ router.put(
 router.patch("/:_id", isLoggedIn, budgets.updateField);
 
 router.get("/:_id?", isLoggedIn, wrapAsync(budgets.find));
+
 router.delete("/:_id", isLoggedIn, wrapAsync(budgets.remove));
 
 export default router;
