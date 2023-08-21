@@ -15,6 +15,8 @@ import {
   LOGIN_VERIFICATION_CODE_SENT,
   REGISTER_VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_VERIFICATION_CODE_SENT,
+  AT_LEAST_ONE_SNSID_IS_REQUIRED,
+  NOT_FOUND,
 } from "../message";
 
 import * as UserService from "src/services/user";
@@ -244,8 +246,25 @@ export const disconnect = async (req: Request, res: Response) => {
     const user = req.user!;
 
     if (provider === "google" || provider === "naver" || provider === "kakao") {
+      if (!UserService.checkSnsIdActive(user, provider)) {
+        return res.status(404).send({ message: NOT_FOUND("snsId") });
+      }
+      if (
+        UserService.isLocal(user) &&
+        UserService.countActiveSnsId(user) === 1
+      ) {
+        return res
+          .status(409)
+          .send({ message: 409, AT_LEAST_ONE_SNSID_IS_REQUIRED });
+      }
       await UserService.removeSnsId(user, provider);
     } else if (provider === "local") {
+      if (!UserService.hasActiveSnsId(user)) {
+        return res
+          .status(409)
+          .send({ message: AT_LEAST_ONE_SNSID_IS_REQUIRED });
+      }
+
       await UserService.disableLocalLogin(user);
     } else {
       return res.status(400).send({ message: FIELD_INVALID(provider) });

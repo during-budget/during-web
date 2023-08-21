@@ -69,11 +69,8 @@ interface IUserProps {
   paymentMethods: Types.DocumentArray<IPaymentMethod>;
   /* methods */
   saveReqUser: () => Promise<void>;
-  findCategory: (categoryId: string) => ICategory | undefined;
-  findCategoryIdx: (categoryId: string) => number;
   findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
   findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
-  pushCategory: (category: any) => void;
   execPM: (transaction: {
     linkedPaymentMethodId: Types.ObjectId;
     linkedPaymentMethodType: "asset" | "card";
@@ -158,28 +155,12 @@ userSchema.methods.saveReqUser = async function () {
   }
 };
 
-userSchema.methods.findCategory = function (categoryId: string) {
-  return _.find(this.categories, {
-    _id: new Types.ObjectId(categoryId),
-  })?.toObject();
-};
-
-userSchema.methods.findCategoryIdx = function (categoryId: string) {
-  return _.findIndex(this.categories, {
-    _id: new Types.ObjectId(categoryId),
-  });
-};
-
 userSchema.methods.findDefaultExpenseCategory = function () {
   return this.categories[this.categories.length - 2].toObject();
 };
 
 userSchema.methods.findDefaultIncomeCategory = function () {
   return this.categories[this.categories.length - 1].toObject();
-};
-
-userSchema.methods.pushCategory = function (category: any) {
-  this.categories.splice(this.categories.length - 2, 0, category);
 };
 
 userSchema.methods.execPM = function (transaction: {

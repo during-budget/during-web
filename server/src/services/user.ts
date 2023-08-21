@@ -1,14 +1,26 @@
 import { IUser, User as UserModel } from "src/models/User";
 import { generateRandomString } from "src/utils/randomString";
 import { HydratedDocument, Types } from "mongoose";
-import { AT_LEAST_ONE_SNSID_IS_REQUIRED, NOT_FOUND } from "src/api/message";
-import { CustomError } from "src/api/middleware/error";
-import _ from "lodash";
 
 import * as BudgetService from "./budget";
 import * as TransactionService from "./transaction";
+import { ITransaction } from "@models/Transaction";
 
 type snsType = "google" | "naver" | "kakao";
+
+export const isLocal = (userRecord: HydratedDocument<IUser>) =>
+  userRecord.isLocal;
+
+export const hasActiveSnsId = (userRecord: HydratedDocument<IUser>) =>
+  countActiveSnsId(userRecord) > 0;
+
+export const countActiveSnsId = (userRecord: HydratedDocument<IUser>) => {
+  let cnt = 0;
+  if (checkSnsIdActive(userRecord, "google")) cnt += 1;
+  if (checkSnsIdActive(userRecord, "naver")) cnt += 1;
+  if (checkSnsIdActive(userRecord, "kakao")) cnt += 1;
+  return cnt;
+};
 
 const createUser = async (field: object) => {
   const userRecord = await UserModel.create(field);
@@ -99,6 +111,40 @@ export const findCategory = (
   return { idx: -1, category: undefined };
 };
 
+export const findPaymentMethod = (
+  userRecord: IUser,
+  _paymentMethodId: string | Types.ObjectId
+) => {
+  const paymentMethodId = new Types.ObjectId(_paymentMethodId);
+  for (let i = 0; i < userRecord.paymentMethods.length; i++) {
+    if (userRecord.paymentMethods[i]._id.equals(paymentMethodId)) {
+      return { idx: i, paymentMethod: userRecord.paymentMethods[i] };
+    }
+  }
+
+  return { idx: -1, paymentMethod: undefined };
+};
+
+export const findAsset = (userRecord: IUser, _id: Types.ObjectId) => {
+  for (let i = 0; i < userRecord.assets.length; i++) {
+    if (userRecord.assets[i]._id.equals(_id)) {
+      return { idx: i, asset: userRecord.assets[i] };
+    }
+  }
+
+  return { idx: -1, asset: undefined };
+};
+
+export const findCard = (userRecord: IUser, _id: Types.ObjectId) => {
+  for (let i = 0; i < userRecord.cards.length; i++) {
+    if (userRecord.cards[i]._id.equals(_id)) {
+      return { idx: i, card: userRecord.cards[i] };
+    }
+  }
+
+  return { idx: -1, card: undefined };
+};
+
 export const updateEmailAndEnableLocalLogin = async (
   userRecord: HydratedDocument<IUser>,
   email: string
@@ -140,21 +186,52 @@ export const updateAgreement = async (
   await userRecord.save();
 };
 
+export const updateAssetByTransaction = async (
+  userRecord: HydratedDocument<IUser>,
+  assetId: Types.ObjectId,
+  transactionRecord: HydratedDocument<ITransaction>
+) => {
+  const { asset } = findAsset(userRecord, assetId);
+  if (asset) {
+    if (transactionRecord.isExpense) asset.amount -= transactionRecord.amount;
+    else asset.amount += transactionRecord.amount;
+    await userRecord.save();
+  }
+};
+
+export const execPaymentMethod = async (
+  userRecord: HydratedDocument<IUser>,
+  transactionRecord: HydratedDocument<ITransaction>
+) => {
+  if (!transactionRecord.linkedPaymentMethodId) return;
+
+  let assetId: Types.ObjectId | null = null;
+
+  if (transactionRecord.linkedPaymentMethodType === "asset") {
+    assetId = transactionRecord.linkedPaymentMethodId;
+  } else if (transactionRecord.linkedPaymentMethodType === "card") {
+    const { card } = findCard(
+      userRecord,
+      transactionRecord.linkedPaymentMethodId
+    );
+    if (card && card.linkedAssetId) {
+      assetId = card.linkedAssetId;
+    }
+  }
+
+  if (assetId) {
+    await updateAssetByTransaction(userRecord, assetId, transactionRecord);
+  }
+};
+
 export const disableLocalLogin = async (
   userRecord: HydratedDocument<IUser>
 ) => {
-  if (
-    !userRecord.snsId?.google &&
-    !userRecord.snsId?.naver &&
-    !userRecord.snsId?.kakao
-  ) {
-    throw new CustomError(409, AT_LEAST_ONE_SNSID_IS_REQUIRED);
-  }
   userRecord.isLocal = false;
   await userRecord.save();
 };
 
-export const checkSnsIdExistence = (
+export const checkSnsIdActive = (
   userRecord: HydratedDocument<IUser>,
   sns: snsType
 ) => userRecord.snsId?.[sns];
@@ -173,19 +250,7 @@ export const removeSnsId = async (
   userRecord: HydratedDocument<IUser>,
   sns: snsType
 ) => {
-  if (!userRecord.snsId || !userRecord.snsId[sns]) {
-    throw new CustomError(404, NOT_FOUND("snsId"));
-  }
-
   userRecord.snsId = { ...userRecord.snsId, [sns]: undefined };
-  if (
-    !userRecord.isLocal &&
-    !userRecord.snsId?.google &&
-    !userRecord.snsId?.naver &&
-    !userRecord.snsId?.kakao
-  ) {
-    throw new CustomError(409, AT_LEAST_ONE_SNSID_IS_REQUIRED);
-  }
   await userRecord.save();
 };
 
