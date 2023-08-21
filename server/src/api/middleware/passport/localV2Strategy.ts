@@ -59,7 +59,7 @@ const localV2 = () => {
         }
         /* isNotLoggedIn - login or register */
         if (!req.isAuthenticated()) {
-          const user = await UserService.findByEmail(req.body.email);
+          const { user } = await UserService.findByEmail(req.body.email);
 
           /* login */
           if (user) {
@@ -98,7 +98,9 @@ const localV2 = () => {
         const user = req.user!;
 
         if (user.email !== req.body.email) {
-          const exUser = await UserService.findByEmail(req.body.email);
+          const { user: exUser } = await UserService.findByEmail(
+            req.body.email
+          );
           if (exUser) {
             throw new Error(EMAIL_IN_USE);
           }
