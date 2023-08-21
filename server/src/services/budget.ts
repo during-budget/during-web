@@ -7,13 +7,12 @@ import {
 } from "src/api/message";
 import { CustomError } from "src/api/middleware/error";
 import { Budget as BudgetModel, IBudget, ICategory } from "src/models/Budget";
-import * as TransactionService from "./transactions";
+import * as TransactionService from "./transaction";
 import { basicTimeZone } from "@models/_basicSettings";
 import moment from "moment-timezone";
 import { ITransaction } from "@models/Transaction";
 import * as UserService from "./user";
 import { IUser } from "@models/User";
-import { Transaction as TransactionModel } from "src/models/Transaction";
 
 export const calculate = async (
   budgetRecord: HydratedDocument<IBudget>,
@@ -217,18 +216,21 @@ export const createWithBasicBudget = async (
 };
 
 export const findById = async (budgetId: Types.ObjectId | string) => {
-  return await BudgetModel.findById(budgetId);
+  const budgetRecord = await BudgetModel.findById(budgetId);
+
+  return { budget: budgetRecord };
 };
 
 export const findByIdWithTransactions = async (
   budgetId: Types.ObjectId | string
 ) => {
-  const budget = await BudgetModel.findById(budgetId);
-  const { transactions } = await TransactionService.findByBudgetId(budgetId);
-  if (budget) {
-    await calculate(budget, transactions);
+  const budgetRecord = await BudgetModel.findById(budgetId);
+  const { transactions: transactionRecordList } =
+    await TransactionService.findByBudgetId(budgetId);
+  if (budgetRecord) {
+    await calculate(budgetRecord, transactionRecordList);
   }
-  return { budget, transactions };
+  return { budget: budgetRecord, transactions: transactionRecordList };
 };
 
 export const findByYearAndMonth = async (
@@ -236,48 +238,59 @@ export const findByYearAndMonth = async (
   year: number,
   month: number
 ) => {
-  const budget = await BudgetModel.findOne({
+  const budgetRecord = await BudgetModel.findOne({
     userId,
     year,
     month,
   });
-  if (budget) {
-    await calculate(budget);
+  if (budgetRecord) {
+    await calculate(budgetRecord);
   }
-  return { budget };
+  return { budget: budgetRecord };
 };
 
 export const findByYear = async (userId: Types.ObjectId, year: number) => {
-  const budgets = await BudgetModel.find({
+  const budgetRecordList = await BudgetModel.find({
     userId,
     year,
   });
-  Promise.all(budgets.map((budget) => calculate(budget)));
-  return { budgets };
+  await Promise.all(
+    budgetRecordList.map((budgetRecord) => calculate(budgetRecord))
+  );
+  return { budgets: budgetRecordList };
 };
 
 export const findByUserId = async (userId: Types.ObjectId | string) => {
-  const budgets = await BudgetModel.find({
+  const budgetRecordList = await BudgetModel.find({
     userId,
   });
-  Promise.all(budgets.map((budget) => calculate(budget)));
-  return { budgets };
+  await Promise.all(
+    budgetRecordList.map((budgetRecord) => calculate(budgetRecord))
+  );
+  return { budgets: budgetRecordList };
 };
 
 export const findAllBudgets = async () => {
-  const budgets = await BudgetModel.find();
-  await Promise.all(budgets.map((budget) => calculate(budget)));
-  return { budgets };
+  const budgetRecordList = await BudgetModel.find();
+  await Promise.all(
+    budgetRecordList.map((budgetRecord) => calculate(budgetRecord))
+  );
+  return { budgets: budgetRecordList };
 };
+
+export const checkBudgetUserIdMatch = (
+  budgetRecord: HydratedDocument<IBudget>,
+  userId: Types.ObjectId
+) => budgetRecord.userId.equals(userId);
 
 export const updateCategories = async (
   userRecord: IUser,
-  budget: HydratedDocument<IBudget>,
+  budgetRecord: HydratedDocument<IBudget>,
   isExpense: boolean,
   categories: any[]
 ) => {
   const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
-    budget.categories.map((category) => [category.categoryId, category])
+    budgetRecord.categories.map((category) => [category.categoryId, category])
   );
 
   const _categories: Types.DocumentArray<ICategory> = new Types.DocumentArray(
@@ -349,45 +362,46 @@ export const updateCategories = async (
   }
 
   const { category: defaultExpenseCategory } =
-    findDefaultExpenseCategory(budget);
-  const { category: defaultIncomeCategory } = findDefaultIncomeCategory(budget);
+    findDefaultExpenseCategory(budgetRecord);
+  const { category: defaultIncomeCategory } =
+    findDefaultIncomeCategory(budgetRecord);
   _categories.push(defaultExpenseCategory);
   _categories.push(defaultIncomeCategory);
-  budget.categories = _categories;
+  budgetRecord.categories = _categories;
 
   for (const category of excluded) {
     if (isExpense) {
       await TransactionService.replaceTransactionsCategory(
-        budget._id,
+        budgetRecord._id,
         category,
         defaultExpenseCategory
       );
     } else {
       await TransactionService.replaceTransactionsCategory(
-        budget._id,
+        budgetRecord._id,
         category,
         defaultIncomeCategory
       );
     }
   }
 
-  await budget.save();
-  await calculate(budget);
+  await budgetRecord.save();
+  await calculate(budgetRecord);
 };
 
 export const updateCategoryAmountPlanned = async (
-  budget: HydratedDocument<IBudget>,
+  budgetRecord: HydratedDocument<IBudget>,
   categoryId: Types.ObjectId | string,
   amountPlanned: number
 ) => {
-  const { idx, category } = findCategory(budget, categoryId);
+  const { idx, category } = findCategory(budgetRecord, categoryId);
   if (!category) throw new CustomError(404, NOT_FOUND("category"));
   if (category.isDefault) throw new CustomError(409, CATEGORY_CANOT_BE_UPDATED);
 
-  budget.categories[idx].amountPlanned = amountPlanned;
-  budget.categories[idx].autoPlanned = false;
-  await budget.save();
-  await calculate(budget);
+  budgetRecord.categories[idx].amountPlanned = amountPlanned;
+  budgetRecord.categories[idx].autoPlanned = false;
+  await budgetRecord.save();
+  await calculate(budgetRecord);
 };
 
 export const updateFields = async (
@@ -425,6 +439,6 @@ export const removeByUserId = async (userId: Types.ObjectId | string) => {
 };
 
 export const remove = async (budgetRecord: HydratedDocument<IBudget>) => {
-  await TransactionModel.deleteMany({ budgetId: budgetRecord._id });
-  await budgetRecord.remove();
+  await TransactionService.removeByBudgetId(budgetRecord._id),
+    await budgetRecord.remove();
 };

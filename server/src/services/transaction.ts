@@ -27,3 +27,7 @@ export const replaceTransactionsCategory = async (
 export const removeByUserId = async (userId: Types.ObjectId | string) => {
   return await TransactionModel.deleteMany({ userId });
 };
+
+export const removeByBudgetId = async (budgetId: Types.ObjectId) => {
+  return await TransactionModel.deleteMany({ budgetId });
+};

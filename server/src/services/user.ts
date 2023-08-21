@@ -1,6 +1,6 @@
 import { IUser, User as UserModel } from "src/models/User";
 import { generateRandomString } from "src/utils/randomString";
-import { Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 import { AT_LEAST_ONE_SNSID_IS_REQUIRED, NOT_FOUND } from "src/api/message";
 import { CustomError } from "src/api/middleware/error";
 import _ from "lodash";
@@ -71,6 +71,9 @@ export const findAdmin = async (id: string) => {
   return { user: userRecord };
 };
 
+export const checkAdmin = async (userRecord: IUser) =>
+  userRecord.auth === "admin";
+
 export const findBySnsId = async (sns: snsType, id: string) => {
   const userRecord = await UserModel.findOne({ ["snsId." + sns]: id });
 
@@ -97,7 +100,7 @@ export const findCategory = (
 };
 
 export const updateEmailAndEnableLocalLogin = async (
-  userRecord: Express.User,
+  userRecord: HydratedDocument<IUser>,
   email: string
 ) => {
   userRecord.email = email;
@@ -107,7 +110,7 @@ export const updateEmailAndEnableLocalLogin = async (
 };
 
 export const updateFields = async (
-  userRecord: Express.User,
+  userRecord: HydratedDocument<IUser>,
   user: {
     userName: string;
     birthdate: Date;
@@ -123,7 +126,7 @@ export const updateFields = async (
 };
 
 export const updateAgreement = async (
-  userRecord: Express.User,
+  userRecord: HydratedDocument<IUser>,
   agreement: {
     termsOfUse?: string;
     privacyPolicy?: string;
@@ -137,7 +140,9 @@ export const updateAgreement = async (
   await userRecord.save();
 };
 
-export const disableLocalLogin = async (userRecord: Express.User) => {
+export const disableLocalLogin = async (
+  userRecord: HydratedDocument<IUser>
+) => {
   if (
     !userRecord.snsId?.google &&
     !userRecord.snsId?.naver &&
@@ -149,11 +154,13 @@ export const disableLocalLogin = async (userRecord: Express.User) => {
   await userRecord.save();
 };
 
-export const checkSnsIdExistence = (userRecord: Express.User, sns: snsType) =>
-  userRecord.snsId?.[sns];
+export const checkSnsIdExistence = (
+  userRecord: HydratedDocument<IUser>,
+  sns: snsType
+) => userRecord.snsId?.[sns];
 
 export const updateSnsId = async (
-  userRecord: Express.User,
+  userRecord: HydratedDocument<IUser>,
   sns: snsType,
   id: string
 ) => {
@@ -162,7 +169,10 @@ export const updateSnsId = async (
   await userRecord.save();
 };
 
-export const removeSnsId = async (userRecord: Express.User, sns: snsType) => {
+export const removeSnsId = async (
+  userRecord: HydratedDocument<IUser>,
+  sns: snsType
+) => {
   if (!userRecord.snsId || !userRecord.snsId[sns]) {
     throw new CustomError(404, NOT_FOUND("snsId"));
   }
