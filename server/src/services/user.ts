@@ -131,7 +131,7 @@ export const findAll = async () => {
 };
 
 export const findById = async (_id: Types.ObjectId | string) => {
-  const userRecord = UserModel.findById(_id);
+  const userRecord = await UserModel.findById(_id);
 
   return { user: userRecord };
 };
