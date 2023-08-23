@@ -9,9 +9,92 @@ import * as TransactionService from "./transaction";
 import { generateRandomString } from "src/utils/randomString";
 import { findDocumentById } from "src/utils/document";
 
+/* static */
+
+/* create user */
+
+export const createUser = async (field: object) => {
+  const userRecord = await UserModel.create(field);
+  const { budget: budgetRecord } = await BudgetService.createBasicBudget(
+    userRecord
+  );
+  userRecord.basicBudgetId = budgetRecord._id;
+  await userRecord.save();
+  return { user: userRecord };
+};
+
+export const createGuest = async () => {
+  const { user } = await createUser({
+    userName: "guest-" + generateRandomString(5),
+    isGuest: true,
+  });
+  return { user };
+};
+
+export const createLocalUser = async (email: string) => {
+  const { user } = await createUser({
+    email,
+    isLocal: true,
+  });
+  return { user };
+};
+
+export const createSnsUser = async (
+  sns: snsType,
+  profile: { id: string; email?: string; displayName?: string }
+) => {
+  const { user } = await createUser({
+    userName: profile.displayName,
+    email: profile.email,
+    snsId: { [sns]: profile.id },
+  });
+  return { user };
+};
+
+/* find users */
+
+export const findAdmin = async (id: string) => {
+  const userRecord = await UserModel.findOne({
+    ["snsId.google"]: id,
+    auth: "admin",
+  });
+
+  return { user: userRecord };
+};
+
+export const findAll = async () => {
+  const userRecordList = await UserModel.find({})
+    .lean()
+    .select(["email", "userName", "snsId", "createdAt", "updatedAt"]);
+
+  return { users: userRecordList };
+};
+
+export const findById = async (_id: Types.ObjectId | string) => {
+  const userRecord = await UserModel.findById(_id);
+
+  return { user: userRecord };
+};
+
+export const findBySnsId = async (sns: snsType, id: string) => {
+  const userRecord = await UserModel.findOne({ ["snsId." + sns]: id });
+
+  return { user: userRecord };
+};
+
+export const findByEmail = async (email: string) => {
+  const userRecord = await UserModel.findOne({ email });
+
+  return { user: userRecord };
+};
+
+/* methods */
+
 /* auth: localLogin, snsId */
 
 type snsType = "google" | "naver" | "kakao";
+
+export const isAdmin = async (userRecord: IUser) => userRecord.auth === "admin";
 
 export const isLocalLoginActive = (userRecord: HydratedDocument<IUser>) =>
   userRecord.isLocal;
@@ -69,88 +152,7 @@ export const removeSnsId = async (
 
 export const isGuest = (userRecord: IUser) => userRecord.isGuest;
 
-/* auth: admin */
-
-export const findAdmin = async (id: string) => {
-  const userRecord = await UserModel.findOne({
-    ["snsId.google"]: id,
-    auth: "admin",
-  });
-
-  return { user: userRecord };
-};
-
-export const isAdmin = async (userRecord: IUser) => userRecord.auth === "admin";
-
-/* create user */
-
-export const createUser = async (field: object) => {
-  const userRecord = await UserModel.create(field);
-  const { budget: budgetRecord } = await BudgetService.createBasicBudget(
-    userRecord
-  );
-  userRecord.basicBudgetId = budgetRecord._id;
-  await userRecord.save();
-  return { user: userRecord };
-};
-
-export const createGuest = async () => {
-  const { user } = await createUser({
-    userName: "guest-" + generateRandomString(5),
-    isGuest: true,
-  });
-  return { user };
-};
-
-export const createLocalUser = async (email: string) => {
-  const { user } = await createUser({
-    email,
-    isLocal: true,
-  });
-  return { user };
-};
-
-export const createSnsUser = async (
-  sns: snsType,
-  profile: { id: string; email?: string; displayName?: string }
-) => {
-  const { user } = await createUser({
-    userName: profile.displayName,
-    email: profile.email,
-    snsId: { [sns]: profile.id },
-  });
-  return { user };
-};
-
-/* find users */
-
-export const findAll = async () => {
-  const userRecordList = await UserModel.find({})
-    .lean()
-    .select(["email", "userName", "snsId", "createdAt", "updatedAt"]);
-
-  return { users: userRecordList };
-};
-
-export const findById = async (_id: Types.ObjectId | string) => {
-  const userRecord = await UserModel.findById(_id);
-
-  return { user: userRecord };
-};
-
-export const findBySnsId = async (sns: snsType, id: string) => {
-  const userRecord = await UserModel.findOne({ ["snsId." + sns]: id });
-
-  return { user: userRecord };
-};
-
-export const findByEmail = async (email: string) => {
-  const userRecord = await UserModel.findOne({ email });
-
-  return { user: userRecord };
-};
-
-/* find category/paymentMethod/asset/card of users */
+/* categories */
 
 export const findDefaultExpenseCategory = (userRecord: IUser) => {
   return {
@@ -408,6 +410,8 @@ export const getCategories = (userRecord: IUser) => {
   return { categories };
 };
 
+/* paymentMethods */
+
 export const findPaymentMethod = (
   userRecord: IUser,
   paymentMethodId: string | Types.ObjectId
@@ -419,20 +423,14 @@ export const findPaymentMethod = (
   return { idx, paymentMethod: value };
 };
 
+/* assets */
+
 export const findAsset = (userRecord: IUser, _id: Types.ObjectId | string) => {
   const { idx, value } = findDocumentById({
     arr: userRecord.assets,
     id: _id,
   });
   return { idx, asset: value };
-};
-
-export const findCard = (userRecord: IUser, _id: Types.ObjectId) => {
-  const { idx, value } = findDocumentById({
-    arr: userRecord.cards,
-    id: _id,
-  });
-  return { idx, card: value };
 };
 
 export const createAsset = async (
@@ -675,6 +673,16 @@ export const removeAssetByIdx = async (
 
   await userRecord.save();
   return { isUpdatedCards };
+};
+
+/* cards */
+
+export const findCard = (userRecord: IUser, _id: Types.ObjectId) => {
+  const { idx, value } = findDocumentById({
+    arr: userRecord.cards,
+    id: _id,
+  });
+  return { idx, card: value };
 };
 
 /* update */

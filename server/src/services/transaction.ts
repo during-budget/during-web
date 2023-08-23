@@ -7,32 +7,7 @@ import {
   Transaction as TransactionModel,
 } from "src/models/Transaction";
 
-export const linkTransaction = async (
-  transactionRecord: HydratedDocument<ITransaction>,
-  linkId: Types.ObjectId
-) => {
-  transactionRecord.linkId = linkId;
-  await transactionRecord.save();
-};
-
-export const isCurrentAndLinked = (
-  transactionRecord: HydratedDocument<ITransaction>
-) => transactionRecord.isCurrent && transactionRecord.linkId;
-
-export const hasToUpdateAsset = (
-  transactionRecord: HydratedDocument<ITransaction>
-) => isCurrentAndLinked(transactionRecord) && transactionRecord.updateAsset;
-
-export const findLinkedTransaction = async (
-  transactionRecord: HydratedDocument<ITransaction>
-) => {
-  const transactionRecordLinked = transactionRecord.linkId
-    ? await TransactionModel.findById(transactionRecord.linkId)
-    : null;
-
-  return { transaction: transactionRecordLinked };
-};
-
+/* static */
 export const create = async (
   userRecord: HydratedDocument<IUser>,
   budgetRecord: HydratedDocument<IBudget>,
@@ -103,15 +78,6 @@ export const replaceTransactionsCategory = async (
   return { transactions: transactionRecordList };
 };
 
-export const updateOverAmount = async (
-  transactionModelCurrent: HydratedDocument<ITransaction>,
-  transactionModelScheduled: HydratedDocument<ITransaction>
-) => {
-  transactionModelCurrent.overAmount =
-    transactionModelCurrent.amount - transactionModelScheduled.amount;
-  await transactionModelCurrent.save();
-};
-
 export const findByPaymentMethod = async (
   userRecord: HydratedDocument<IUser>,
   paymentMethodId: Types.ObjectId
@@ -122,6 +88,51 @@ export const findByPaymentMethod = async (
   });
 
   return { transactions: transactionRecordList };
+};
+
+export const removeByUserId = async (userId: Types.ObjectId | string) => {
+  return await TransactionModel.deleteMany({ userId });
+};
+
+export const removeByBudgetId = async (budgetId: Types.ObjectId) => {
+  return await TransactionModel.deleteMany({ budgetId });
+};
+
+/* methods */
+
+export const linkTransaction = async (
+  transactionRecord: HydratedDocument<ITransaction>,
+  linkId: Types.ObjectId
+) => {
+  transactionRecord.linkId = linkId;
+  await transactionRecord.save();
+};
+
+export const isCurrentAndLinked = (
+  transactionRecord: HydratedDocument<ITransaction>
+) => transactionRecord.isCurrent && transactionRecord.linkId;
+
+export const hasToUpdateAsset = (
+  transactionRecord: HydratedDocument<ITransaction>
+) => isCurrentAndLinked(transactionRecord) && transactionRecord.updateAsset;
+
+export const findLinkedTransaction = async (
+  transactionRecord: HydratedDocument<ITransaction>
+) => {
+  const transactionRecordLinked = transactionRecord.linkId
+    ? await TransactionModel.findById(transactionRecord.linkId)
+    : null;
+
+  return { transaction: transactionRecordLinked };
+};
+
+export const updateOverAmount = async (
+  transactionModelCurrent: HydratedDocument<ITransaction>,
+  transactionModelScheduled: HydratedDocument<ITransaction>
+) => {
+  transactionModelCurrent.overAmount =
+    transactionModelCurrent.amount - transactionModelScheduled.amount;
+  await transactionModelCurrent.save();
 };
 
 export const updatePaymentMethod = async (
@@ -140,12 +151,4 @@ export const updatePaymentMethod = async (
   transactionRecord.linkedPaymentMethodTitle = paymentMethod.title;
   transactionRecord.linkedPaymentMethodDetail = paymentMethod.detail;
   await transactionRecord.save();
-};
-
-export const removeByUserId = async (userId: Types.ObjectId | string) => {
-  return await TransactionModel.deleteMany({ userId });
-};
-
-export const removeByBudgetId = async (budgetId: Types.ObjectId) => {
-  return await TransactionModel.deleteMany({ budgetId });
 };
