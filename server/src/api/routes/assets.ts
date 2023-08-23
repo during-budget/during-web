@@ -3,12 +3,13 @@ const router = express.Router();
 import { isLoggedIn } from "src/api/middleware/auth";
 
 import * as assets from "src/api/controllers/assets";
+import { wrapAsync } from "../middleware/error";
 
-router.put("/", isLoggedIn, assets.updateAll);
-router.get("/", isLoggedIn, assets.find);
+router.put("/", isLoggedIn, wrapAsync(assets.updateAll));
+router.get("/", isLoggedIn, wrapAsync(assets.find));
 
-router.post("/", isLoggedIn, assets.create);
-router.put("/:_id", isLoggedIn, assets.update);
-router.delete("/:_id", isLoggedIn, assets.remove);
+router.post("/", isLoggedIn, wrapAsync(assets.create));
+router.put("/:_id", isLoggedIn, wrapAsync(assets.update));
+router.delete("/:_id", isLoggedIn, wrapAsync(assets.remove));
 
 export default router;

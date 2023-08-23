@@ -3,6 +3,7 @@ import { IPaymentMethod, IUser } from "@models/User";
 import { HydratedDocument, Types } from "mongoose";
 import {
   ITransaction,
+  Transaction,
   Transaction as TransactionModel,
 } from "src/models/Transaction";
 
@@ -111,9 +112,27 @@ export const updateOverAmount = async (
   await transactionModelCurrent.save();
 };
 
+export const findByPaymentMethod = async (
+  userRecord: HydratedDocument<IUser>,
+  paymentMethodId: Types.ObjectId
+) => {
+  const transactionRecordList = await Transaction.find({
+    userId: userRecord._id,
+    linkedPaymentMethodId: paymentMethodId,
+  });
+
+  return { transactions: transactionRecordList };
+};
+
 export const updatePaymentMethod = async (
   transactionRecord: HydratedDocument<ITransaction>,
-  paymentMethod: IPaymentMethod
+  paymentMethod: {
+    _id: Types.ObjectId;
+    type: "asset" | "card";
+    icon: string;
+    title: string;
+    detail: string;
+  }
 ) => {
   transactionRecord.linkedPaymentMethodId = paymentMethod._id;
   transactionRecord.linkedPaymentMethodType = paymentMethod.type;
