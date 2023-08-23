@@ -65,6 +65,27 @@ export const findByBudgetId = async (budgetId: Types.ObjectId | String) => {
   return { transactions: transactionRecordList };
 };
 
+export const updateCategory = async (
+  userRecord: IUser,
+  categoryId: Types.ObjectId,
+  newCategory: { categoryId?: Types.ObjectId; _id?: Types.ObjectId }
+) => {
+  newCategory.categoryId = newCategory.categoryId ?? newCategory._id;
+
+  const transactionRecordList = await TransactionModel.find({
+    userId: userRecord._id,
+    "category.categoryId": categoryId,
+  });
+
+  await Promise.all(
+    transactionRecordList.map((transactionRecord) => {
+      Object.assign(transactionRecord.category, newCategory);
+      transactionRecord.markModified("category");
+      transactionRecord.save();
+    })
+  );
+};
+
 export const replaceTransactionsCategory = async (
   budgetId: Types.ObjectId | String,
   exCategory: ICategory,

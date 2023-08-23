@@ -69,8 +69,6 @@ interface IUserProps {
   paymentMethods: Types.DocumentArray<IPaymentMethod>;
   /* methods */
   saveReqUser: () => Promise<void>;
-  findDefaultExpenseCategory: () => HydratedDocument<ICategory>;
-  findDefaultIncomeCategory: () => HydratedDocument<ICategory>;
   execPM: (transaction: {
     linkedPaymentMethodId: Types.ObjectId;
     linkedPaymentMethodType: "asset" | "card";
@@ -153,14 +151,6 @@ userSchema.methods.saveReqUser = async function () {
   } catch (err: any) {
     return err;
   }
-};
-
-userSchema.methods.findDefaultExpenseCategory = function () {
-  return this.categories[this.categories.length - 2].toObject();
-};
-
-userSchema.methods.findDefaultIncomeCategory = function () {
-  return this.categories[this.categories.length - 1].toObject();
 };
 
 userSchema.methods.execPM = function (transaction: {

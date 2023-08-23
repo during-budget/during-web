@@ -262,6 +262,49 @@ export const findByUserId = async (userId: Types.ObjectId | string) => {
   return { budgets: budgetRecordList };
 };
 
+export const removeCategory = async (
+  userRecord: IUser,
+  categoryId: Types.ObjectId
+) => {
+  const budgetRecordList = await BudgetModel.find({
+    userId: userRecord._id,
+    "categories.categoryId": categoryId,
+  });
+
+  await Promise.all(
+    budgetRecordList.map((budgetRecord) => {
+      const { idx } = findCategory(budgetRecord, categoryId);
+      if (idx !== -1) {
+        budgetRecord.categories.splice(idx, 1);
+        budgetRecord.markModified("categories");
+        budgetRecord.save();
+      }
+    })
+  );
+};
+
+export const updateCategory = async (
+  userRecord: IUser,
+  categoryId: Types.ObjectId,
+  newCategory: { _id?: Types.ObjectId; categoryId?: Types.ObjectId }
+) => {
+  newCategory.categoryId = newCategory.categoryId ?? newCategory._id;
+
+  const budgetRecordList = await BudgetModel.find({
+    userId: userRecord._id,
+    "categories.categoryId": categoryId,
+  });
+
+  await Promise.all(
+    budgetRecordList.map((budgetRecord) => {
+      const { idx } = findCategory(budgetRecord, categoryId);
+      Object.assign(budgetRecord.categories[idx], newCategory);
+      budgetRecord.markModified("categories");
+      budgetRecord.save();
+    })
+  );
+};
+
 export const findAllBudgets = async () => {
   const budgetRecordList = await BudgetModel.find();
   await Promise.all(
@@ -293,7 +336,6 @@ export const updateCategories = async (
   const excluded: Types.DocumentArray<ICategory> = new Types.DocumentArray([]);
 
   for (let _category of categories) {
-    if (!("amountPlanned" in _category)) continue;
     if (!("categoryId" in _category)) continue;
 
     /* include category */
