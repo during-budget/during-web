@@ -3,19 +3,20 @@ const router = express.Router();
 import { isLoggedIn } from "src/api/middleware/auth";
 
 import * as categories from "src/api/controllers/categories";
+import { wrapAsync } from "../middleware/error";
 
-router.put("/", isLoggedIn, categories.updateV2);
+router.put("/", isLoggedIn, wrapAsync(categories.updateAll));
 
-router.patch("/", isLoggedIn, categories.updateV3);
+router.patch("/", isLoggedIn, wrapAsync(categories.updatePartially));
 
-router.get("/", isLoggedIn, categories.find);
+router.get("/", isLoggedIn, wrapAsync(categories.find));
 
-router.post("/", isLoggedIn, categories.create);
+router.post("/", isLoggedIn, wrapAsync(categories.create));
 
-router.get("/:_id", isLoggedIn, categories.findOne);
+router.get("/:_id", isLoggedIn, wrapAsync(categories.findOne));
 
-router.put("/:_id", isLoggedIn, categories.update);
+router.put("/:_id", isLoggedIn, wrapAsync(categories.update));
 
-router.delete("/:_id", isLoggedIn, categories.remove);
+router.delete("/:_id", isLoggedIn, wrapAsync(categories.remove));
 
 export default router;
