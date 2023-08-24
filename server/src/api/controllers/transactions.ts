@@ -6,6 +6,7 @@ import moment from "moment-timezone";
 
 import { logger } from "src/api/middleware/loggers";
 import { User } from "src/models/User";
+
 import {
   CATEGORY_CANOT_BE_UPDATED,
   FIELD_INVALID,
@@ -15,9 +16,11 @@ import {
 } from "../message";
 import { basicTimeZone } from "src/models/_basicSettings";
 
-import * as UserService from "src/services/user";
-import * as BudgetService from "src/services/budget";
-import * as TransactionService from "src/services/transaction";
+import { PaymentMethodService } from "src/services/users";
+import * as BudgetService from "src/services/budgets";
+import * as TransactionService from "src/services/transactions";
+
+const { CategoryService: BudgetCategoryService } = BudgetService;
 
 // transaction controller
 
@@ -46,7 +49,10 @@ export const create = async (req: Request, res: Response) => {
   const { budget } = await BudgetService.findById(req.body.budgetId);
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
-  const { category } = BudgetService.findCategory(budget, req.body.categoryId);
+  const { category } = BudgetCategoryService.findById(
+    budget,
+    req.body.categoryId
+  );
   if (!category)
     return res.status(404).send({ message: NOT_FOUND("category") });
 
@@ -89,7 +95,7 @@ export const create = async (req: Request, res: Response) => {
   }
 
   if (req.body.linkedPaymentMethodId) {
-    const { paymentMethod: paymentMethod } = UserService.findPaymentMethod(
+    const { paymentMethod: paymentMethod } = PaymentMethodService.findById(
       req.user!,
       req.body.linkedPaymentMethodId
     );
@@ -100,7 +106,7 @@ export const create = async (req: Request, res: Response) => {
 
   // if pm is used and asset needs to be updated
   if (TransactionService.hasToUpdateAsset(transaction)) {
-    await UserService.execPaymentMethod(user, transaction);
+    await PaymentMethodService.execPaymentMethod(user, transaction);
   }
 
   await BudgetService.calculate(budget);

@@ -1,4 +1,4 @@
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
 
 describe("test user service - local & snsId", () => {
   it("isLocalLoginActive", () => {

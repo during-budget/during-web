@@ -5,7 +5,7 @@ import { kakao } from "./kakaoStrategy";
 import { localV2 } from "./localV2Strategy";
 import { guestV2 } from "./guestV2Strategy";
 import { configType } from "src/config/type";
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
 
 export default (config: configType) => {
   passport.serializeUser((user, done) => {

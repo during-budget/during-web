@@ -19,7 +19,8 @@ import {
   NOT_FOUND,
 } from "../message";
 
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
+const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
@@ -246,26 +247,26 @@ export const disconnect = async (req: Request, res: Response) => {
     const user = req.user!;
 
     if (provider === "google" || provider === "naver" || provider === "kakao") {
-      if (!UserService.checkSnsIdActive(user, provider)) {
+      if (!AuthService.checkSnsIdActive(user, provider)) {
         return res.status(404).send({ message: NOT_FOUND("snsId") });
       }
       if (
-        !UserService.isLocalLoginActive(user) &&
-        UserService.countActiveSnsId(user) === 1
+        !AuthService.isLocalLoginActive(user) &&
+        AuthService.countActiveSnsId(user) === 1
       ) {
         return res
           .status(409)
           .send({ message: 409, AT_LEAST_ONE_SNSID_IS_REQUIRED });
       }
-      await UserService.removeSnsId(user, provider);
+      await AuthService.removeSnsId(user, provider);
     } else if (provider === "local") {
-      if (!UserService.hasActiveSnsId(user)) {
+      if (!AuthService.hasActiveSnsId(user)) {
         return res
           .status(409)
           .send({ message: AT_LEAST_ONE_SNSID_IS_REQUIRED });
       }
 
-      await UserService.disableLocalLogin(user);
+      await AuthService.disableLocalLogin(user);
     } else {
       return res.status(400).send({ message: FIELD_INVALID(provider) });
     }
@@ -290,7 +291,7 @@ export const logout = async (req: Request, res: Response) => {
       if (err) throw err;
       req.session.destroy(() => {});
       res.clearCookie("connect.sid");
-      if (UserService.isGuest(user)) {
+      if (AuthService.isGuest(user)) {
         await UserService.remove(user);
       }
       return res.status(200).send({});

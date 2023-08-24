@@ -1,7 +1,7 @@
 import { Request } from "express";
 import passport from "passport";
 import { Strategy as CustomStrategy } from "passport-custom";
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
 
 const guestV2 = () => {
   passport.use(

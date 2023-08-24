@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import * as BudgetService from "src/services/budget";
-import * as UserService from "src/services/user";
+
+import * as BudgetService from "src/services/budgets";
+const BudgetCategoryService = BudgetService.CategoryService;
+
+import { AuthService } from "src/services/users";
 
 import {
   CATEGORY_CANOT_BE_UPDATED,
@@ -79,12 +82,13 @@ export const updateCategoriesV3 = async (req: Request, res: Response) => {
     return res.status(403).send({ message: NOT_PERMITTED });
   }
 
-  const { updated, excluded, included } = await BudgetService.updateCategories(
+  const { updated, excluded, included } = await BudgetCategoryService.updateAll(
     user,
     budget,
     isExpense,
     req.body.categories
   );
+  await BudgetService.calculate(budget);
 
   return res.status(200).send({
     categories: budget.categories,
@@ -116,22 +120,23 @@ export const updateCategoryAmountPlanned = async (
     return res.status(403).send({ message: NOT_PERMITTED });
   }
 
-  const { category } = BudgetService.findCategory(
+  const { category } = BudgetCategoryService.findById(
     budget,
     req.params.categoryId
   );
   if (!category) {
     return res.status(404).send({ message: NOT_FOUND("category") });
   }
-  if (BudgetService.isDefaultCategory(category)) {
+  if (BudgetCategoryService.isDefaultCategory(category)) {
     return res.status(409).send({ message: CATEGORY_CANOT_BE_UPDATED });
   }
 
-  await BudgetService.updateCategoryAmountPlanned(
+  await BudgetCategoryService.updateAmountPlanned(
     budget,
     category,
     req.body.amountPlanned
   );
+  await BudgetService.calculate(budget);
 
   return res.status(200).send({ budget });
 };
@@ -170,7 +175,7 @@ export const find = async (req: Request, res: Response) => {
 
     if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
     if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-      if (!UserService.isAdmin(user)) {
+      if (!AuthService.isAdmin(user)) {
         return res.status(403).send({ message: NOT_PERMITTED });
       }
     }
@@ -192,11 +197,11 @@ export const find = async (req: Request, res: Response) => {
     return res.status(200).send({ budgets });
   }
   if ("userId" in req.query) {
-    if (!UserService.isAdmin(user)) {
+    if (!AuthService.isAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
     if (req.query.userId === "*") {
-      const { budgets } = await BudgetService.findAllBudgets();
+      const { budgets } = await BudgetService.findAll();
       return res.status(200).send({ budgets });
     }
     const { budgets } = await BudgetService.findByUserId(
@@ -220,7 +225,7 @@ export const remove = async (req: Request, res: Response) => {
   if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
 
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-    if (!UserService.isAdmin(user)) {
+    if (!AuthService.isAdmin(user)) {
       return res.status(403).send({ message: NOT_PERMITTED });
     }
   }

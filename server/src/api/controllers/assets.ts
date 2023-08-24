@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { FIELD_REQUIRED, NOT_FOUND } from "../message";
 
-import * as UserService from "src/services/user";
+import { AssetService } from "src/services/users";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {
@@ -11,7 +11,7 @@ export const create = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
-  await UserService.createAsset(user, req.body);
+  await AssetService.create(user, req.body);
 
   return res.status(200).send({
     assets: user.assets,
@@ -31,10 +31,10 @@ export const update = async (req: Request, res: Response) => {
   const user = req.user!;
 
   /* update asset */
-  const { idx, asset } = UserService.findAsset(user, req.params._id);
+  const { idx, asset } = AssetService.findById(user, req.params._id);
   if (idx === -1) return res.status(404).send({ message: NOT_FOUND("asset") });
 
-  const { isUpdatedCards, isUpdatedPM } = await UserService.updateAsset(
+  const { isUpdatedCards, isUpdatedPM } = await AssetService.update(
     user,
     asset,
     req.body
@@ -59,7 +59,7 @@ export const updateAll = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
-  const { isUpdatedCards, isUpdatedPM } = await UserService.updateAssetAll(
+  const { isUpdatedCards, isUpdatedPM } = await AssetService.updateAll(
     user,
     req.body.assets
   );
@@ -82,10 +82,10 @@ export const find = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  const { idx } = UserService.findAsset(user, req.params._id);
+  const { idx } = AssetService.findById(user, req.params._id);
   if (idx === -1) return res.status(404).send({ message: NOT_FOUND("asset") });
 
-  const { isUpdatedCards } = await UserService.removeAssetByIdx(user, idx);
+  const { isUpdatedCards } = await AssetService.removeByIdx(user, idx);
 
   return res.status(200).send({
     assets: user.assets,

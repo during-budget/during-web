@@ -2,7 +2,8 @@ import passport from "passport";
 import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { Request } from "express";
 import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "src/api/message";
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
+const AuthService = UserService.AuthService;
 import { ProfileParser } from "./profileParser";
 
 const sns = "kakao";
@@ -62,7 +63,7 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (UserService.checkSnsIdActive(user, sns)) {
+          if (AuthService.checkSnsIdActive(user, sns)) {
             const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
@@ -76,7 +77,7 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
             return done(err, null, null);
           }
 
-          await UserService.updateSnsId(user, sns, profile.id);
+          await AuthService.updateSnsId(user, sns, profile.id);
           return done(null, user, "connect");
         } catch (error: any) {
           done(error);
