@@ -1,5 +1,5 @@
 import { IBudget, ICategory } from "@models/Budget";
-import { IPaymentMethod, IUser } from "@models/User";
+import { IUser } from "@models/User";
 import { HydratedDocument, Types } from "mongoose";
 import {
   ITransaction,
@@ -7,7 +7,6 @@ import {
   Transaction as TransactionModel,
 } from "src/models/Transaction";
 
-/* static */
 export const create = async (
   userRecord: HydratedDocument<IUser>,
   budgetRecord: HydratedDocument<IBudget>,
@@ -37,6 +36,18 @@ export const create = async (
 
 export const findByBudgetId = async (budgetId: Types.ObjectId | String) => {
   const transactionRecordList = await TransactionModel.find({ budgetId });
+
+  return { transactions: transactionRecordList };
+};
+
+export const findByPaymentMethod = async (
+  userRecord: HydratedDocument<IUser>,
+  paymentMethodId: Types.ObjectId
+) => {
+  const transactionRecordList = await Transaction.find({
+    userId: userRecord._id,
+    linkedPaymentMethodId: paymentMethodId,
+  });
 
   return { transactions: transactionRecordList };
 };
@@ -77,28 +88,6 @@ export const replaceTransactionsCategory = async (
 
   return { transactions: transactionRecordList };
 };
-
-export const findByPaymentMethod = async (
-  userRecord: HydratedDocument<IUser>,
-  paymentMethodId: Types.ObjectId
-) => {
-  const transactionRecordList = await Transaction.find({
-    userId: userRecord._id,
-    linkedPaymentMethodId: paymentMethodId,
-  });
-
-  return { transactions: transactionRecordList };
-};
-
-export const removeByUserId = async (userId: Types.ObjectId | string) => {
-  return await TransactionModel.deleteMany({ userId });
-};
-
-export const removeByBudgetId = async (budgetId: Types.ObjectId) => {
-  return await TransactionModel.deleteMany({ budgetId });
-};
-
-/* methods */
 
 export const linkTransaction = async (
   transactionRecord: HydratedDocument<ITransaction>,
@@ -151,4 +140,12 @@ export const updatePaymentMethod = async (
   transactionRecord.linkedPaymentMethodTitle = paymentMethod.title;
   transactionRecord.linkedPaymentMethodDetail = paymentMethod.detail;
   await transactionRecord.save();
+};
+
+export const removeByUserId = async (userId: Types.ObjectId | string) => {
+  return await TransactionModel.deleteMany({ userId });
+};
+
+export const removeByBudgetId = async (budgetId: Types.ObjectId) => {
+  return await TransactionModel.deleteMany({ budgetId });
 };

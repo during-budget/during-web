@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 
 import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "../message";
 
-import * as UserService from "src/services/user";
-import * as BudgetService from "src/services/budget";
-import * as TransactionService from "src/services/transaction";
+import { CategoryService as UserCategoryService } from "src/services/users";
+import { CategoryService as BudgetCategoryService } from "src/services/budgets";
+
+import * as TransactionService from "src/services/transactions";
 
 export const create = async (req: Request, res: Response) => {
   /* validate */
@@ -21,7 +22,7 @@ export const create = async (req: Request, res: Response) => {
   const { title, icon } = req.body;
   const user = req.user!;
 
-  const { category } = await UserService.createCategory(user, {
+  const { category } = await UserCategoryService.create(user, {
     isExpense,
     isIncome,
     title,
@@ -41,20 +42,20 @@ export const update = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
-  const { category } = UserService.findCategory(user, req.params._id);
+  const { category } = UserCategoryService.findById(user, req.params._id);
   if (!category) {
     return res.status(404).send({ message: NOT_FOUND("category") });
   }
 
   const { title, icon } = req.body;
 
-  await UserService.updateCategory(user, category, {
+  await UserCategoryService.update(user, category, {
     title,
     icon,
   });
 
   await Promise.all([
-    BudgetService.updateCategory(user, category._id, category),
+    BudgetCategoryService.update(user, category._id, category),
     TransactionService.updateCategory(user, category._id, category),
   ]);
 
@@ -77,23 +78,23 @@ export const updateAll = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
-  const { added, updated, removed } = await UserService.updateCategoriesAll(
+  const { added, updated, removed } = await UserCategoryService.updateAll(
     user,
     req.body.categories
   );
 
   const { category: defaultExpenseCategory } =
-    UserService.findDefaultExpenseCategory(user);
+    UserCategoryService.findDefaultExpenseCategory(user);
   const { category: defaultIncomeCategory } =
-    UserService.findDefaultIncomeCategory(user);
+    UserCategoryService.findDefaultIncomeCategory(user);
 
   await Promise.all([
     ...updated.map((category) => {
-      BudgetService.updateCategory(user, category._id, category);
+      BudgetCategoryService.update(user, category._id, category);
       TransactionService.updateCategory(user, category._id, category);
     }),
     ...removed.map((category) => {
-      BudgetService.removeCategory(user, category._id);
+      BudgetCategoryService.remove(user, category._id);
       TransactionService.updateCategory(
         user,
         category._id,
@@ -134,25 +135,24 @@ export const updatePartially = async (req: Request, res: Response) => {
 
   const user = req.user!;
 
-  const { added, updated, removed } =
-    await UserService.updateCategoriesPartially(
-      user,
-      isExpense,
-      isIncome,
-      req.body.categories
-    );
+  const { added, updated, removed } = await UserCategoryService.updatePartially(
+    user,
+    isExpense,
+    isIncome,
+    req.body.categories
+  );
 
   const defaultCategory = isExpense
-    ? UserService.findDefaultExpenseCategory(user).category
-    : UserService.findDefaultIncomeCategory(user).category;
+    ? UserCategoryService.findDefaultExpenseCategory(user).category
+    : UserCategoryService.findDefaultIncomeCategory(user).category;
 
   await Promise.all([
     ...updated.map((category) => {
-      BudgetService.updateCategory(user, category._id, category);
+      BudgetCategoryService.update(user, category._id, category);
       TransactionService.updateCategory(user, category._id, category);
     }),
     ...removed.map((category) => {
-      BudgetService.removeCategory(user, category._id);
+      BudgetCategoryService.remove(user, category._id);
       TransactionService.updateCategory(user, category._id, defaultCategory);
     }),
   ]);
@@ -173,17 +173,15 @@ export const updatePartially = async (req: Request, res: Response) => {
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  const { categories } = UserService.getCategories(user);
-
   return res.status(200).send({
-    categories,
+    categories: user.categories,
   });
 };
 
 export const findOne = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  const { category } = UserService.findCategory(user, req.params._id);
+  const { category } = UserCategoryService.findById(user, req.params._id);
 
   if (!category) {
     return res.status(404).send({ message: NOT_FOUND("category") });
@@ -197,7 +195,7 @@ export const findOne = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  const { idx, category } = UserService.findCategory(user, req.params._id);
+  const { idx, category } = UserCategoryService.findById(user, req.params._id);
   if (idx === -1) {
     return res
       .status(404)
@@ -205,12 +203,12 @@ export const remove = async (req: Request, res: Response) => {
   }
 
   const defaultCategory = category.isExpense
-    ? UserService.findDefaultExpenseCategory(user).category
-    : UserService.findDefaultIncomeCategory(user).category;
+    ? UserCategoryService.findDefaultExpenseCategory(user).category
+    : UserCategoryService.findDefaultIncomeCategory(user).category;
 
   await Promise.all([
-    UserService.removeCategoryByIdx(user, idx),
-    BudgetService.removeCategory(user, category._id),
+    UserCategoryService.removeByIdx(user, idx),
+    BudgetCategoryService.remove(user, category._id),
     TransactionService.updateCategory(user, category._id, defaultCategory),
   ]);
 

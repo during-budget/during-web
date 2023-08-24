@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
 import { NOT_FOUND } from "../message";
 
 //_____________________________________________________________________________

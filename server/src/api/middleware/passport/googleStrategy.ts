@@ -1,7 +1,9 @@
 import { Request } from "express";
 import passport from "passport";
 import { Strategy as GogoleStrategy, Profile } from "passport-google-oauth20";
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
+const AuthService = UserService.AuthService;
+
 import {
   CONNECTED_ALREADY,
   EMAIL_IN_USE,
@@ -79,7 +81,7 @@ const google = (client: {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (UserService.checkSnsIdActive(user, sns)) {
+          if (AuthService.checkSnsIdActive(user, sns)) {
             const err = new Error(CONNECTED_ALREADY);
             return done(err, null, null);
           }
@@ -93,7 +95,7 @@ const google = (client: {
             return done(err, null, null);
           }
 
-          await UserService.updateSnsId(user, sns, profile.id);
+          await AuthService.updateSnsId(user, sns, profile.id);
           return done(null, user, "connect");
         } catch (error: any) {
           done(error);
@@ -126,7 +128,7 @@ const googleAdmin = (client: {
       ) => {
         try {
           /* login */
-          const { user } = await UserService.findAdmin(profile.id);
+          const { user } = await UserService.findAdminByGoogleId(profile.id);
           if (user) {
             return done(null, user);
           }

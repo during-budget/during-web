@@ -3,7 +3,8 @@ import { Request } from "express";
 import passport from "passport";
 import { Strategy as CustomStrategy } from "passport-custom";
 
-import * as UserService from "src/services/user";
+import * as UserService from "src/services/users";
+const AuthService = UserService.AuthService;
 
 import { client } from "src/loaders/redis";
 import { cipher, decipher } from "src/utils/crypto";
@@ -115,7 +116,7 @@ const localV2 = () => {
         /* updateEmail  - verify code */
         await verifyCode(req.body.email, req.body.code);
 
-        await UserService.updateEmailAndActivateLocalLogin(
+        await AuthService.updateEmailAndActivateLocalLogin(
           user,
           req.body.email
         );
