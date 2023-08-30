@@ -82,10 +82,10 @@ export const find = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  const { idx } = AssetService.findById(user, req.params._id);
-  if (idx === -1) return res.status(404).send({ message: NOT_FOUND("asset") });
+  const { asset } = AssetService.findById(user, req.params._id);
+  if (!asset) return res.status(404).send({ message: NOT_FOUND("asset") });
 
-  const { isUpdatedCards } = await AssetService.removeByIdx(user, idx);
+  const { isUpdatedCards } = await AssetService.remove(user, asset._id);
 
   return res.status(200).send({
     assets: user.assets,
