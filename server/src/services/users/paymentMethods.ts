@@ -41,3 +41,14 @@ export const execPaymentMethod = async (
     await execAsset(userRecord, assetId, transactionRecord);
   }
 };
+
+export const sort = async (userRecord: HydratedDocument<IUser>) => {
+  const pmAsset = [];
+  const pmCard = [];
+  for (let pm of userRecord.paymentMethods) {
+    if (pm.type === "asset") pmAsset.push(pm);
+    else pmCard.push(pm);
+  }
+  userRecord.paymentMethods = new Types.DocumentArray([...pmCard, ...pmAsset]);
+  await userRecord.save();
+};
