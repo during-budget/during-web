@@ -3,13 +3,14 @@ const router = express.Router();
 import { isLoggedIn } from "src/api/middleware/auth";
 
 import * as cards from "src/api/controllers/cards";
+import { wrapAsync } from "../middleware/error";
 
-router.put("/", isLoggedIn, cards.updateAll);
-router.get("/", isLoggedIn, cards.find);
+router.put("/", isLoggedIn, wrapAsync(cards.updateAll));
+router.get("/", isLoggedIn, wrapAsync(cards.find));
 
-router.post("/", isLoggedIn, cards.create);
-router.put("/:_id", isLoggedIn, cards.update);
-router.delete("/:_id", isLoggedIn, cards.remove);
+router.post("/", isLoggedIn, wrapAsync(cards.create));
+router.put("/:_id", isLoggedIn, wrapAsync(cards.update));
+router.delete("/:_id", isLoggedIn, wrapAsync(cards.remove));
 
 router.get("/:_id/transactions", isLoggedIn, cards.findCardTransactions);
 router.post("/:_id/transactions", isLoggedIn, cards.createCardTransaction);
