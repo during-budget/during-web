@@ -97,13 +97,16 @@ export const linkTransaction = async (
   await transactionRecord.save();
 };
 
+export const isCurrent = (transactionRecord: HydratedDocument<ITransaction>) =>
+  transactionRecord.isCurrent;
+
 export const isCurrentAndLinked = (
   transactionRecord: HydratedDocument<ITransaction>
 ) => transactionRecord.isCurrent && transactionRecord.linkId;
 
 export const hasToUpdateAsset = (
   transactionRecord: HydratedDocument<ITransaction>
-) => isCurrentAndLinked(transactionRecord) && transactionRecord.updateAsset;
+) => isCurrent(transactionRecord) && transactionRecord.updateAsset;
 
 export const findLinkedTransaction = async (
   transactionRecord: HydratedDocument<ITransaction>
