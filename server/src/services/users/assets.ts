@@ -249,30 +249,33 @@ export const execAsset = async (
   }
 };
 
-export const removeByIdx = async (
+export const remove = async (
   userRecord: HydratedDocument<IUser>,
-  idx: number
+  cardId: Types.ObjectId
 ) => {
   let isUpdatedCards = false;
 
-  for (let i = 0; i < userRecord.cards.length; i++) {
-    if (userRecord.cards[i].linkedAssetId?.equals(userRecord.assets[idx]._id)) {
-      userRecord.cards[i].linkedAssetId = undefined;
-      userRecord.cards[i].linkedAssetIcon = undefined;
-      userRecord.cards[i].linkedAssetTitle = undefined;
-      isUpdatedCards = true;
+  const { idx, asset } = findById(userRecord, cardId);
+
+  if (asset) {
+    for (let i = 0; i < userRecord.cards.length; i++) {
+      if (userRecord.cards[i].linkedAssetId?.equals(asset._id)) {
+        userRecord.cards[i].linkedAssetId = undefined;
+        userRecord.cards[i].linkedAssetIcon = undefined;
+        userRecord.cards[i].linkedAssetTitle = undefined;
+        isUpdatedCards = true;
+      }
     }
-  }
 
-  const { idx: paymentMethodIdx } = findPaymentMethodById(
-    userRecord,
-    userRecord.assets[idx]._id
-  );
-  if (paymentMethodIdx !== -1) {
-    userRecord.paymentMethods.splice(paymentMethodIdx, 1);
+    const { idx: paymentMethodIdx } = findPaymentMethodById(
+      userRecord,
+      userRecord.assets[idx]._id
+    );
+    if (paymentMethodIdx !== -1) {
+      userRecord.paymentMethods.splice(paymentMethodIdx, 1);
+    }
+    userRecord.assets.splice(idx, 1);
+    await userRecord.save();
   }
-  userRecord.assets.splice(idx, 1);
-
-  await userRecord.save();
   return { isUpdatedCards };
 };
