@@ -1,0 +1,73 @@
+import { IUser } from "@models/User";
+import moment from "moment";
+import { HydratedDocument, Types } from "mongoose";
+import {
+  basicTimeZone,
+  chartSkins,
+  basicTheme,
+  themes,
+} from "src/models/_basicSettings";
+
+import * as PaymentService from "src/services/payments";
+
+export const isFreeChartSkinOption = (chartSkin: string) =>
+  chartSkin === "basic" || chartSkin === "cat";
+
+export const isValidChartSkinOption = (chartSkin: string) =>
+  chartSkins.includes(chartSkin);
+
+export const isValidTimeZoneOption = (timeZone: string) =>
+  moment.tz.zone(timeZone);
+
+export const isValidThemeOption = (theme: string) => themes.includes(theme);
+
+export const findChartSkinOptionsPaid = async (userId: Types.ObjectId) => {
+  const { payments: paymentRecords } =
+    await PaymentService.findPaymentsChartSkinPaid(userId);
+
+  return {
+    defaultOptions: "basic",
+    options: [
+      "basic",
+      ...paymentRecords.map((paymentRecord) => paymentRecord.itemTitle),
+    ],
+  };
+};
+
+export const findTimeZoneOptions = () => {
+  return {
+    defaultOptions: basicTimeZone,
+    options: moment.tz.names(),
+  };
+};
+
+export const findThemeOptions = () => {
+  return {
+    defaultOptions: basicTheme,
+    options: themes,
+  };
+};
+
+export const updateChartSkinSetting = async (
+  userRecord: HydratedDocument<IUser>,
+  chartSkin: string
+) => {
+  userRecord.settings = { ...userRecord.settings, chartSkin };
+  await userRecord.save();
+};
+
+export const updateTimeZoneSetting = async (
+  userRecord: HydratedDocument<IUser>,
+  timeZone: string
+) => {
+  userRecord.settings = { ...userRecord.settings, timeZone };
+  await userRecord.save();
+};
+
+export const updateThemeSetting = async (
+  userRecord: HydratedDocument<IUser>,
+  theme: string
+) => {
+  userRecord.settings = { ...userRecord.settings, theme };
+  await userRecord.save();
+};

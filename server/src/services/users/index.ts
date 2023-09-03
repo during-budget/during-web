@@ -10,6 +10,7 @@ import * as CategoryService from "./categories";
 import * as PaymentMethodService from "./paymentMethods";
 import * as AssetService from "./assets";
 import * as CardService from "./cards";
+import * as SettingService from "./settings";
 
 import { generateRandomString } from "src/utils/randomString";
 
@@ -19,6 +20,7 @@ export {
   PaymentMethodService,
   AssetService,
   CardService,
+  SettingService,
 };
 
 /* create user */

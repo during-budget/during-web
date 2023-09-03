@@ -1,107 +1,82 @@
 import { Request, Response } from "express";
-import _ from "lodash";
-import { logger } from "src/api/middleware/loggers";
 import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "src/api/message";
-import moment from "moment";
-import {
-  basicTimeZone,
-  chartSkins,
-  basicTheme,
-  themes,
-} from "src/models/_basicSettings";
-import { Payment } from "src/models/Payment";
+import * as PaymentService from "src/services/payments";
+import { SettingService } from "src/services/users";
 
 export const find = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
+  const user = req.user!;
 
-    return res.status(200).send({
-      settings: user.settings,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
+  return res.status(200).send({
+    settings: user.settings,
+  });
 };
 
 export const update = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
+  const user = req.user!;
 
-    if ("chartSkin" in req.body) {
-      if (req.body.chartSkin !== "basic" && req.body.chartSkin !== "cat") {
-        if (
-          !(await Payment.findOne({
-            userId: user._id,
-            itemType: "chartSkin",
-            itemTitle: req.body.chartSkin,
-            status: "paid",
-          }))
-        ) {
-          return res.status(409).send({ message: NOT_FOUND("payment") });
-        }
+  const { chartSkin, timeZone, theme } = req.body;
+
+  if (chartSkin) {
+    if (!SettingService.isFreeChartSkinOption(chartSkin)) {
+      const { payment } = await PaymentService.findPaymentChartSkinPaidByTitle(
+        user._id,
+        chartSkin
+      );
+      if (!payment) {
+        return res.status(409).send({ message: NOT_FOUND("payment") });
       }
-      if (!chartSkins.includes(req.body.chartSkin)) {
-        return res.status(400).send({ message: FIELD_INVALID("chartSkin") });
-      }
-      user.settings = { ...user.settings, chartSkin: req.body.chartSkin };
     }
-
-    if ("timeZone" in req.body) {
-      if (!moment.tz.zone(req.body.timeZone)) {
-        return res.status(400).send({ message: FIELD_INVALID("timeZone") });
-      }
-      user.settings = { ...user.settings, timeZone: req.body.timeZone };
+    if (!SettingService.isValidChartSkinOption(chartSkin)) {
+      return res.status(400).send({ message: FIELD_INVALID("chartSkin") });
     }
-
-    if ("theme" in req.body) {
-      if (!themes.includes(req.body.theme)) {
-        return res.status(400).send({ message: FIELD_INVALID("theme") });
-      }
-      user.settings = { ...user.settings, theme: req.body.theme };
-    }
-
-    await user.saveReqUser();
-    return res.status(200).send({
-      settings: user.settings,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+    await SettingService.updateChartSkinSetting(user, chartSkin);
   }
+
+  if (timeZone) {
+    if (!SettingService.isValidTimeZoneOption(timeZone)) {
+      return res.status(400).send({ message: FIELD_INVALID("timeZone") });
+    }
+    await SettingService.updateTimeZoneSetting(user, timeZone);
+  }
+
+  if (theme) {
+    if (!SettingService.isValidThemeOption(theme)) {
+      return res.status(400).send({ message: FIELD_INVALID("theme") });
+    }
+    await SettingService.updateThemeSetting(user, theme);
+  }
+
+  return res.status(200).send({
+    settings: user.settings,
+  });
 };
 
 export const options = async (req: Request, res: Response) => {
-  try {
-    if (!("field" in req.query)) {
-      return res.status(400).send({ message: FIELD_REQUIRED("field") });
-    }
-    if (req.query.field === "chartSkin") {
-      const payments = await Payment.find({
-        userId: req.user?._id,
-        itemType: "chartSkin",
-        status: "paid",
-      }).select("itemTitle");
-      return res.status(200).send({
-        default: "basic",
-        options: ["basic", ...payments.map((payment) => payment.itemTitle)],
-      });
-    }
-    if (req.query.field === "timeZone") {
-      return res.status(200).send({
-        default: basicTimeZone,
-        options: moment.tz.names(),
-      });
-    }
-    if (req.query.field === "theme") {
-      return res.status(200).send({
-        default: basicTheme,
-        options: themes,
-      });
-    }
-    return res.status(400).send({ message: FIELD_INVALID("field") });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  if (!("field" in req.query)) {
+    return res.status(400).send({ message: FIELD_REQUIRED("field") });
   }
+  if (req.query.field === "chartSkin") {
+    const user = req.user!;
+    const { defaultOptions, options } =
+      await SettingService.findChartSkinOptionsPaid(user._id);
+    return res.status(200).send({
+      default: defaultOptions,
+      options,
+    });
+  }
+  if (req.query.field === "timeZone") {
+    const { defaultOptions, options } = SettingService.findTimeZoneOptions();
+    return res.status(200).send({
+      default: defaultOptions,
+      options,
+    });
+  }
+  if (req.query.field === "theme") {
+    const { defaultOptions, options } = SettingService.findThemeOptions();
+    return res.status(200).send({
+      default: defaultOptions,
+      options,
+    });
+  }
+  return res.status(400).send({ message: FIELD_INVALID("field") });
 };
