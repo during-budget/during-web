@@ -12,9 +12,25 @@ router.post("/", isLoggedIn, wrapAsync(cards.create));
 router.put("/:_id", isLoggedIn, wrapAsync(cards.update));
 router.delete("/:_id", isLoggedIn, wrapAsync(cards.remove));
 
-router.get("/:_id/transactions", isLoggedIn, cards.findCardTransactions);
-router.post("/:_id/transactions", isLoggedIn, cards.createCardTransaction);
-router.put("/:_id/transactions", isLoggedIn, cards.updateCardTransaction);
-router.delete("/:_id/transactions", isLoggedIn, cards.removeCardTransaction);
+router.get(
+  "/:_id/transactions",
+  isLoggedIn,
+  wrapAsync(cards.findCardTransactions)
+);
+router.post(
+  "/:_id/transactions",
+  isLoggedIn,
+  wrapAsync(cards.createCardTransaction)
+);
+router.put(
+  "/:_id/transactions",
+  isLoggedIn,
+  wrapAsync(cards.updateCardTransaction)
+);
+router.delete(
+  "/:_id/transactions",
+  isLoggedIn,
+  wrapAsync(cards.removeCardTransaction)
+);
 
 export default router;
