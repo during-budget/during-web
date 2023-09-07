@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { Types } from "mongoose";
-
-import { ICard } from "src/models/User";
-import { Transaction } from "src/models/Transaction";
-
-import { logger } from "src/api/middleware/loggers";
 import { FIELD_REQUIRED, NOT_FOUND } from "../message";
 import {
   AssetService,
@@ -126,163 +121,118 @@ export const remove = async (req: Request, res: Response) => {
 };
 
 export const findCardTransactions = async (req: Request, res: Response) => {
-  try {
-    if (!("year" in req.query)) {
-      return res.status(400).send({ message: FIELD_REQUIRED("year") });
-    }
-    const user = req.user!;
-    const transactions = await Transaction.find({
-      userId: user._id,
-      year: req.query.year,
-      linkedPaymentMethodId: req.params._id,
-    }).lean();
-    return res.status(200).send({
-      transactions,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  const user = req.user!;
+  const linkedPaymentMethodId = req.params._id;
+
+  if (!req.query.year) {
+    return res.status(400).send({ message: FIELD_REQUIRED("year") });
   }
+  const year = parseInt(req.query.year as string);
+
+  const { transactions } = await CardService.findPostPaidTransactionsByYear(
+    user,
+    linkedPaymentMethodId,
+    year
+  );
+
+  return res.status(200).send({
+    transactions,
+  });
 };
 
 export const createCardTransaction = async (req: Request, res: Response) => {
-  try {
-    for (let field of ["year", "month", "amount"])
-      if (!(field in req.body))
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-    const user = req.user!;
+  const user = req.user!;
 
-    const card = _.find(user.cards, {
-      _id: new Types.ObjectId(req.params._id),
-    });
-    if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+  const cardId = req.params._id;
 
-    const transaction = await Transaction.create({
-      userId: user._id,
-      isCurrent: true,
-      isExpense: true,
-      year: req.body.year,
-      month: req.body.month,
-      amount: req.body.amount,
-      linkedPaymentMethodType: "card",
-      linkedPaymentMethodId: card._id,
-      linkedPaymentMethodTitle: card.title,
-      linkedPaymentMethodIcon: card.icon,
-      linkedPaymentMethodDetail: card.detail,
-    });
+  for (let field of ["year", "month", "amount"])
+    if (!(field in req.body))
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
+  const year = parseInt(req.body.year);
+  const month = parseInt(req.body.month);
+  const amount = parseInt(req.body.amount);
 
-    if (card.linkedAssetId) {
-      const assetIdx = _.findIndex(user.assets, {
-        _id: card.linkedAssetId,
-      });
-      if (assetIdx !== -1) {
-        user.assets[assetIdx].amount -= transaction.amount;
-        await user.saveReqUser();
-      }
-    }
+  const { card } = CardService.findById(user, cardId);
+  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
 
-    return res.status(200).send({
-      transaction,
-      assets: user.assets,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
+  const { transaction } = await CardService.createPostPaidTransaction(
+    user,
+    card,
+    year,
+    month,
+    amount
+  );
+
+  return res.status(200).send({
+    transaction,
+    assets: user.assets,
+  });
 };
 
 export const updateCardTransaction = async (req: Request, res: Response) => {
-  try {
-    for (let field of ["year", "month"]) {
-      if (!(field in req.query)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-      }
+  const user = req.user!;
+
+  const cardId = req.params._id;
+
+  for (let field of ["year", "month"]) {
+    if (!(field in req.query)) {
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
-    for (let field of ["amount"])
-      if (!(field in req.body))
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-    const user = req.user!;
-
-    const card = _.find(user.cards, {
-      _id: new Types.ObjectId(req.params._id),
-    });
-    if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
-
-    const transaction = await Transaction.findOne({
-      userId: user._id,
-      year: req.query.year,
-      month: req.query.month,
-      linkedPaymentMethodId: card._id,
-    });
-    if (!transaction) {
-      return res.status(404).send({ message: NOT_FOUND("transaction") });
-    }
-    const exAmount = transaction.amount;
-    const newAmount = req.body.amount;
-
-    if (card.linkedAssetId) {
-      const assetIdx = _.findIndex(user.assets, {
-        _id: card.linkedAssetId,
-      });
-      if (assetIdx !== -1) {
-        user.assets[assetIdx].amount += exAmount - newAmount;
-        await user.saveReqUser();
-      }
-    }
-    transaction.amount = newAmount;
-    await transaction.save();
-
-    return res.status(200).send({
-      transaction,
-      assets: user.assets,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
   }
+  const year = parseInt(req.query.year as string);
+  const month = parseInt(req.query.month as string);
+
+  if (!("amount" in req.body))
+    return res.status(400).send({ message: FIELD_REQUIRED("amount") });
+  const amount = parseInt(req.body.amount);
+
+  const { card } = CardService.findById(user, cardId);
+  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+
+  const { transaction } = await CardService.updatePostPaidTransactionAmount(
+    user,
+    card,
+    year,
+    month,
+    amount
+  );
+  if (!transaction) {
+    return res.status(404).send({ message: NOT_FOUND("transaction") });
+  }
+
+  return res.status(200).send({
+    transaction,
+    assets: user.assets,
+  });
 };
 
 export const removeCardTransaction = async (req: Request, res: Response) => {
-  try {
-    for (let field of ["year", "month"]) {
-      if (!(field in req.query)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-      }
+  const user = req.user!;
+
+  const cardId = req.params._id;
+
+  for (let field of ["year", "month"]) {
+    if (!(field in req.query)) {
+      return res.status(400).send({ message: FIELD_REQUIRED(field) });
     }
-
-    const user = req.user!;
-
-    const card = _.find(user.cards, {
-      _id: new Types.ObjectId(req.params._id),
-    });
-    if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
-
-    const transaction = await Transaction.findOne({
-      userId: user._id,
-      year: req.query.year,
-      month: req.query.month,
-      linkedPaymentMethodId: card._id,
-    });
-    if (!transaction) {
-      return res.status(404).send({ message: NOT_FOUND("transaction") });
-    }
-
-    if (card.linkedAssetId) {
-      const assetIdx = _.findIndex(user.assets, {
-        _id: card.linkedAssetId,
-      });
-      if (assetIdx !== -1) {
-        user.assets[assetIdx].amount += transaction.amount;
-        await user.saveReqUser();
-      }
-    }
-    await transaction.remove();
-
-    return res.status(200).send({
-      assets: user.assets,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
   }
+  const year = parseInt(req.query.year as string);
+  const month = parseInt(req.query.month as string);
+
+  const { card } = CardService.findById(user, cardId);
+  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+
+  const { transaction } = await CardService.removePostPaidTransaction(
+    user,
+    card,
+    year,
+    month
+  );
+  if (!transaction) {
+    return res.status(404).send({ message: NOT_FOUND("transaction") });
+  }
+
+  return res.status(200).send({
+    assets: user.assets,
+  });
 };

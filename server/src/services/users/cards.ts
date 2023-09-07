@@ -1,4 +1,6 @@
 import { ICard, IUser } from "src/models/User";
+import { Transaction as TransactionModel } from "src/models/Transaction";
+
 import { HydratedDocument, Types } from "mongoose";
 import { findDocumentById } from "src/utils/document";
 import { AssetService, PaymentMethodService } from ".";
@@ -298,4 +300,123 @@ export const remove = async (
     userRecord.cards.splice(idx, 1);
     await userRecord.save();
   }
+};
+
+export const createPostPaidTransaction = async (
+  userRecord: HydratedDocument<IUser>,
+  card: ICard,
+  year: number,
+  month: number,
+  amount: number
+) => {
+  const transactionRecord = await TransactionModel.create({
+    userId: userRecord._id,
+    linkedPaymentMethodType: "card",
+    linkedPaymentMethodId: card._id,
+    linkedPaymentMethodTitle: card.title,
+    linkedPaymentMethodIcon: card.icon,
+    linkedPaymentMethodDetail: card.detail,
+    isCurrent: true,
+    isExpense: true,
+    year,
+    month,
+    amount,
+  });
+
+  if (card.linkedAssetId) {
+    const { asset } = AssetService.findById(userRecord, card.linkedAssetId);
+    if (asset) {
+      asset.amount -= transactionRecord.amount;
+      await userRecord.save();
+    }
+  }
+
+  return { transaction: transactionRecord };
+};
+
+export const findPostPaidTransactionsByYear = async (
+  userRecord: HydratedDocument<IUser>,
+  paymentMethodId: Types.ObjectId | string,
+  year: number
+) => {
+  const transactionRecordList = await TransactionModel.find({
+    userId: userRecord._id,
+    linkedPaymentMethodId: new Types.ObjectId(paymentMethodId),
+    year,
+  });
+
+  return { transactions: transactionRecordList };
+};
+
+export const findPostPaidTransaction = async (
+  userRecord: HydratedDocument<IUser>,
+  cardRecord: ICard,
+  year: number,
+  month: number
+) => {
+  const transactionRecord = await TransactionModel.findOne({
+    userId: userRecord._id,
+    linkedPaymentMethodId: cardRecord._id,
+    year,
+    month,
+  });
+
+  return { transaction: transactionRecord };
+};
+
+export const updatePostPaidTransactionAmount = async (
+  userRecord: HydratedDocument<IUser>,
+  card: ICard,
+  year: number,
+  month: number,
+  amount: number
+) => {
+  const { transaction: transactionRecord } = await findPostPaidTransaction(
+    userRecord,
+    card,
+    year,
+    month
+  );
+  if (!transactionRecord) return { transaction: null };
+
+  const exAmount = transactionRecord.amount;
+  const newAmount = amount;
+
+  if (card.linkedAssetId) {
+    const { asset } = AssetService.findById(userRecord, card.linkedAssetId);
+    if (asset) {
+      asset.amount += exAmount - newAmount;
+      await userRecord.save();
+    }
+  }
+  transactionRecord.amount = newAmount;
+  await transactionRecord.save();
+  return { transaction: transactionRecord };
+};
+
+export const removePostPaidTransaction = async (
+  userRecord: HydratedDocument<IUser>,
+  card: ICard,
+  year: number,
+  month: number
+) => {
+  const { transaction: transactionRecord } = await findPostPaidTransaction(
+    userRecord,
+    card,
+    year,
+    month
+  );
+  if (!transactionRecord) {
+    return { transaction: null };
+  }
+
+  if (card.linkedAssetId) {
+    const { asset } = AssetService.findById(userRecord, card.linkedAssetId);
+    if (asset) {
+      asset.amount += transactionRecord.amount;
+      await userRecord.save();
+    }
+  }
+  await transactionRecord.remove();
+  return { transaction: transactionRecord };
 };
