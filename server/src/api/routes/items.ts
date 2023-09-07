@@ -3,10 +3,11 @@ const router = express.Router();
 import { isAdmin, isLoggedIn } from "src/api/middleware/auth";
 
 import * as items from "src/api/controllers/items";
+import { wrapAsync } from "../middleware/error";
 
-router.post("/", isAdmin, items.create);
-router.get("/", isLoggedIn, items.find);
-router.put("/:_id", isAdmin, items.update);
-router.delete("/:_id", isAdmin, items.remove);
+router.post("/", isAdmin, wrapAsync(items.create));
+router.get("/", isLoggedIn, wrapAsync(items.find));
+router.put("/:_id", isAdmin, wrapAsync(items.update));
+router.delete("/:_id", isAdmin, wrapAsync(items.remove));
 
 export default router;

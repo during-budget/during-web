@@ -11,6 +11,8 @@ const NotReady = () => {
   return <Result title="Page is not ready" />;
 };
 
+const editMode = false;
+
 const AddDrawer = ({ type, setIsActive, setIsLoading }) => {
   const API = useAPI();
   const inputRef = useRef({ title: "", description: "", price: 0 });
@@ -251,14 +253,16 @@ const TabItem = ({ type }) => {
         <div
           style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
         >
-          {/* <Button
-            type="primary"
-            onClick={() => {
-              setIsActiveAddDrawer(true);
-            }}
-          >
-            + 생성
-          </Button> */}
+          {editMode && (
+            <Button
+              type="primary"
+              onClick={() => {
+                setIsActiveAddDrawer(true);
+              }}
+            >
+              + 생성
+            </Button>
+          )}
         </div>
         <div style={{ marginTop: "16px" }}>
           <Table
@@ -277,22 +281,22 @@ const TabItem = ({ type }) => {
                 width: "120px",
                 align: "center",
               },
-              // {
-              //   key: "edit",
-              //   type: "button-detail",
-              //   width: "112px",
-              //   onClick: (e) => {
-              //     setItem(e);
-              //     setIsActiveEditDrawer(true);
-              //   },
-              // },
-              // {
-              //   key: "delete",
-              //   type: "button-delete",
-              //   width: "112px",
-              //   onClick: removeHandler,
-              // },
-            ]}
+              editMode && {
+                key: "edit",
+                type: "button-detail",
+                width: "112px",
+                onClick: (e) => {
+                  setItem(e);
+                  setIsActiveEditDrawer(true);
+                },
+              },
+              editMode && {
+                key: "delete",
+                type: "button-delete",
+                width: "112px",
+                onClick: removeHandler,
+              },
+            ].filter((x) => x)}
             rows={items.map((item) => {
               return { ...item, key: item._id };
             })}
