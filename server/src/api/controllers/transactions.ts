@@ -19,6 +19,7 @@ import { basicTimeZone } from "src/models/_basicSettings";
 import { PaymentMethodService } from "src/services/users";
 import * as BudgetService from "src/services/budgets";
 import * as TransactionService from "src/services/transactions";
+import { TransactionNotFoundError } from "errors/NotFoundError";
 
 const { CategoryService: BudgetCategoryService } = BudgetService;
 
@@ -75,23 +76,15 @@ export const create = async (req: Request, res: Response) => {
   let transactionScheduled: HydratedDocument<ITransaction> | null = null;
 
   //  linkedCurrentTransaction
-  if (TransactionService.isCurrentAndLinked(transaction)) {
+  if (TransactionService.isCurrent(transaction) && req.body.linkId) {
     const { transaction: _transactionScheduled } =
-      await TransactionService.findLinkedTransaction(transaction);
+      await TransactionService.findById(req.body.linkId);
     transactionScheduled = _transactionScheduled;
 
     if (!transactionScheduled)
       return res.status(404).send({ message: NOT_FOUND("transaction") });
 
-    await TransactionService.linkTransaction(
-      transactionScheduled,
-      transaction._id
-    );
-
-    await TransactionService.updateOverAmount(
-      transaction,
-      transactionScheduled
-    );
+    await TransactionService.linkTransaction(transaction, transactionScheduled);
   }
 
   if (req.body.linkedPaymentMethodId) {
@@ -121,279 +114,65 @@ export const create = async (req: Request, res: Response) => {
   });
 };
 
-/**
- * Update transaction
- * @body { categoryId }
- * @return transaction
- */
-const updateV2BodyFields = [
-  "date",
-  "icon",
-  "title",
-  "tags",
-  "memo",
-  "categoryId",
-  "amount",
-  "isCurrent",
-  "updateAsset",
-];
 export const updateV2 = async (req: Request, res: Response) => {
-  try {
-    for (let field of updateV2BodyFields) {
-      if (!(field in req.body))
-        return res.status(400).send({
-          message: FIELD_REQUIRED(field),
-        });
-    }
+  const user = req.user!;
 
-    const user = req.user!;
-    const transaction = await Transaction.findById(req.params._id);
-    if (!transaction)
-      return res.status(404).send({ message: NOT_FOUND("transaction") });
-    if (!transaction.userId.equals(user._id))
-      return res.status(403).send({ message: NOT_PERMITTED });
-
-    const { budget } = await BudgetService.findById(transaction.budgetId);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-
-    /* update date, icon, title, tags, memo */
-    transaction.date = req.body.date;
-    transaction.icon = req.body.icon;
-    transaction.title = req.body.title;
-    transaction.tags = req.body.tags;
-    transaction.memo = req.body.memo;
-
-    /* update categoryId, amount,isExpense, isCurrent */
-    const isUpdated: { [key: string]: boolean } = {
-      categoryId:
-        transaction.category.categoryId.toString() !== req.body.categoryId,
-      amount: transaction.amount !== req.body.amount,
-      isCurrent: transaction.isCurrent !== req.body.isCurrent,
-      linkedPaymentMethodId: transaction.linkedPaymentMethodId
-        ? transaction.linkedPaymentMethodId.toString() !==
-          req.body?.linkedPaymentMethodId
-        : "linkedPaymentMethodId" in req.body,
-      user: false,
-      transactionLinked: false,
-    };
-
-    let transactionLinked: HydratedDocument<ITransaction> | null = null;
-
-    const exUpdateAsset = transaction.updateAsset;
-    transaction.updateAsset = req.body.updateAsset;
-    isUpdated["updateAsset"] = exUpdateAsset !== transaction.updateAsset;
-
-    if (
-      isUpdated["categoryId"] ||
-      isUpdated["amount"] ||
-      isUpdated["isCurrent"]
-    ) {
-      if (transaction?.linkId) {
-        transactionLinked = await Transaction.findById(transaction.linkId);
-        if (!transactionLinked) {
-          return res.status(404).send({ message: NOT_FOUND("transaction") });
-        }
-      }
-
-      if (isUpdated["categoryId"]) {
-        const newCategoryIdx = budget.findCategoryIdx(req.body.categoryId);
-        if (newCategoryIdx === -1)
-          return res.status(404).send({ message: NOT_FOUND("category") });
-        const newCategory = budget.categories[newCategoryIdx];
-
-        transaction.isExpense = newCategory.isExpense;
-        transaction.isIncome = newCategory.isIncome;
-        transaction.category = {
-          ...newCategory,
-        };
-
-        if (transactionLinked) {
-          transactionLinked.isExpense = newCategory.isExpense;
-          transactionLinked.isIncome = newCategory.isIncome;
-          transactionLinked.category = {
-            ...newCategory,
-          };
-          isUpdated["transactionLinked"] = true;
-        }
-      }
-
-      if (isUpdated["amount"]) {
-        const exAmount = transaction.amount;
-        const diff = req.body.amount - exAmount;
-        transaction.amount = req.body.amount;
-
-        // 1. scheduled transaction
-        if (!transaction.isCurrent) {
-          if (transactionLinked) {
-            transactionLinked.overAmount =
-              (transactionLinked.overAmount ?? 0) - diff;
-            isUpdated["transactionLinked"] = true;
-          }
-        }
-        // 2. current transaction
-        else {
-          if (transactionLinked) {
-            transaction.overAmount = (transaction.overAmount ?? 0) + diff;
-          }
-
-          if (transaction.linkedPaymentMethodId) {
-            let isUserUpdated1 = false;
-            let isUserUpdated2 = false;
-            if (exUpdateAsset) {
-              isUserUpdated1 = user.cancelPM({
-                linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-                linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-                amount: exAmount,
-                isExpense: transaction.isExpense!,
-              });
-            }
-            if (transaction.updateAsset) {
-              isUserUpdated2 = user.execPM({
-                linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-                linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-                amount: transaction.amount,
-                isExpense: transaction.isExpense!,
-              });
-            }
-
-            if (isUserUpdated1 || isUserUpdated2) isUpdated["user"] = true;
-          }
-        }
-      }
-
-      if (isUpdated["isCurrent"]) {
-        if (transaction.linkId) {
-          return res.status(409).send({
-            message: CATEGORY_CANOT_BE_UPDATED,
-          });
-        }
-
-        // 1. current -> scheduled
-        if (transaction.isCurrent) {
-          if (transaction.linkedPaymentMethodId && exUpdateAsset) {
-            const isUserUpdated = user.cancelPM({
-              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-              amount: transaction.amount,
-              isExpense: transaction.isExpense!,
-            });
-            if (isUserUpdated) isUpdated["user"] = true;
-          }
-        }
-        // 2. scheduled -> current
-        else {
-          if (transaction.linkedPaymentMethodId && transaction.updateAsset) {
-            const isUserUpdated = user.execPM({
-              linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-              linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-              amount: transaction.amount,
-              isExpense: transaction.isExpense!,
-            });
-            if (isUserUpdated) isUpdated["user"] = true;
-          }
-        }
-
-        transaction.isCurrent = req.body.isCurrent;
-      }
-
-      if (isUpdated["transactionLinked"]) {
-        await transactionLinked?.save();
-      }
-    }
-    if (isUpdated["linkedPaymentMethodId"]) {
-      // cancel ex paymentMethod
-      if (
-        transaction.isCurrent &&
-        transaction.linkedPaymentMethodId &&
-        exUpdateAsset
-      ) {
-        const isUserUpdated = user.cancelPM({
-          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-          amount: transaction.amount,
-          isExpense: transaction.isExpense!,
-        });
-        if (isUserUpdated) isUpdated["user"] = true;
-      }
-
-      // => id1
-      if (req.body.linkedPaymentMethodId) {
-        const pm = _.find(user.paymentMethods, {
-          _id: new Types.ObjectId(req.body.linkedPaymentMethodId),
-        });
-        if (!pm) {
-          return res.status(404).send({ message: NOT_FOUND("PM") });
-        }
-        transaction.linkedPaymentMethodId = pm._id;
-        transaction.linkedPaymentMethodType = pm.type;
-        transaction.linkedPaymentMethodIcon = pm.icon;
-        transaction.linkedPaymentMethodTitle = pm.title;
-        transaction.linkedPaymentMethodDetail = pm.detail;
-
-        if (transaction.isCurrent && transaction.updateAsset) {
-          const isUserUpdated = user.execPM({
-            linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-            linkedPaymentMethodType: transaction.linkedPaymentMethodType,
-            amount: transaction.amount,
-            isExpense: transaction.isExpense!,
-          });
-          if (isUserUpdated) isUpdated["user"] = true;
-        }
-      }
-      // => undefined
-      else {
-        transaction.linkedPaymentMethodId = undefined;
-        transaction.linkedPaymentMethodType = undefined;
-        transaction.linkedPaymentMethodIcon = undefined;
-        transaction.linkedPaymentMethodTitle = undefined;
-      }
-    }
-    if (
-      isUpdated["updateAsset"] &&
-      !isUpdated["amount"] &&
-      !isUpdated["isCurrent"] &&
-      !isUpdated["linkedPaymentMethodId"] &&
-      transaction.isCurrent &&
-      transaction.linkedPaymentMethodId
-    ) {
-      // false -> true
-      if (transaction.updateAsset) {
-        const isUserUpdated = user.execPM({
-          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-          amount: transaction.amount,
-          isExpense: transaction.isExpense!,
-        });
-        if (isUserUpdated) isUpdated["user"] = true;
-      }
-      // true -> false
-      else {
-        const isUserUpdated = user.cancelPM({
-          linkedPaymentMethodId: transaction.linkedPaymentMethodId,
-          linkedPaymentMethodType: transaction.linkedPaymentMethodType!,
-          amount: transaction.amount,
-          isExpense: transaction.isExpense!,
-        });
-        if (isUserUpdated) isUpdated["user"] = true;
-      }
-    }
-
-    if (isUpdated["user"]) await user.saveReqUser();
-    await transaction.save();
-    await budget.calculate();
-
-    return res.status(200).send({
-      transaction,
-      transactionLinked: isUpdated["transactionLinked"]
-        ? transactionLinked
-        : undefined,
-      budget: budget ?? undefined,
-      assets: isUpdated["user"] ? user.assets : undefined,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  for (let field of [
+    "date",
+    "icon",
+    "title",
+    "tags",
+    "memo",
+    "categoryId",
+    "amount",
+    "isCurrent",
+    "updateAsset",
+  ]) {
+    if (!(field in req.body))
+      return res.status(400).send({
+        message: FIELD_REQUIRED(field),
+      });
   }
+
+  const transactionId = req.params._id as string;
+  const date = new Date(req.body.date);
+  const icon = req.body.icon;
+  const title = req.body.title;
+  const tags = req.body.tags;
+  const memo = req.body.memo;
+  const categoryId = req.body.categoryId;
+  const amount = parseInt(req.body.amount);
+  const isCurrent = req.body.isCurrent as boolean;
+  const updateAsset = req.body.updateAsset as boolean;
+  const linkedPaymentMethodId = req.body.linkedPaymentMethodId as string;
+
+  const { transaction } = await TransactionService.findById(transactionId);
+  if (!transaction) throw new TransactionNotFoundError();
+
+  if (!TransactionService.isUser(transaction, user)) throw new Error();
+
+  const { transactionLinked, budget, assets } = await TransactionService.update(
+    transaction,
+    {
+      date,
+      icon,
+      title,
+      tags,
+      memo,
+      categoryId,
+      amount,
+      isCurrent,
+      updateAsset,
+      linkedPaymentMethodId,
+    }
+  );
+
+  return res.status(200).send({
+    transaction,
+    transactionLinked,
+    budget,
+    assets,
+  });
 };
 
 export const find = async (req: Request, res: Response) => {

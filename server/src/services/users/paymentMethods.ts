@@ -14,7 +14,7 @@ export const findById = (
     arr: userRecord.paymentMethods,
     id: paymentMethodId,
   });
-  return { idx, paymentMethod: value };
+  return { idx, paymentMethod: value as IPaymentMethod };
 };
 
 export const execPaymentMethod = async (

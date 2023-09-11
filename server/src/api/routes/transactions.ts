@@ -6,7 +6,7 @@ import { wrapAsync } from "../middleware/error";
 
 router.post("/", isLoggedIn, wrapAsync(transactions.create));
 
-router.put("/:_id", isLoggedIn, transactions.updateV2);
+router.put("/:_id", isLoggedIn, wrapAsync(transactions.updateV2));
 
 router.get("/:_id?", isLoggedIn, transactions.find);
 

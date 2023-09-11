@@ -6,6 +6,16 @@ import {
   Transaction,
   Transaction as TransactionModel,
 } from "src/models/Transaction";
+import * as BudgetService from "./budgets";
+import { CategoryService as BudgetCategoryService } from "src/services/budgets";
+import * as UserService from "./users";
+import {
+  BudgetNotFoundError,
+  CategoryNotFoundError,
+  PaymentMethodNotFoundError,
+  UserNotFoundError,
+} from "errors/NotFoundError";
+import { IsCurrentCannotBeUpdatedError } from "errors/ConfilicError";
 
 export const create = async (
   userRecord: HydratedDocument<IUser>,
@@ -30,6 +40,15 @@ export const create = async (
     isIncome: category.isIncome,
     ...fields,
   });
+
+  return { transaction: transactionRecord };
+};
+
+export const isUser = (transactionRecord: ITransaction, userRecord: IUser) =>
+  transactionRecord.userId.equals(userRecord._id);
+
+export const findById = async (transactionId: Types.ObjectId | String) => {
+  const transactionRecord = await TransactionModel.findById(transactionId);
 
   return { transaction: transactionRecord };
 };
@@ -90,11 +109,20 @@ export const replaceTransactionsCategory = async (
 };
 
 export const linkTransaction = async (
-  transactionRecord: HydratedDocument<ITransaction>,
-  linkId: Types.ObjectId
+  transactionRecord1: HydratedDocument<ITransaction>,
+  transactionRecord2: HydratedDocument<ITransaction>
 ) => {
-  transactionRecord.linkId = linkId;
-  await transactionRecord.save();
+  transactionRecord1.linkId = transactionRecord2._id;
+  transactionRecord2.linkId = transactionRecord1._id;
+  if (transactionRecord1.isCurrent && !transactionRecord2.isCurrent) {
+    transactionRecord1.overAmount =
+      transactionRecord1.amount - transactionRecord2.amount;
+  } else if (!transactionRecord1.isCurrent && transactionRecord2.isCurrent) {
+    transactionRecord2.overAmount =
+      transactionRecord2.amount - transactionRecord1.amount;
+  }
+  await transactionRecord1.save();
+  await transactionRecord2.save();
 };
 
 export const isCurrent = (transactionRecord: HydratedDocument<ITransaction>) =>
@@ -118,13 +146,236 @@ export const findLinkedTransaction = async (
   return { transaction: transactionRecordLinked };
 };
 
-export const updateOverAmount = async (
-  transactionModelCurrent: HydratedDocument<ITransaction>,
-  transactionModelScheduled: HydratedDocument<ITransaction>
+export const update = async (
+  transactionRecord: HydratedDocument<ITransaction>,
+  to: {
+    date: Date;
+    icon: string;
+    title: [string];
+    tags: [string];
+    memo: string;
+    categoryId: Types.ObjectId | string;
+    amount: number;
+    updateAsset: boolean;
+    isCurrent: boolean;
+    linkedPaymentMethodId?: Types.ObjectId | string;
+  }
 ) => {
-  transactionModelCurrent.overAmount =
-    transactionModelCurrent.amount - transactionModelScheduled.amount;
-  await transactionModelCurrent.save();
+  const { transaction: transactionRecordLinked } = await findLinkedTransaction(
+    transactionRecord
+  );
+
+  const { user: userRecord } = await UserService.findById(
+    transactionRecord.userId
+  );
+  if (!userRecord) throw new UserNotFoundError();
+
+  const { budget: budgetRecord } = await BudgetService.findById(
+    transactionRecord.budgetId
+  );
+  if (!budgetRecord) throw new BudgetNotFoundError();
+
+  const { category } = BudgetCategoryService.findById(
+    budgetRecord,
+    to.categoryId
+  );
+  if (!category) throw new CategoryNotFoundError();
+
+  /* update date, icon, title, tags, memo */
+  transactionRecord.date = to.date;
+  transactionRecord.icon = to.icon;
+  transactionRecord.title = to.title;
+  transactionRecord.tags = to.tags;
+  transactionRecord.memo = to.memo;
+
+  /* update category */
+  let isUpdatedCategory = !transactionRecord.category.categoryId.equals(
+    category.categoryId
+  );
+  if (isUpdatedCategory) {
+    transactionRecord.isExpense = category.isExpense;
+    transactionRecord.isIncome = category.isIncome;
+    transactionRecord.category = {
+      ...category,
+    };
+    if (transactionRecordLinked) {
+      transactionRecordLinked.isExpense = category.isExpense;
+      transactionRecordLinked.isIncome = category.isIncome;
+      transactionRecordLinked.category = {
+        ...category,
+      };
+    }
+  }
+
+  /* update amount */
+  const isUpdatedAmount = transactionRecord.amount !== to.amount;
+  if (isUpdatedAmount) {
+    // 1. scheduled transaction
+    if (!transactionRecord.isCurrent) {
+      if (transactionRecordLinked) {
+        const overAmount = transactionRecordLinked.amount - to.amount;
+        transactionRecordLinked.overAmount = overAmount;
+      }
+    }
+    // 2. current transaction
+    else {
+      if (transactionRecordLinked) {
+        const overAmount = to.amount - transactionRecordLinked.amount;
+        transactionRecord.overAmount = overAmount;
+      }
+
+      if (
+        transactionRecord.linkedPaymentMethodId &&
+        transactionRecord.updateAsset
+      ) {
+        userRecord.cancelPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+        userRecord.execPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: to.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+    }
+    transactionRecord.amount = to.amount;
+  }
+
+  /* update isCurrent */
+  const isUpdatedIsCurrent = transactionRecord.isCurrent !== to.isCurrent;
+  if (isUpdatedIsCurrent) {
+    if (transactionRecordLinked) {
+      throw new IsCurrentCannotBeUpdatedError();
+    }
+    if (
+      transactionRecord.linkedPaymentMethodId &&
+      transactionRecord.updateAsset
+    ) {
+      // 1. current -> scheduled
+      if (transactionRecord.isCurrent && !to.isCurrent) {
+        userRecord.cancelPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+      // 2. scheduled -> current
+      else if (!transactionRecord.isCurrent && to.isCurrent) {
+        userRecord.execPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+    }
+    transactionRecord.isCurrent = to.isCurrent;
+  }
+
+  const isUpdatedLinkedPaymentMethodId =
+    transactionRecord.linkedPaymentMethodId?.toString() !==
+    to.linkedPaymentMethodId?.toString();
+  if (isUpdatedLinkedPaymentMethodId) {
+    // cancel ex paymentMethod
+    if (
+      transactionRecord.isCurrent &&
+      transactionRecord.linkedPaymentMethodId &&
+      transactionRecord.updateAsset
+    ) {
+      userRecord.cancelPM({
+        linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+        linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+        amount: transactionRecord.amount,
+        isExpense: transactionRecord.isExpense!,
+      });
+    }
+
+    // => id1
+    if (to.linkedPaymentMethodId) {
+      const { paymentMethod } = UserService.PaymentMethodService.findById(
+        userRecord,
+        to.linkedPaymentMethodId
+      );
+      if (!paymentMethod) {
+        throw new PaymentMethodNotFoundError();
+      }
+      transactionRecord.linkedPaymentMethodId = paymentMethod._id;
+      transactionRecord.linkedPaymentMethodType = paymentMethod.type;
+      transactionRecord.linkedPaymentMethodIcon = paymentMethod.icon;
+      transactionRecord.linkedPaymentMethodTitle = paymentMethod.title;
+      transactionRecord.linkedPaymentMethodDetail = paymentMethod.detail;
+
+      if (transactionRecord.isCurrent && transactionRecord.updateAsset) {
+        userRecord.execPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+    }
+    // => undefined
+    else {
+      transactionRecord.linkedPaymentMethodId = undefined;
+      transactionRecord.linkedPaymentMethodType = undefined;
+      transactionRecord.linkedPaymentMethodIcon = undefined;
+      transactionRecord.linkedPaymentMethodTitle = undefined;
+    }
+  }
+
+  const isUpdatedUpdateAsset = transactionRecord.updateAsset !== to.updateAsset;
+  if (isUpdatedUpdateAsset) {
+    const isNotUpdatedAmount = !isUpdatedAmount;
+    const isNotUpdatedIsCurrentAndIsCurrent =
+      !isUpdatedIsCurrent && transactionRecord.isCurrent;
+    const isNotUpdatedLinkedPaymentMethodIdAndHasOne =
+      !isUpdatedLinkedPaymentMethodId &&
+      transactionRecord.linkedPaymentMethodId;
+    const isOnlyUpdatedUpdateAssetOnly =
+      isNotUpdatedAmount &&
+      isNotUpdatedIsCurrentAndIsCurrent &&
+      isNotUpdatedLinkedPaymentMethodIdAndHasOne;
+
+    if (isOnlyUpdatedUpdateAssetOnly) {
+      // false -> true
+      if (to.updateAsset) {
+        userRecord.execPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId!,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+      // true -> false
+      else {
+        userRecord.cancelPM({
+          linkedPaymentMethodId: transactionRecord.linkedPaymentMethodId!,
+          linkedPaymentMethodType: transactionRecord.linkedPaymentMethodType!,
+          amount: transactionRecord.amount,
+          isExpense: transactionRecord.isExpense!,
+        });
+      }
+    }
+    transactionRecord.updateAsset = to.updateAsset;
+  }
+
+  await userRecord.save();
+  await transactionRecord.save();
+  if (transactionRecordLinked) {
+    await transactionRecordLinked.save();
+  }
+  await BudgetService.calculate(budgetRecord);
+  return {
+    assets: userRecord.assets,
+    transaction: transactionRecord,
+    transactionLinked: transactionRecordLinked,
+    budget: budgetRecord,
+  };
 };
 
 export const updatePaymentMethod = async (
