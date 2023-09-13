@@ -9,6 +9,7 @@ import {
 import * as BudgetService from "./budgets";
 import { CategoryService as BudgetCategoryService } from "src/services/budgets";
 import * as UserService from "./users";
+import { PaymentMethodService } from "./users";
 import {
   BudgetNotFoundError,
   CategoryNotFoundError,
@@ -19,9 +20,9 @@ import { IsCurrentCannotBeUpdatedError } from "errors/ConfilicError";
 
 export const create = async (
   userRecord: HydratedDocument<IUser>,
-  budgetRecord: HydratedDocument<IBudget>,
-  category: ICategory,
-  fields: {
+  to: {
+    budgetId: Types.ObjectId | string;
+    categoryId: Types.ObjectId | string;
     date: string;
     isCurrent: boolean;
     icon?: string;
@@ -32,20 +33,77 @@ export const create = async (
     updateAsset?: boolean;
   }
 ) => {
+  const { budget: budgetRecord } = await BudgetService.findById(to.budgetId);
+  if (!budgetRecord) throw new BudgetNotFoundError();
+
+  const { category } = BudgetCategoryService.findById(
+    budgetRecord,
+    to.categoryId
+  );
+  if (!category) throw new CategoryNotFoundError();
+
   const transactionRecord = await TransactionModel.create({
     userId: userRecord._id,
     budgetId: budgetRecord._id,
     category,
     isExpense: category.isExpense,
     isIncome: category.isIncome,
-    ...fields,
+    date: to.date,
+    isCurrent: to.isCurrent,
+    icon: to.icon,
+    title: to.title,
+    amount: to.amount,
+    tags: to.tags,
+    memo: to.memo,
+    updateAsset: to.updateAsset,
   });
 
-  return { transaction: transactionRecord };
+  return { transaction: transactionRecord, budget: budgetRecord };
 };
 
 export const isUser = (transactionRecord: ITransaction, userRecord: IUser) =>
   transactionRecord.userId.equals(userRecord._id);
+
+export const findAll = async () => {
+  const transactionRecords = await TransactionModel.find({});
+
+  return { transactions: transactionRecords };
+};
+
+export const findByUser = async (userId: Types.ObjectId | String) => {
+  const transactionRecords = await TransactionModel.find({ userId });
+
+  return { transactions: transactionRecords };
+};
+
+export const findByLinkedPaymentMethodIdBetweenDates = async (
+  userRecord: HydratedDocument<IUser>,
+  linkedPaymentMethodId: Types.ObjectId | string,
+  startDate: Date,
+  endDate: Date
+) => {
+  const transactionRecords = await TransactionModel.find({
+    userId: userRecord._id,
+    budgetId: { $exists: true, $ne: userRecord.basicBudgetId },
+    linkedPaymentMethodId,
+    date: { $gte: startDate, $lt: endDate },
+  });
+
+  return { transactions: transactionRecords };
+};
+
+export const findByTag = async (
+  userRecord: HydratedDocument<IUser>,
+  tag: string
+) => {
+  const transactionRecords = await TransactionModel.find({
+    userId: userRecord._id,
+    budgetId: { $exists: true, $ne: userRecord.basicBudgetId },
+    tags: { $elemMatch: { $eq: tag } },
+  });
+
+  return { transactions: transactionRecords };
+};
 
 export const findById = async (transactionId: Types.ObjectId | String) => {
   const transactionRecord = await TransactionModel.findById(transactionId);
@@ -135,6 +193,10 @@ export const isCurrentAndLinked = (
 export const hasToUpdateAsset = (
   transactionRecord: HydratedDocument<ITransaction>
 ) => isCurrent(transactionRecord) && transactionRecord.updateAsset;
+
+export const hasLinkedPaymentMethod = (
+  transactionRecord: HydratedDocument<ITransaction>
+) => transactionRecord.linkedPaymentMethodId;
 
 export const findLinkedTransaction = async (
   transactionRecord: HydratedDocument<ITransaction>
@@ -394,6 +456,42 @@ export const updatePaymentMethod = async (
   transactionRecord.linkedPaymentMethodTitle = paymentMethod.title;
   transactionRecord.linkedPaymentMethodDetail = paymentMethod.detail;
   await transactionRecord.save();
+};
+
+export const remove = async (
+  transactionRecord: HydratedDocument<ITransaction>
+) => {
+  if (
+    hasToUpdateAsset(transactionRecord) &&
+    hasLinkedPaymentMethod(transactionRecord)
+  ) {
+    const { user: userRecord } = await UserService.findById(
+      transactionRecord.userId
+    );
+    if (!userRecord) {
+      throw new UserNotFoundError();
+    }
+    await PaymentMethodService.cancelPaymentMethod(
+      userRecord,
+      transactionRecord
+    );
+  }
+
+  const { transaction: transactionRecordLinked } = await findLinkedTransaction(
+    transactionRecord
+  );
+  if (transactionRecordLinked) {
+    transactionRecordLinked.linkId = undefined;
+    transactionRecordLinked.overAmount = undefined;
+    await transactionRecordLinked.save();
+  }
+
+  await transactionRecord.remove();
+
+  return {
+    transactionRemoved: transactionRecord,
+    transactionLinkedRemoved: transactionRecordLinked,
+  };
 };
 
 export const removeByUserId = async (userId: Types.ObjectId | string) => {

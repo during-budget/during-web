@@ -249,6 +249,19 @@ export const execAsset = async (
   }
 };
 
+export const cancelAsset = async (
+  userRecord: HydratedDocument<IUser>,
+  assetId: Types.ObjectId,
+  transactionRecord: HydratedDocument<ITransaction>
+) => {
+  const { asset } = findById(userRecord, assetId);
+  if (asset) {
+    if (transactionRecord.isExpense) asset.amount += transactionRecord.amount;
+    else asset.amount -= transactionRecord.amount;
+    await userRecord.save();
+  }
+};
+
 export const remove = async (
   userRecord: HydratedDocument<IUser>,
   cardId: Types.ObjectId

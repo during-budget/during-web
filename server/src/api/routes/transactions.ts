@@ -8,8 +8,8 @@ router.post("/", isLoggedIn, wrapAsync(transactions.create));
 
 router.put("/:_id", isLoggedIn, wrapAsync(transactions.updateV2));
 
-router.get("/:_id?", isLoggedIn, transactions.find);
+router.get("/:_id?", isLoggedIn, wrapAsync(transactions.find));
 
-router.delete("/:_id", isLoggedIn, transactions.remove);
+router.delete("/:_id", isLoggedIn, wrapAsync(transactions.remove));
 
 export default router;
