@@ -1,44 +1,40 @@
 import { CustomError } from "./CustomError";
 
 class NotFoundError extends CustomError {
-  constructor() {
+  constructor(field: string) {
     super();
     this.name = "NotFoundError";
     this.status = 404;
+    this.message = field.toUpperCase() + "_NOT_FOUND";
   }
 }
 
 export class UserNotFoundError extends NotFoundError {
   constructor() {
-    super();
-    this.message = "USER_NOT_FOUND";
+    super("user");
   }
 }
 
 export class BudgetNotFoundError extends NotFoundError {
   constructor() {
-    super();
-    this.message = "BUDGET_NOT_FOUND";
+    super("budget");
   }
 }
 
 export class CategoryNotFoundError extends NotFoundError {
   constructor() {
-    super();
-    this.message = "CATEGORY_NOT_FOUND";
+    super("category");
   }
 }
 
 export class PaymentMethodNotFoundError extends NotFoundError {
   constructor() {
-    super();
-    this.message = "PAYMENTMETHOD_NOT_FOUND";
+    super("paymentMethod");
   }
 }
 
 export class TransactionNotFoundError extends NotFoundError {
   constructor() {
-    super();
-    this.message = "TRANSACTION_NOT_FOUND";
+    super("transaction");
   }
 }
