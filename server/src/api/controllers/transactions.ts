@@ -1,27 +1,18 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { ITransaction, Transaction } from "src/models/Transaction";
-import { HydratedDocument, Types } from "mongoose";
 import moment from "moment-timezone";
 
-import { logger } from "src/api/middleware/loggers";
-import { User } from "src/models/User";
-
-import {
-  CATEGORY_CANOT_BE_UPDATED,
-  FIELD_INVALID,
-  FIELD_REQUIRED,
-  NOT_FOUND,
-  NOT_PERMITTED,
-} from "../message";
-import { basicTimeZone } from "src/models/_basicSettings";
-
-import { PaymentMethodService } from "src/services/users";
+import { AuthService, PaymentMethodService } from "src/services/users";
 import * as BudgetService from "src/services/budgets";
 import * as TransactionService from "src/services/transactions";
-import { TransactionNotFoundError } from "errors/NotFoundError";
 
-const { CategoryService: BudgetCategoryService } = BudgetService;
+import {
+  PaymentMethodNotFoundError,
+  TransactionNotFoundError,
+} from "errors/NotFoundError";
+import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
+import { NotPermittedError } from "errors/ForbiddenError";
+import { InvalidError } from "errors/InvalidError";
 
 // transaction controller
 
@@ -35,6 +26,8 @@ const { CategoryService: BudgetCategoryService } = BudgetService;
 const dateReg = new RegExp("[0-9]{4}[-][0-9]{2}[-][0-9]{2}");
 
 export const create = async (req: Request, res: Response) => {
+  const user = req.user!;
+
   for (let field of [
     "budgetId",
     "date",
@@ -43,37 +36,22 @@ export const create = async (req: Request, res: Response) => {
     "amount",
     "categoryId",
   ])
-    if (!(field in req.body))
-      return res.status(400).send({ message: FIELD_REQUIRED(field) });
-  const user = req.user!;
+    if (!(field in req.body)) throw new FieldRequiredError(field);
 
-  const { budget } = await BudgetService.findById(req.body.budgetId);
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  const { transaction, budget } = await TransactionService.create(user, {
+    budgetId: req.body.budgetId,
+    categoryId: req.body.categoryId,
+    date: req.body.date,
+    isCurrent: req.body.isCurrent,
+    icon: req.body.icon,
+    title: req.body.title,
+    amount: req.body.amount,
+    tags: req.body.tags,
+    memo: req.body.memo,
+    updateAsset: req.body.updateAsset,
+  });
 
-  const { category } = BudgetCategoryService.findById(
-    budget,
-    req.body.categoryId
-  );
-  if (!category)
-    return res.status(404).send({ message: NOT_FOUND("category") });
-
-  const { transaction } = await TransactionService.create(
-    user,
-    budget,
-    category,
-    {
-      date: req.body.date,
-      isCurrent: req.body.isCurrent,
-      icon: req.body.icon,
-      title: req.body.title,
-      amount: req.body.amount,
-      tags: req.body.tags,
-      memo: req.body.memo,
-      updateAsset: req.body.updateAsset,
-    }
-  );
-
-  let transactionScheduled: HydratedDocument<ITransaction> | null = null;
+  let transactionScheduled: any = null;
 
   //  linkedCurrentTransaction
   if (TransactionService.isCurrent(transaction) && req.body.linkId) {
@@ -81,8 +59,7 @@ export const create = async (req: Request, res: Response) => {
       await TransactionService.findById(req.body.linkId);
     transactionScheduled = _transactionScheduled;
 
-    if (!transactionScheduled)
-      return res.status(404).send({ message: NOT_FOUND("transaction") });
+    if (!transactionScheduled) throw new TransactionNotFoundError();
 
     await TransactionService.linkTransaction(transaction, transactionScheduled);
   }
@@ -92,8 +69,8 @@ export const create = async (req: Request, res: Response) => {
       req.user!,
       req.body.linkedPaymentMethodId
     );
-    if (!paymentMethod)
-      return res.status(404).send({ message: NOT_FOUND("paymentMethod") });
+    if (!paymentMethod) throw new PaymentMethodNotFoundError();
+
     await TransactionService.updatePaymentMethod(transaction, paymentMethod);
   }
 
@@ -128,10 +105,9 @@ export const updateV2 = async (req: Request, res: Response) => {
     "isCurrent",
     "updateAsset",
   ]) {
-    if (!(field in req.body))
-      return res.status(400).send({
-        message: FIELD_REQUIRED(field),
-      });
+    if (!(field in req.body)) {
+      throw new FieldRequiredError(field);
+    }
   }
 
   const transactionId = req.params._id as string;
@@ -149,7 +125,8 @@ export const updateV2 = async (req: Request, res: Response) => {
   const { transaction } = await TransactionService.findById(transactionId);
   if (!transaction) throw new TransactionNotFoundError();
 
-  if (!TransactionService.isUser(transaction, user)) throw new Error();
+  if (!TransactionService.isUser(transaction, user))
+    throw new NotPermittedError();
 
   const { transactionLinked, budget, assets } = await TransactionService.update(
     transaction,
@@ -176,76 +153,112 @@ export const updateV2 = async (req: Request, res: Response) => {
 };
 
 export const find = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
+  const user = req.user!;
 
-    if (req.params._id) {
-      const transactions = await Transaction.findById(req.params._id);
-      return res.status(200).send({ transactions });
-    }
-    if ("userId" in req.query) {
-      if (user.auth !== "admin") {
-        return res.status(403).send({ message: NOT_PERMITTED });
-      }
-      if (req.query.userId === "*") {
-        const transactions = await Transaction.find({}).lean();
-        return res.status(200).send({ transactions });
-      }
-      const transactions = await Transaction.find({ userId: user._id }).lean();
-      return res.status(200).send({ transactions });
-    }
-    if ("linkedPaymentMethodId" in req.query) {
-      for (let field of ["startDate", "endDate"]) {
-        if (!(field in req.query)) {
-          return res.status(400).send({ message: FIELD_REQUIRED(field) });
-        }
-        if (!dateReg.test(`${req.query[field]}`)) {
-          return res.status(400).send({ message: FIELD_INVALID(field) });
-        }
-      }
+  if (req.params._id) {
+    const { transaction } = await TransactionService.findById(req.params._id);
 
-      const tz = user.settings.timeZone ?? basicTimeZone;
-      const startMMT = moment.tz(req.query.startDate, tz);
-      const endMMT = moment.tz(req.query.endDate, tz);
-      const transactions = await Transaction.find({
-        userId: user._id,
-        budgetId: { $exists: true, $ne: user.basicBudgetId },
-        linkedPaymentMethodId: req.query.linkedPaymentMethodId,
-        date: { $gte: startMMT.toDate(), $lt: endMMT.toDate() },
-      }).lean();
-      return res.status(200).send({
-        amountTotal: transactions.reduce((sum, cur) => sum + cur.amount, 0),
-        description: {
-          gte: `${startMMT.format()}`,
-          lt: `${endMMT.format()}`,
-        },
-        transactions,
-      });
+    if (!transaction) {
+      throw new TransactionNotFoundError();
     }
-    if ("tag" in req.query) {
-      const transactions = await Transaction.find({
-        userId: user._id,
-        budgetId: { $ne: user.basicBudgetId },
-        tags: { $elemMatch: { $eq: req.query.tag } },
-      });
 
-      return res.status(200).send({
-        transactions,
-      });
+    if (
+      !AuthService.isAdmin(user) &&
+      !TransactionService.isUser(transaction, user)
+    ) {
+      throw new NotPermittedError();
     }
-    if (!("budgetId" in req.query))
-      return res.status(400).send({
-        message: FIELD_REQUIRED("budgetId"),
-      });
-    const transactions = await Transaction.find({
-      userId: user._id,
-      budgetId: req.query.budgetId,
-    });
-    return res.status(200).send({ transactions });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+
+    return res.status(200).send({ transactions: transaction });
   }
+
+  if ("userId" in req.query) {
+    if (!AuthService.isAdmin(user)) {
+      throw new NotPermittedError();
+    }
+
+    if (req.query.userId === "*") {
+      const { transactions } = await TransactionService.findAll();
+      return res.status(200).send({ transactions });
+    }
+
+    const { transactions } = await TransactionService.findByUser(user._id);
+    return res.status(200).send({ transactions });
+  }
+
+  if ("linkedPaymentMethodId" in req.query) {
+    for (let field of ["startDate", "endDate"]) {
+      if (!(field in req.query)) throw new FieldRequiredError(field);
+      if (!dateReg.test(`${req.query[field]}`))
+        throw new FieldInvalidError(field);
+    }
+
+    const tz = user.settings.timeZone;
+    const startMMT = moment.tz(req.query.startDate, tz);
+    const endMMT = moment.tz(req.query.endDate, tz);
+
+    const startDate = startMMT.toDate();
+    const endDate = endMMT.toDate();
+    const linkedPaymentMethodId = req.query.linkedPaymentMethodId as string;
+
+    const { transactions } =
+      await TransactionService.findByLinkedPaymentMethodIdBetweenDates(
+        user,
+        linkedPaymentMethodId,
+        startDate,
+        endDate
+      );
+
+    if (!AuthService.isAdmin(user)) {
+      for (let transaction of transactions) {
+        if (!TransactionService.isUser(transaction, user))
+          throw new NotPermittedError();
+      }
+    }
+
+    return res.status(200).send({
+      amountTotal: transactions.reduce((sum, cur) => sum + cur.amount, 0),
+      description: {
+        gte: `${startMMT.format()}`,
+        lt: `${endMMT.format()}`,
+      },
+      transactions,
+    });
+  }
+
+  if ("tag" in req.query) {
+    const tag = req.query.tag as string;
+
+    const { transactions } = await TransactionService.findByTag(user, tag);
+
+    if (!AuthService.isAdmin(user)) {
+      for (let transaction of transactions) {
+        if (!TransactionService.isUser(transaction, user))
+          throw new NotPermittedError();
+      }
+    }
+
+    return res.status(200).send({
+      transactions,
+    });
+  }
+
+  if ("budgetId" in req.query) {
+    const budgetId = req.query.budgetId as string;
+
+    const { transactions } = await TransactionService.findByBudgetId(budgetId);
+
+    if (!AuthService.isAdmin(user)) {
+      for (let transaction of transactions) {
+        if (!TransactionService.isUser(transaction, user))
+          throw new NotPermittedError();
+      }
+    }
+
+    return res.status(200).send({ transactions });
+  }
+
+  throw new InvalidError();
 };
 
 /**
@@ -254,80 +267,30 @@ export const find = async (req: Request, res: Response) => {
  * @param {_id: oid}
  */
 export const remove = async (req: Request, res: Response) => {
-  try {
-    if (!("_id" in req.params))
-      return res.status(400).send({
-        message: FIELD_REQUIRED("_id"),
-      });
+  const user = req.user!;
 
-    let user = req.user!;
-    const transaction = await Transaction.findById(req.params._id);
-    if (!transaction)
-      return res.status(404).send({ message: NOT_FOUND("transaction") });
+  const transactionId = req.params._id as string;
 
-    if (!transaction.userId.equals(user._id)) {
-      if (user.auth !== "admin") {
-        return res.status(403).send({ message: NOT_PERMITTED });
-      }
-      const _user = await User.findById(transaction.userId);
-      if (!_user) return res.status(404).send({ message: NOT_FOUND("user") });
-      user = _user;
+  const { transaction } = await TransactionService.findById(transactionId);
+  if (!transaction) throw new TransactionNotFoundError();
+
+  if (!TransactionService.isUser(transaction, user)) {
+    if (!AuthService.isAdmin(user)) {
+      throw new NotPermittedError();
     }
-
-    const { budget } = await BudgetService.findById(transaction.budgetId);
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
-
-    let transactionLinked: HydratedDocument<ITransaction> | null = null;
-    if (transaction.linkId) {
-      transactionLinked = await Transaction.findById(transaction.linkId);
-    }
-
-    let isUserUpdated = false;
-    if (
-      transaction.isCurrent &&
-      transaction.linkedPaymentMethodId &&
-      transaction.updateAsset
-    ) {
-      if (transaction.linkedPaymentMethodType === "asset") {
-        const asset = _.find(user.assets, {
-          _id: transaction.linkedPaymentMethodId,
-        });
-        if (asset) {
-          asset.amount += transaction.amount;
-          isUserUpdated = true;
-        }
-      } else {
-        const card = _.find(user.cards, {
-          _id: transaction.linkedPaymentMethodId,
-        });
-        if (card && card.linkedAssetId) {
-          const asset = _.find(user.assets, {
-            _id: card.linkedAssetId,
-          });
-          if (asset) {
-            asset.amount += transaction.amount;
-            isUserUpdated = true;
-          }
-        }
-      }
-    }
-    if (isUserUpdated) user.saveReqUser();
-    await transaction.remove();
-
-    if (transactionLinked) {
-      transactionLinked.linkId = undefined;
-      transactionLinked.overAmount = undefined;
-      await transactionLinked.save();
-    }
-    await budget.calculate();
-
-    return res.status(200).send({
-      transactionLinked: transactionLinked ?? undefined,
-      budget,
-      assets: isUserUpdated ? user.assets : undefined,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
   }
+
+  const { transactionRemoved, transactionLinkedRemoved } =
+    await TransactionService.remove(transaction);
+
+  const { budget } = await BudgetService.findById(transaction.budgetId);
+  if (budget) {
+    await BudgetService.calculate(budget);
+  }
+
+  return res.status(200).send({
+    transactionLinked: transactionLinkedRemoved,
+    budget,
+    assets: user.assets,
+  });
 };
