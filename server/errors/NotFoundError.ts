@@ -44,3 +44,15 @@ export class ChallengeNotFoundError extends NotFoundError {
     super("challenge");
   }
 }
+
+export class ItemNotFoundError extends NotFoundError {
+  constructor() {
+    super("item");
+  }
+}
+
+export class PaymentNotFoundError extends NotFoundError {
+  constructor() {
+    super("payment");
+  }
+}

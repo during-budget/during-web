@@ -22,6 +22,14 @@ export const findByType = async (type: string) => {
   return { items: itemRecordList };
 };
 
+export const findByTitle = async (title: string) => {
+  const itemRecord = await ItemModel.findOne({
+    title,
+  });
+
+  return { item: itemRecord };
+};
+
 export const updateById = async (
   itemId: string,
   title: string,
