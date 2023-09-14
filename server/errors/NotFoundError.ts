@@ -38,3 +38,9 @@ export class TransactionNotFoundError extends NotFoundError {
     super("transaction");
   }
 }
+
+export class ChallengeNotFoundError extends NotFoundError {
+  constructor() {
+    super("challenge");
+  }
+}

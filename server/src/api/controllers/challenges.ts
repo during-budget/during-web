@@ -1,129 +1,123 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import { ObjectId, Types } from "mongoose";
 
-import { IPaymentMethod, IUser, User } from "src/models/User";
-
-import { logger } from "src/api/middleware/loggers";
-import { FIELD_REQUIRED, NOT_FOUND, NOT_PERMITTED } from "../message";
-import { FIELD_INVALID } from "../message";
-import { Challenge, IChallenge } from "src/models/Challenge";
-import { Transaction } from "src/models/Transaction";
-
-const findTransactions = async (opts: {
-  challenge: IChallenge;
-  user: IUser;
-}) => {
-  if (opts.challenge.type === "category") {
-    return await Transaction.find({
-      userId: opts.user._id,
-      budgetId: { $ne: opts.user.basicBudgetId },
-      date: { $gte: opts.challenge.startDate, $lte: opts.challenge.endDate },
-      "category.categoryId": opts.challenge.categoryId,
-    });
-  }
-
-  return await Transaction.find({
-    userId: opts.user._id,
-    budgetId: { $ne: opts.user.basicBudgetId },
-    date: { $gte: opts.challenge.startDate, $lte: opts.challenge.endDate },
-    tags: { $elemMatch: { $eq: opts.challenge.tag } },
-  });
-};
+import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
+import * as ChallengeService from "src/services/challenges";
+import { isAdmin } from "src/services/users/auth";
+import { NotPermittedError } from "errors/ForbiddenError";
+import { ChallengeNotFoundError } from "errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
-  try {
-    for (let field of [
-      "startDate",
-      "endDate",
-      "type",
-      "amount",
-      "comparison",
-    ]) {
-      if (!(field in req.body)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
-      }
-    }
-    if (req.body.type === "category") {
-      if (!("categoryId" in req.body)) {
-        return res.status(400).send({ message: FIELD_REQUIRED("categoryId") });
-      }
-      if (
-        !_.find(req.user?.categories, {
-          _id: new Types.ObjectId(req.body.categoryId),
-        })
-      ) {
-        return res.status(404).send({ message: NOT_FOUND("category") });
-      }
-    } else if (req.body.type === "tag") {
-      if (!("tag" in req.body)) {
-        return res.status(400).send({ message: FIELD_REQUIRED("tag") });
-      }
-    } else {
-      return res.status(400).send({ message: FIELD_INVALID("type") });
-    }
-    if (
-      req.body.comparison !== "lt" &&
-      req.body.comparison !== "lte" &&
-      req.body.comparison !== "gt" &&
-      req.body.comparison !== "gte"
-    ) {
-      return res.status(400).send({ message: FIELD_INVALID("comparison") });
-    }
-    const user = req.user!;
+  const user = req.user!;
 
-    const challenge = await Challenge.create({
-      userId: user._id,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      type: req.body.type,
-      categoryId: req.body.categoryId,
-      tag: req.body.tag,
-      amount: req.body.amount,
-      comparison: req.body.comparison,
-    });
-    const transactions = await findTransactions({ challenge, user });
+  for (let field of ["startDate", "endDate", "type", "amount", "comparison"]) {
+    if (!(field in req.body)) {
+      throw new FieldRequiredError(field);
+    }
+  }
+  if (
+    req.body.comparison !== "lt" &&
+    req.body.comparison !== "lte" &&
+    req.body.comparison !== "gt" &&
+    req.body.comparison !== "gte"
+  ) {
+    throw new FieldInvalidError("comparison");
+  }
+
+  const startDate = new Date(req.body.startDate);
+  const endDate = new Date(req.body.endDate);
+  const type = req.body.type as string;
+  const amount = req.body.amount as number;
+  const comparison = req.body.comparison as "lt" | "lte" | "gt" | "gte";
+
+  if (type === "category") {
+    const categoryId = req.body.categoryId;
+
+    if (!categoryId) {
+      throw new FieldRequiredError("categoryId");
+    }
+
+    const { challenge } = await ChallengeService.createCategoryChallenge(
+      user,
+      categoryId,
+      {
+        startDate,
+        endDate,
+        amount,
+        comparison,
+      }
+    );
+    const { transactions } = await ChallengeService.findChallengeTransactions(
+      user,
+      challenge
+    );
 
     return res.status(200).send({
       challenge,
       transactions,
     });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  } else if (type === "tag") {
+    const tag = req.body.tag as string | undefined;
+    if (!tag) {
+      throw new FieldRequiredError("tag");
+    }
+
+    const { challenge } = await ChallengeService.createTagChallenge(user, tag, {
+      startDate,
+      endDate,
+      amount,
+      comparison,
+    });
+    const { transactions } = await ChallengeService.findChallengeTransactions(
+      user,
+      challenge
+    );
+
+    return res.status(200).send({
+      challenge,
+      transactions,
+    });
+  } else {
+    throw new FieldInvalidError("type");
   }
 };
 
 export const find = async (req: Request, res: Response) => {
-  try {
-    let user = req.user!;
+  const user = req.user!;
 
-    if ("userId" in req.query) {
-      if (user.auth !== "admin") {
-        return res.status(403).send({ message: NOT_PERMITTED });
-      }
-      const _user = await User.findOne({ userId: req.query.userId });
-      if (!_user) {
-        return res.status(404).send({ message: NOT_FOUND("user") });
-      }
-      user = _user;
-    }
-
-    const challenges = await Challenge.find({ userId: user._id });
-    const transactionsList = await Promise.all(
-      challenges.map((challenge) => findTransactions({ challenge, user }))
-    );
-
-    return res.status(200).send({
-      challengeList: challenges.map((challenge, idx) => {
-        return {
-          ...challenge.toObject(),
-          transactions: transactionsList[idx],
-        };
-      }),
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
+  let userId: string = user._id.toString();
+  if ("userId" in req.query) {
+    if (!isAdmin(user)) throw new NotPermittedError();
+    userId = req.query.userId as string;
   }
+
+  const { challenges } = await ChallengeService.findByUserId(userId);
+  const transactionsList = await Promise.all(
+    challenges.map((challenge) =>
+      ChallengeService.findChallengeTransactions(user, challenge)
+    )
+  );
+
+  return res.status(200).send({
+    challengeList: challenges.map((challenge, idx) => {
+      return {
+        ...challenge.toObject(),
+        transactions: transactionsList[idx],
+      };
+    }),
+  });
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const user = req.user!;
+
+  const challengeId: string = req.params._id as string;
+
+  const { challenge } = await ChallengeService.findById(challengeId);
+  if (!challenge) throw new ChallengeNotFoundError();
+
+  if (!ChallengeService.isUser(challenge, user)) throw new NotPermittedError();
+
+  await ChallengeService.remove(challenge);
+  return res.status(200).send();
 };
