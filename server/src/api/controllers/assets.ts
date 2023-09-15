@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { FIELD_REQUIRED, NOT_FOUND } from "../message";
 
 import { AssetService } from "src/services/users";
+import { AssetNotFoundError } from "errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {
@@ -74,6 +75,12 @@ export const updateAll = async (req: Request, res: Response) => {
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
 
+  if (req.params._id) {
+    const assetId = req.params._id;
+    const { asset } = AssetService.findById(user, assetId);
+    if (!asset) throw new AssetNotFoundError();
+    return res.status(200).send({ asset });
+  }
   return res.status(200).send({
     assets: user.assets,
   });

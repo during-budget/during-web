@@ -6,7 +6,7 @@ import * as assets from "src/api/controllers/assets";
 import { wrapAsync } from "../middleware/error";
 
 router.put("/", isLoggedIn, wrapAsync(assets.updateAll));
-router.get("/", isLoggedIn, wrapAsync(assets.find));
+router.get("/:_id?", isLoggedIn, wrapAsync(assets.find));
 
 router.post("/", isLoggedIn, wrapAsync(assets.create));
 router.put("/:_id", isLoggedIn, wrapAsync(assets.update));

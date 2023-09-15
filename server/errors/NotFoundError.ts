@@ -56,3 +56,15 @@ export class PaymentNotFoundError extends NotFoundError {
     super("payment");
   }
 }
+
+export class AssetNotFoundError extends NotFoundError {
+  constructor() {
+    super("asset");
+  }
+}
+
+export class CardNotFoundError extends NotFoundError {
+  constructor() {
+    super("card");
+  }
+}
