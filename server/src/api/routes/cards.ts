@@ -6,7 +6,7 @@ import * as cards from "src/api/controllers/cards";
 import { wrapAsync } from "../middleware/error";
 
 router.put("/", isLoggedIn, wrapAsync(cards.updateAll));
-router.get("/", isLoggedIn, wrapAsync(cards.find));
+router.get("/:_id?", isLoggedIn, wrapAsync(cards.find));
 
 router.post("/", isLoggedIn, wrapAsync(cards.create));
 router.put("/:_id", isLoggedIn, wrapAsync(cards.update));

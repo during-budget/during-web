@@ -7,6 +7,7 @@ import {
   CardService,
   PaymentMethodService,
 } from "src/services/users";
+import { CardNotFoundError } from "errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {
@@ -98,6 +99,12 @@ export const updateAll = async (req: Request, res: Response) => {
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
 
+  if (req.params._id) {
+    const cardId = req.params._id;
+    const { card } = CardService.findById(user, cardId);
+    if (!card) throw new CardNotFoundError();
+    return res.status(200).send({ card });
+  }
   return res.status(200).send({
     cards: user.cards,
   });
