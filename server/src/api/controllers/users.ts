@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import _ from "lodash";
 
 import * as UserService from "src/services/users";
-import { NOT_FOUND } from "../message";
+import { UserNotFoundError } from "errors/NotFoundError";
 
 //_____________________________________________________________________________
 
@@ -94,9 +94,8 @@ export const findByAdmin = async (req: Request, res: Response) => {
 
 export const removeByAdmin = async (req: Request, res: Response) => {
   const { user } = await UserService.findById(req.params._id);
-  if (!user) {
-    return res.status(404).send({ message: NOT_FOUND("user") });
-  }
+  if (!user) throw new UserNotFoundError();
+
   await UserService.remove(user);
 
   return res.status(200).send({});

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { logger } from "src/api/middleware/loggers";
 import { NextFunction } from "express-serve-static-core";
 
 import passport from "passport";
@@ -15,11 +14,12 @@ import {
   LOGIN_VERIFICATION_CODE_SENT,
   REGISTER_VERIFICATION_CODE_SENT,
   EMAIL_UPDATE_VERIFICATION_CODE_SENT,
-  AT_LEAST_ONE_SNSID_IS_REQUIRED,
-  NOT_FOUND,
 } from "../message";
 
 import * as UserService from "src/services/users";
+import { SnsIdNotFoundError } from "errors/NotFoundError";
+import { AtLeastOneSnsIdIsRequiredError } from "errors/ConfilicError";
+import { FieldInvalidError } from "errors/InvalidError";
 const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
@@ -27,19 +27,14 @@ const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 const clientAdminURL = process.env.CLIENT_ADMIN.trim();
 
 export const find = async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
+  const user = req.user!;
 
-    return res.status(200).send({
-      email: user.email,
-      isLocal: user.isLocal,
-      snsId: user.snsId ?? {},
-      isGuest: user.isGuest,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(500).send({ message: err.message });
-  }
+  return res.status(200).send({
+    email: user.email,
+    isLocal: user.isLocal,
+    snsId: user.snsId ?? {},
+    isGuest: user.isGuest,
+  });
 };
 
 export const callbackAdmin = async (
@@ -57,7 +52,6 @@ export const callbackAdmin = async (
           return res.redirect(clientAdminURL + "/login/redirect");
         });
       } catch (err: any) {
-        logger.error(err.message);
         return res.redirect(
           clientAdminURL + "?error=" + encodeURIComponent(err.message)
         );
@@ -127,7 +121,6 @@ export const callback = async (
           clientRedirectURL + `?message=${encodeURIComponent(CONNECT_SUCCESS)}`
         );
       } catch (err: any) {
-        logger.error(err.message);
         return res.redirect(
           clientRedirectURL + `?message=${encodeURIComponent(err.message)}`
         );
@@ -155,9 +148,7 @@ export const local = async (
         | "updateEmailVerify"
     ) => {
       try {
-        if (authError) {
-          return res.status(401).send({ message: authError.message });
-        }
+        if (authError) throw authError;
 
         /* _____ 로그인 & 회원가입 & 이메일 변경 _____ */
         if (type === "login") {
@@ -203,8 +194,7 @@ export const local = async (
           });
         }
       } catch (err: any) {
-        logger.error(err.message);
-        return res.status(500).send({ message: err.message });
+        next(err);
       }
     }
   )(req, res, next);
@@ -219,9 +209,8 @@ export const guest = async (
     "guestV2",
     async (authError?: Error, user?: Express.User) => {
       try {
-        if (authError || !user) {
-          throw authError;
-        }
+        if (authError || !user) throw authError;
+
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
           /* set maxAge as 1 year if auto login is requested */
@@ -234,53 +223,42 @@ export const guest = async (
           });
         });
       } catch (err: any) {
-        logger.error(err.message);
-        return res.status(500).send({ message: err.message });
+        next(err);
       }
     }
   )(req, res, next);
 };
 
 export const disconnect = async (req: Request, res: Response) => {
-  try {
-    const provider = req.params.provider;
-    const user = req.user!;
+  const provider = req.params.provider;
+  const user = req.user!;
 
-    if (provider === "google" || provider === "naver" || provider === "kakao") {
-      if (!AuthService.checkSnsIdActive(user, provider)) {
-        return res.status(404).send({ message: NOT_FOUND("snsId") });
-      }
-      if (
-        !AuthService.isLocalLoginActive(user) &&
-        AuthService.countActiveSnsId(user) === 1
-      ) {
-        return res
-          .status(409)
-          .send({ message: 409, AT_LEAST_ONE_SNSID_IS_REQUIRED });
-      }
-      await AuthService.removeSnsId(user, provider);
-    } else if (provider === "local") {
-      if (!AuthService.hasActiveSnsId(user)) {
-        return res
-          .status(409)
-          .send({ message: AT_LEAST_ONE_SNSID_IS_REQUIRED });
-      }
-
-      await AuthService.disableLocalLogin(user);
-    } else {
-      return res.status(400).send({ message: FIELD_INVALID(provider) });
+  if (provider === "google" || provider === "naver" || provider === "kakao") {
+    if (!AuthService.checkSnsIdActive(user, provider))
+      throw new SnsIdNotFoundError();
+    if (
+      !AuthService.isLocalLoginActive(user) &&
+      AuthService.countActiveSnsId(user) === 1
+    ) {
+      throw new AtLeastOneSnsIdIsRequiredError();
+    }
+    await AuthService.removeSnsId(user, provider);
+  } else if (provider === "local") {
+    if (!AuthService.hasActiveSnsId(user)) {
+      throw new AtLeastOneSnsIdIsRequiredError();
     }
 
-    return res.status(200).send({
-      email: user.email,
-      isLocal: user.isLocal,
-      snsId: user.snsId ?? {},
-      isGuest: user.isGuest,
-    });
-  } catch (err: any) {
-    logger.error(err.message);
-    return res.status(err.status ?? 500).send({ message: err.message });
+    await AuthService.disableLocalLogin(user);
+  } else {
+    throw new FieldInvalidError(provider);
   }
+
+  return res.status(200).send({
+    email: user.email,
+    isLocal: user.isLocal,
+    snsId: user.snsId ?? {},
+    isGuest: user.isGuest,
+  });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -296,7 +274,6 @@ export const logout = async (req: Request, res: Response) => {
       }
       return res.status(200).send({});
     } catch (err: any) {
-      logger.error(err.message);
       return res.status(err.status || 500).send({ message: err.message });
     }
   });

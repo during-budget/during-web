@@ -1,10 +1,15 @@
 import passport from "passport";
 import { Strategy as KakaoStrategy, Profile } from "passport-kakao";
 import { Request } from "express";
-import { CONNECTED_ALREADY, EMAIL_IN_USE, SNSID_IN_USE } from "src/api/message";
+
 import * as UserService from "src/services/users";
 const AuthService = UserService.AuthService;
 import { ProfileParser } from "./profileParser";
+import {
+  EmailIsInUseError,
+  SnsIdIsAlreadyConnectedError,
+  SnsIdIsInUseError,
+} from "errors/AuthError";
 
 const sns = "kakao";
 class Parser extends ProfileParser {
@@ -47,10 +52,7 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
               const { user: exUser } = await UserService.findByEmail(
                 profile.email
               );
-              if (exUser) {
-                const err = new Error(EMAIL_IN_USE);
-                return done(err, null, null);
-              }
+              if (exUser) throw new EmailIsInUseError();
             }
 
             const { user: newUser } = await UserService.createSnsUser(
@@ -63,19 +65,14 @@ const kakao = (client: { ID: string; callbackURL: string }) => {
           /* if user is logged in - connect */
           const user = req.user!;
 
-          if (AuthService.checkSnsIdActive(user, sns)) {
-            const err = new Error(CONNECTED_ALREADY);
-            return done(err, null, null);
-          }
+          if (AuthService.checkSnsIdActive(user, sns))
+            throw new SnsIdIsAlreadyConnectedError();
 
           const { user: exUser } = await UserService.findBySnsId(
             sns,
             profile.id
           );
-          if (exUser) {
-            const err = new Error(SNSID_IN_USE);
-            return done(err, null, null);
-          }
+          if (exUser) throw new SnsIdIsInUseError();
 
           await AuthService.updateSnsId(user, sns, profile.id);
           return done(null, user, "connect");

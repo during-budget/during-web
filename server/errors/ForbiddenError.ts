@@ -14,3 +14,17 @@ export class NotPermittedError extends ForbiddenError {
     this.message = "NOT_PERMITTED";
   }
 }
+
+export class AlreadyLoggedInError extends ForbiddenError {
+  constructor() {
+    super();
+    this.message = "ALREADY_LOGGED_IN";
+  }
+}
+
+export class NotLoggedInError extends ForbiddenError {
+  constructor() {
+    super();
+    this.message = "NOT_LOGGED_IN";
+  }
+}

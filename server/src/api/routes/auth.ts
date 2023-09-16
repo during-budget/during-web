@@ -3,6 +3,7 @@ const router = express.Router();
 import { isLoggedIn, isNotLoggedIn } from "src/api/middleware/auth";
 import * as auth from "src/api/controllers/auth";
 import passport from "passport";
+import { wrapAsync } from "../middleware/error";
 
 router.get("/", isLoggedIn, auth.find);
 
@@ -30,7 +31,7 @@ router.post("/guest", auth.guest);
 
 router.get("/:provider/callback", auth.callback);
 
-router.delete("/:provider", isLoggedIn, auth.disconnect);
+router.delete("/:provider", isLoggedIn, wrapAsync(auth.disconnect));
 
 router.get("/logout", isLoggedIn, auth.logout);
 

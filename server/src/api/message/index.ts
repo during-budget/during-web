@@ -42,48 +42,8 @@ export const FIELD_INVALID = (field: string) =>
   `${field.toUpperCase()}_INVALID`;
 
 /**
- * @code 401 Unauthorized
- */
-export const INVALID_EMAIL = "INVALID_EMAIL";
-export const EMAIL_IN_USE = "EMAIL_IN_USE";
-export const SNSID_IN_USE = "SNSID_IN_USE";
-export const CONNECTED_ALREADY = "CONNECTED_ALREADY";
-export const USER_NOT_FOUND = "USER_NOT_FOUND";
-export const VERIFICATION_CODE_WRONG = "VERIFICATION_CODE_WRONG";
-export const VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED";
-export const LOCAL_LOGIN_DISABLED = "LOCAL_LOGIN_DISABLED";
-
-/**
  * @code 403 Forbidden
  */
 export const NOT_LOGGED_IN = "NOT_LOGGED_IN";
 export const ALREADY_LOGGED_IN = "ALREADY_LOGGED_IN";
 export const NOT_PERMITTED = "NOT_PERMITTED";
-
-/**
- * @code 404 Not Found
- */
-export const NOT_FOUND = (field: string) => `${field.toUpperCase()}_NOT_FOUND`;
-
-/**
- * @code 409 Conflict
- */
-export const AT_LEAST_ONE_SNSID_IS_REQUIRED = "AT_LEAST_ONE_SNSID_IS_REQUIRED";
-export const CATEGORY_CANOT_BE_UPDATED = "CATEGORY_CANOT_BE_UPDATED";
-export const INVALID_CATEGORY = "INVALID_CATEGORY";
-export const PM_CANNOT_BE_REMOVED = "PM_CANNOT_BE_REMOVED";
-export const PAIED_ALREADY = "PAIED_ALREADY";
-export const FAKE_PAYMENT_ATTEMPT = "FAKE_PAYMENT_ATTEMPT";
-export const PAYMENT_NOT_PAID = "PAYMENT_NOT_PAID";
-
-/**
- * 5xx Server Error
- * ---------------------------------------------
- * 500 Internal Server Error
- * ---------------------------------------------
- */
-
-/**
- * @code 500 Internal Server Error
- */
-export const FETCHING_ACCESSTOKEN_FAILED = "FETCHING_ACCESSTOKEN_FAILED";

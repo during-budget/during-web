@@ -1,5 +1,6 @@
+import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
+import { PaymentNotFoundError } from "errors/NotFoundError";
 import { Request, Response } from "express";
-import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "src/api/message";
 import * as PaymentService from "src/services/payments";
 import { SettingService } from "src/services/users";
 
@@ -22,27 +23,22 @@ export const update = async (req: Request, res: Response) => {
         user._id,
         chartSkin
       );
-      if (!payment) {
-        return res.status(409).send({ message: NOT_FOUND("payment") });
-      }
+      if (!payment) throw new PaymentNotFoundError();
     }
-    if (!SettingService.isValidChartSkinOption(chartSkin)) {
-      return res.status(400).send({ message: FIELD_INVALID("chartSkin") });
-    }
+    if (!SettingService.isValidChartSkinOption(chartSkin))
+      throw new FieldInvalidError("chartSkin");
     await SettingService.updateChartSkinSetting(user, chartSkin);
   }
 
   if (timeZone) {
-    if (!SettingService.isValidTimeZoneOption(timeZone)) {
-      return res.status(400).send({ message: FIELD_INVALID("timeZone") });
-    }
+    if (!SettingService.isValidTimeZoneOption(timeZone))
+      throw new FieldInvalidError("timeZone");
     await SettingService.updateTimeZoneSetting(user, timeZone);
   }
 
   if (theme) {
-    if (!SettingService.isValidThemeOption(theme)) {
-      return res.status(400).send({ message: FIELD_INVALID("theme") });
-    }
+    if (!SettingService.isValidThemeOption(theme))
+      throw new FieldInvalidError("theme");
     await SettingService.updateThemeSetting(user, theme);
   }
 
@@ -52,9 +48,7 @@ export const update = async (req: Request, res: Response) => {
 };
 
 export const options = async (req: Request, res: Response) => {
-  if (!("field" in req.query)) {
-    return res.status(400).send({ message: FIELD_REQUIRED("field") });
-  }
+  if (!("field" in req.query)) throw new FieldRequiredError("field");
   if (req.query.field === "chartSkin") {
     const user = req.user!;
     const { defaultOptions, options } =
@@ -78,5 +72,5 @@ export const options = async (req: Request, res: Response) => {
       options,
     });
   }
-  return res.status(400).send({ message: FIELD_INVALID("field") });
+  throw new FieldInvalidError("field");
 };

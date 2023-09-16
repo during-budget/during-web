@@ -1,17 +1,22 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 import { Types } from "mongoose";
-import { FIELD_REQUIRED, NOT_FOUND } from "../message";
+
 import {
   AssetService,
   CardService,
   PaymentMethodService,
 } from "src/services/users";
-import { CardNotFoundError } from "errors/NotFoundError";
+import {
+  AssetNotFoundError,
+  CardNotFoundError,
+  TransactionNotFoundError,
+} from "errors/NotFoundError";
+import { FieldRequiredError } from "errors/InvalidError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {
-    return res.status(400).send({ message: FIELD_REQUIRED("title") });
+    throw new FieldRequiredError("title");
   }
 
   const user = req.user!;
@@ -29,7 +34,7 @@ export const create = async (req: Request, res: Response) => {
   if ("linkedAssetId" in req.body) {
     const { asset } = AssetService.findById(user, req.body.linkedAssetId);
     if (!asset) {
-      return res.status(404).send({ message: NOT_FOUND("asset") });
+      throw new AssetNotFoundError();
     }
     _card.linkedAssetId = asset._id;
     _card.linkedAssetIcon = asset.icon;
@@ -47,9 +52,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   for (let field of ["icon", "title", "detail"]) {
     if (!(field in req.body)) {
-      return res.status(400).send({
-        message: FIELD_REQUIRED(field),
-      });
+      throw new FieldRequiredError(field);
     }
   }
 
@@ -57,7 +60,7 @@ export const update = async (req: Request, res: Response) => {
 
   /* update card */
   const { idx, card } = CardService.findById(user, req.params._id);
-  if (idx === -1) return res.status(404).send({ message: NOT_FOUND("card") });
+  if (idx === -1) throw new CardNotFoundError();
 
   const newCard = {
     ...card,
@@ -75,11 +78,10 @@ export const update = async (req: Request, res: Response) => {
 
 export const updateAll = async (req: Request, res: Response) => {
   /* validate */
-  if (!("cards" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("cards") });
+  if (!("cards" in req.body)) throw new FieldRequiredError("cards");
   for (let _card of req.body.cards) {
     if (!("_id" in _card) && !("title" in _card)) {
-      return res.status(400).send({ message: FIELD_REQUIRED("title") });
+      throw new FieldRequiredError("title");
     }
   }
   const user = req.user!;
@@ -117,7 +119,7 @@ export const remove = async (req: Request, res: Response) => {
     user,
     new Types.ObjectId(req.params._id)
   );
-  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+  if (!card) throw new CardNotFoundError();
 
   await CardService.remove(user, card._id);
 
@@ -132,7 +134,7 @@ export const findCardTransactions = async (req: Request, res: Response) => {
   const linkedPaymentMethodId = req.params._id;
 
   if (!req.query.year) {
-    return res.status(400).send({ message: FIELD_REQUIRED("year") });
+    throw new FieldRequiredError("year");
   }
   const year = parseInt(req.query.year as string);
 
@@ -153,14 +155,13 @@ export const createCardTransaction = async (req: Request, res: Response) => {
   const cardId = req.params._id;
 
   for (let field of ["year", "month", "amount"])
-    if (!(field in req.body))
-      return res.status(400).send({ message: FIELD_REQUIRED(field) });
+    if (!(field in req.body)) throw new FieldRequiredError(field);
   const year = parseInt(req.body.year);
   const month = parseInt(req.body.month);
   const amount = parseInt(req.body.amount);
 
   const { card } = CardService.findById(user, cardId);
-  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+  if (!card) throw new CardNotFoundError();
 
   const { transaction } = await CardService.createPostPaidTransaction(
     user,
@@ -183,18 +184,17 @@ export const updateCardTransaction = async (req: Request, res: Response) => {
 
   for (let field of ["year", "month"]) {
     if (!(field in req.query)) {
-      return res.status(400).send({ message: FIELD_REQUIRED(field) });
+      throw new FieldRequiredError(field);
     }
   }
   const year = parseInt(req.query.year as string);
   const month = parseInt(req.query.month as string);
 
-  if (!("amount" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("amount") });
+  if (!("amount" in req.body)) throw new FieldRequiredError("amount");
   const amount = parseInt(req.body.amount);
 
   const { card } = CardService.findById(user, cardId);
-  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+  if (!card) throw new CardNotFoundError();
 
   const { transaction } = await CardService.updatePostPaidTransactionAmount(
     user,
@@ -204,7 +204,7 @@ export const updateCardTransaction = async (req: Request, res: Response) => {
     amount
   );
   if (!transaction) {
-    return res.status(404).send({ message: NOT_FOUND("transaction") });
+    throw new TransactionNotFoundError();
   }
 
   return res.status(200).send({
@@ -220,14 +220,14 @@ export const removeCardTransaction = async (req: Request, res: Response) => {
 
   for (let field of ["year", "month"]) {
     if (!(field in req.query)) {
-      return res.status(400).send({ message: FIELD_REQUIRED(field) });
+      throw new FieldRequiredError(field);
     }
   }
   const year = parseInt(req.query.year as string);
   const month = parseInt(req.query.month as string);
 
   const { card } = CardService.findById(user, cardId);
-  if (!card) return res.status(404).send({ message: NOT_FOUND("card") });
+  if (!card) throw new CardNotFoundError();
 
   const { transaction } = await CardService.removePostPaidTransaction(
     user,
@@ -236,7 +236,7 @@ export const removeCardTransaction = async (req: Request, res: Response) => {
     month
   );
   if (!transaction) {
-    return res.status(404).send({ message: NOT_FOUND("transaction") });
+    throw new TransactionNotFoundError();
   }
 
   return res.status(200).send({

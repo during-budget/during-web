@@ -1,23 +1,21 @@
 import { Request, Response } from "express";
 
-import { FIELD_INVALID, FIELD_REQUIRED, NOT_FOUND } from "../message";
-
 import { CategoryService as UserCategoryService } from "src/services/users";
 import { CategoryService as BudgetCategoryService } from "src/services/budgets";
 
 import * as TransactionService from "src/services/transactions";
+import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
+import { CategoryNotFoundError } from "errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
   /* validate */
   const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
   const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
   if (isExpense === isIncome) {
-    return res.status(400).send({ message: FIELD_INVALID("isExpense") });
+    throw new FieldInvalidError("isExpense");
   }
-  if (!("title" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("title") });
-  if (!("icon" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("icon") });
+  if (!("title" in req.body)) throw new FieldRequiredError("title");
+  if (!("icon" in req.body)) throw new FieldRequiredError("icon");
 
   const { title, icon } = req.body;
   const user = req.user!;
@@ -35,17 +33,13 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const update = async (req: Request, res: Response) => {
-  if (!("title" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("title") });
-  if (!("icon" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("icon") });
+  if (!("title" in req.body)) throw new FieldRequiredError("title");
+  if (!("icon" in req.body)) throw new FieldRequiredError("icon");
 
   const user = req.user!;
 
   const { category } = UserCategoryService.findById(user, req.params._id);
-  if (!category) {
-    return res.status(404).send({ message: NOT_FOUND("category") });
-  }
+  if (!category) throw new CategoryNotFoundError();
 
   const { title, icon } = req.body;
 
@@ -66,12 +60,11 @@ export const update = async (req: Request, res: Response) => {
 
 export const updateAll = async (req: Request, res: Response) => {
   /* validate */
-  if (!("categories" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("categories") });
+  if (!("categories" in req.body)) throw new FieldRequiredError("categories");
   for (let _category of req.body.categories) {
     for (let field of ["title", "icon"]) {
       if (!(field in _category)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
+        throw new FieldRequiredError(field);
       }
     }
   }
@@ -114,21 +107,18 @@ export const updateAll = async (req: Request, res: Response) => {
 export const updatePartially = async (req: Request, res: Response) => {
   /* validate */
   if (!("isExpense" in req.body) && !("isIncome" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
+    throw new FieldRequiredError("isExpense");
 
-  if (!("categories" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("cateogires") });
+  if (!("categories" in req.body)) throw new FieldRequiredError("cateogires");
 
   const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
   const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
-  if (isExpense === isIncome) {
-    return res.status(400).send({ message: FIELD_INVALID("isExpense") });
-  }
+  if (isExpense === isIncome) throw new FieldInvalidError("isExpense");
 
   for (let _category of req.body.categories) {
     for (let field of ["title", "icon"]) {
       if (!(field in _category)) {
-        return res.status(400).send({ message: FIELD_REQUIRED(field) });
+        throw new FieldRequiredError(field);
       }
     }
   }
@@ -183,9 +173,7 @@ export const findOne = async (req: Request, res: Response) => {
 
   const { category } = UserCategoryService.findById(user, req.params._id);
 
-  if (!category) {
-    return res.status(404).send({ message: NOT_FOUND("category") });
-  }
+  if (!category) throw new CategoryNotFoundError();
 
   return res.status(200).send({
     category,
@@ -196,11 +184,7 @@ export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 
   const { idx, category } = UserCategoryService.findById(user, req.params._id);
-  if (idx === -1) {
-    return res
-      .status(404)
-      .send({ message: NOT_FOUND("category"), categories: user.categories });
-  }
+  if (!category) throw new CategoryNotFoundError();
 
   const defaultCategory = category.isExpense
     ? UserCategoryService.findDefaultExpenseCategory(user).category

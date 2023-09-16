@@ -68,3 +68,9 @@ export class CardNotFoundError extends NotFoundError {
     super("card");
   }
 }
+
+export class SnsIdNotFoundError extends NotFoundError {
+  constructor() {
+    super("snsId");
+  }
+}

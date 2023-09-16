@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 
-import { FIELD_REQUIRED, NOT_FOUND } from "../message";
-
 import { AssetService } from "src/services/users";
 import { AssetNotFoundError } from "errors/NotFoundError";
+import { FieldRequiredError } from "errors/InvalidError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {
-    return res.status(400).send({ message: FIELD_REQUIRED("title") });
+    throw new FieldRequiredError("title");
   }
 
   const user = req.user!;
@@ -23,9 +22,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   for (let field of ["icon", "title", "amount", "detail"]) {
     if (!(field in req.body)) {
-      return res.status(400).send({
-        message: FIELD_REQUIRED(field),
-      });
+      throw new FieldRequiredError(field);
     }
   }
 
@@ -33,7 +30,7 @@ export const update = async (req: Request, res: Response) => {
 
   /* update asset */
   const { idx, asset } = AssetService.findById(user, req.params._id);
-  if (idx === -1) return res.status(404).send({ message: NOT_FOUND("asset") });
+  if (idx === -1) throw new AssetNotFoundError();
 
   const { isUpdatedCards, isUpdatedPM } = await AssetService.update(
     user,
@@ -50,11 +47,10 @@ export const update = async (req: Request, res: Response) => {
 
 export const updateAll = async (req: Request, res: Response) => {
   /* validate */
-  if (!("assets" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("assets") });
+  if (!("assets" in req.body)) throw new FieldRequiredError("assets");
   for (let _asset of req.body.assets) {
     if (!("_id" in _asset) && !("title" in _asset)) {
-      return res.status(400).send({ message: FIELD_REQUIRED("title") });
+      throw new FieldRequiredError("title");
     }
   }
 
@@ -90,7 +86,7 @@ export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 
   const { asset } = AssetService.findById(user, req.params._id);
-  if (!asset) return res.status(404).send({ message: NOT_FOUND("asset") });
+  if (!asset) throw new AssetNotFoundError();
 
   const { isUpdatedCards } = await AssetService.remove(user, asset._id);
 
