@@ -9,8 +9,8 @@ import {
   EmailIsInUseError,
   SnsIdIsAlreadyConnectedError,
   SnsIdIsInUseError,
-} from "errors/AuthError";
-import { UserNotFoundError } from "errors/NotFoundError";
+} from "src/errors/AuthError";
+import { UserNotFoundError } from "src/errors/NotFoundError";
 
 const sns = "google";
 class Parser extends ProfileParser {

@@ -11,8 +11,8 @@ import {
   AssetNotFoundError,
   CardNotFoundError,
   TransactionNotFoundError,
-} from "errors/NotFoundError";
-import { FieldRequiredError } from "errors/InvalidError";
+} from "src/errors/NotFoundError";
+import { FieldRequiredError } from "src/errors/InvalidError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {

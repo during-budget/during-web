@@ -17,7 +17,7 @@ import {
   LocalLoginIsDisabledError,
   VerificationCodeIsExpiredError,
   VerificationCodeIsWrongError,
-} from "errors/AuthError";
+} from "src/errors/AuthError";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",

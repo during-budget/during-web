@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import _ from "lodash";
 
 import { PaymentMethodService } from "src/services/users";
-import { FieldRequiredError } from "errors/InvalidError";
+import { FieldRequiredError } from "src/errors/InvalidError";
 
 export const update = async (req: Request, res: Response) => {
   const user = req.user!;

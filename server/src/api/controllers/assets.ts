@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { AssetService } from "src/services/users";
-import { AssetNotFoundError } from "errors/NotFoundError";
-import { FieldRequiredError } from "errors/InvalidError";
+import { AssetNotFoundError } from "src/errors/NotFoundError";
+import { FieldRequiredError } from "src/errors/InvalidError";
 
 export const create = async (req: Request, res: Response) => {
   if (!("title" in req.body)) {

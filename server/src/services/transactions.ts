@@ -15,8 +15,8 @@ import {
   CategoryNotFoundError,
   PaymentMethodNotFoundError,
   UserNotFoundError,
-} from "errors/NotFoundError";
-import { IsCurrentCannotBeUpdatedError } from "errors/ConfilicError";
+} from "src/errors/NotFoundError";
+import { IsCurrentCannotBeUpdatedError } from "src/errors/ConfilicError";
 
 export const create = async (
   userRecord: HydratedDocument<IUser>,

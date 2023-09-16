@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
+import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
 import * as ChallengeService from "src/services/challenges";
 import { isAdmin } from "src/services/users/auth";
-import { NotPermittedError } from "errors/ForbiddenError";
-import { ChallengeNotFoundError } from "errors/NotFoundError";
+import { NotPermittedError } from "src/errors/ForbiddenError";
+import { ChallengeNotFoundError } from "src/errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
   const user = req.user!;

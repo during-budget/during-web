@@ -17,9 +17,9 @@ import {
 } from "../message";
 
 import * as UserService from "src/services/users";
-import { SnsIdNotFoundError } from "errors/NotFoundError";
-import { AtLeastOneSnsIdIsRequiredError } from "errors/ConfilicError";
-import { FieldInvalidError } from "errors/InvalidError";
+import { SnsIdNotFoundError } from "src/errors/NotFoundError";
+import { AtLeastOneSnsIdIsRequiredError } from "src/errors/ConfilicError";
+import { FieldInvalidError } from "src/errors/InvalidError";
 const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";

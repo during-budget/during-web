@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { FieldRequiredError } from "errors/InvalidError";
+import { FieldRequiredError } from "src/errors/InvalidError";
 
 import * as PaymentService from "src/services/payments";
 import * as ItemService from "src/services/items";
-import { PaiedAlreadyError } from "errors/PaymentError";
-import { ItemNotFoundError, PaymentNotFoundError } from "errors/NotFoundError";
+import { PaiedAlreadyError } from "src/errors/PaymentError";
+import {
+  ItemNotFoundError,
+  PaymentNotFoundError,
+} from "src/errors/NotFoundError";
 import { AuthService } from "src/services/users";
-import { NotPermittedError } from "errors/ForbiddenError";
+import { NotPermittedError } from "src/errors/ForbiddenError";
 
 export const prepare = async (req: Request, res: Response) => {
   const user = req.user!;
