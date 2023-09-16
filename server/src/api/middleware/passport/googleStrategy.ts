@@ -4,13 +4,13 @@ import { Strategy as GogoleStrategy, Profile } from "passport-google-oauth20";
 import * as UserService from "src/services/users";
 const AuthService = UserService.AuthService;
 
-import {
-  CONNECTED_ALREADY,
-  EMAIL_IN_USE,
-  SNSID_IN_USE,
-  USER_NOT_FOUND,
-} from "src/api/message";
 import { ProfileParser } from "./profileParser";
+import {
+  EmailIsInUseError,
+  SnsIdIsAlreadyConnectedError,
+  SnsIdIsInUseError,
+} from "errors/AuthError";
+import { UserNotFoundError } from "errors/NotFoundError";
 
 const sns = "google";
 class Parser extends ProfileParser {
@@ -66,8 +66,7 @@ const google = (client: {
                 profile.email
               );
               if (exUser) {
-                const err = new Error(EMAIL_IN_USE);
-                return done(err, null, null);
+                throw new EmailIsInUseError();
               }
             }
 
@@ -82,18 +81,14 @@ const google = (client: {
           const user = req.user!;
 
           if (AuthService.checkSnsIdActive(user, sns)) {
-            const err = new Error(CONNECTED_ALREADY);
-            return done(err, null, null);
+            throw new SnsIdIsAlreadyConnectedError();
           }
 
           const { user: exUser } = await UserService.findBySnsId(
             sns,
             profile.id
           );
-          if (exUser) {
-            const err = new Error(SNSID_IN_USE);
-            return done(err, null, null);
-          }
+          if (exUser) throw new SnsIdIsInUseError();
 
           await AuthService.updateSnsId(user, sns, profile.id);
           return done(null, user, "connect");
@@ -134,10 +129,8 @@ const googleAdmin = (client: {
           }
 
           /* register(blocked) */
-          const err = new Error(USER_NOT_FOUND);
-          return done(err, null);
+          throw new UserNotFoundError();
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }

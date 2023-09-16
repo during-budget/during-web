@@ -6,13 +6,13 @@ const BudgetCategoryService = BudgetService.CategoryService;
 
 import { AuthService } from "src/services/users";
 
+import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
 import {
-  CATEGORY_CANOT_BE_UPDATED,
-  FIELD_INVALID,
-  FIELD_REQUIRED,
-  NOT_FOUND,
-  NOT_PERMITTED,
-} from "../message";
+  BudgetNotFoundError,
+  CategoryNotFoundError,
+} from "errors/NotFoundError";
+import { NotPermittedError } from "errors/ForbiddenError";
+import { DefaultCategoryCannotBeUpdatedError } from "errors/ConfilicError";
 
 /**
  * Create budget based on basic budget
@@ -23,7 +23,7 @@ import {
 export const createWithBasic = async (req: Request, res: Response) => {
   for (let field of ["year", "month"]) {
     if (!(field in req.body)) {
-      return res.status(400).send({ message: FIELD_REQUIRED(field) });
+      throw new FieldRequiredError(field);
     }
   }
   const year = parseInt(req.body.year);
@@ -36,7 +36,7 @@ export const createWithBasic = async (req: Request, res: Response) => {
     user.basicBudgetId
   );
   if (!basicBudget) {
-    return res.status(404).send({ message: NOT_FOUND("budget") });
+    throw new BudgetNotFoundError();
   }
 
   const { budget, transactions } = await BudgetService.createWithBasicBudget(
@@ -57,7 +57,7 @@ export const findBasicBudget = async (req: Request, res: Response) => {
     user.basicBudgetId
   );
 
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget) throw new BudgetNotFoundError();
 
   return res.status(200).send({ budget, transactions });
 };
@@ -65,21 +65,20 @@ export const findBasicBudget = async (req: Request, res: Response) => {
 export const updateCategoriesV3 = async (req: Request, res: Response) => {
   /* validate */
   if (!("isExpense" in req.body) && !("isIncome" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("isExpense") });
-  if (!("categories" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("categories") });
+    throw new FieldRequiredError("isExpense");
+  if (!("categories" in req.body)) throw new FieldRequiredError("categories");
 
   const isExpense = "isExpense" in req.body ? req.body.isExpense : false;
   const isIncome = "isIncome" in req.body ? req.body.isIncome : false;
   if (isExpense === isIncome) {
-    return res.status(400).send({ message: FIELD_INVALID("isExpense") });
+    throw new FieldInvalidError("isExpense");
   }
 
   const user = req.user!;
   const { budget } = await BudgetService.findById(req.params._id);
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget) throw new BudgetNotFoundError();
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-    return res.status(403).send({ message: NOT_PERMITTED });
+    throw new NotPermittedError();
   }
 
   const { updated, excluded, included } = await BudgetCategoryService.updateAll(
@@ -110,14 +109,14 @@ export const updateCategoryAmountPlanned = async (
   res: Response
 ) => {
   if (!("amountPlanned" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("amountPlanned") });
+    throw new FieldRequiredError("amountPlanned");
 
   const user = req.user!;
 
   const { budget } = await BudgetService.findById(req.params._id);
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget) throw new BudgetNotFoundError();
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-    return res.status(403).send({ message: NOT_PERMITTED });
+    throw new NotPermittedError();
   }
 
   const { category } = BudgetCategoryService.findById(
@@ -125,10 +124,10 @@ export const updateCategoryAmountPlanned = async (
     req.params.categoryId
   );
   if (!category) {
-    return res.status(404).send({ message: NOT_FOUND("category") });
+    throw new CategoryNotFoundError();
   }
   if (BudgetCategoryService.isDefaultCategory(category)) {
-    return res.status(409).send({ message: CATEGORY_CANOT_BE_UPDATED });
+    throw new DefaultCategoryCannotBeUpdatedError();
   }
 
   await BudgetCategoryService.updateAmountPlanned(
@@ -150,9 +149,9 @@ export const updateCategoryAmountPlanned = async (
 export const updateField = async (req: Request, res: Response) => {
   const user = req.user!;
   const { budget } = await BudgetService.findById(req.params._id);
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget) throw new BudgetNotFoundError();
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
-    return res.status(403).send({ message: NOT_PERMITTED });
+    throw new NotPermittedError();
   }
 
   await BudgetService.updateFields(budget, req.body);
@@ -173,10 +172,10 @@ export const find = async (req: Request, res: Response) => {
     const { budget, transactions } =
       await BudgetService.findByIdWithTransactions(req.params._id);
 
-    if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+    if (!budget) throw new BudgetNotFoundError();
     if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
       if (!AuthService.isAdmin(user)) {
-        return res.status(403).send({ message: NOT_PERMITTED });
+        throw new NotPermittedError();
       }
     }
 
@@ -198,7 +197,7 @@ export const find = async (req: Request, res: Response) => {
   }
   if ("userId" in req.query) {
     if (!AuthService.isAdmin(user)) {
-      return res.status(403).send({ message: NOT_PERMITTED });
+      throw new NotPermittedError();
     }
     if (req.query.userId === "*") {
       const { budgets } = await BudgetService.findAll();
@@ -222,11 +221,11 @@ export const find = async (req: Request, res: Response) => {
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
   const { budget } = await BudgetService.findById(req.params._id);
-  if (!budget) return res.status(404).send({ message: NOT_FOUND("budget") });
+  if (!budget) throw new BudgetNotFoundError();
 
   if (!BudgetService.checkBudgetUserIdMatch(budget, user._id)) {
     if (!AuthService.isAdmin(user)) {
-      return res.status(403).send({ message: NOT_PERMITTED });
+      throw new NotPermittedError();
     }
   }
 

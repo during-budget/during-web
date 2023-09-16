@@ -9,15 +9,15 @@ const AuthService = UserService.AuthService;
 import { client } from "src/loaders/redis";
 import { cipher, decipher } from "src/utils/crypto";
 
-import {
-  LOCAL_LOGIN_DISABLED,
-  VERIFICATION_CODE_EXPIRED,
-  VERIFICATION_CODE_WRONG,
-  FIELD_REQUIRED,
-  EMAIL_IN_USE,
-  INVALID_EMAIL,
-} from "src/api/message";
 import { sendAuthEmail } from "src/utils/email";
+import {
+  EmailIsInUseError,
+  EmailRequiredError,
+  FailedToSendVerificationCodeError,
+  LocalLoginIsDisabledError,
+  VerificationCodeIsExpiredError,
+  VerificationCodeIsWrongError,
+} from "errors/AuthError";
 
 const sendCode = async (
   type: "login" | "register" | "updateEmail",
@@ -31,22 +31,15 @@ const sendCode = async (
     await client.v4.hSet(email, "code", cipher(code));
     await client.expire(email, 60 * 5);
   } catch (err) {
-    console.log(err);
-
-    throw new Error(INVALID_EMAIL);
+    throw new FailedToSendVerificationCodeError();
   }
 };
 
 const verifyCode = async (email: string, code: string) => {
   const _code = await client.v4.hGet(email, "code");
-  if (!_code) {
-    throw new Error(VERIFICATION_CODE_EXPIRED);
-  }
+  if (!_code) throw new VerificationCodeIsExpiredError();
 
-  if (decipher(_code) !== code) {
-    throw new Error(VERIFICATION_CODE_WRONG);
-  }
-
+  if (decipher(_code) !== code) throw new VerificationCodeIsWrongError();
   await client.del(email ?? "");
 };
 
@@ -55,18 +48,15 @@ const localV2 = () => {
     "localV2",
     new CustomStrategy(async function (req: Request, done: any) {
       try {
-        if (!("email" in req.body)) {
-          throw new Error(FIELD_REQUIRED("email"));
-        }
+        if (!("email" in req.body)) throw new EmailRequiredError();
+
         /* isNotLoggedIn - login or register */
         if (!req.isAuthenticated()) {
           const { user } = await UserService.findByEmail(req.body.email);
 
           /* login */
           if (user) {
-            if (!user.isLocal) {
-              throw new Error(LOCAL_LOGIN_DISABLED);
-            }
+            if (!user.isLocal) throw new LocalLoginIsDisabledError();
 
             /* login - send code */
             if (!("code" in req.body)) {
@@ -102,9 +92,7 @@ const localV2 = () => {
           const { user: exUser } = await UserService.findByEmail(
             req.body.email
           );
-          if (exUser) {
-            throw new Error(EMAIL_IN_USE);
-          }
+          if (exUser) throw new EmailIsInUseError();
         }
 
         /* updateEmail - send code */

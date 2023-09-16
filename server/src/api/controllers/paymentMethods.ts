@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { FIELD_REQUIRED } from "../message";
 import { PaymentMethodService } from "src/services/users";
+import { FieldRequiredError } from "errors/InvalidError";
 
 export const update = async (req: Request, res: Response) => {
   const user = req.user!;
 
   /* validate */
   if (!("paymentMethods" in req.body))
-    return res.status(400).send({ message: FIELD_REQUIRED("paymentMethods") });
+    throw new FieldRequiredError("paymentMethods");
   const newPaymentMethods = req.body.paymentMethods;
 
   await PaymentMethodService.updatePaymentMethods(user, newPaymentMethods);
