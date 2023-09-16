@@ -9,7 +9,7 @@ import {
   EmailIsInUseError,
   SnsIdIsAlreadyConnectedError,
   SnsIdIsInUseError,
-} from "errors/AuthError";
+} from "src/errors/AuthError";
 
 const sns = "kakao";
 class Parser extends ProfileParser {

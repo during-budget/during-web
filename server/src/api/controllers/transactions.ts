@@ -9,10 +9,10 @@ import * as TransactionService from "src/services/transactions";
 import {
   PaymentMethodNotFoundError,
   TransactionNotFoundError,
-} from "errors/NotFoundError";
-import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
-import { NotPermittedError } from "errors/ForbiddenError";
-import { InvalidError } from "errors/InvalidError";
+} from "src/errors/NotFoundError";
+import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
+import { NotPermittedError } from "src/errors/ForbiddenError";
+import { InvalidError } from "src/errors/InvalidError";
 
 // transaction controller
 

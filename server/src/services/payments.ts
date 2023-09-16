@@ -1,14 +1,14 @@
 import { IItem } from "@models/Item";
 import { IUser } from "@models/User";
 import axios from "axios";
-import { NotPermittedError } from "errors/ForbiddenError";
-import { PaymentNotFoundError } from "errors/NotFoundError";
+import { NotPermittedError } from "src/errors/ForbiddenError";
+import { PaymentNotFoundError } from "src/errors/NotFoundError";
 import {
   FakePaymentAttemptError,
   FetchingAccessTokenFailedError,
   FetchingPaymentFailedError,
   PaymentIsNotPaidError,
-} from "errors/PaymentError";
+} from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
 import {
   IPayment,

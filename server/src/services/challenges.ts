@@ -3,7 +3,7 @@ import { Challenge as ChallengeModel, IChallenge } from "src/models/Challenge";
 import { Transaction as TransactionModel } from "src/models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
 import { CategoryService } from "./users";
-import { CategoryNotFoundError } from "errors/NotFoundError";
+import { CategoryNotFoundError } from "src/errors/NotFoundError";
 
 type createDateType = {
   startDate: Date;

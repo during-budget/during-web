@@ -4,8 +4,8 @@ import { CategoryService as UserCategoryService } from "src/services/users";
 import { CategoryService as BudgetCategoryService } from "src/services/budgets";
 
 import * as TransactionService from "src/services/transactions";
-import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
-import { CategoryNotFoundError } from "errors/NotFoundError";
+import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
+import { CategoryNotFoundError } from "src/errors/NotFoundError";
 
 export const create = async (req: Request, res: Response) => {
   /* validate */

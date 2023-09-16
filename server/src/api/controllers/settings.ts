@@ -1,5 +1,5 @@
-import { FieldInvalidError, FieldRequiredError } from "errors/InvalidError";
-import { PaymentNotFoundError } from "errors/NotFoundError";
+import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
+import { PaymentNotFoundError } from "src/errors/NotFoundError";
 import { Request, Response } from "express";
 import * as PaymentService from "src/services/payments";
 import { SettingService } from "src/services/users";

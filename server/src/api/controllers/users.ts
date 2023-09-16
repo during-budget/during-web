@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import _ from "lodash";
 
 import * as UserService from "src/services/users";
-import { UserNotFoundError } from "errors/NotFoundError";
+import { UserNotFoundError } from "src/errors/NotFoundError";
 
 //_____________________________________________________________________________
 
