@@ -2,7 +2,7 @@ import { Parser } from 'expr-eval';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import OverlayForm from '../../UI/OverlayForm';
 import classes from './AmountOverlay.module.css';
 

@@ -15,7 +15,7 @@ import {
   updateCardById,
 } from '../../../util/api/assetAPI';
 import { getErrorMessage } from '../../../util/error';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import EmojiInput from '../../UI/EmojiInput';
 import OverlayForm from '../../UI/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';

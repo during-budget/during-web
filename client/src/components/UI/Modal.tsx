@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
-import Button from './Button';
+import Button from './button/Button';
 import classes from './Modal.module.css';
 import Channel from '../../models/Channel';
 import { useLocation } from 'react-router';

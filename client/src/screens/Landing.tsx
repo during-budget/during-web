@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLoaderData, useLocation, useNavigate } from 'react-router';
 import AuthOverlay from '../components/Auth/AuthOverlay';
 import LandingCarousel from '../components/Landing/LandingCarousel';
-import Button from '../components/UI/Button';
+import Button from '../components/UI/button/Button';
 import Privacy from '../components/User/Info/Privacy';
 import Terms from '../components/User/Info/Terms';
 import { useToggleOptions } from '../hooks/useToggle';

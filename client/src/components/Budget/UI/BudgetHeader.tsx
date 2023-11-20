@@ -5,8 +5,8 @@ import { useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import { deleteBudget } from '../../../util/api/budgetAPI';
 import { getMonthName, getNumericDotDateString } from '../../../util/date';
-import NavButton from '../../UI/NavButton';
-import OptionButton from '../../UI/OptionButton';
+import NavButton from '../../UI/button/NavButton';
+import OptionButton from '../../UI/button/OptionButton';
 import classes from './BudgetHeader.module.css';
 import BudgetNav from './BudgetNav';
 

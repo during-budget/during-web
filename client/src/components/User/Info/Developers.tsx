@@ -1,5 +1,5 @@
 import { SettingOverlayProps } from '../../../screens/User';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import Overlay from '../../UI/Overlay';
 import classes from './Developers.module.css';
 

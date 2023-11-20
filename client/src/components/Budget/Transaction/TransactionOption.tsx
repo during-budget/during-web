@@ -8,7 +8,7 @@ import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import { TransactionType, deleteTransaction } from '../../../util/api/transactionAPI';
 import { getErrorMessage } from '../../../util/error';
-import OptionButton from '../../UI/OptionButton';
+import OptionButton from '../../UI/button/OptionButton';
 
 interface TransactionOptionProps {
   transaction: TransactionType;

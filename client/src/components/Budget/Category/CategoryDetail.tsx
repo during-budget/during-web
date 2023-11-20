@@ -11,7 +11,7 @@ import { getTransactions } from '../../../util/api/transactionAPI';
 import Icon from '../../UI/Icon';
 import IndexNav from '../../UI/IndexNav';
 import LoadingSpinner from '../../UI/LoadingSpinner';
-import NavButton from '../../UI/NavButton';
+import NavButton from '../../UI/button/NavButton';
 import AmountDetail from '../Amount/AmountDetail';
 import TransactionList from '../Transaction/TransactionList';
 import classes from './CategoryDetail.module.css';

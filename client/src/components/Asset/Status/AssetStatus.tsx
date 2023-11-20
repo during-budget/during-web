@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import Amount from '../../../models/Amount';
 import { AssetDataType } from '../../../util/api/assetAPI';
 import AmountArea from '../../Budget/Amount/AmountArea';
-import EditButton from '../../UI/EditButton';
+import EditButton from '../../UI/button/EditButton';
 import Inform from '../../UI/Inform';
 import classes from './AssetStatus.module.css';
 

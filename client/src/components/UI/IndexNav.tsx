@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import classes from './IndexNav.module.css';
-import NavButton from './NavButton';
+import NavButton from './button/NavButton';
 
 interface IndexNavProps {
   idx?: number;

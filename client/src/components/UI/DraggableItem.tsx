@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
-import Button from './Button';
+import Button from './button/Button';
 import classes from './DraggableItem.module.css';
 
 interface DraggableItemProps {

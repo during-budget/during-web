@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../hooks/useRedux';
 import { useToggle } from '../../hooks/useToggle';
 import { uiActions } from '../../store/ui';
 import { guestLogin } from '../../util/api/authAPI';
-import Button from '../UI/Button';
+import Button from '../UI/button/Button';
 import Overlay from '../UI/Overlay';
 import EmailForm from './EmailForm';
 import SNSButtons from './SNSButtons';

@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useRouteError } from 'react-router-dom';
-import Button from '../components/UI/Button';
+import Button from '../components/UI/button/Button';
 import Mask from '../components/UI/Mask';
 import classes from './ErrorBoundary.module.css';
 

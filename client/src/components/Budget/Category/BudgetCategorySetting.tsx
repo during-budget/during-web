@@ -8,7 +8,7 @@ import { userCategoryActions } from '../../../store/user-category';
 import { updateBudgetCategories } from '../../../util/api/budgetAPI';
 import { updateCategoriesPartially } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import EmojiInput from '../../UI/EmojiInput';

@@ -1,5 +1,5 @@
 import React from 'react';
-import NavButton from './NavButton';
+import NavButton from './button/NavButton';
 import classes from './StepNav.module.css';
 
 interface StepNavProps {

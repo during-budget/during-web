@@ -1,7 +1,7 @@
 import { useAppDispatch } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
 import { getErrorMessage } from '../../util/error';
-import Button from '../UI/Button';
+import Button from '../UI/button/Button';
 import classes from './AdRemove.module.css';
 
 interface AddRemoveProps {

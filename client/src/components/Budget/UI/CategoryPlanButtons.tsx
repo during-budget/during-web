@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { uiActions } from '../../../store/ui';
-import EditButton from '../../UI/EditButton';
+import EditButton from '../../UI/button/EditButton';
 import classes from './CategoryPlanButtons.module.css';
 
 const CategoryPlanButtons = () => {
