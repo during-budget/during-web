@@ -6,7 +6,7 @@ import { uiActions } from '../../../store/ui';
 import { getOptions, updateChartSkin } from '../../../util/api/settingAPI';
 import { getErrorMessage } from '../../../util/error';
 import AmountRing from '../../Budget/Amount/AmountRing';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import Mask from '../../UI/Mask';
 import classes from './ChartSkinSetting.module.css';
 

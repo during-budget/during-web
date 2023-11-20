@@ -6,7 +6,7 @@ import { budgetCategoryActions } from '../../../store/budget-category';
 import { uiActions } from '../../../store/ui';
 import { updateCategoryPlan } from '../../../util/api/budgetAPI';
 import { getErrorMessage } from '../../../util/error';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import IndexNav from '../../UI/IndexNav';
 import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';

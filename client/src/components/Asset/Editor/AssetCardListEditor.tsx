@@ -11,7 +11,7 @@ import {
   updateAssets,
   updateCards,
 } from '../../../util/api/assetAPI';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';

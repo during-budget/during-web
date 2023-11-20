@@ -1,4 +1,4 @@
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import Icon from '../../UI/Icon';
 import classes from './SettingItem.module.css';
 

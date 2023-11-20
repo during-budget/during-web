@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { TransactionType } from '../../../util/api/transactionAPI';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import classes from './TransactionGroup.module.css';
 import TransactionItem from './TransactionItem';
 

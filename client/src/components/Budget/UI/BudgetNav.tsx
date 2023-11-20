@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import { getBudgetByMonth } from '../../../util/api/budgetAPI';
 import { getErrorMessage } from '../../../util/error';
-import NavButton from '../../UI/NavButton';
+import NavButton from '../../UI/button/NavButton';
 
 interface BudgetNavProps {
   title: string;

@@ -1,4 +1,4 @@
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import EmojiInput from '../../UI/EmojiInput';
 import classes from './CategorySettingItem.module.css';
 

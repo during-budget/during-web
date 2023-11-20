@@ -8,7 +8,7 @@ import {
   useSearchParams,
   useSubmit
 } from 'react-router-dom';
-import Button from '../components/UI/Button';
+import Button from '../components/UI/button/Button';
 import EmojiOverlay from '../components/UI/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import UserHeader from '../components/User/Profile/UserHeader';

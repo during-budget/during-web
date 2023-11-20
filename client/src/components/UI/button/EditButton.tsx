@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import Button from './Button';
 import classes from './EditButton.module.css';
 
@@ -8,10 +9,20 @@ interface EditButton {
 }
 
 const EditButton = ({ onClick, label, icon }: EditButton) => {
+  const buttonStyle = css({
+    position: 'relative'
+  });
+
+  const iconStyle = css({
+    position: 'absolute',
+    top: '1.125rem',
+    left: 'calc(-1 * 1.125rem)',  
+  })
+  
   return (
     <Button styleClass="extra" onClick={onClick}>
-      <span className={`${classes.button}`}>
-        <i className={`fa-solid fa-${icon || 'pencil'}`} />
+      <span className="text-md py-1" css={buttonStyle}>
+        <i className={`fa-solid fa-${icon || 'pencil'} text-sm`} css={iconStyle} />
         {label}
       </span>
     </Button>

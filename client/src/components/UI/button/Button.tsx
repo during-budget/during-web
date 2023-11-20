@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';

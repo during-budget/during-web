@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { SettingOverlayProps } from '../../../screens/User';
 import { settingActions } from '../../../store/setting';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import OverlayForm from '../../UI/OverlayForm';
 import ChartSkinList from './ChartSkinList';
 import classes from './ChartSkinSetting.module.css';

@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import BudgetList from '../components/Budget/List/BudgetList';
 import TotalStatus from '../components/Budget/Status/TotalStatus';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
-import Button from '../components/UI/Button';
+import Button from '../components/UI/button/Button';
 import Carousel from '../components/UI/Carousel';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { uiActions } from '../store/ui';

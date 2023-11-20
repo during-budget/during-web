@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useState } from 'react';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { uiActions } from '../../store/ui';
 import { getErrorMessage } from '../../util/error';
-import ConfirmCancelButtons, { ConfirmCancelButtonsProps } from './ConfirmCancelButtons';
+import ConfirmCancelButtons, { ConfirmCancelButtonsProps } from './button/ConfirmCancelButtons';
 import Overlay, { OverlayProps } from './Overlay';
 import classes from './OverlayForm.module.css';
 

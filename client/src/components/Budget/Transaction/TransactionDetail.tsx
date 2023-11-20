@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { transactionActions } from '../../../store/transaction';
 import { getNumericDotDateString } from '../../../util/date';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import Icon from '../../UI/Icon';
 import Overlay from '../../UI/Overlay';
 import Tag from '../../UI/Tag';

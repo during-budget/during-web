@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import Category from '../../../models/Category';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import EmojiInput from '../../UI/EmojiInput';

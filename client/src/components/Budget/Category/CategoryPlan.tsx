@@ -9,7 +9,7 @@ import { uiActions } from '../../../store/ui';
 import { updateBudgetCategories, updateBudgetFields } from '../../../util/api/budgetAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
 import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import DraggableList from '../../UI/DraggableList';
 import Inform from '../../UI/Inform';
 import OverlayForm from '../../UI/OverlayForm';

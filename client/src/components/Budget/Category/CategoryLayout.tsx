@@ -2,9 +2,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
-import Button from '../../UI/Button';
+import Button from '../../UI/button/Button';
 import Icon from '../../UI/Icon';
-import NavButton from '../../UI/NavButton';
+import NavButton from '../../UI/button/NavButton';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryLayout.module.css';
 
