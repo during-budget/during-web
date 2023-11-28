@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../hooks/useRedux';
 import { SettingOverlayProps } from '../../../screens/User';
 import { settingActions } from '../../../store/setting';
 import Button from '../../UI/button/Button';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import ChartSkinList from './ChartSkinList';
 import classes from './ChartSkinSetting.module.css';
 

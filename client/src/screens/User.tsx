@@ -9,7 +9,7 @@ import {
   useSubmit
 } from 'react-router-dom';
 import Button from '../components/UI/button/Button';
-import EmojiOverlay from '../components/UI/EmojiOverlay';
+import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import UserCategorySetting from '../components/User/Category/UserCategorySetting';
 import UserHeader from '../components/User/Profile/UserHeader';
 import SettingList from '../components/User/Setting/SettingList';

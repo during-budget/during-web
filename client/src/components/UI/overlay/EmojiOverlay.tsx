@@ -2,8 +2,7 @@ import Picker from '@emoji-mart/react';
 import data from 'emoji_data_kr';
 import { BiEraser } from 'react-icons/bi';
 import { MdOutlineCancel } from 'react-icons/md';
-import { useAppSelector } from '../../hooks/useRedux';
-import classes from './EmojiOverlay.module.css';
+import { useAppSelector } from '../../../hooks/useRedux';
 import Overlay from './Overlay';
 
 const EmojiOverlay = () => {
@@ -14,13 +13,21 @@ const EmojiOverlay = () => {
   return (
     <Overlay
       id="emoji-overlay"
-      className={classes.overlay}
+      className="w-100 bg-white shadow-0.2 round-top-2lg"
+      css={{
+        zIndex: '20 !important',
+        '& em-emoji-picker': {
+          width: '100%',
+          boxShadow: 'none',
+          '--category-icon-size': '24px',
+        },
+      }}
       isOpen={isOpen}
       onClose={onClose}
     >
-      <div className={classes.header}>
-        <BiEraser className={classes.icon} onClick={onClear} />
-        <MdOutlineCancel className={classes.icon} onClick={onClose} />
+      <div className="flex j-end mt-0.5 mr-1">
+        <BiEraser className='p-0.5' onClick={onClear} />
+        <MdOutlineCancel className='p-0.5' onClick={onClose} />
       </div>
       <Picker
         data={data}

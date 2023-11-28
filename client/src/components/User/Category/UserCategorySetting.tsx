@@ -4,7 +4,7 @@ import Category from '../../../models/Category';
 import { userCategoryActions } from '../../../store/user-category';
 import { updateCategories } from '../../../util/api/categoryAPI';
 import ExpenseTab from '../../Budget/UI/ExpenseTab';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import UserCategoryList from './UserCategoryList';
 import classes from './UserCategorySetting.module.css';
 import { SettingOverlayProps } from '../../../screens/User';

@@ -5,7 +5,7 @@ import Amount from '../../models/Amount';
 import { uiActions } from '../../store/ui';
 import { completePayment, preparePayment } from '../../util/api/paymentAPI';
 import { getErrorMessage } from '../../util/error';
-import OverlayForm from '../UI/OverlayForm';
+import OverlayForm from '../UI/overlay/OverlayForm';
 import classes from './PaymentOverlay.module.css';
 
 const { DURING_STORE_CODE, DURING_CLIENT } = import.meta.env;

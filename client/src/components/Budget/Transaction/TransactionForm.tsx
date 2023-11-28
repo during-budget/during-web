@@ -19,7 +19,7 @@ import {
 import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/button/Button';
 import EmojiInput from '../../UI/EmojiInput';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';
 import DateInput from '../Input/DateInput';

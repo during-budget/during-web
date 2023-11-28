@@ -12,7 +12,7 @@ import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
 import Button from '../../UI/button/Button';
 import DraggableList from '../../UI/DraggableList';
 import Inform from '../../UI/Inform';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import AmountArea from '../Amount/AmountArea';
 import EditInput from '../Input/EditInput';
 import classes from './CategoryPlan.module.css';

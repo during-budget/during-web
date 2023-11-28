@@ -5,7 +5,7 @@ import { useToggle } from '../../hooks/useToggle';
 import { uiActions } from '../../store/ui';
 import { guestLogin } from '../../util/api/authAPI';
 import Button from '../UI/button/Button';
-import Overlay from '../UI/Overlay';
+import Overlay from '../UI/overlay/Overlay';
 import EmailForm from './EmailForm';
 import SNSButtons from './SNSButtons';
 
@@ -54,9 +54,16 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
           height: '95vh',
           transform:
             isSns && isOpen ? 'translateY(40%) translateZ(0) !important' : undefined,
+          '@media screen and (min-width: 840px)': {
+            transform:
+              isSns && isOpen
+                ? 'translate(-50%, 40%) translateZ(0) !important'
+                : 'translate(-50%, 100%)',
+          },
         }}
         isOpen={isOpen}
         onClose={onClose}
+        isCenter={true}
       >
         <header className="flex-column i-center" css={{ marginTop: '8vh' }}>
           <img

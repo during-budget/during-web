@@ -4,7 +4,7 @@ import { transactionActions } from '../../../store/transaction';
 import { getNumericDotDateString } from '../../../util/date';
 import Button from '../../UI/button/Button';
 import Icon from '../../UI/Icon';
-import Overlay from '../../UI/Overlay';
+import Overlay from '../../UI/overlay/Overlay';
 import Tag from '../../UI/Tag';
 import OverAmountMsg from './OverAmountMsg';
 import classes from './TransactionDetail.module.css';

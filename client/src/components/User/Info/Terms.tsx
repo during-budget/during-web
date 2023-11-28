@@ -1,6 +1,6 @@
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
-import Overlay from '../../UI/Overlay';
+import Overlay from '../../UI/overlay/Overlay';
 import classes from './Terms.module.css';
 
 const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {

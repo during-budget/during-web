@@ -6,7 +6,7 @@ import { PaymentDataType, updatePayments } from '../../../util/api/assetAPI';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './PaymentEditor.module.css';
 
 interface PaymentEditorProps {

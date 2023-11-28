@@ -1,6 +1,6 @@
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
-import Overlay from '../../UI/Overlay';
+import Overlay from '../../UI/overlay/Overlay';
 import classes from './Buisness.module.css';
 
 const Buisness = ({ isOpen, onClose }: SettingOverlayProps) => {
