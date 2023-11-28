@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Modal from '../components/UI/Modal';
+import Modal from '../components/UI/overlay/Modal';
 import Channel from '../models/Channel';
 import { UserDataType } from '../util/api/userAPI';
 import { fetchRequest } from '../util/request';

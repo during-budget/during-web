@@ -1,6 +1,6 @@
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
-import Overlay from '../../UI/Overlay';
+import Overlay from '../../UI/overlay/Overlay';
 import classes from './Privacy.module.css';
 
 const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {

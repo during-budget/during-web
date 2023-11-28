@@ -8,7 +8,7 @@ import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
 import InputField from '../../UI/InputField';
 import Mask from '../../UI/Mask';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './UserHeader.module.css';
 
 interface UserHeaderProps {

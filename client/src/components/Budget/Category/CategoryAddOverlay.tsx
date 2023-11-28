@@ -4,7 +4,7 @@ import { uiActions } from '../../../store/ui';
 import { userCategoryActions } from '../../../store/user-category';
 import { createCategory } from '../../../util/api/categoryAPI';
 import EmojiInput from '../../UI/EmojiInput';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './CategoryAddOverlay.module.css';
 
 const CategoryAddOverlay = () => {

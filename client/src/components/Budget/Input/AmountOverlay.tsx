@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import Button from '../../UI/button/Button';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './AmountOverlay.module.css';
 
 const parser = new Parser();

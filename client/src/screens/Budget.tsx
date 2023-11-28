@@ -19,7 +19,7 @@ import TransactionList from '../components/Budget/Transaction/TransactionList';
 import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
 import Carousel from '../components/UI/Carousel';
-import EmojiOverlay from '../components/UI/EmojiOverlay';
+import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/useRedux';
 import { budgetActions } from '../store/budget';

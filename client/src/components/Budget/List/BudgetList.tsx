@@ -4,7 +4,7 @@ import { budgetActions } from '../../../store/budget';
 import { uiActions } from '../../../store/ui';
 import { getBudgetList } from '../../../util/api/budgetAPI';
 import { getErrorMessage } from '../../../util/error';
-import Overlay from '../../UI/Overlay';
+import Overlay from '../../UI/overlay/Overlay';
 import YearPicker from '../../UI/YearPicker';
 import BudgetItem from './BudgetItem';
 import classes from './BudgetList.module.css';

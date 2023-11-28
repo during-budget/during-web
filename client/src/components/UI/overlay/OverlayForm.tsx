@@ -1,10 +1,11 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { useAppDispatch } from '../../hooks/useRedux';
-import { uiActions } from '../../store/ui';
-import { getErrorMessage } from '../../util/error';
-import ConfirmCancelButtons, { ConfirmCancelButtonsProps } from './button/ConfirmCancelButtons';
+import { useAppDispatch } from '../../../hooks/useRedux';
+import { uiActions } from '../../../store/ui';
+import { getErrorMessage } from '../../../util/error';
+import ConfirmCancelButtons, {
+  ConfirmCancelButtonsProps,
+} from '../button/ConfirmCancelButtons';
 import Overlay, { OverlayProps } from './Overlay';
-import classes from './OverlayForm.module.css';
 
 interface OverlayFormProps {
   overlayOptions: Omit<OverlayProps, 'className'>;
@@ -46,14 +47,17 @@ const OverlayForm = ({
     }
   };
 
-  const paddingClass = `padding-${formPadding || 'md'}`;
+  // TODO: p-lg, p-md, p-sm 추후 정의
+  const paddingClass = `p-${
+    formPadding === 'lg' ? 2.875 : formPadding === 'md' ? 2 : 1.125
+  }`;
 
   return (
-    <Overlay {...overlayOptions} className={`${classes.overlayForm} ${className}`}>
-      <form onSubmit={submitHandler} className={classes[paddingClass]}>
-        <div className={classes.container} style={{ height: formHeight }}>
+    <Overlay {...overlayOptions} className={`${className}`}>
+      <form onSubmit={submitHandler} className={paddingClass}>
+        <div className="scroll" style={{ height: formHeight }}>
           {children}
-          {!formHeight && <div className={classes.polyfill} />}
+          {!formHeight && <div className="w-100" css={{ height: 'calc(6vh + 56px)' }} />}
         </div>
         <ConfirmCancelButtons
           onClose={overlayOptions.onClose}

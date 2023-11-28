@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import AssetList from '../components/Asset/List/AssetList';
 import AssetCardStatus from '../components/Asset/Status/AssetCardStatus';
-import EmojiOverlay from '../components/UI/EmojiOverlay';
+import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import { useAppSelector } from '../hooks/useRedux';
 import { assetActions } from '../store/asset';
 import { uiActions } from '../store/ui';

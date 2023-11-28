@@ -12,7 +12,7 @@ import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import EmojiInput from '../../UI/EmojiInput';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
 

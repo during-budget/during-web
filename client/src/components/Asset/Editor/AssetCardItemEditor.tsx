@@ -17,7 +17,7 @@ import {
 import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
 import EmojiInput from '../../UI/EmojiInput';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import classes from './AssetCardItemEditor.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';

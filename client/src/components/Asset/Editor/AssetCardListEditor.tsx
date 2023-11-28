@@ -15,7 +15,7 @@ import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/DraggableItem';
 import DraggableList from '../../UI/DraggableList';
 import Icon from '../../UI/Icon';
-import OverlayForm from '../../UI/OverlayForm';
+import OverlayForm from '../../UI/overlay/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import AssetCardItemEditor from './AssetCardItemEditor';
 import classes from './AssetCardListEditor.module.css';

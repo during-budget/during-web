@@ -3,6 +3,7 @@
   --nav-h: 5.875rem;
 
   /* font-size */
+  --text-3xxl: 4rem;
   --text-xxl: 2rem; /* 32px */
   --text-3xl: 1.75rem; /* 28px */
   --text-2xl: 1.5rem; /* 24px */
@@ -54,6 +55,10 @@ h6 {
 }
 
 /* classes - font */
+.text-3xxl {
+  font-size: var(--text-3xxl);
+}
+
 .text-xxl {
   font-size: var(--text-xxl);
 }
