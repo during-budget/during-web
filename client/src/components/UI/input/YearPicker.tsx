@@ -1,5 +1,4 @@
 import React from 'react';
-import classes from './YearPicker.module.css';
 
 interface YearPickerProps {
   onSelect: any;
@@ -22,9 +21,9 @@ const YearPicker = ({ className, onSelect, fontSize }: YearPickerProps) => {
   };
 
   return (
-    <div className={`${classes.container} ${className}`}>
+    <div className={`flex i-center extra-bold ${className}`}>
       <select
-        className={classes.select}
+        className="content-box w-auto bg-trans extra-heavy"
         onChange={changeHandler}
         defaultValue={currentYear}
         style={{ fontSize }}

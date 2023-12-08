@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Amount from '../../../models/Amount';
-import RadioTab from '../../UI/RadioTab';
+import RadioTab from '../../UI/input/RadioTab';
 import classes from './AmountDetail.module.css';
 import AmountDetailItem from './AmountDetailItem';
 

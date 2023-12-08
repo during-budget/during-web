@@ -1,4 +1,4 @@
-import RadioTab from '../../UI/RadioTab';
+import RadioTab from '../../UI/input/RadioTab';
 import classes from './StatusHeader.module.css';
 
 function StatusHeader(props: {

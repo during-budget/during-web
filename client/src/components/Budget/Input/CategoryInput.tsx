@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Category from '../../../models/Category';
 import { uiActions } from '../../../store/ui';
-import Select from '../../UI/Select';
+import Select from '../../UI/input/Select';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryInput.module.css';
 

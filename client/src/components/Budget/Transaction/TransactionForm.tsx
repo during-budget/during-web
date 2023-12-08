@@ -18,7 +18,7 @@ import {
 } from '../../../util/api/transactionAPI';
 import PaymentEditor from '../../Asset/Editor/PaymentEditor';
 import Button from '../../UI/button/Button';
-import EmojiInput from '../../UI/EmojiInput';
+import EmojiInput from '../../UI/input/EmojiInput';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import AmountInput from '../Input/AmountInput';
 import CategoryInput from '../Input/CategoryInput';

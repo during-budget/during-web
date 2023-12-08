@@ -1,10 +1,11 @@
 import { PropsWithChildren } from 'react';
 import LoadingSpinner from '../LoadingSpinner';
+import { SerializedStyles, css } from '@emotion/react';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   className?: string;
-  css?: React.CSSProperties;
+  css?: SerializedStyles;
   onClick?: (event?: React.MouseEvent) => void;
   name?: string;
   value?: string;
@@ -12,7 +13,7 @@ interface ButtonProps {
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
   sizeClass?: 'xl' | 'lg' | 'md' | 'sm';
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 function Button({
@@ -25,63 +26,63 @@ function Button({
   disabled,
   styleClass,
   sizeClass,
-  css,
+  css: propsStyle,
   children,
 }: PropsWithChildren<ButtonProps>) {
-  let style: React.CSSProperties = {
+  let style = css({
     color: 'var(--white)',
     backgroundColor: 'var(--primary)',
-  };
+  });
 
-  let size: React.CSSProperties = {
+  let size = css({
     height: '3rem',
     fontSize: 'var(--text-base)',
-  };
+  });
 
   switch (styleClass) {
     case 'secondary':
-      style = {
+      style = css({
         color: 'var(--primary)',
         backgroundColor: 'var(--secondary)',
-      };
+      });
       break;
     case 'extra':
-      style = {
+      style = css({
         color: 'var(--black)',
         backgroundColor: 'transparent',
-      };
+      });
       break;
     case 'gray':
-      style = {
+      style = css({
         color: 'var(--gray-300)',
         backgroundColor: 'var(--gray-0)',
-      };
+      });
       break;
   }
 
   switch (sizeClass) {
     case 'lg':
-      size = {
+      size = css({
         height: '3.5rem',
         fontSize: 'var(--text-base)',
         fontWeight: 700,
-      };
+      });
       break;
     case 'sm':
-      size = {
+      size = css({
         fontSize: 'var(--text-md)',
         width: 'fit-content',
         height: '2rem',
         padding: '1rem',
-      };
+      });
       break;
   }
-
+  
   return (
     <button
       type={type || 'button'}
       className={`w-100 flex-center semi-bold round-sm ${className || ''}`}
-      css={{ ...style, ...size, ...css }}
+      css={css(style, size, propsStyle)}
       onClick={onClick}
       disabled={disabled}
       name={name}

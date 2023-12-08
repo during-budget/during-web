@@ -1,5 +1,5 @@
 import Category from '../../../models/Category';
-import EmojiInput from '../../UI/EmojiInput';
+import EmojiInput from '../../UI/input/EmojiInput';
 import classes from './DefaultCategoryEdit.module.css';
 
 interface DefaultCategoryEditProps {
