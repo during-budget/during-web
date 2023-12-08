@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
-import RadioTab from '../../UI/RadioTab';
+import RadioTab from '../../UI/input/RadioTab';
 
 function ExpenseTab(props: {
   id: string;

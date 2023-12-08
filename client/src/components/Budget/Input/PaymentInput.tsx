@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector } from '../../../hooks/useRedux';
-import RadioTab from '../../UI/RadioTab';
-import Select from '../../UI/Select';
+import RadioTab from '../../UI/input/RadioTab';
+import Select from '../../UI/input/Select';
 import classes from './PaymentInput.module.css';
 
 interface PaymentInputProps {

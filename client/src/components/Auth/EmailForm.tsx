@@ -10,7 +10,7 @@ import { fetchRequest } from '../../util/request';
 import CodeField, { CODE_LENGTH } from '../Auth/CodeField';
 import Button from '../UI/button/Button';
 import Inform from '../UI/Inform';
-import InputField from '../UI/InputField';
+import InputField from '../UI/input/InputField';
 
 const EMAIL_VALIDATE_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

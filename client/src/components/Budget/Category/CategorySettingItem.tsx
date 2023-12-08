@@ -1,5 +1,5 @@
 import Button from '../../UI/button/Button';
-import EmojiInput from '../../UI/EmojiInput';
+import EmojiInput from '../../UI/input/EmojiInput';
 import classes from './CategorySettingItem.module.css';
 
 // NOTE: UserCategorySetting에도 본 컴포넌트 사용 (isChecked === undefined)

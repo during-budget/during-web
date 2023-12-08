@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { transactionActions } from '../../../store/transaction';
 import { uiActions } from '../../../store/ui';
 import Calendar from '../../UI/Calendar';
-import RadioTab from '../../UI/RadioTab';
+import RadioTab from '../../UI/input/RadioTab';
 import IncomeExpenseAmount from '../Amount/IncomeExpenseAmount';
 import { useAppDispatch } from '../../../hooks/useRedux';
 

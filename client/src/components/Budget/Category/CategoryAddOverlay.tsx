@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
 import { userCategoryActions } from '../../../store/user-category';
 import { createCategory } from '../../../util/api/categoryAPI';
-import EmojiInput from '../../UI/EmojiInput';
+import EmojiInput from '../../UI/input/EmojiInput';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './CategoryAddOverlay.module.css';
 

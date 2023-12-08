@@ -16,7 +16,7 @@ import {
 } from '../../../util/api/assetAPI';
 import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
-import EmojiInput from '../../UI/EmojiInput';
+import EmojiInput from '../../UI/input/EmojiInput';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import classes from './AssetCardItemEditor.module.css';

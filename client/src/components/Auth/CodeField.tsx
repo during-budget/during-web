@@ -1,5 +1,5 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import InputField from '../UI/InputField';
+import InputField from '../UI/input/InputField';
 
 export const CODE_LENGTH = 6;
 

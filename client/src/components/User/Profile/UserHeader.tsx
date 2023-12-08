@@ -6,7 +6,7 @@ import { userActions } from '../../../store/user';
 import { updateUserInfo } from '../../../util/api/userAPI';
 import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
-import InputField from '../../UI/InputField';
+import InputField from '../../UI/input/InputField';
 import Mask from '../../UI/Mask';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './UserHeader.module.css';

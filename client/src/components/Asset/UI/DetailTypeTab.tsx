@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { ASSET_CARD_DETAIL_TYPE } from '../../../constants/type';
 import { AssetDetailType, CardDetailType, DetailType } from '../../../util/api/assetAPI';
-import RadioTab, { RadioTabValueType } from '../../UI/RadioTab';
+import RadioTab, { RadioTabValueType } from '../../UI/input/RadioTab';
 
 const ASSET_DEATAIL_TAB: AssetDetailType[] = ['account', 'cash', 'etc'];
 const CARD_DEATAIL_TAB: CardDetailType[] = ['debit', 'credit'];
