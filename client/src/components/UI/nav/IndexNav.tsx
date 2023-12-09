@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import classes from './IndexNav.module.css';
-import NavButton from './button/NavButton';
+import NavButton from '../button/NavButton';
 
 interface IndexNavProps {
   idx?: number;
@@ -36,7 +35,7 @@ function IndexNav({ idx, setIdx, data, title, to, onNext, onPrev }: IndexNavProp
   const label = data ? data[idx || 0] : title ? title : '';
 
   return (
-    <div className={classes.container}>
+    <div className="w-100 p-0.5 mt-1 round-lg bg-gray-0 text-center flex j-between i-center text-xl semi-bold">
       <NavButton onClick={minusIdx} isNext={false} />
       {to ? <Link to={to}>{label}</Link> : <div>{label}</div>}
       <NavButton onClick={plusIdx} isNext={true} />

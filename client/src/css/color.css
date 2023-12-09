@@ -89,8 +89,8 @@
   background-color: var(--gray);
 }
 
-.bg-gray-50 {
-  background-color: var(--gray-50);
+.bg-gray-0 {
+  background-color: var(--gray-0);
 }
 
 /* fill */

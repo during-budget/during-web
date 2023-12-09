@@ -1,6 +1,6 @@
+import { css } from '@emotion/react';
 import React from 'react';
-import NavButton from './button/NavButton';
-import classes from './StepNav.module.css';
+import NavButton from '../button/NavButton';
 
 interface StepNavProps {
   idx: number;
@@ -12,10 +12,7 @@ interface StepNavProps {
 
 const StepNav = ({ idx, setIdx, length, onComplete, className }: StepNavProps) => {
   const isComplete = idx === length - 1;
-  const completeClass = isComplete ? classes.complete : '';
   const completeContent = isComplete ? '✓' : undefined;
-
-  const hideClass = idx === 0 ? classes.hide : '';
 
   const goPrev = () => {
     if (idx > 0) {
@@ -32,13 +29,29 @@ const StepNav = ({ idx, setIdx, length, onComplete, className }: StepNavProps) =
   };
 
   return (
-    <nav className={`${classes.nav} ${className}`}>
-      <NavButton className={`${classes.prev} ${hideClass}`} onClick={goPrev} />
+    <nav
+      className={`flex j-between i-center w-100 text-right ${className}`}
+      css={css({
+        '& button': {
+          width: '4rem',
+          height: '4rem',
+          borderRadius: 'var(--round-ml)',
+          fontWeight: 600,
+        },
+        '& button:first-child': {
+          visibility: idx === 0 ? 'hidden' : 'visible',
+        },
+        '& button:only-child': {
+          marginLeft: 'auto',
+        },
+      })}
+    >
+      <NavButton className={`text-left`} onClick={goPrev} />
       <div>
-        <span className={classes.idx}>{idx + 1}</span> / {length}
+        <span className="text-xl">{idx + 1}</span> / {length}
       </div>
       <NavButton
-        className={`${classes.next} ${completeClass}`}
+        className="bg-primary text-white"
         onClick={goNext}
         isNext={true}
         content={completeContent}
