@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classes from './WeeklyStatus.module.css';
 import Calendar from '../../UI/Calendar';
-import IndexNav from '../../UI/IndexNav';
+import IndexNav from '../../UI/nav/IndexNav';
 import IncomeExpenseGroupedChart from '../Chart/IncomeExpenseGroupedChart';
 import { getWeekDays, getWeekIdx, getWeekNames } from '../../../util/date';
 
@@ -88,8 +88,10 @@ const getWeeklyAmountArr = (
     const idx = getWeekIdx(new Date(date), range);
     const { expense, income } = dailyAmountObj[date];
 
-    amounts[idx].expense += expense;
-    amounts[idx].income += income;
+    if (amounts[idx]) {
+      amounts[idx].expense += expense;
+      amounts[idx].income += income;
+    }
   }
 
   return amounts;

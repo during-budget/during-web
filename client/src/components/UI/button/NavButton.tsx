@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 
 // NOTE: props to가 있을 경우 Link, onClick이 있을 경우 Button, 둘 다 있을 경우 Link
@@ -25,7 +26,7 @@ const NavButton = ({
       className={className}
       to={to}
       onClick={onClick}
-      style={{ padding: padding || '1rem' }}
+      css={css({ padding: padding || '1rem' })}
     >
       {chevron}
     </Link>
@@ -36,7 +37,7 @@ const NavButton = ({
       className={className}
       type="button"
       onClick={onClick}
-      style={{ padding: padding || '1rem' }}
+      css={css({ padding: padding || '1rem' })}
     >
       {content ? content : chevron}
     </button>

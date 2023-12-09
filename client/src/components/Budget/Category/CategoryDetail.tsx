@@ -9,7 +9,7 @@ import { getBudgetById, getBudgetByMonth } from '../../../util/api/budgetAPI';
 import { UserCategoryType, getCategory } from '../../../util/api/categoryAPI';
 import { getTransactions } from '../../../util/api/transactionAPI';
 import Icon from '../../UI/Icon';
-import IndexNav from '../../UI/IndexNav';
+import IndexNav from '../../UI/nav/IndexNav';
 import LoadingSpinner from '../../UI/LoadingSpinner';
 import NavButton from '../../UI/button/NavButton';
 import AmountDetail from '../Amount/AmountDetail';
