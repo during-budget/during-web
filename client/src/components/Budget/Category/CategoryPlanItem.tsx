@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Amount from '../../../models/Amount';
-import DraggableItem from '../../UI/DraggableItem';
+import DraggableItem from '../../UI/draggable/DraggableItem';
 import Icon from '../../UI/Icon';
 import AmountInput from '../Input/AmountInput';
 import classes from './CategoryPlanItem.module.css';

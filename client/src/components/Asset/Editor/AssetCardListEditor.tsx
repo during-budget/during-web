@@ -12,8 +12,8 @@ import {
   updateCards,
 } from '../../../util/api/assetAPI';
 import Button from '../../UI/button/Button';
-import DraggableItem from '../../UI/DraggableItem';
-import DraggableList from '../../UI/DraggableList';
+import DraggableItem from '../../UI/draggable/DraggableItem';
+import DraggableList from '../../UI/draggable/DraggableList';
 import Icon from '../../UI/Icon';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';

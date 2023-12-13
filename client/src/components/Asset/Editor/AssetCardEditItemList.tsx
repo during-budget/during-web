@@ -12,8 +12,8 @@ import {
   updateCards,
 } from '../../../util/api/assetAPI';
 import { getErrorMessage } from '../../../util/error';
-import DraggableItem from '../../UI/DraggableItem';
-import DraggableList from '../../UI/DraggableList';
+import DraggableItem from '../../UI/draggable/DraggableItem';
+import DraggableList from '../../UI/draggable/DraggableList';
 import Icon from '../../UI/Icon';
 import classes from './AssetCardEditItemList.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';

@@ -1,9 +1,9 @@
 import { PropsWithChildren } from 'react';
 import { DragDropContext, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
-import { useAppDispatch } from '../../hooks/useRedux';
-import { uiActions } from '../../store/ui';
-import { ERROR_MESSAGE } from '../../constants/error';
-import { getErrorMessage } from '../../util/error';
+import { useAppDispatch } from '../../../hooks/useRedux';
+import { uiActions } from '../../../store/ui';
+import { ERROR_MESSAGE } from '../../../constants/error';
+import { getErrorMessage } from '../../../util/error';
 
 interface DraggableListProps {
   id: string;
