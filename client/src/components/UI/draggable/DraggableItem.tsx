@@ -1,9 +1,9 @@
+import { css } from '@emotion/react';
 import { PropsWithChildren } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { useAppDispatch } from '../../hooks/useRedux';
-import { uiActions } from '../../store/ui';
-import Button from './button/Button';
-import classes from './DraggableItem.module.css';
+import { useAppDispatch } from '../../../hooks/useRedux';
+import { uiActions } from '../../../store/ui';
+import Button from '../button/Button';
 
 interface DraggableItemProps {
   id: string;
@@ -49,12 +49,41 @@ const DraggableItem = ({
     onCheck && onCheck(idx, value, checked);
   };
 
-  let buttonAreaClass = classes.sm;
+  let buttonAreaWidth = '10%';
   if (onRemove && onEdit) {
-    buttonAreaClass = preventDrag ? classes.md : classes.lg;
+    buttonAreaWidth = preventDrag ? '20%' : '30%';
   } else if (onRemove || onEdit) {
-    buttonAreaClass = preventDrag ? classes.sm : classes.md;
+    buttonAreaWidth = preventDrag ? '10%' : '20%';
   }
+
+  const itemStyle = css({
+    marginBottom: '1vh',
+  });
+
+  const draggingStyle = css(itemStyle, {
+    backgroundColor: '#fff',
+    padding: '0.5rem',
+    borderRadius: '0.5rem',
+    boxShadow: 'var(--shadow-0.2)',
+  });
+
+  const buttonsStyle = css({
+    width: buttonAreaWidth,
+    // TODO: !important 없애기... 어디서 뭐가 잘못된걸까
+    '& > *': { fontSize: 'var(--text-sm) !important', font: 'var(--fa-font-solid)' },
+    '& .draggable-button-pencil::before': {
+      content: '"\\f303"',
+    },
+    '& .draggable-button-confirm::before': {
+      content: '"\\f00c"',
+    },
+    '& .draggable-button-trash::before': {
+      content: '"\\f2ed"',
+    },
+    '& .draggable-button-handle::before': {
+      content: '"\\f0c9"',
+    },
+  });
 
   return (
     <Draggable draggableId={id} key={id} index={idx} isDragDisabled={preventDrag}>
@@ -65,15 +94,14 @@ const DraggableItem = ({
             key={idx}
             {...lockedProvided.draggableProps}
             ref={lockedProvided.innerRef}
-            className={`${classes.draggableItem} ${
-              snapshot.isDragging ? classes.dragging : ''
-            } ${className}`}
+            className={`flex j-between i-center ${className}`}
+            css={snapshot.isDragging ? itemStyle : draggingStyle}
           >
-            <div className={classes.head}>
+            <div className="w-100 flex i-center" css={css({ gap: '3vw' })}>
               {onCheck && (
                 <input
                   id={`draggable-check-${id}`}
-                  className={classes.check}
+                  css={css({ width: '0.875rem' })}
                   type="checkbox"
                   name="category-setting"
                   checked={checked || false}
@@ -82,30 +110,33 @@ const DraggableItem = ({
                 />
               )}
               {onCheck ? (
-                <label htmlFor={`draggable-check-${id}`} className={classes.info}>
-                  {children}
-                </label>
+                <label htmlFor={`draggable-check-${id}`}>{children}</label>
               ) : (
-                <div className={classes.childrenWrapper}>{children}</div>
+                <div className="w-100 flex" css={css({ gap: '3vw' })}>
+                  {children}
+                </div>
               )}
             </div>
-            <div className={`${classes.buttons} ${buttonAreaClass}`}>
+            <div className="flex j-between shrink-0" css={buttonsStyle}>
               {onEdit && (
                 <Button
-                  className={classes.pencil}
+                  className="draggable-button-pencil"
                   styleClass="extra"
                   onClick={editHandler}
                 />
               )}
               {onRemove && (
                 <Button
-                  className={classes.trash}
+                  className="draggable-button-trash"
                   styleClass="extra"
                   onClick={removeHandler}
                 />
               )}
               {!preventDrag && (
-                <div {...provided.dragHandleProps} className={classes.handle} />
+                <div
+                  {...provided.dragHandleProps}
+                  className="draggable-button-handle w-100 flex-center semi-bold round-sm"
+                />
               )}
             </div>
           </li>
