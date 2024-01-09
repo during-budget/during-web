@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useState } from 'react';
 import classes from './TagInput.module.css';
-import Tag from '../../UI/Tag';
+import Tag from '../../UI/component/Tag';
 
 const TagInput = React.forwardRef(
   (

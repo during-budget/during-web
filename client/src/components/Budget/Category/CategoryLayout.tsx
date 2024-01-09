@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { uiActions } from '../../../store/ui';
 import Button from '../../UI/button/Button';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import NavButton from '../../UI/button/NavButton';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryLayout.module.css';

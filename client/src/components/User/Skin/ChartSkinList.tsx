@@ -7,7 +7,7 @@ import { getOptions, updateChartSkin } from '../../../util/api/settingAPI';
 import { getErrorMessage } from '../../../util/error';
 import AmountRing from '../../Budget/Amount/AmountRing';
 import Button from '../../UI/button/Button';
-import Mask from '../../UI/Mask';
+import Mask from '../../UI/component/Mask';
 import classes from './ChartSkinSetting.module.css';
 
 interface ChartSkinListProps {

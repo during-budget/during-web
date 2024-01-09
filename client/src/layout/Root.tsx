@@ -4,6 +4,8 @@ import Modal from '../components/UI/overlay/Modal';
 import Channel from '../models/Channel';
 import { UserDataType } from '../util/api/userAPI';
 import { fetchRequest } from '../util/request';
+import AmountOverlay from '../components/Budget/Input/AmountOverlay';
+import PaymentOverlay from '../components/Payment/PaymentOverlay';
 
 function Root() {
   const location = useLocation();
@@ -22,10 +24,14 @@ function Root() {
     <>
       <Outlet />
       <Modal />
+      {/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
+      <AmountOverlay />
+      <PaymentOverlay />
     </>
   );
 }
 // <div>
+{/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
 {
   /* {isGuest && !['/user'].includes(location.pathname) && location.pathname !== '/' && (
         <Link className={classes.guest} to="/user?register">

@@ -77,6 +77,10 @@
   background-color: var(--primary);
 }
 
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
 .bg-white {
   background-color: var(--white);
 }

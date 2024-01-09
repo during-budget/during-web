@@ -1,4 +1,4 @@
-import Mask from '../../UI/Mask';
+import Mask from '../../UI/component/Mask';
 import classes from './Ring.module.css';
 
 interface RingProps {

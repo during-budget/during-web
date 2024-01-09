@@ -1,6 +1,6 @@
 import Amount from '../../../models/Amount';
 import { AssetProps } from '../../../screens/Asset';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import classes from './AssetList.module.css';
 import CardList from './CardList';
 

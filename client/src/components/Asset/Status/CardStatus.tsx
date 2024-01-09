@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AssetProps } from '../../../screens/Asset';
 import EditButton from '../../UI/button/EditButton';
-import Inform from '../../UI/Inform';
+import Inform from '../../UI/component/Inform';
 import RadioTab from '../../UI/input/RadioTab';
 import CardList from '../List/CardList';
 import classes from '../Status/CardStatus.module.css';

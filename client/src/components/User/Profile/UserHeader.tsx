@@ -7,7 +7,7 @@ import { updateUserInfo } from '../../../util/api/userAPI';
 import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
 import InputField from '../../UI/input/InputField';
-import Mask from '../../UI/Mask';
+import Mask from '../../UI/component/Mask';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './UserHeader.module.css';
 

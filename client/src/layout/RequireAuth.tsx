@@ -7,7 +7,7 @@ import {
   useNavigate,
   useNavigation,
 } from 'react-router-dom';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
+import LoadingSpinner from '../components/UI/component/LoadingSpinner';
 import { useAppDispatch } from '../hooks/useRedux';
 import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';

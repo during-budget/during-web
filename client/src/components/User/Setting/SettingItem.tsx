@@ -1,5 +1,5 @@
 import Button from '../../UI/button/Button';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import classes from './SettingItem.module.css';
 
 function SettingItem(props: {

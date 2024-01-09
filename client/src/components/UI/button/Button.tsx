@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import LoadingSpinner from '../LoadingSpinner';
+import LoadingSpinner from '../component/LoadingSpinner';
 import { SerializedStyles, css } from '@emotion/react';
 
 interface ButtonProps {
