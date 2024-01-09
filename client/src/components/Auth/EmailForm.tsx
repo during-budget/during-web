@@ -9,7 +9,7 @@ import { throwError } from '../../util/error';
 import { fetchRequest } from '../../util/request';
 import CodeField, { CODE_LENGTH } from '../Auth/CodeField';
 import Button from '../UI/button/Button';
-import Inform from '../UI/Inform';
+import Inform from '../UI/component/Inform';
 import InputField from '../UI/input/InputField';
 
 const EMAIL_VALIDATE_REGEX =

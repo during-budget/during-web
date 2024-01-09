@@ -123,6 +123,10 @@ h6 {
   font-size: inherit;
 }
 
+.color-inherit {
+  color: inherit;
+}
+
 /* font-weight */
 .thin {
   font-weight: 100;

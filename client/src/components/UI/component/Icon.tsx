@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import classes from './Icon.module.css';
 
 const DEFAULT_SIZE = '3rem';
 const DEFUALT_FONT_SIZE = '1.75rem';
@@ -21,10 +20,13 @@ function Icon(props: PropsWithChildren<IconProps>) {
   const borderRadius =
     props.borderRadius ||
     (props.isSquare ? DEFAULT_SQUARE_BORDER_RADIUS : DEFUALT_BORDER_RADIUS);
+
+  const iconStyle = { width, height, fontSize, borderRadius, flex: '0 0 auto' };
+
   return (
     <span
-      className={`${classes.container} ${props.className ? props.className : ''}`}
-      style={{ width, height, fontSize, borderRadius }}
+      className={`flex-center bg-gray-0 ${props.className ? props.className : ''}`}
+      css={iconStyle}
     >
       {props.children}
     </span>

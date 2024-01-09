@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import Inform from '../Inform';
+import Inform from '../component/Inform';
 import Button from '../button/Button';
 
 // TODO: defaultValue를 그냥 value로 바꿔야할 거 같지 아마..? 일단 놔둬보자

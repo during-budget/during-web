@@ -11,7 +11,7 @@ import { getTransactions } from '../../../util/api/transactionAPI';
 import { getExpenseKey, getExpensePlannedKey } from '../../../util/filter';
 import Button from '../../UI/button/Button';
 import DraggableList from '../../UI/draggable/DraggableList';
-import Inform from '../../UI/Inform';
+import Inform from '../../UI/component/Inform';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import AmountArea from '../Amount/AmountArea';
 import EditInput from '../Input/EditInput';

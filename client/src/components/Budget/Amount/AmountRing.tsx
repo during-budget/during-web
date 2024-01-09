@@ -1,7 +1,7 @@
 import { SKIN_DATA } from '../../../constants/chart-skin';
 import { useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
-import Inform from '../../UI/Inform';
+import Inform from '../../UI/component/Inform';
 import classes from './AmountRing.module.css';
 import Ring from './Ring';
 

@@ -14,7 +14,7 @@ import {
 import Button from '../../UI/button/Button';
 import DraggableItem from '../../UI/draggable/DraggableItem';
 import DraggableList from '../../UI/draggable/DraggableList';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import DetailTypeTab from '../UI/DetailTypeTab';
 import AssetCardItemEditor from './AssetCardItemEditor';

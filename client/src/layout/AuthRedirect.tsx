@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
+import LoadingSpinner from '../components/UI/component/LoadingSpinner';
 import { useAppDispatch } from '../hooks/useRedux';
 import { uiActions } from '../store/ui';
 

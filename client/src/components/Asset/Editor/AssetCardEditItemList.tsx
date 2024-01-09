@@ -14,7 +14,7 @@ import {
 import { getErrorMessage } from '../../../util/error';
 import DraggableItem from '../../UI/draggable/DraggableItem';
 import DraggableList from '../../UI/draggable/DraggableList';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import classes from './AssetCardEditItemList.module.css';
 import { AssetCardDataType } from './AssetCardListEditor';
 

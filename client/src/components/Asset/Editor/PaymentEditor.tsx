@@ -5,7 +5,7 @@ import { assetActions } from '../../../store/asset';
 import { PaymentDataType, updatePayments } from '../../../util/api/assetAPI';
 import DraggableItem from '../../UI/draggable/DraggableItem';
 import DraggableList from '../../UI/draggable/DraggableList';
-import Icon from '../../UI/Icon';
+import Icon from '../../UI/component/Icon';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './PaymentEditor.module.css';
 
