@@ -1,4 +1,4 @@
-import classes from './Carousel.module.css';
+import { css } from '@emotion/react';
 import { PropsWithChildren, useEffect } from 'react';
 
 const DIVIDER = '-';
@@ -12,6 +12,18 @@ interface CarouselProps {
   itemClassName?: string;
 }
 
+const listScrollStyle = css({
+  scrollSnapType: 'x mandatory',
+  scrollBehavior: 'smooth',
+});
+
+const itemScrollStyle = css({
+  scrollSnapAlign: 'start',
+  scrollSnapStop: 'always',
+});
+
+const navButtonClass = '';
+
 function Carousel({
   id: carouselId,
   initialIndex,
@@ -24,7 +36,7 @@ function Carousel({
   const slideIdPrefix = `${carouselId}${DIVIDER}${SLIDE_ID}${DIVIDER}`;
   const navIdPrefix = `${carouselId}${DIVIDER}${NAV_ID}${DIVIDER}`;
 
-  const observer = getObserver(`.${classes.carouselList}`);
+  const observer = getObserver('.js-carousel-item');
 
   useEffect(() => {
     // initiate scroll
@@ -33,29 +45,36 @@ function Carousel({
     toggleActive(currentIdx);
 
     // initiate observer
-    document.querySelectorAll(`.${classes.carouselItem}`).forEach((item) => {
+    document.querySelectorAll('.js-carousel-item').forEach((item) => {
       observer.observe(item);
     });
   }, []);
 
   return (
-    <section className={`${classes.container} ${containerClassName}`}>
-      <ol className={classes.carouselList}>
+    <section className={`flex-column i-center ${containerClassName}`}>
+      <ol className="flex w-100 scroll scroll-x" css={listScrollStyle}>
         {carouselItems!.map((item: any, index: number) => {
           const id = `${slideIdPrefix}${index}`;
           return (
-            <li key={id} id={id} className={`${classes.carouselItem} ${itemClassName}`}>
+            <li
+              key={id}
+              id={id}
+              className={`js-carousel-item flex-column j-around i-center shrink-0 w-100 ${itemClassName}`}
+              css={itemScrollStyle}
+            >
               {item}
             </li>
           );
         })}
       </ol>
-      <nav className={classes.carouselNav}>
+      <nav className="js-carousel-nav flex j-around">
         {carouselItems!.map((_: any, index: number) => {
           return (
             <button
               key={index}
               id={`${navIdPrefix}${index}`}
+              className="mx-0.625 border-none round-full bg-gray-0"
+              css={{ width: '0.5rem', height: '0.5rem' }}
               onClick={(event) => {
                 event.preventDefault();
                 scrollCarouselTo(index);
@@ -92,12 +111,12 @@ const getObserver = (selector: any) => {
 };
 
 const toggleActive = (currentIdx: number) => {
-  const navItems = document.querySelectorAll(`.${classes.carouselNav} button`);
+  const navItems = document.querySelectorAll(`.js-carousel-nav button`);
   for (const target of navItems) {
     if (currentIdx === getNavIndexById(target.id)) {
-      target.className = classes.active;
+      target.className = `${target.className} cursor-inherit bg-primary`;
     } else {
-      target.className = '';
+      target.className = target.className.split('cursor-inherit')[0];
     }
   }
 };
@@ -108,7 +127,7 @@ const getNavIndexById = (id: string) => {
 };
 
 const scrollCarouselTo = (index: number) => {
-  const item = document.querySelectorAll(`.${classes.carouselItem}`)[index];
+  const item = document.querySelectorAll('.js-carousel-item')[index];
   item.scrollIntoView({
     behavior: 'smooth',
     block: 'end',

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import classes from './WeeklyStatus.module.css';
-import Calendar from '../../UI/Calendar';
+import Calendar from '../../UI/widget/Calendar';
 import IndexNav from '../../UI/nav/IndexNav';
 import IncomeExpenseGroupedChart from '../Chart/IncomeExpenseGroupedChart';
 import { getWeekDays, getWeekIdx, getWeekNames } from '../../../util/date';

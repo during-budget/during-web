@@ -1,4 +1,4 @@
-import Carousel from '../UI/Carousel';
+import Carousel from '../UI/widget/Carousel';
 
 import animationDual from '../../assets/lottie/landing_dual.json';
 import animationDuring from '../../assets/lottie/landing_during.json';
