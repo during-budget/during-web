@@ -78,6 +78,10 @@
   height: inherit;
 }
 
+.h-0 {
+  height: 0;
+}
+
 .h-100 {
   height: 100%;
 }
@@ -110,6 +114,10 @@
 /* margin */
 .mx-auto {
   margin: 0 auto;
+}
+
+.mx-0\.625 {
+  margin: 0 0.625rem;
 }
 
 .mx-3 {
@@ -197,6 +205,10 @@
 
 .p-2\.875 {
   padding: 2.875rem;
+}
+
+.pt-0\.25 {
+  padding-top: 0.25rem;
 }
 
 .px-0\.5 {
@@ -399,6 +411,16 @@
   flex-shrink: 0;
 }
 
+/* vertical-align */
+.v-top {
+  vertical-align: top;
+}
+
+/* border */
+.border-none {
+  border: none;
+}
+
 /* border-radius */
 .round-full {
   border-radius: var(--round-full);
@@ -457,6 +479,10 @@
   opacity: 0.8;
 }
 
+.o-0\.5 {
+  opacity: 0.5;
+}
+
 .o-0 {
   opacity: 0;
 }
@@ -488,6 +514,10 @@
   overflow-x: scroll;
 }
 
+.scroll-y {
+  overflow-y: scroll;
+}
+
 .scroll::-webkit-scrollbar {
   display: none;
 }
@@ -499,4 +529,8 @@
 /* cursor */
 .pointer {
   cursor: pointer;
+}
+
+.cursor-inherit {
+  cursor: inherit
 }

@@ -87,11 +87,11 @@ li {
 }
 
 hr {
-  margin-top: var(--size-1);
+  margin-top: 2rem;
   width: 100%;
-  height: var(--size-1);
+  height: 2rem;
   border: none;
-  background-color: #f6f6f6;
+  background-color: var(--gray-0);
 }
 
 main {
