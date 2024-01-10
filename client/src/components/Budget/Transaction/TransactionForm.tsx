@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
@@ -65,9 +66,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
-  const [dateState, setDateState] = useState<Date>(
-    defaultValue.date || new Date()
-  );
+  const [dateState, setDateState] = useState<Date>(defaultValue.date || new Date());
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
   );
@@ -233,13 +232,13 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       <AmountInput
         id="transaction-form-amount"
         ref={amountRef}
-        className={classes.field}
+        className="w-100"
         onFocus={expandHandler}
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
       />
-      <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '40%' }}>
+      <Button onClick={expandHandler} css={css({ width: mode.isExpand ? 0 : '40%' })}>
         내역 추가
       </Button>
     </div>

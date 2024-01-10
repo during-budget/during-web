@@ -1,8 +1,6 @@
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { TransactionType } from '../../../util/api/transactionAPI';
 import Button from '../../UI/button/Button';
-import classes from './TransactionGroup.module.css';
 import TransactionItem from './TransactionItem';
 
 interface TransactionGroupProps {
@@ -16,14 +14,15 @@ const TransactionGroup = ({ id, date, data, isDefaultBudget }: TransactionGroupP
   const [isExpand, setIsExpand] = useState(true);
 
   return (
-    <ol className={`${classes.group} ${isExpand ? classes.expand : ''}`}>
+    <ol className={`mb-1 ${isExpand ? 'mb-3' : ''}`}>
       {/* Date */}
-      <div className={classes.header}>
-        <h5 id={id} className={classes.date}>
+      <div className="flex j-between i-center">
+        <h5 id={id} className="shrink-0" css={{ scrollMargin: '10vh' }}>
           {date}
         </h5>
         <Button
           styleClass="extra"
+          className="w-auto"
           onClick={() => {
             setIsExpand((prev) => !prev);
           }}
