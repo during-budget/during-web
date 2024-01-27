@@ -1,0 +1,143 @@
+name: server-v3-pipeline
+
+on:
+  push:
+    branches: [server-v3]
+
+jobs:
+  server-CI:
+    name: server-CI
+    runs-on: ubuntu-latest
+
+    steps:
+      # 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
+
+      # docker build 세팅
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.0.0
+
+      # 캐시 받아오기
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # GitHub 컨테이너 레지스트리에 로그인
+      - name: Login to ghcr
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io/during-budget
+          username: ${{ github.actor }}
+          password: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
+
+      # .env.production 파일 생성
+      - name: Set .env.production File
+        run: |
+          cd server
+          echo "SERVER_URL= ${{secrets.SERVER_URL}}" >> .env.production
+          echo "SERVER_PORT= ${{secrets.SERVER_PORT}}" >> .env.production
+          echo "CLIENT= ${{secrets.CLIENT}}" >> .env.production
+          echo "CLIENT_ADMIN= ${{secrets.CLIENT_ADMIN}}" >> .env.production
+          echo "DB_URL= ${{secrets.DB_URL}}" >> .env.production
+          echo "REDIS_URL = ${{secrets.REDIS_URL}}" >> .env.production
+          echo "CRYPTO_KEY= ${{secrets.CRYPTO_KEY}}" >> .env.production
+          echo "CRYPTO_SALT=${{secrets.CRYPTO_SALT}}" >> .env.production
+          echo "CRYPTO_ALGORITHM=${{secrets.CRYPTO_ALGORITHM}}" >> .env.production
+          echo "SALT_ROUNDS= ${{secrets.SALT_ROUNDS}}" >> .env.production
+          echo "SESSION_KEY= ${{secrets.SESSION_KEY}}" >> .env.production
+          echo "NODEMAILER_USER= ${{secrets.NODEMAILER_USER}}" >> .env.production
+          echo "NODEMAILER_PASS= ${{secrets.NODEMAILER_PASS}}" >> .env.production
+          echo "S3_ACESSKEYID= ${{secrets.S3_ACESSKEYID}}" >> .env.production
+          echo "S3_SECRETACCESSKEY= ${{secrets.S3_SECRETACCESSKEY}}" >> .env.production
+          echo "S3_BUCKET_LOGS= ${{secrets.S3_BUCKET_LOGS}}" >> .env.production
+          echo "GOOGLE_CLIENT_ID= ${{secrets.GOOGLE_CLIENT_ID}}" >> .env.production
+          echo "GOOGLE_CLIENT_SECRET= ${{secrets.GOOGLE_CLIENT_SECRET}}" >> .env.production
+          echo "NAVER_CLIENT_ID= ${{secrets.NAVER_CLIENT_ID}}" >> .env.production
+          echo "NAVER_CLIENT_SECRET= ${{secrets.NAVER_CLIENT_SECRET}}" >> .env.production
+          echo "KAKAO_CLIENT_ID= ${{secrets.KAKAO_CLIENT_ID}}" >> .env.production
+          echo "PORTONE_IMP_KEY= ${{secrets.PORTONE_IMP_KEY}}" >> .env.production
+          echo "PORTONE_IMP_SECRET= ${{secrets.PORTONE_IMP_SECRET}}" >> .env.production
+
+      # 빌드 후 푸쉬
+      - name: Build and push
+        id: docker-build
+        uses: docker/build-push-action@v4
+        with:
+          context: server
+          file: ./server/Dockerfile
+          push: true
+          tags: "ghcr.io/during-budget/during-budget-server:latest"
+          # (3)
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # 이전 캐시 지우고 새로운 캐시 옮기기
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # 디스코드 알림
+      - name: Send Discord Notification
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SERVER }}
+          DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+        if: always() # Pick up events even if the job fails or is canceled.
+
+
+  # server-CD:
+  #   name: server-CD
+  #   needs: server-CI
+  #   strategy:
+  #     matrix:
+  #       labels: [L0]
+  #   runs-on: ${{ matrix.labels }}
+
+  #   steps:
+  #     # 체크아웃
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     # GitHub 컨테이너 레지스트리에 로그인
+  #     - name: Login to ghcr
+  #       uses: docker/login-action@v2.0.0
+  #       with:
+  #         registry: ghcr.io/during-budget
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
+
+  #     # Pull images
+  #     - name: Docker pull
+  #       run: |
+  #         docker pull ghcr.io/during-budget/during-budget-server:latest
+
+  #     # Run containers
+  #     - name: Docker run
+  #       run: |
+  #         docker rm -f during-budget-server_1 &>/dev/null && echo 'Removed old container'
+  #         docker run --name during-budget-server_1  --restart on-failure -p ${{secrets.SERVER_PORT}}:${{secrets.SERVER_PORT}} -d ghcr.io/during-budget/during-budget-server:latest
+
+  #     # 이전 이미지 삭제
+  #     - name: Prune images
+  #       run: |
+  #         docker image prune -f
+  #         docker images
+
+  #     # 디스코드 알림
+  #     - name: Send Discord Notification
+  #       uses: Ilshidur/action-discord@0.3.2
+  #       env:
+  #         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SERVER }}
+  #         DISCORD_EMBEDS: '[ { "type": "rich", "title": "${{ github.job }}", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "fields": [ { "name": "status", "value": "${{ job.status }}"}, { "name": "commit", "value":  "${{ github.event.head_commit.message }}", "inline": true }, { "name": "actor", "value": "jessie129j", "inline": true } ] } ]'
+  #       if: always() # Pick up events even if the job fails or is canceled.
