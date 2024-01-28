@@ -3,30 +3,26 @@ import { resolve } from "path";
 import { exit } from "src/utils/process";
 import { configType } from "./type";
 
-const isModeValid = (mode: string | undefined) => {
-  if (mode === "development") return true;
-  if (mode === "production") return true;
-  return false;
-};
-
-const getPath = (mode?: string) => {
-  if (mode === "development") {
-    return resolve(__dirname, `../../.env.development`);
-  } else if (mode === "production") {
-    return resolve(__dirname, `../../../.env.production`);
-  }
-  return "";
-};
-
 const isEnvValid = () => process.env.SERVER_PORT;
 
 const setup = () => {
   const mode = process.env.NODE_ENV?.trim();
-  if (!isModeValid(mode)) {
-    exit(`Invalid NODE_ENV: ${process.env.NODE_ENV}`);
+
+  switch (mode) {
+    case "development": {
+      dotenv.config({ path: resolve(__dirname, `../../.env.development`) });
+      break;
+    }
+
+    case "production": {
+      dotenv.config();
+      break;
+    }
+
+    default:
+      exit(`Invalid NODE_ENV: ${process.env.NODE_ENV}`);
   }
 
-  dotenv.config({ path: getPath(mode) });
   if (!isEnvValid()) {
     exit(`env file or env.SERVER_PORT is missing`);
   }
