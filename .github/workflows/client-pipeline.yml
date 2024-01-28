@@ -1,4 +1,4 @@
-name: client-pipeline
+name: client-pipeline-wip
 
 on:
   push:
