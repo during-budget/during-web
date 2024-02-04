@@ -28,7 +28,7 @@ jobs:
             options:
               nodeversion: "16"
               build: npm run build
-              spa: true
+              spa: false
               install: npm install
               buildenv:
                 - name: DURING_CLIENT
