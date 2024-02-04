@@ -79,4 +79,6 @@ const config: configType = {
   },
 };
 
+console.log(`✅ config is set; `, config);
+
 export default config;
