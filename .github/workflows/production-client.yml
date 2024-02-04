@@ -21,7 +21,7 @@ jobs:
           project: during/during-budget
           stage: production
           yaml: >
-            name: client-v2
+            name: client-v3
 
             app: web
 
