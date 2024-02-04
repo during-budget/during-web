@@ -2,7 +2,7 @@ name: Deploy production client via cloudtype
 on:
   push:
     branches:
-      - production-client
+      - production-client-deploy
 jobs:
   deploy:
     runs-on: ubuntu-latest

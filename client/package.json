@@ -14,8 +14,8 @@
     "@sentry/react": "^7.51.0",
     "add": "^2.0.6",
     "dayjs": "^1.11.7",
-    "emoji_data_kr": "^1.1.0",
     "emoji-mart": "^5.5.2",
+    "emoji_data_kr": "^1.1.0",
     "expr-eval": "^2.0.2",
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
@@ -25,7 +25,8 @@
     "react-redux": "^8.0.5",
     "react-router": "^6.11.1",
     "react-router-dom": "^6.11.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "vite": "4.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
@@ -33,7 +34,6 @@
     "@types/react-dom": "^18.0.11",
     "@types/uuid": "^9.0.1",
     "@vitejs/plugin-react-swc": "^3.0.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.2.0"
+    "typescript": "^4.9.3"
   }
 }
