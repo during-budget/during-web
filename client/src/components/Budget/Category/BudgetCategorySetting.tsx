@@ -15,6 +15,7 @@ import EmojiInput from '../../UI/input/EmojiInput';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
+import { css } from '@emotion/react';
 
 interface BudgetCategorySettingProps {
   budgetId: string;
@@ -225,7 +226,7 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
       </DraggableList>
       <Button
         styleClass="extra"
-        style={{ height: '4rem' }}
+        css={css({ height: '4rem' })}
         onClick={() => {
           dispatch(uiActions.setCategoryAdd({ isExpense }));
         }}

@@ -5,6 +5,7 @@ import { uiActions } from '../../../store/ui';
 import Select from '../../UI/input/Select';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryInput.module.css';
+import { cn } from '../../../util/cn';
 
 interface CategoryInputProps {
   categoryId?: string;
@@ -76,7 +77,6 @@ const CategoryInput = React.forwardRef(
       <>
         <Select
           ref={categoryRef}
-          className={className}
           data={categoryOptions}
           defaultValue={categoryId || defaultCategory.id}
           onChange={iconHandler}

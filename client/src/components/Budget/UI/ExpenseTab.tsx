@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import { uiActions } from '../../../store/ui';
+import { cn } from '../../../util/cn';
 import RadioTab from '../../UI/input/RadioTab';
 
 function ExpenseTab(props: {
@@ -59,7 +60,7 @@ function ExpenseTab(props: {
 
   return (
     <RadioTab
-      className={props.className}
+      className={cn('j-center', props.className)}
       name={props.id}
       values={tabs}
       isLine={props.showLine}
