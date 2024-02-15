@@ -31,16 +31,16 @@
 }
 
 .type {
-  font-size: var(--size-7);
+  font-size: 1.875rem;
 }
 
 .title {
-  font-size: var(--size-4);
+  font-size: 1.25rem;
 }
 
 .amount {
   flex-shrink: 0;
-  font-size: var(--size-3);
+  font-size: 1.5rem;
   font-weight: 600;
   text-align: right;
 }

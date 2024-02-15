@@ -1,13 +1,13 @@
 .container {
-    margin-bottom: var(--size-9);
-    padding: 0 var(--size-9);
-    padding-top: var(--size-9);
+    margin-bottom: 0.625rem;
+    padding: 0 0.625rem;
+    padding-top: 0.625rem;
     background-color: var(--gray-1);
-    border-radius: var(--size-10);
+    border-radius: 0.5rem;
 }
 
 .container.empty {
-    padding: 0 var(--size-9);
+    padding: 0 0.625rem;
 }
 
 /* tags */
@@ -33,6 +33,6 @@
 }
 
 .container li:last-child > input {
-    padding: 0 var(--size-9);
+    padding: 0 0.625rem;
     margin: 0;
 }

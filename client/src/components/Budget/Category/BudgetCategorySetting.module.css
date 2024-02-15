@@ -39,7 +39,7 @@
 }
 
 .info span.title {
-  font-size: var(--size-5);
+  font-size: 1.125rem;
   overflow-x: scroll;
 }
 

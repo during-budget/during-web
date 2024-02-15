@@ -54,7 +54,7 @@
   display: block;
   text-align: right;
   padding: 0 15%;
-  font-size: var(--size-4);
+  font-size: 1.25rem;
 }
 
 .plan span {
@@ -84,14 +84,14 @@
 .edit {
   position: relative;
   padding: 1rem 0;
-  font-size: var(--size-7);
+  font-size: 1.875rem;
 }
 
 .edit::before {
   content: '\f303';
   font: var(--fa-font-solid);
-  font-size: var(--size-8);
+  font-size: 0.75rem;
   position: absolute;
-  top: var(--size-5);
-  left: calc(-1 * var(--size-5));
+  top: 1.125rem;
+  left: calc(-1 * 1.125rem);
 }

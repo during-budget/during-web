@@ -30,7 +30,7 @@
   width: 100%;
   display: block;
   text-align: center;
-  font-size: var(--size-2);
+  font-size: 2rem;
 }
 
 .total span {
@@ -102,7 +102,7 @@
 }
 
 .left p {
-  font-size: var(--size-3);
+  font-size: 1.5rem;
   font-weight: 800;
 }
 

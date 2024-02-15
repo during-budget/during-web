@@ -13,7 +13,7 @@
 
 .check {
     width: auto;
-    height: var(--size-8);
+    height: 0.75rem;
 }
 
 .content {
@@ -36,7 +36,7 @@
 }
 
 .info span.title {
-    font-size: var(--size-5);
+    font-size: 1.125rem;
     overflow-x: scroll;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .buttons > * {
-    font-size: var(--size-8);
+    font-size: 0.75rem;
 }
 
 .buttons .pencil::before {
@@ -83,7 +83,7 @@
     align-items: center;
     width: 100%;
     font-weight: 600;
-    border-radius: var(--size-10);
+    border-radius: 0.5rem;
 }
 
 .default::before {

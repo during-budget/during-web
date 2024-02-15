@@ -12,13 +12,13 @@
 
 .button {
   height: 8vh;
-  font-size: var(--size-4);
+  font-size: 1.25rem;
   margin: 1vh 0;
   margin-bottom: 2vh;
 }
 
 .link {
-  font-size: var(--size-5);
+  font-size: 1.125rem;
   font-weight: 600;
 }
 

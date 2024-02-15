@@ -43,7 +43,7 @@
 }
 
 .date-field {
-  min-width: calc(100% - var(--size-5));
+  min-width: calc(100% - 1.125rem);
 }
 
 .amount {
