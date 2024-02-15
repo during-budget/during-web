@@ -278,7 +278,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       />
       <TitleInput
         ref={titlesRef}
-        className={`${classes.field} ${classes.title}`}
+        className={`${classes.field} w-100`}
         defaultValue={defaultValue.title}
       />
     </div>
@@ -330,7 +330,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
             {noteField} {/* emoji, title */}
             <TagInput
               ref={tagsRef}
-              className={classes.field}
+              className="w-100"
               defaultValue={defaultValue.tags}
             />
             <MemoInput

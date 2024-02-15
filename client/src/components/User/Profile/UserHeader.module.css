@@ -9,7 +9,7 @@
 .profile {
   width: 8rem;
   height: 8rem;
-  background-color: var(--gray-1);
+  background-color: var(--gray-0);
   border-radius: 50%;
   margin-bottom: 2vh;
   overflow: hidden;

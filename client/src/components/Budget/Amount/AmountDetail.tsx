@@ -50,7 +50,7 @@ const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
     {
       label: isLeft ? '남은 목표' : '목표 금액',
       amountStr: amount.getPlannedStr(isLeft),
-      labelColor: 'var(--gray-1)',
+      labelColor: 'var(--gray-0)',
       fontSize: '1.125rem',
       fontWeight: 100,
       editHandler: editPlanHandler,
