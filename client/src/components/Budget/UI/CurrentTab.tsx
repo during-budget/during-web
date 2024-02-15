@@ -43,7 +43,15 @@ function CurrentTab({ id, isCurrent, isLine, isCenter, disabled }: CurrentTabPro
     },
   ];
 
-  return <RadioTab name={id} values={tabs} isLine={isLine} isCenter={isCenter} />;
+  return (
+    <RadioTab
+      name={id}
+      values={tabs}
+      className="j-center"
+      isLine={isLine}
+      isCenter={isCenter}
+    />
+  );
 }
 
 export default CurrentTab;

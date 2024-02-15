@@ -62,7 +62,7 @@ const DraggableItem = ({
 
   const draggingStyle = css(itemStyle, {
     backgroundColor: '#fff',
-    padding: '0.5rem',
+    // padding: '0.5rem',
     borderRadius: '0.5rem',
     boxShadow: 'var(--shadow-0.2)',
   });

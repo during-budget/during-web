@@ -6,7 +6,7 @@
 .top button {
   width: 20%;
   position: absolute;
-  font-size: 1.875rem;
+  font-size: 0.875rem;
   top: 0;
   right: 0;
 }
@@ -77,7 +77,7 @@
   margin: 1rem auto;
   padding: 0.5rem 3.5rem;
   border-radius: 0.5rem;
-  font-size: 1.875rem;
+  font-size: 0.875rem;
   color: #fff;
   background-color: var(--primary);
   font-weight: 600;

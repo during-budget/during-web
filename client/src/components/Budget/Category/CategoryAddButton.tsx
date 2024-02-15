@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import Category from '../../../models/Category';
 import Button from '../../UI/button/Button';
+import { css } from '@emotion/react';
 
 const CategoryAddButton = (props: {
   isExpense: boolean;
@@ -32,7 +33,7 @@ const CategoryAddButton = (props: {
   };
 
   return (
-    <Button styleClass="extra" style={{ height: '4rem' }} onClick={addHandler}>
+    <Button styleClass="extra" css={css({ height: '4rem' })} onClick={addHandler}>
       카테고리 추가
     </Button>
   );
