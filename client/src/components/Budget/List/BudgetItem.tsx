@@ -39,7 +39,8 @@ const BudgetItem = ({ budget, startDate, endDate, onClose }: BudgetItemProps) =>
   // NOTE: Get dash for different font-size (match for rem)
   const mediumScreen = window.matchMedia('(max-width: 400px)');
   const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 190 : mediumScreen.matches ? 220 : 250;
+  // !TODO: dash 계산
+  const dash = smallScreen.matches ? 190 : mediumScreen.matches ? 225 : 250;
 
   const amountRing = budget && (
     <>
@@ -47,10 +48,10 @@ const BudgetItem = ({ budget, startDate, endDate, onClose }: BudgetItemProps) =>
         {/* TODO: 수입/지출 선택 */}
         <AmountRing
           amount={budget.total.expense}
-          size="7.25rem"
-          r="2.5rem"
+          size="6.75rem"
+          r="2.25rem"
           dash={dash}
-          thickness="1.125rem"
+          thickness="1rem"
           skinScale={0.858}
         />{' '}
         {dateInfo}
