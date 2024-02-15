@@ -4,7 +4,6 @@ import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
 import MonthlyStatus from '../Date/MonthlyStatus';
 import WeeklyStatus from '../Date/WeeklyStatus';
-import classes from './DateStatus.module.css';
 import StatusHeader from './StatusHeader';
 
 function DateStatus(props: { budgetId: string }) {
@@ -52,7 +51,7 @@ function DateStatus(props: { budgetId: string }) {
   return (
     <>
       <StatusHeader
-        className={classes.header}
+        className="mb-0.5"
         id="date-status-type"
         title="날짜별 현황"
         values={headerTabs}
