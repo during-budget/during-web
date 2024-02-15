@@ -55,7 +55,7 @@ function TransactionItem({ transaction, isDefaultBudget }: TransactionItemProps)
     <li
       id={_id}
       className={`flex i-center gap-sm mb-1 pointer ${
-        isCurrent ? '' : 'bg-gray-0 round-lg'
+        isCurrent ? '' : 'bg-gray-0 round-md'
       }`}
       css={isCurrent ? undefined : { padding: '2vw' }}
       onClick={openDetail}
