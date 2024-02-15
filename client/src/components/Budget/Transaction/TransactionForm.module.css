@@ -104,6 +104,10 @@
   gap: 0.5rem;
 }
 
+.selects > div {
+  width: 100%;
+}
+
 .emoji {
   width: 3.8835rem;
 }
