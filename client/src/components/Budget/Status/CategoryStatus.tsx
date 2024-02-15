@@ -12,7 +12,6 @@ import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import CategoryPlanButtons from '../UI/CategoryPlanButtons';
 import ExpenseTab from '../UI/ExpenseTab';
-import classes from './CategoryStatus.module.css';
 import StatusHeader from './StatusHeader';
 
 function CategoryStatus(props: { budgetId: string }) {
@@ -100,7 +99,7 @@ function CategoryStatus(props: { budgetId: string }) {
             ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }}
         styleClass="extra"
-        className={classes.more}
+        className="flex-column"
       >
         <span>더보기</span>
         <span>↓</span>
