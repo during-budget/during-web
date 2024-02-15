@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import classes from './WeeklyStatus.module.css';
-import Calendar from '../../UI/widget/Calendar';
-import IndexNav from '../../UI/nav/IndexNav';
-import IncomeExpenseGroupedChart from '../Chart/IncomeExpenseGroupedChart';
 import { getWeekDays, getWeekIdx, getWeekNames } from '../../../util/date';
+import IndexNav from '../../UI/nav/IndexNav';
+import Calendar from '../../UI/widget/Calendar';
+import IncomeExpenseGroupedChart from '../Chart/IncomeExpenseGroupedChart';
 
 function WeeklyStatus(props: {
   title: string;
@@ -26,7 +25,7 @@ function WeeklyStatus(props: {
         locale={'ko-KR'}
       />
       <IncomeExpenseGroupedChart
-        className={classes.weekDailyChart}
+        className="w-100 mt-0.5 j-around"
         amount={getDailyAmountArr(dailyAmountObj, weekIdx, date.start)}
         height="14vh"
         showZero={true}
@@ -37,7 +36,7 @@ function WeeklyStatus(props: {
 
   const weeklyChart = (
     <IncomeExpenseGroupedChart
-      className={classes.weeklyChart}
+      className="w-80 mt-1.5 j-between"
       height="12vh"
       barHeight="60%"
       amount={getWeeklyAmountArr(dailyAmountObj, weekNames.length, date)}
