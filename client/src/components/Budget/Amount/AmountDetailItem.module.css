@@ -12,9 +12,9 @@
 .label::before {
   content: '';
   display: inline-block;
-  width: var(--size-6);
-  height: var(--size-6);
-  margin-right: var(--size-10);
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
   border-radius: 0.2rem;
   background-color: var(--label-color);
 }

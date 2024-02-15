@@ -25,7 +25,7 @@
 
 .detail {
   width: 100%;
-  font-size: var(--size-8);
+  font-size: 0.75rem;
 }
 
 .detail p {
@@ -44,7 +44,7 @@
 
 .default {
   padding: 1rem;
-  font-size: var(--size-5);
+  font-size: 1.125rem;
 }
 
 .auto {

@@ -2,10 +2,10 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    font-size: var(--size-5);
+    font-size: 1.125rem;
     gap: 1rem;
 }
 
 .container {
-    margin-bottom: var(--size-7);
+    margin-bottom: 1.875rem;
 }

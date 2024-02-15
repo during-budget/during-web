@@ -22,8 +22,8 @@
 
 .top button,
 .top a {
-  padding: var(--size-6);
-  font-size: var(--size-4);
+  padding: 1rem;
+  font-size: 1.25rem;
 }
 
 .bottom {
@@ -33,7 +33,7 @@
 }
 
 .bottom a {
-  font-size: var(--size-10);
+  font-size: 0.5rem;
 }
 
 .bottom h1 {

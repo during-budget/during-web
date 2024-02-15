@@ -32,11 +32,11 @@
 }
 
 .detail {
-  font-size: var(--size-8);
+  font-size: 0.75rem;
 }
 
 .title {
-  font-size: var(--size-5);
+  font-size: 1.125rem;
 }
 
 .add {

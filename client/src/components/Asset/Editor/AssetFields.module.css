@@ -7,7 +7,7 @@
 .label {
   position: absolute;
   left: 3vw;
-  font-size: var(--size-7);
+  font-size: 1.875rem;
 }
 
 .amount {

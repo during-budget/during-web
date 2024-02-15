@@ -1,6 +1,6 @@
 .container {
-    padding-top: var(--size-11);
-    font-size: var(--size-8);
+    padding-top: 0.25rem;
+    font-size: 0.75rem;
     font-weight: 400;
 }
 

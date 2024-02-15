@@ -22,8 +22,8 @@
 }
 
 .bar .label {
-  width: var(--size-3);
-  margin: var(--size-11);
-  font-size: var(--size-3);
-  line-height: var(--size-3);
+  width: 1.5rem;
+  margin: 0.25rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
 }
