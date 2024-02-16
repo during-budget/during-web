@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
@@ -9,10 +10,14 @@ import { getExpensePlannedKey } from '../../../util/filter';
 import AmountDetail from '../Amount/AmountDetail';
 import AmountRing from '../Amount/AmountRing';
 import ExpenseTab from '../UI/ExpenseTab';
+import useScreenSize from '../../../hooks/useScreenSize';
 
 interface TotalStatusProps {
   budgetId?: string;
 }
+
+const LARGE_SCREEN = '(min-width: 480px)';
+const SMALL_SCREEN = '(max-width: 380px)';
 
 const TotalStatus = ({ budgetId }: TotalStatusProps) => {
   const dispatch = useAppDispatch();
@@ -20,6 +25,16 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
   // Get state from store
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const total = useAppSelector((state) => state.total);
+
+  // Get
+  const screenSize = useScreenSize();
+  const [isLargeScreen, setIsLargeScreen] = useState(window.matchMedia(LARGE_SCREEN).matches);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.matchMedia(SMALL_SCREEN).matches);
+
+  useEffect(() => {
+    setIsLargeScreen(window.matchMedia(LARGE_SCREEN).matches);
+    setIsSmallScreen(window.matchMedia(SMALL_SCREEN).matches);
+  }, [screenSize]);
 
   // Get current total state
   const currentTotal = isExpense ? total.expense : total.income;
@@ -51,10 +66,8 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
     }
   };
 
-  // NOTE: Get dash for different font-size (match for rem)
-  const mediumScreen = window.matchMedia('(max-width: 400px)');
-  const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 475 : mediumScreen.matches ? 555 : 634;
+  // NOTE: Get dash for different font-size (_reset.css의 미디어쿼리 확인)
+  const dash = isSmallScreen ? 477 : isLargeScreen ? 715 : 635;
 
   return (
     <>
