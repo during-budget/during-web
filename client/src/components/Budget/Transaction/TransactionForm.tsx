@@ -302,6 +302,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
           onClose: closeHandler,
           isClip: true,
           noTransition: true,
+          isRight: true,
         }}
         formPadding="sm"
         formHeight="60vh"
@@ -328,11 +329,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
             )}
             {selectField} {/* category, payment */}
             {noteField} {/* emoji, title */}
-            <TagInput
-              ref={tagsRef}
-              className="w-100"
-              defaultValue={defaultValue.tags}
-            />
+            <TagInput ref={tagsRef} className="w-100" defaultValue={defaultValue.tags} />
             <MemoInput
               ref={memoRef}
               className={`${classes.field} ${classes.memo}`}

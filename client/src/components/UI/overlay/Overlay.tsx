@@ -1,6 +1,6 @@
+import { css } from '@emotion/react';
 import { PropsWithChildren, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { css } from '@emotion/react';
 
 export interface OverlayProps {
   id: string;
@@ -14,6 +14,8 @@ export interface OverlayProps {
   className?: string;
   hash?: string;
   isCenter?: boolean;
+  isRight?: boolean;
+  isLeft?: boolean;
 }
 
 function Overlay({
@@ -27,6 +29,8 @@ function Overlay({
   lockBody,
   hash,
   isCenter,
+  isRight,
+  isLeft,
   className,
   children,
 }: PropsWithChildren<OverlayProps>) {
@@ -60,8 +64,8 @@ function Overlay({
   const overlayStyle = (isCenter?: boolean) => {
     return css({
       '@media screen and (min-width: 840px)': {
-        left: isCenter ? '50%' : '0',
-        right: isCenter ? '50%' : '0',
+        left: isCenter ? 'unset' : isLeft ? '0' : 'unset',
+        right: isCenter ? 'unset' : isRight ? '0' : 'unset',
         width: '50%',
       },
     });

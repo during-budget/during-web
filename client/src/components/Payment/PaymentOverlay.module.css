@@ -5,7 +5,7 @@
 }
 
 .payment {
-  padding: 4vh 0;
+  padding: 4vh 2rem;
 }
 
 .payment,
@@ -55,17 +55,16 @@
 }
 
 .payment button[type='submit'] {
-  font-size: 1.125rem;
   font-weight: 800;
 }
 
 .payment label {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  width: 80vw;
+  width: 100%;
   max-width: 400px;
   text-align: center;
 }
@@ -118,12 +117,7 @@
   width: 100%;
 }
 
-.culture label {
-  font-size: 1rem;
-}
-
 .refund {
   margin-top: 2.5vh;
   text-align: center;
-  font-size: 0.95rem;
 }

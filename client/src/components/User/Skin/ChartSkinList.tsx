@@ -1,5 +1,6 @@
 import { ChartSkinType, SKIN_DATA } from '../../../constants/chart-skin';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
+import useScreenEndPoint from '../../../hooks/useScreenEndPoint';
 import Amount from '../../../models/Amount';
 import { settingActions } from '../../../store/setting';
 import { uiActions } from '../../../store/ui';
@@ -63,9 +64,10 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
   };
 
   // NOTE: Get dash for different font-size (match for rem)
-  const mediumScreen = window.matchMedia('(max-width: 400px)');
-  const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 320 : mediumScreen.matches ? 360 : 420;
+  // get screensize
+  const [isLargeScreen, isSmallScreen] = useScreenEndPoint();
+  console.log(isLargeScreen, isSmallScreen);
+  const dash = isSmallScreen ? 315 : isLargeScreen ? 475 : 425;
 
   const payHandler = async (skin: ChartSkinType) => {
     dispatch(
@@ -82,7 +84,9 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
               preview={skin}
             />
             <h3>{SKIN_DATA[skin].name}</h3>
-            <p>해당 상품 구매 후 적용 시 차트가 위와 같이 표시됩니다.</p>
+            <p className="text-md">
+              해당 상품 구매 후 적용 시 차트가 위와 같이 표시됩니다.
+            </p>
           </div>
         ),
         itemId: skin,
@@ -122,7 +126,6 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
       })
     );
   };
-  console.log(options);
 
   return (
     <ul className={classes.list}>
