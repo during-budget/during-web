@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import LoadingSpinner from '../component/LoadingSpinner';
 import { SerializedStyles, css } from '@emotion/react';
+import { cn } from '../../../util/cn';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
@@ -81,7 +82,7 @@ function Button({
   return (
     <button
       type={type || 'button'}
-      className={`w-100 flex-center semi-bold round-sm ${className || ''}`}
+      className={cn('w-100 flex-center semi-bold round-sm', className)}
       css={css(style, size, propsStyle)}
       onClick={onClick}
       disabled={disabled}

@@ -11,9 +11,10 @@ import LoadingSpinner from '../components/UI/component/LoadingSpinner';
 import { useAppDispatch } from '../hooks/useRedux';
 import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';
-import { uiActions } from '../store/ui';
+import { settingActions } from '../store/setting';
 import { userActions } from '../store/user';
 import { userCategoryActions } from '../store/user-category';
+import { getOptions } from '../util/api/settingAPI';
 import { loader as userLoader } from './Root';
 
 const { DURING_CHANNEL_KEY } = import.meta.env;
@@ -51,6 +52,15 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
       dispatch(assetActions.setAssets(assets));
       dispatch(assetActions.setCards(cards));
       dispatch(assetActions.setPaymentMethods(paymentMethods));
+
+      // 필드 추가마다 설정해줘야 함?!
+      const setSettings = async () => {
+        const { options: skinOptions } = await getOptions('chartSkin');
+        dispatch(
+          settingActions.updateOptionList({ field: 'chartSkin', options: skinOptions })
+        );
+      };
+      setSettings();
 
       // set sentry
       Sentry.setUser({ id: _id, username: userName, email, snsId });
