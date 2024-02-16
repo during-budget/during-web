@@ -4,6 +4,7 @@ import ChartSkinList from '../components/User/Skin/ChartSkinList';
 import { useAppSelector } from '../hooks/useRedux';
 import classes from './Store.module.css';
 import { useNavigate } from 'react-router';
+import { cn } from '../util/cn';
 
 const Store = () => {
   const navigate = useNavigate();
@@ -28,8 +29,8 @@ const Store = () => {
         </section>
       )}
       <section className={showAdRemove ? '' : classes.marginTop}>
-        <h4 className={classes.center}>듀링 구매하기</h4>
-        <p className={classes.center}>듀링 캐릭터를 통해 차트를 꾸밀 수 있습니다.</p>
+        <h4 className={cn(classes.center, 'text-lm')}>듀링 구매하기</h4>
+        <p className={cn(classes.center, 'text-md')}>듀링 캐릭터를 통해 차트를 꾸밀 수 있습니다.</p>
         <ChartSkinList price={platform ? 2300 : 2000} />
       </section>
     </div>

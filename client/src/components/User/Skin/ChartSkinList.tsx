@@ -122,6 +122,7 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
       })
     );
   };
+  console.log(options);
 
   return (
     <ul className={classes.list}>
@@ -144,6 +145,7 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
               </div>
               <Button
                 styleClass={isLocked ? 'primary' : 'gray'}
+                sizeClass="sm"
                 className={classes.buy}
                 onClick={clickHandler.bind(null, isLocked, id)}
               >

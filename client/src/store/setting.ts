@@ -22,7 +22,7 @@ interface OptionType {
 const initialState: SettingType = {
   chartSkin: {
     selected: 'basic',
-    options: ['bunny'],
+    options: [],
   },
   timeZone: 'Asia/Seoul',
 };
