@@ -59,7 +59,12 @@ const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
 
   return (
     <div className={classes.container}>
-      <RadioTab name={`${id}-amount-detail`} values={tabs} isBold={false} />
+      <RadioTab
+        name={`${id}-amount-detail`}
+        values={tabs}
+        className="j-center text-ml"
+        isBold={false}
+      />
       <ul>
         {details.map((data, i) => (
           <AmountDetailItem
