@@ -8,6 +8,7 @@ import Button from '../UI/button/Button';
 import Overlay from '../UI/overlay/Overlay';
 import EmailForm from './EmailForm';
 import SNSButtons from './SNSButtons';
+import { css } from '@emotion/react';
 
 interface AuthProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
     <>
       <Overlay
         id="auth"
-        css={{
+        css={css({
           maxWidth: 480,
           height: '95vh',
           transform:
@@ -60,19 +61,19 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
                 ? 'translate(-50%, 40%) translateZ(0) !important'
                 : 'translate(-50%, 100%)',
           },
-        }}
+        })}
         isOpen={isOpen}
         onClose={onClose}
         isCenter={true}
       >
-        <header className="flex-column i-center" css={{ marginTop: '8vh' }}>
+        <header className="flex-column i-center" css={css({ marginTop: '8vh' })}>
           <img
             src="/images/logo.png"
             alt="듀링 가계부 로고"
-            css={{
+            css={css({
               width: '6vh',
               marginBottom: '0.5vh',
-            }}
+            })}
           />
           <h2>시작하기</h2>
           {isSns && <p>SNS 계정으로 시작</p>}

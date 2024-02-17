@@ -6,8 +6,8 @@ import Button from '../components/UI/button/Button';
 import Privacy from '../components/User/Info/Privacy';
 import Terms from '../components/User/Info/Terms';
 import { useToggleOptions } from '../hooks/useToggle';
-import RequireAuth from '../layout/RequireAuth';
 import { loader as userLoader } from '../layout/Root';
+import { css } from '@emotion/react';
 
 const containerStyle = {
   maxWidth: 480,
@@ -58,14 +58,14 @@ const Landing = () => {
     >
       <img src="/images/logo.png" alt="듀링 가계부 로고" css={{ width: '2.5rem' }} />
       <LandingCarousel />
-      <Button onClick={openOverlay.bind(null, 'auth')} sizeClass="lg" css={buttonStyle}>
+      <Button onClick={openOverlay.bind(null, 'auth')} sizeClass="lg" css={css(buttonStyle)}>
         듀링 가계부 시작하기
       </Button>
       <div className="w-100 flex gap-md i-center">
         <Button
           onClick={openOverlay.bind(null, 'terms')}
           styleClass="extra"
-          css={{ flexShrink: 1.3 }}
+          css={css({ flexShrink: 1.3 })}
         >
           이용약관
         </Button>
