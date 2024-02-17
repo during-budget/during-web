@@ -3,6 +3,7 @@ import { useAppSelector } from '../../../hooks/useRedux';
 import { TransactionType } from '../../../util/api/transactionAPI';
 import { getNumericHypenDateString } from '../../../util/date';
 import TransactionGroup from './TransactionGroup';
+import classes from './TransactionList.module.css';
 
 interface TransactionListProps {
   isDefault?: boolean;
@@ -33,11 +34,7 @@ function TransactionList({ className, isDefault }: TransactionListProps) {
 
   return (
     <ol
-      className={`mx-auto ${className || ''}`}
-      css={{
-        width: '90vw',
-        paddingBottom: '8rem', // NOTE: Nav & TransactionForm Height
-      }}
+      className={`mx-auto ${classes.list} ${className || ''}`}
     >
       {dateList.map((date) => {
         const id = isDefault ? undefined : getNumericHypenDateString(new Date(date));

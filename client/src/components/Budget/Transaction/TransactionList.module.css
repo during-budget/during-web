@@ -1,0 +1,4 @@
+.list {
+    width: 90vw;
+    paddingBottom: 8rem; /* NOTE: Nav & TransactionForm Height */
+}
