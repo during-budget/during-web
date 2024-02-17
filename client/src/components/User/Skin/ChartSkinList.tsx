@@ -128,41 +128,54 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
   };
 
   return (
-    <ul className={classes.list}>
-      {Object.values(SKIN_DATA).map(({ id }) => {
-        const isLocked = !options.includes(id);
-        return (
-          id !== 'basic' && (
-            <li
-              key={id}
-              className={`${isLocked ? classes.lock : classes.unlock} ${
-                skinState === id ? classes.selected : ''
-              }`}
-              onClick={clickHandler.bind(null, isLocked, id)}
-            >
-              <div className={classes.icon}>
-                <Mask
-                  className={classes.profile}
-                  mask={`/assets/svg/${id}_profile.svg`}
-                />
-              </div>
-              <Button
-                styleClass={isLocked ? 'primary' : 'gray'}
-                sizeClass="sm"
-                className={classes.buy}
+    <>
+      <ul className={classes.list}>
+        {Object.values(SKIN_DATA).map(({ id }) => {
+          const isLocked = !options.includes(id);
+          return (
+            id !== 'basic' && (
+              <li
+                key={id}
+                className={`${isLocked ? classes.lock : classes.unlock} ${
+                  skinState === id ? classes.selected : ''
+                }`}
                 onClick={clickHandler.bind(null, isLocked, id)}
               >
-                {isLocked
-                  ? `₩${price?.toLocaleString() || '2,000'}`
-                  : skinState === id
-                  ? '설정중'
-                  : '설정하기'}
-              </Button>
-            </li>
-          )
-        );
-      })}
-    </ul>
+                <div className={classes.icon}>
+                  <Mask
+                    className={classes.profile}
+                    mask={`/assets/svg/${id}_profile.svg`}
+                  />
+                </div>
+                <Button
+                  styleClass={isLocked ? 'primary' : 'gray'}
+                  sizeClass="sm"
+                  className={classes.buy}
+                  onClick={clickHandler.bind(null, isLocked, id)}
+                >
+                  {isLocked
+                    ? `₩${price?.toLocaleString() || '2,000'}`
+                    : skinState === id
+                    ? '설정중'
+                    : '설정하기'}
+                </Button>
+              </li>
+            )
+          );
+        })}
+      </ul>
+      <Button
+        styleClass="extra"
+        onClick={() => {
+          dispatch(
+            settingActions.updateSelectedOption({ field: 'chartSkin', value: 'basic' })
+          );
+          updateChartSkin('basic');
+        }}
+      >
+        기본 모양으로 설정
+      </Button>
+    </>
   );
 };
 
