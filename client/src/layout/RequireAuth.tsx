@@ -44,6 +44,7 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
         assets,
         cards,
         paymentMethods,
+        settings,
       } = userData;
 
       // set user data
@@ -57,7 +58,12 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
       const setSettings = async () => {
         const { options: skinOptions } = await getOptions('chartSkin');
         dispatch(
-          settingActions.updateOptionList({ field: 'chartSkin', options: skinOptions })
+          settingActions.updateSetting({
+            chartSkin: {
+              selected: settings.chartSkin,
+              options: skinOptions
+            }
+          })
         );
       };
       setSettings();
