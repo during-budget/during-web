@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import Category from '../../../models/Category';
@@ -87,7 +88,7 @@ function TransactionItem({ transaction, isDefaultBudget }: TransactionItemProps)
               )}
             </div>
             <TransactionOption
-              css={{ '& button': { paddingLeft: '1rem' } }}
+              css={css({ '& button': { paddingLeft: '1rem' } })}
               transaction={transaction}
               category={category}
               isDefaultBudget={isDefaultBudget}

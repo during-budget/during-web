@@ -66,7 +66,6 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
   // NOTE: Get dash for different font-size (match for rem)
   // get screensize
   const [isLargeScreen, isSmallScreen] = useScreenEndPoint();
-  console.log(isLargeScreen, isSmallScreen);
   const dash = isSmallScreen ? 315 : isLargeScreen ? 475 : 425;
 
   const payHandler = async (skin: ChartSkinType) => {

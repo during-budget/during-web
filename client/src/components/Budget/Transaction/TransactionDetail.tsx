@@ -23,12 +23,12 @@ const detailStyle = {
   },
 };
 
-const optionButtonStyle = {
+const optionButtonStyle = css({
   '& button': {
     padding: 'calc(3.5rem / 2)',
     paddingLeft: 0,
   },
-};
+});
 
 const mt2vh = {
   marginTop: '2vh',
@@ -153,12 +153,12 @@ function TransactionDetail({ isDefaultBudget }: TransactionDetailProps) {
             onSelect={closeHandler}
             isDefaultBudget={isDefaultBudget}
             css={optionButtonStyle}
-            contextStyle={{
+            contextStyle={css({
               bottom: '0.5rem',
-              left: '0.5rem',
+              left: '0',
               top: 'auto',
               right: 'auto',
-            }}
+            })}
           />
         )}
         <Button onClick={closeHandler}>
