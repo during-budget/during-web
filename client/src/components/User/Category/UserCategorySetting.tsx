@@ -9,7 +9,7 @@ import UserCategoryList from './UserCategoryList';
 import classes from './UserCategorySetting.module.css';
 import { SettingOverlayProps } from '../../../screens/User';
 
-function UserCategorySetting({ isOpen, onClose }: SettingOverlayProps) {
+function UserCategorySetting({ isOpen, onClose, className }: SettingOverlayProps) {
   const dispatch = useAppDispatch();
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
@@ -63,7 +63,7 @@ function UserCategorySetting({ isOpen, onClose }: SettingOverlayProps) {
         noTransform: true,
         onClose,
       }}
-      className={classes.container}
+      className={className}
     >
       <div className={classes.header}>
         <h5>카테고리 설정</h5>
