@@ -23,64 +23,91 @@ const PaymentInput = ({
   disabled,
   setIsEditSetting,
 }: PaymentInputProps) => {
-  const [isAsset, setIsAsset] = useState(false);
   const paymentRef = useRef<any>(null);
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedPaymentMethods = useAppSelector((state) => state.asset.paymentMethods);
-  const filteredPaymentMethods = useMemo(
-    () =>
+
+  const [isAsset, setIsAsset] = useState(
+    storedPaymentMethods.find((item) => item._id === value)?.type === 'asset'
+  );
+  const [payments, setPayments] = useState(
+    storedPaymentMethods.filter((item) => {
+      if (isAsset) {
+        return item.type === 'asset';
+      } else {
+        return item.type === 'card';
+      }
+    })
+  );
+  const [paymentTab, setPaymentTab] = useState<any>({ element: null });
+
+  useEffect(() => {
+    console.log(
+      'set isAsset by value',
+      storedPaymentMethods.find((item) => item._id === value)?.type === 'asset'
+    );
+    setIsAsset(storedPaymentMethods.find((item) => item._id === value)?.type === 'asset');
+  }, [value]);
+
+  useEffect(() => {
+    console.log(isAsset);
+  }, [isAsset]);
+
+  useEffect(() => {
+    setPayments(
       storedPaymentMethods.filter((item) => {
         if (isAsset) {
           return item.type === 'asset';
         } else {
           return item.type === 'card';
         }
-      }),
-    [storedPaymentMethods, isAsset]
-  );
+      })
+    );
+    setPaymentTab({
+      element: (
+        <RadioTab
+          className={classes.tab}
+          key="payment-input-asset-card-tab"
+          name="payment-input-asset-card-tab"
+          values={[
+            {
+              label: '계좌/현금',
+              value: 'asset',
+              checked: isAsset,
+              onChange: () => {
+                setIsAsset(true);
+              },
+            },
+            {
+              label: '카드',
+              value: 'card',
+              checked: !isAsset,
+              onChange: () => {
+                setIsAsset(false);
+              },
+              hide: !isExpense,
+            },
+          ]}
+        />
+      ),
+    });
+  }, [value, isAsset]);
 
   useEffect(() => {
     if (isExpense) {
-      setIsAsset(false);
+      setIsAsset(
+        storedPaymentMethods.find((item) => item._id === value)?.type === 'asset'
+      );
     } else {
       setIsAsset(true);
     }
   }, [isExpense]);
 
-  const paymentTab = {
-    element: (
-      <RadioTab
-        className={classes.tab}
-        key="payment-input-asset-card-tab"
-        name="payment-input-asset-card-tab"
-        values={[
-          {
-            label: '계좌/현금',
-            value: 'asset',
-            checked: isAsset,
-            onChange: () => {
-              setIsAsset(true);
-            },
-          },
-          {
-            label: '카드',
-            value: 'card',
-            checked: !isAsset,
-            onChange: () => {
-              setIsAsset(false);
-            },
-            hide: !isExpense,
-          },
-        ]}
-      />
-    ),
-  };
-
   const paymentOptions = [
     paymentTab,
-    ...filteredPaymentMethods
-      .filter((item) => item.type === 'asset' || item.isChecked)
+    ...payments
+      // .filter((item) => item.type === 'asset' || item.isChecked) // ?? 이 코드의 존재 의읭를 모르ㅜ겠음
       .map((item) => {
         return {
           value: item._id,
@@ -89,6 +116,8 @@ const PaymentInput = ({
       }),
     { value: '', label: '결제수단 없음' },
   ];
+
+  // console.log(paymentOptions);
 
   return (
     <Select
@@ -100,7 +129,7 @@ const PaymentInput = ({
       }}
       onChange={(value?: string) => {
         localStorage.setItem('payment', value || '');
-        const payment = filteredPaymentMethods.find((item) => item._id === value);
+        const payment = payments.find((item) => item._id === value);
         onChange && onChange(value || '', payment?.detail === 'credit');
       }}
       value={value}
