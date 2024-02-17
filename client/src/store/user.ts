@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { AuthDataType } from '../util/api/authAPI';
+import { AuthDataType, SnsIdType } from '../util/api/authAPI';
 import { UserDataType } from '../util/api/userAPI';
 
 export interface UserInfoType {
@@ -75,6 +75,23 @@ const userSlice = createSlice({
     logout(state) {
       state = initialState;
     },
+    setUserInfo(state, action: PayloadAction<UserInfoType>) {
+      state.info = { ...action.payload };
+    },
+    updateUserInfo(state, action: PayloadAction<Partial<UserInfoType>>) {
+      state.info = { ...state.info, ...action.payload };
+    },
+    setAuthInfo(state, action: PayloadAction<AuthDataType>) {
+      const authInfo = action.payload;
+      state.auth = { ...action.payload };
+      if (!authInfo.snsId) {
+        state.auth = { ...state.auth, snsId: initialState.auth.snsId };
+      }
+    },
+    setSnsId(state, action: PayloadAction<SnsIdType>) {
+      state.auth.snsId = action.payload;
+    },
+
   },
 });
 

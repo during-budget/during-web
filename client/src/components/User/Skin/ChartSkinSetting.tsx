@@ -8,7 +8,7 @@ import OverlayForm from '../../UI/overlay/OverlayForm';
 import ChartSkinList from './ChartSkinList';
 import classes from './ChartSkinSetting.module.css';
 
-const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
+const ChartSkinSetting = ({ isOpen, onClose, className }: SettingOverlayProps) => {
   const { selected: skinState } = useAppSelector((state) => state.setting.chartSkin);
   const dispatch = useDispatch();
 
@@ -35,7 +35,7 @@ const ChartSkinSetting = ({ isOpen, onClose }: SettingOverlayProps) => {
         confirmCancelOptions={{
           closeMsg: '닫기',
         }}
-        className={classes.chartSkinSetting}
+        className={className}
       >
         <h5>차트 캐릭터 설정</h5>
         <ChartSkinList />

@@ -12,7 +12,7 @@ const Buisness = ({ isOpen, onClose }: SettingOverlayProps) => {
       onClose={onClose}
     >
       <div className={classes.info}>
-        <h1>Whaleap Studio</h1>
+        <h1>Whaleblue Studio</h1>
         <p>
           <strong>사업자등록번호 |</strong> 423-11-02401
         </p>

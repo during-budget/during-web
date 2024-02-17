@@ -272,7 +272,8 @@ const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
         </section>
 
         <section>
-          <h3>부칙</h3>이 약관은 2023년 8월 5일부터 적용됩니다.
+          <h3>부칙</h3>
+          <p>이 약관은 2023년 8월 5일부터 적용됩니다.</p>
         </section>
       </div>
       <Button onClick={onClose}>닫기</Button>

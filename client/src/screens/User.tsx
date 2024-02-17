@@ -16,12 +16,12 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { userActions } from '../store/user';
-import { UserDataType } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 export interface SettingOverlayProps {
   isOpen: boolean;
   onClose: () => void;
+  className?: string;
 }
 
 import Auth from '../components/Auth/AuthOverlay';
@@ -261,6 +261,9 @@ function User() {
     );
   };
 
+
+  // TODO: 아마 신규 로그인 방법 등록에 관한 코드인 듯........ 자세히 살펴볼 것
+
   useEffect(() => {
     getSnsId()
       .then((data: any) => {
@@ -282,25 +285,25 @@ function User() {
     return () => {};
   }, []);
 
-  const landingHandler = (user: UserDataType) => {
-    const { email, isLocal, snsId, isGuest } = user;
-    setShowAuth(false);
-    dispatch(
-      uiActions.showModal({
-        icon: '✓',
-        title: '등록 성공',
-        description: '계정 등록에 성공했습니다!',
-      })
-    );
-    dispatch(
-      userActions.setAuthInfo({
-        email,
-        isLocal,
-        snsId,
-        isGuest,
-      })
-    );
-  };
+  // const landingHandler = (user: UserDataType) => {
+  //   const { email, isLocal, snsId, isGuest } = user;
+  //   setShowAuth(false);
+  //   dispatch(
+  //     uiActions.showModal({
+  //       icon: '✓',
+  //       title: '등록 성공',
+  //       description: '계정 등록에 성공했습니다!',
+  //     })
+  //   );
+  //   dispatch(
+  //     userActions.setAuthInfo({
+  //       email,
+  //       isLocal,
+  //       snsId,
+  //       isGuest,
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     if (showEmailForm !== undefined || isRegister) {
@@ -371,10 +374,12 @@ function User() {
           <UserCategorySetting
             isOpen={showCategory}
             onClose={closeHandler(setShowCategory)}
+            className="p-0.75"
           />
           <ChartSkinSetting
             isOpen={showChartSkin}
             onClose={closeHandler(setShowChartSkin)}
+            className="p-0.75"
           />
           <Terms isOpen={showTerms} onClose={closeHandler(setShowTerms)} />
           <Privacy isOpen={showPrivacy} onClose={closeHandler(setShowPrivacy)} />

@@ -10,6 +10,7 @@
   padding: 2vh 0;
 }
 
+.back,
 .calendar {
   position: absolute;
   left: 5vw;
