@@ -63,6 +63,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
     setIsExpense(defaultValue.isExpense);
   }, [defaultValue.isExpense]);
 
+
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
   const [paymentState, setPaymentState] = useState<string>('');
@@ -79,6 +80,8 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
     } else {
       setPaymentState(defaultValue.linkedPaymentMethodId || '');
     }
+    console.log(defaultValue.linkedPaymentMethodId)
+    setDateState(defaultValue.date || new Date());
   }, [defaultValue]);
 
   useEffect(() => {
