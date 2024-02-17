@@ -33,7 +33,7 @@ function OptionButton(props: {
     top: '1.65rem',
     minWidth: '10rem',
     '& li:hover': {
-        backgroundColor: 'var(--gray-100)'
+        backgroundColor: 'var(--gray-0)'
     }
   });
 

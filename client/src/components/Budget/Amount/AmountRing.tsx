@@ -80,7 +80,7 @@ function AmountRing(props: {
       r,
       showEyes: !!preview || (!isBasic && currentDeg > 10),
       showLine: !isBasic && currentDeg >= scheduledDeg && currentDeg >= 350, // almostFull
-      isFront: currentDeg >= 350, // almostFull
+      isFront: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
     },
   ];
 
