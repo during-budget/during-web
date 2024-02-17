@@ -47,5 +47,5 @@
 .remove button::before {
   content: '\f2ed';
   font: var(--fa-font-solid);
-  font-size: 1.875rem;
+  font-size: 0.875rem;
 }
