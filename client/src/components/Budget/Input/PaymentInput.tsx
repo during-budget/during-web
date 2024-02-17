@@ -43,16 +43,8 @@ const PaymentInput = ({
   const [paymentTab, setPaymentTab] = useState<any>({ element: null });
 
   useEffect(() => {
-    console.log(
-      'set isAsset by value',
-      storedPaymentMethods.find((item) => item._id === value)?.type === 'asset'
-    );
     setIsAsset(storedPaymentMethods.find((item) => item._id === value)?.type === 'asset');
   }, [value]);
-
-  useEffect(() => {
-    console.log(isAsset);
-  }, [isAsset]);
 
   useEffect(() => {
     setPayments(
@@ -116,8 +108,6 @@ const PaymentInput = ({
       }),
     { value: '', label: '결제수단 없음' },
   ];
-
-  // console.log(paymentOptions);
 
   return (
     <Select

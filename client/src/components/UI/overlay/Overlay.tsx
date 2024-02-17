@@ -57,7 +57,7 @@ function Overlay({
 
   useEffect(() => {
     if (isOpen && !location.hash.includes(id)) {
-      onClose();
+      // onClose();
     }
   }, [location]);
 

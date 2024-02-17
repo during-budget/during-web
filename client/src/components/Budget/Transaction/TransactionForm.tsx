@@ -80,7 +80,6 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
     } else {
       setPaymentState(defaultValue.linkedPaymentMethodId || '');
     }
-    console.log(defaultValue.linkedPaymentMethodId)
     setDateState(defaultValue.date || new Date());
   }, [defaultValue]);
 
@@ -302,7 +301,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         overlayOptions={{
           id: 'transaction-form',
           isOpen: mode.isExpand,
-          onClose: closeHandler,
+          onClose: closeHandler, // 여기서 문제 발생
           isClip: true,
           noTransition: true,
           isRight: true,
