@@ -1,5 +1,5 @@
 .transaction-form {
-  clip-path: inset(-100% -100% calc(100% - 5.75rem) -100%);
+  clip-path: inset(-100% -100% calc(100% - 5.8rem) -100%);
   transform: translateY(calc(100% - (5.8rem + 9vh)));
   height: 85vh;
   transition: transform 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
