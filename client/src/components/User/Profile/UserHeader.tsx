@@ -66,8 +66,8 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
   const guestHeader = (
     <div className={classes.guest}>
       <h3>둘러보는 중이에요</h3>
-      <Button onClick={openAuth}>계정 등록을 진행해주세요</Button>
-      <p>
+      <Button onClick={openAuth} className="my-0.75">계정 등록 진행하기</Button>
+      <p className='text-md'>
         ⚠️ 탈퇴 및 세션 만료 등으로 인해 접속이 중단될 시<br />
         <strong>
           <u>계정 데이터를 복구할 수 없습니다.</u>
