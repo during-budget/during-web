@@ -6,7 +6,7 @@ import {
   redirect,
   useNavigate,
   useSearchParams,
-  useSubmit
+  useSubmit,
 } from 'react-router-dom';
 import Button from '../components/UI/button/Button';
 import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
@@ -36,7 +36,7 @@ import {
   disconnectSnsId,
   getAuthURL,
   getSnsId,
-  providers
+  providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
 import { fetchRequest } from '../util/request';
@@ -99,35 +99,37 @@ function User() {
       title: '로그인 설정',
       items: [
         ...providers.map((provider) => {
-          return snsId[provider?.provider]
-            ? {
-                src: provider.src,
-                label: `${provider.label} 로그인 해제`,
-                onClick: async () => {
-                  try {
-                    const data = await disconnectSnsId(provider.provider);
-                    dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
-                    if (data?.snsId) {
-                      dispatch(userActions.setSnsId(data.snsId));
+          if (snsId) {
+            return snsId[provider?.provider]
+              ? {
+                  src: provider.src,
+                  label: `${provider.label} 로그인 해제`,
+                  onClick: async () => {
+                    try {
+                      const data = await disconnectSnsId(provider.provider);
+                      dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+                      if (data?.snsId) {
+                        dispatch(userActions.setSnsId(data.snsId));
+                      }
+                    } catch (error) {
+                      const message = getErrorMessage(error);
+                      if (message) {
+                        dispatch(uiActions.showModal({ description: message }));
+                      } else {
+                        dispatch(uiActions.showErrorModal());
+                        throw error;
+                      }
                     }
-                  } catch (error) {
-                    const message = getErrorMessage(error);
-                    if (message) {
-                      dispatch(uiActions.showModal({ description: message }));
-                    } else {
-                      dispatch(uiActions.showErrorModal());
-                      throw error;
-                    }
-                  }
-                },
-              }
-            : {
-                src: provider.src,
-                label: `${provider.label} 계정 연결하기`,
-                onClick: async () => {
-                  window.open(getAuthURL(provider.provider), '_self');
-                },
-              };
+                  },
+                }
+              : {
+                  src: provider.src,
+                  label: `${provider.label} 계정 연결하기`,
+                  onClick: async () => {
+                    window.open(getAuthURL(provider.provider), '_self');
+                  },
+                };
+          }
         }),
         {
           icon: '✉️',
@@ -260,7 +262,6 @@ function User() {
       })
     );
   };
-
 
   // TODO: 아마 신규 로그인 방법 등록에 관한 코드인 듯........ 자세히 살펴볼 것
 

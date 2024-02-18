@@ -11,10 +11,10 @@ function SettingList(props: {
       {props.items.map((item, i) => (
         <SettingItem
           key={i}
-          icon={item.icon}
-          src={item.src}
-          label={item.label}
-          onClick={item.onClick}
+          icon={item?.icon}
+          src={item?.src}
+          label={item?.label}
+          onClick={item?.onClick}
         />
       ))}
     </ul>
