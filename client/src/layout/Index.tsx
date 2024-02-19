@@ -1,9 +1,28 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import classes from './Layout.module.css';
 import RequireAuth from './RequireAuth';
+import { useEffect, useState } from 'react';
+import AgreementOverlay from '../components/Landing/AgreementOverlay';
+import { useAppSelector } from '../hooks/useRedux';
+import { privacyPolicyVersion, termsOfUseVersion } from '../constants/version';
 
 function Index() {
   const loacation = useLocation();
+  const agreement = useAppSelector((state) => state.user.agreement);
+
+  const [openAgreement, setOpenAgreement] = useState(false);
+
+  useEffect(() => {
+
+    if (
+      agreement?.termsOfUse === termsOfUseVersion &&
+      agreement?.privacyPolicy === privacyPolicyVersion
+    ) {
+      setOpenAgreement(false);
+    } else {
+      setOpenAgreement(true);
+    }
+  }, [agreement]);
 
   const navData = [
     { path: '/budget', icon: <i className="fa-solid fa-home"></i> },
@@ -31,6 +50,13 @@ function Index() {
     <>
       <Outlet />
       {!isDefaultBudget && !isInit && <nav className={classes.nav}>{navList}</nav>}
+      <AgreementOverlay
+        isOpen={openAgreement}
+        isInit={isInit}
+        onClose={() => {
+          setOpenAgreement(false);
+        }}
+      />
     </>
   );
 }

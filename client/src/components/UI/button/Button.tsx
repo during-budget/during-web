@@ -14,7 +14,7 @@ interface ButtonProps {
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
   sizeClass?: 'xl' | 'lg' | 'md' | 'sm';
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
 function Button({
@@ -78,12 +78,12 @@ function Button({
       });
       break;
   }
-  
+
   return (
     <button
       type={type || 'button'}
       className={cn('w-100 flex-center semi-bold round-sm', className)}
-      css={css(style, size, propsStyle)}
+      css={css(style, size, propsStyle )}
       onClick={onClick}
       disabled={disabled}
       name={name}

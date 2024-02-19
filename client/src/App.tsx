@@ -16,6 +16,7 @@ import CurrentBudgetNavigator, {
 import ErrorBoundary from './layout/ErrorBoundary';
 import Index from './layout/Index';
 import PaymentRedirect from './layout/PaymentRedirect';
+import RequireAuth from './layout/RequireAuth';
 import Root, { loader as userLoader } from './layout/Root';
 import Asset from './screens/Asset';
 import Budget, { loader as budgetLoader } from './screens/Budget';
@@ -25,7 +26,6 @@ import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
 import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
-import RequireAuth from './layout/RequireAuth';
 
 const router = createBrowserRouter([
   {

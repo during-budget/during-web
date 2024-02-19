@@ -131,17 +131,20 @@ function CategoryPlan(props: { budgetId: string }) {
     let planDiff = 0;
 
     // Update target category
-    setCategoryState((prev) => {
-      const prevAmount = prev[i].amount;
-      const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
-      const nextCategories = [...prev];
+    if (categoryState.length > 0) {
+      setCategoryState((prev) => {
+        // prev[i]가 undefined일 경우...
+        const prevAmount = prev[i].amount;
+        const nextAmount = new Amount(prevAmount.current, prevAmount.scheduled, value);
+        const nextCategories = [...prev];
 
-      nextCategories[i] = Category.clone(prev[i], { amount: nextAmount, autoPlanned });
+        nextCategories[i] = Category.clone(prev[i], { amount: nextAmount, autoPlanned });
 
-      planDiff = prevAmount.planned - nextAmount.planned;
+        planDiff = prevAmount.planned - nextAmount.planned;
 
-      return nextCategories;
-    });
+        return nextCategories;
+      });
+    }
   };
 
   // Handlers for plan amounts

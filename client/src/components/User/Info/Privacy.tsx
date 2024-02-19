@@ -1,21 +1,28 @@
+import { privacyPolicyVersion } from '../../../constants/version';
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
+import ConfirmCancelButtons from '../../UI/button/ConfirmCancelButtons';
 import Overlay from '../../UI/overlay/Overlay';
 import classes from './Privacy.module.css';
 
-const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
+interface AgreeOverlayProps extends SettingOverlayProps {
+  agree?: () => void 
+}
+
+const Privacy = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
   return (
     <Overlay
       id="privacy-policy"
       className={classes.privacy}
       isOpen={isOpen}
       onClose={onClose}
+      preventGoBack={!!agree}
     >
       <div className={classes.contents}>
         <section>
           <h1>개인정보 처리방침</h1>
           <p>
-            웨일립스튜디오(이하 '회사')는 듀링가계부 서비스(이하 '서비스')를 제공하며
+            웨일블루스튜디오(이하 '회사')는 듀링가계부 서비스(이하 '서비스')를 제공하며
             개인정보보호법 및 관련 법령에 따라 사용자의 개인정보를 적법하고 안전하게
             보호합니다.
           </p>
@@ -190,10 +197,21 @@ const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
         </section>
 
         <p>
-          <strong>최종개정일: 2023. 6. 2.</strong>
+          <strong>최종개정일: {privacyPolicyVersion}</strong>
         </p>
       </div>
-      <Button onClick={onClose}>닫기</Button>
+      <ConfirmCancelButtons
+        confirmMsg={agree ? '동의하기' : '닫기'}
+        closeMsg='닫기'
+        hideCancle={!agree}
+        disableSubmit={!!agree}
+        isBottomSticky={true}
+        onConfirm={() => {
+          agree && agree();
+          onClose();
+        }}
+        onClose={onClose}
+      />
     </Overlay>
   );
 };
