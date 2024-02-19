@@ -35,13 +35,6 @@ console.log(`✅ ENV is set; NODE_ENV=${mode}`);
 
 const config: configType = {
   NODE_ENV: process.env.NODE_ENV?.trim() ?? "",
-  // allowList: [
-  //   process.env.CLIENT.trim(),
-  //   process.env.CLIENT_ADMIN.trim(),
-  //   "52.78.100.19",
-  //   "52.78.48.223",
-  //   "52.78.5.241",
-  // ],
   allowList: [
     ...(process.env.ALLOW_LIST?.split(";") ?? []),
     process.env.CLIENT.trim(),
