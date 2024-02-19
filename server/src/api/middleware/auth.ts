@@ -9,7 +9,7 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(403).send({ message: NOT_LOGGED_IN });
+    res.status(400).send({ message: NOT_LOGGED_IN });
   }
 };
 
@@ -21,7 +21,7 @@ export const isNotLoggedIn = (
   if (!req.isAuthenticated()) {
     next();
   } else {
-    res.status(403).send({ message: ALREADY_LOGGED_IN });
+    res.status(400).send({ message: ALREADY_LOGGED_IN });
   }
 };
 
@@ -45,10 +45,10 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.user.auth === "admin") {
       next();
     } else {
-      res.status(403).send({ message: NOT_PERMITTED });
+      res.status(400).send({ message: NOT_PERMITTED });
     }
   } else {
-    res.status(403).send({ message: NOT_LOGGED_IN });
+    res.status(400).send({ message: NOT_LOGGED_IN });
   }
 };
 
@@ -62,6 +62,6 @@ export const isPortOneWebHook = (
   if (ip === "52.78.100.19" || ip === "52.78.48.223" || ip === "52.78.5.241") {
     next();
   } else {
-    res.status(403).send({ message: NOT_LOGGED_IN });
+    res.status(400).send({ message: NOT_LOGGED_IN });
   }
 };

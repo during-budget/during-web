@@ -10,7 +10,7 @@ export default async (app: Express, config: configType) => {
   passportLoader(config);
   await mongooseLoader(config);
   await redisLoader(config);
-  loggerLoader(config);
+  // loggerLoader(config);
 
   await expressLoader(app, config);
 };

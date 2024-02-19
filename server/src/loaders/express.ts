@@ -86,12 +86,9 @@ const setupLogger = (app: Express) => {
   );
 };
 
-const setupRoutes = (app: Express, config: configType) => {
-  for (let i = 0; i < routers.length; i++) {
-    if (routers[i].label === "test" && config.NODE_ENV !== "development") {
-      continue;
-    }
-    app.use("/api/" + routers[i].label, routers[i].routes);
+const setupRoutes = (app: Express) => {
+  for (let router of routers) {
+    app.use("/api/" + router.label, router.routes);
   }
 };
 
@@ -107,6 +104,6 @@ export default async (app: Express, config: configType) => {
   setupCors(app, config.allowList);
   setupSession(app);
   setupLogger(app);
-  setupRoutes(app, config);
+  setupRoutes(app);
   setupErrorHandler(app);
 };

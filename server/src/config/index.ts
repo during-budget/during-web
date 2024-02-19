@@ -3,30 +3,26 @@ import { resolve } from "path";
 import { exit } from "src/utils/process";
 import { configType } from "./type";
 
-const isModeValid = (mode: string | undefined) => {
-  if (mode === "development") return true;
-  if (mode === "production") return true;
-  return false;
-};
-
-const getPath = (mode?: string) => {
-  if (mode === "development") {
-    return resolve(__dirname, `../../.env.development`);
-  } else if (mode === "production") {
-    return resolve(__dirname, `../../../.env.production`);
-  }
-  return "";
-};
-
 const isEnvValid = () => process.env.SERVER_PORT;
 
 const setup = () => {
   const mode = process.env.NODE_ENV?.trim();
-  if (!isModeValid(mode)) {
-    exit(`Invalid NODE_ENV: ${process.env.NODE_ENV}`);
+
+  switch (mode) {
+    case "development": {
+      dotenv.config({ path: resolve(__dirname, `../../.env.development`) });
+      break;
+    }
+
+    case "production": {
+      dotenv.config();
+      break;
+    }
+
+    default:
+      exit(`Invalid NODE_ENV: ${process.env.NODE_ENV}`);
   }
 
-  dotenv.config({ path: getPath(mode) });
   if (!isEnvValid()) {
     exit(`env file or env.SERVER_PORT is missing`);
   }
@@ -40,6 +36,7 @@ console.log(`✅ ENV is set; NODE_ENV=${mode}`);
 const config: configType = {
   NODE_ENV: process.env.NODE_ENV?.trim() ?? "",
   allowList: [
+    ...(process.env.ALLOW_LIST?.split(";") ?? []),
     process.env.CLIENT.trim(),
     process.env.CLIENT_ADMIN.trim(),
     "52.78.100.19",
@@ -74,5 +71,7 @@ const config: configType = {
     },
   },
 };
+
+console.log(`✅ config is set; `, config);
 
 export default config;
