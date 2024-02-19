@@ -98,8 +98,11 @@ function User() {
     {
       title: '로그인 설정',
       items: [
-        ...providers.map((provider) => {
-          if (snsId) {
+        ...providers
+          .map((provider) => {
+            if (!snsId) {
+              return undefined;
+            }
             return snsId[provider?.provider]
               ? {
                   src: provider.src,
@@ -129,8 +132,8 @@ function User() {
                     window.open(getAuthURL(provider.provider), '_self');
                   },
                 };
-          }
-        }),
+          })
+          .filter((item) => item),
         {
           icon: '✉️',
           label: isLocal ? '이메일 로그인 해제하기' : '이메일 등록하기',

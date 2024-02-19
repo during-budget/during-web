@@ -1,17 +1,30 @@
+import { extend } from 'dayjs';
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
 import Overlay from '../../UI/overlay/Overlay';
 import classes from './Terms.module.css';
+import ConfirmCancelButtons from '../../UI/button/ConfirmCancelButtons';
+import { termsOfUseVersion } from '../../../constants/version';
 
-const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
+interface AgreeOverlayProps extends SettingOverlayProps {
+  agree?: () => void;
+}
+
+const Terms = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
   return (
-    <Overlay id="terms" className={classes.terms} isOpen={isOpen} onClose={onClose}>
+    <Overlay
+      id="terms"
+      className={classes.terms}
+      isOpen={isOpen}
+      onClose={onClose}
+      preventGoBack={!!agree}
+    >
       <div className={classes.contents}>
         <h1>이용약관</h1>
         <section>
           <h3>제 1조 (목적)</h3>
           <p>
-            이 약관은 웨일립스튜디오(이하 '회사')가 제공하는 듀링가계부 서비스(이하
+            이 약관은 웨일블루스튜디오(이하 '회사')가 제공하는 듀링가계부 서비스(이하
             '듀링')의 이용과 관련하여 회사와 이용자의 권리, 의무 및 책임사항, 기타 필요한
             사항을 규정함을 목적으로 합니다.
           </p>
@@ -65,8 +78,8 @@ const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
           <h3>제 3조 (약관의 명시와 설명 및 개정)</h3>
           <ol>
             <li>
-              1. 듀링은 본 약관의 내용을 이용자가 확인할 수 있도록 메인 랜딩화면과 듀링 내 설정 탭에
-              게시합니다.
+              1. 듀링은 본 약관의 내용을 이용자가 확인할 수 있도록 메인 랜딩화면과 듀링 내
+              설정 탭에 게시합니다.
             </li>
             <li>
               2. 듀링의 필요에 따라 이 약관을 개정할 수 있으며 변경된 약관은 1항과 같은
@@ -273,10 +286,21 @@ const Terms = ({ isOpen, onClose }: SettingOverlayProps) => {
 
         <section>
           <h3>부칙</h3>
-          <p>이 약관은 2023년 8월 5일부터 적용됩니다.</p>
+          <p>이 약관은 {termsOfUseVersion}부터 적용됩니다.</p>
         </section>
       </div>
-      <Button onClick={onClose}>닫기</Button>
+      <ConfirmCancelButtons
+        confirmMsg={agree ? '동의하기' : '닫기'}
+        closeMsg="닫기"
+        hideCancle={!agree}
+        disableSubmit={!!agree}
+        isBottomSticky={true}
+        onConfirm={() => {
+          agree && agree();
+          onClose();
+        }}
+        onClose={onClose}
+      />
     </Overlay>
   );
 };

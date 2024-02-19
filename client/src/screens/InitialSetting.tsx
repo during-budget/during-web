@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -14,8 +15,8 @@ import TransactionDetail from '../components/Budget/Transaction/TransactionDetai
 import TransactionForm from '../components/Budget/Transaction/TransactionForm';
 import TransactionList from '../components/Budget/Transaction/TransactionList';
 import TransactionNav from '../components/Budget/Transaction/TransactionNav';
-import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import StepNav from '../components/UI/nav/StepNav';
+import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/useRedux';
 import { assetActions } from '../store/asset';
@@ -23,12 +24,11 @@ import { budgetActions } from '../store/budget';
 import { budgetCategoryActions } from '../store/budget-category';
 import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
-import { uiActions } from '../store/ui';
 import {
   AssetDataType,
   CardDataType,
   updateAssetById,
-  updateCardById
+  updateCardById,
 } from '../util/api/assetAPI';
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getErrorMessage } from '../util/error';
@@ -40,7 +40,7 @@ const InitialSetting = () => {
 
   const { assets, cards } = useAppSelector((state) => state.asset);
   const defaultBudgetId = useAppSelector((state) => state.user.info.defaultBudgetId);
-
+  
   useEffect(() => {
     const setDefaultBudget = async () => {
       try {
@@ -57,12 +57,7 @@ const InitialSetting = () => {
         }
       } catch (error) {
         const message = getErrorMessage(error);
-        dispatch(
-          uiActions.showErrorModal({
-            description: message || '기본 예산을 로드할 수 없습니다.',
-          })
-        );
-        if (!message) throw error;
+        Sentry.captureMessage(message || 'Initial Setting - 기본예산 로드 불가');
       }
     };
 

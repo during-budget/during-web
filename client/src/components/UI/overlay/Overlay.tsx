@@ -16,6 +16,8 @@ export interface OverlayProps {
   isCenter?: boolean;
   isRight?: boolean;
   isLeft?: boolean;
+  disableBackdrop?: boolean;
+  preventGoBack?: boolean;
 }
 
 function Overlay({
@@ -31,8 +33,10 @@ function Overlay({
   isCenter,
   isRight,
   isLeft,
+  disableBackdrop,
   className,
   children,
+  preventGoBack,
 }: PropsWithChildren<OverlayProps>) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,12 +50,14 @@ function Overlay({
       body?.style.setProperty('overflow', 'scroll');
     }
 
-    if (isOpen) {
-      navigate(
-        `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
-      );
-    } else if (location.hash.includes(id)) {
-      navigate(-1);
+    if (!preventGoBack) {
+      if (isOpen) {
+        navigate(
+          `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
+        );
+      } else if (location.hash.includes(id)) {
+        navigate(-1);
+      }
     }
   }, [isOpen]);
 
@@ -132,7 +138,9 @@ function Overlay({
       <div
         className="overlay-backdrop fixed position-0 v-hidden bg-black o-0"
         css={backdropStyle(isHideBackdrop, isOpen)}
-        onClick={onClose}
+        onClick={() => {
+          !disableBackdrop && onClose();
+        }}
       ></div>
       <div
         className={`overlay-container border-box fixed-important bottom-0 w-100 round-top-1\.5xl bg-white shadow-0 z-3 ${

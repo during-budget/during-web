@@ -45,6 +45,7 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
         cards,
         paymentMethods,
         settings,
+        agreement
       } = userData;
 
       // set user data
