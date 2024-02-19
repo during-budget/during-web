@@ -6,12 +6,9 @@ import {
 } from "src/api/message";
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
-  console.log("isLoggedIn...");
   if (req.isAuthenticated()) {
-    console.log("req.isAuthenticated()");
     next();
   } else {
-    console.log("return 401");
     res.status(401).send({ message: NOT_LOGGED_IN });
   }
 };

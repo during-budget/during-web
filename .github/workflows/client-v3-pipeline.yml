@@ -1,52 +1,52 @@
-name: Deploy client to cloudtype
-on:
-  push:
-    branches:
-      - client-v3
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+# name: Deploy client to cloudtype
+# on:
+#   push:
+#     branches:
+#       - client-v3
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Connect deploy key
-        uses: cloudtype-github-actions/connect@v1
-        with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          ghtoken: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
+#       - name: Connect deploy key
+#         uses: cloudtype-github-actions/connect@v1
+#         with:
+#           token: ${{ secrets.CLOUDTYPE_TOKEN }}
+#           ghtoken: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
 
-      - name: Deploy
-        uses: cloudtype-github-actions/deploy@v1
-        with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          project: during/during-budget
-          stage: production
-          yaml: >
-            name: client
+#       - name: Deploy
+#         uses: cloudtype-github-actions/deploy@v1
+#         with:
+#           token: ${{ secrets.CLOUDTYPE_TOKEN }}
+#           project: during/during-budget
+#           stage: production
+#           yaml: >
+#             name: client
 
-            app: web
+#             app: web
 
-            options:
-              nodeversion: "16"
-              build: npm run build
-              spa: true
-              install: npm install
-              buildenv:
-                - name: DURING_CLIENT
-                  value: ${{secrets.CLIENT_V3}}
-                - name: DURING_SERVER
-                  value: ${{secrets.SERVER_URL_V3}}
-                - name: DURING_SENTRY
-                  value: ${{secrets.DURING_SENTRY}}
-                - name: DURING_STORE_CODE
-                  value: ${{secrets.DURING_STORE_CODE}}
-                - name: DURING_CHANNEL_KEY
-                  value: ${{secrets.DURING_CHANNEL_KEY}}
-              docbase: /dist
-              indexpage: index.html
-            context:
-              git:
-                url: git@github.com:${{ github.repository }}.git
-                ref: ${{ github.ref }}
-                path: client
+#             options:
+#               nodeversion: "16"
+#               build: npm run build
+#               spa: true
+#               install: npm install
+#               buildenv:
+#                 - name: DURING_CLIENT
+#                   value: ${{secrets.CLIENT_V3}}
+#                 - name: DURING_SERVER
+#                   value: ${{secrets.SERVER_URL_V3}}
+#                 - name: DURING_SENTRY
+#                   value: ${{secrets.DURING_SENTRY}}
+#                 - name: DURING_STORE_CODE
+#                   value: ${{secrets.DURING_STORE_CODE}}
+#                 - name: DURING_CHANNEL_KEY
+#                   value: ${{secrets.DURING_CHANNEL_KEY}}
+#               docbase: /dist
+#               indexpage: index.html
+#             context:
+#               git:
+#                 url: git@github.com:${{ github.repository }}.git
+#                 ref: ${{ github.ref }}
+#                 path: client

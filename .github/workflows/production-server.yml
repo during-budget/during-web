@@ -1,83 +1,83 @@
-name: Deploy production server via cloudtype
-on:
-  push:
-    branches:
-      - production-server
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+# name: Deploy production server via cloudtype
+# on:
+#   push:
+#     branches:
+#       - production-server
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     environment: production
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Connect deploy key
-        uses: cloudtype-github-actions/connect@v1
-        with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          ghtoken: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
+#       - name: Connect deploy key
+#         uses: cloudtype-github-actions/connect@v1
+#         with:
+#           token: ${{ secrets.CLOUDTYPE_TOKEN }}
+#           ghtoken: ${{ secrets[format('GHCR_TOKEN_{0}', github.actor)] }}
 
-      - name: Deploy
-        uses: cloudtype-github-actions/deploy@v1
-        with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          project: during/during-budget
-          stage: production
-          yaml: >
-            name: server
+#       - name: Deploy
+#         uses: cloudtype-github-actions/deploy@v1
+#         with:
+#           token: ${{ secrets.CLOUDTYPE_TOKEN }}
+#           project: during/during-budget
+#           stage: production
+#           yaml: >
+#             name: server
 
-            app: node@16
+#             app: node@16
 
-            options:
-              env:
-                - name: NODE_ENV
-                  value: production
-                - name: SERVER_URL
-                  value: ${{secrets.PROD_SERVER_URL}}
-                - name: SERVER_PORT
-                  value: ${{secrets.SERVER_PORT}}
-                - name: CLIENT
-                  value: ${{secrets.PROD_CLIENT_URL}}
-                - name: CLIENT_ADMIN
-                  value: ${{secrets.CLIENT_ADMIN}}
-                - name: DB_URL
-                  value: ${{secrets.PROD_DB_URL}}
-                - name: REDIS_URL
-                  value: ${{secrets.PROD_REDIS_URL}}
-                - name: CRYPTO_KEY
-                  value: ${{secrets.CRYPTO_KEY}}
-                - name: CRYPTO_SALT
-                  value: ${{secrets.CRYPTO_SALT}}
-                - name: CRYPTO_ALGORITHM
-                  value: ${{secrets.CRYPTO_ALGORITHM}}
-                - name: SALT_ROUNDS
-                  value: ${{secrets.SALT_ROUNDS}}
-                - name: SESSION_KEY
-                  value: ${{secrets.SESSION_KEY}}
-                - name: NODEMAILER_USER
-                  value: ${{secrets.NODEMAILER_USER}}
-                - name: NODEMAILER_PASS
-                  value: ${{secrets.NODEMAILER_PASS}}
-                - name: GOOGLE_CLIENT_ID
-                  value: ${{secrets.GOOGLE_CLIENT_ID}}
-                - name: GOOGLE_CLIENT_SECRET
-                  value: ${{secrets.GOOGLE_CLIENT_SECRET}}
-                - name: NAVER_CLIENT_ID
-                  value: ${{secrets.NAVER_CLIENT_ID}}
-                - name: NAVER_CLIENT_SECRET
-                  value: ${{secrets.NAVER_CLIENT_SECRET}}
-                - name: KAKAO_CLIENT_ID
-                  value: ${{secrets.KAKAO_CLIENT_ID}}
-                - name: PORTONE_IMP_KEY
-                  value: ${{secrets.PORTONE_IMP_KEY}}
-                - name: PORTONE_IMP_SECRET
-                  value: ${{secrets.PORTONE_IMP_SECRET}}
-              ports: "5050"
-              install: npm install
-              build: npm run build
-              start: npm run prod
-            context:
-              git:
-                url: git@github.com:${{ github.repository }}.git
-                ref: ${{ github.ref }}  
-                path: server
+#             options:
+#               env:
+#                 - name: NODE_ENV
+#                   value: production
+#                 - name: SERVER_URL
+#                   value: ${{secrets.PROD_SERVER_URL}}
+#                 - name: SERVER_PORT
+#                   value: ${{secrets.SERVER_PORT}}
+#                 - name: CLIENT
+#                   value: ${{secrets.PROD_CLIENT_URL}}
+#                 - name: CLIENT_ADMIN
+#                   value: ${{secrets.CLIENT_ADMIN}}
+#                 - name: DB_URL
+#                   value: ${{secrets.PROD_DB_URL}}
+#                 - name: REDIS_URL
+#                   value: ${{secrets.PROD_REDIS_URL}}
+#                 - name: CRYPTO_KEY
+#                   value: ${{secrets.CRYPTO_KEY}}
+#                 - name: CRYPTO_SALT
+#                   value: ${{secrets.CRYPTO_SALT}}
+#                 - name: CRYPTO_ALGORITHM
+#                   value: ${{secrets.CRYPTO_ALGORITHM}}
+#                 - name: SALT_ROUNDS
+#                   value: ${{secrets.SALT_ROUNDS}}
+#                 - name: SESSION_KEY
+#                   value: ${{secrets.SESSION_KEY}}
+#                 - name: NODEMAILER_USER
+#                   value: ${{secrets.NODEMAILER_USER}}
+#                 - name: NODEMAILER_PASS
+#                   value: ${{secrets.NODEMAILER_PASS}}
+#                 - name: GOOGLE_CLIENT_ID
+#                   value: ${{secrets.GOOGLE_CLIENT_ID}}
+#                 - name: GOOGLE_CLIENT_SECRET
+#                   value: ${{secrets.GOOGLE_CLIENT_SECRET}}
+#                 - name: NAVER_CLIENT_ID
+#                   value: ${{secrets.NAVER_CLIENT_ID}}
+#                 - name: NAVER_CLIENT_SECRET
+#                   value: ${{secrets.NAVER_CLIENT_SECRET}}
+#                 - name: KAKAO_CLIENT_ID
+#                   value: ${{secrets.KAKAO_CLIENT_ID}}
+#                 - name: PORTONE_IMP_KEY
+#                   value: ${{secrets.PORTONE_IMP_KEY}}
+#                 - name: PORTONE_IMP_SECRET
+#                   value: ${{secrets.PORTONE_IMP_SECRET}}
+#               ports: "5050"
+#               install: npm install
+#               build: npm run build
+#               start: npm run prod
+#             context:
+#               git:
+#                 url: git@github.com:${{ github.repository }}.git
+#                 ref: ${{ github.ref }}
+#                 path: server
