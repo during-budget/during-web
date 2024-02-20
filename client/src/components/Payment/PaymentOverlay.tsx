@@ -16,10 +16,19 @@ const PaymentOverlay = () => {
   const { isOpen, content, itemId, amount, onComplete } = useAppSelector(
     (state) => state.ui.payment
   );
+  const platform = useAppSelector((state) => state.ui.platform);
+
   const dispatch = useAppDispatch();
   const [paymentState, setPaymentState] = useState('card');
 
   const paymentHandler = async () => {
+    if (platform) {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({ intent: 'payment', content: itemId })
+      );
+      return;
+    }
+
     window.IMP?.init(DURING_STORE_CODE);
     try {
       const { message, payment } = await preparePayment(itemId);

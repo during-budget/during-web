@@ -7,11 +7,12 @@ type SkinDataType = {
   };
 };
 
+// NOTE: DO NOT CHANGE TYPES
 export type ChartSkinType = 'basic' | 'cat' | 'bunny' | 'bear';
 
 export const SKIN_DATA: SkinDataType = {
   cat: {
-    id: 'cat',
+  id: 'cat',
     name: '고양이 듀링 스킨',
     hideRoundedDeg: 352,
     hideCoverDeg: 340,
