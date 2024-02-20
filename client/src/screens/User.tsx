@@ -98,42 +98,37 @@ function User() {
     {
       title: '로그인 설정',
       items: [
-        ...providers
-          .map((provider) => {
-            if (!snsId) {
-              return undefined;
-            }
-            return snsId[provider?.provider]
-              ? {
-                  src: provider.src,
-                  label: `${provider.label} 로그인 해제`,
-                  onClick: async () => {
-                    try {
-                      const data = await disconnectSnsId(provider.provider);
-                      dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
-                      if (data?.snsId) {
-                        dispatch(userActions.setSnsId(data.snsId));
-                      }
-                    } catch (error) {
-                      const message = getErrorMessage(error);
-                      if (message) {
-                        dispatch(uiActions.showModal({ description: message }));
-                      } else {
-                        dispatch(uiActions.showErrorModal());
-                        throw error;
-                      }
+        ...providers.map((provider) => {
+          return snsId && snsId[provider?.provider]
+            ? {
+                src: provider.src,
+                label: `${provider.label} 로그인 해제`,
+                onClick: async () => {
+                  try {
+                    const data = await disconnectSnsId(provider.provider);
+                    dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+                    if (data?.snsId) {
+                      dispatch(userActions.setSnsId(data.snsId));
                     }
-                  },
-                }
-              : {
-                  src: provider.src,
-                  label: `${provider.label} 계정 연결하기`,
-                  onClick: async () => {
-                    window.open(getAuthURL(provider.provider), '_self');
-                  },
-                };
-          })
-          .filter((item) => item),
+                  } catch (error) {
+                    const message = getErrorMessage(error);
+                    if (message) {
+                      dispatch(uiActions.showModal({ description: message }));
+                    } else {
+                      dispatch(uiActions.showErrorModal());
+                      throw error;
+                    }
+                  }
+                },
+              }
+            : {
+                src: provider.src,
+                label: `${provider.label} 계정 연결하기`,
+                onClick: async () => {
+                  window.open(getAuthURL(provider.provider), '_self');
+                },
+              };
+        }),
         {
           icon: '✉️',
           label: isLocal ? '이메일 로그인 해제하기' : '이메일 등록하기',
