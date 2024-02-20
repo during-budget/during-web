@@ -137,7 +137,9 @@ function App() {
             }
             break;
           case 'payment':
-            alert(content);
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({ intent: 'test', content })
+            );
             break;
         }
       } catch (e) {}
