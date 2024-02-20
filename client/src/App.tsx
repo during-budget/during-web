@@ -126,20 +126,27 @@ function App() {
 
   useEffect(() => {
     // event: Message Event
-    const setPlatform = (event: any) => {
+    const getWebviewMsg = (event: any) => {
       try {
-        const { platform } = JSON.parse(event.data);
+        const { intent, content } = JSON.parse(event.data);
 
-        if (platform === 'android' || platform === 'ios') {
-          dispatch(uiActions.setPlatform(platform));
+        switch (intent) {
+          case 'platform':
+            if (content === 'android' || content === 'ios') {
+              dispatch(uiActions.setPlatform(content));
+            }
+            break;
+          case 'payment':
+            alert(content);
+            break;
         }
       } catch (e) {}
     };
 
     // android
-    document.addEventListener('message', setPlatform);
+    document.addEventListener('message', getWebviewMsg);
     // ios
-    window.addEventListener('message', setPlatform);
+    window.addEventListener('message', getWebviewMsg);
   }, []);
 
   return <RouterProvider router={router} />;
