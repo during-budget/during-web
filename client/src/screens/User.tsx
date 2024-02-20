@@ -51,8 +51,9 @@ function User() {
 
   const { defaultBudgetId } = useAppSelector((state) => state.user.info);
   const { isGuest, isLocal, snsId } = useAppSelector((state) => state.user.auth);
-  const [showAuth, setShowAuth] = useState(false);
+  const platform = useAppSelector((state) => state.ui.platform);
 
+  const [showAuth, setShowAuth] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -98,37 +99,46 @@ function User() {
     {
       title: '로그인 설정',
       items: [
-        ...providers.map((provider) => {
-          return snsId && snsId[provider?.provider]
-            ? {
-                src: provider.src,
-                label: `${provider.label} 로그인 해제`,
-                onClick: async () => {
-                  try {
-                    const data = await disconnectSnsId(provider.provider);
-                    dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
-                    if (data?.snsId) {
-                      dispatch(userActions.setSnsId(data.snsId));
+        ...providers
+          .filter((item) => {
+            // NOTE: 구글 OAuth는 웹뷰 지원 X
+            if (item.provider === 'google' && platform) {
+              return false;
+            } else {
+              return true;
+            }
+          })
+          .map((provider) => {
+            return snsId && snsId[provider?.provider]
+              ? {
+                  src: provider.src,
+                  label: `${provider.label} 로그인 해제`,
+                  onClick: async () => {
+                    try {
+                      const data = await disconnectSnsId(provider.provider);
+                      dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+                      if (data?.snsId) {
+                        dispatch(userActions.setSnsId(data.snsId));
+                      }
+                    } catch (error) {
+                      const message = getErrorMessage(error);
+                      if (message) {
+                        dispatch(uiActions.showModal({ description: message }));
+                      } else {
+                        dispatch(uiActions.showErrorModal());
+                        throw error;
+                      }
                     }
-                  } catch (error) {
-                    const message = getErrorMessage(error);
-                    if (message) {
-                      dispatch(uiActions.showModal({ description: message }));
-                    } else {
-                      dispatch(uiActions.showErrorModal());
-                      throw error;
-                    }
-                  }
-                },
-              }
-            : {
-                src: provider.src,
-                label: `${provider.label} 계정 연결하기`,
-                onClick: async () => {
-                  window.open(getAuthURL(provider.provider), '_self');
-                },
-              };
-        }),
+                  },
+                }
+              : {
+                  src: provider.src,
+                  label: `${provider.label} 계정 연결하기`,
+                  onClick: async () => {
+                    window.open(getAuthURL(provider.provider), '_self');
+                  },
+                };
+          }),
         {
           icon: '✉️',
           label: isLocal ? '이메일 로그인 해제하기' : '이메일 등록하기',

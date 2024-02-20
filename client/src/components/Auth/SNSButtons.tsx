@@ -28,7 +28,7 @@ const KakaoLoginButton = ({}) => (
   </button>
 );
 
-const SNSButtons = () => {
+const SNSButtons = ({ isWebview }: { isWebview?: boolean }) => {
   return (
     <div className="flex-column i-center">
       <div
@@ -36,9 +36,11 @@ const SNSButtons = () => {
         css={{ marginTop: '3vh', '& img': { width: '9.5vh' } }}
       >
         <div className="w-100 flex j-center gap-md my-1.5">
-          <a href={getAuthURL('google')}>
-            <GoogleLoginButton />
-          </a>
+          {!isWebview && (
+            <a href={getAuthURL('google')}>
+              <GoogleLoginButton />
+            </a>
+          )}
           <a href={getAuthURL('naver')}>
             <NaverLoginButton />
           </a>
