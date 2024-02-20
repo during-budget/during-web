@@ -66,7 +66,7 @@ const AdRemove = ({ price }: AddRemoveProps) => {
           payHandler('ad');
         }}
       >
-        {`₩${price?.toLocaleString() || '2,000'}`}
+        {`₩${price?.toLocaleString() || '4,900'}`}
       </Button>
     </div>
   );
