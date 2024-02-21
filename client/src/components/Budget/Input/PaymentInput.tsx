@@ -12,6 +12,8 @@ interface PaymentInputProps {
   defaultValue?: string;
   disabled?: boolean;
   setIsEditSetting: (isEdit: boolean) => void;
+  isAsset: boolean
+  setIsAsset: (isAsset: boolean) => void;
 }
 
 const PaymentInput = ({
@@ -22,15 +24,14 @@ const PaymentInput = ({
   defaultValue,
   disabled,
   setIsEditSetting,
+  isAsset,
+  setIsAsset
 }: PaymentInputProps) => {
   const paymentRef = useRef<any>(null);
 
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const storedPaymentMethods = useAppSelector((state) => state.asset.paymentMethods);
 
-  const [isAsset, setIsAsset] = useState(
-    storedPaymentMethods.find((item) => item._id === value)?.type === 'asset'
-  );
   const [payments, setPayments] = useState(
     storedPaymentMethods.filter((item) => {
       if (isAsset) {
@@ -114,7 +115,7 @@ const PaymentInput = ({
       ref={paymentRef}
       className={className}
       data={paymentOptions}
-      showEdit={() => {
+      showEdit={(isAsset: boolean) => {
         setIsEditSetting(true);
       }}
       onChange={(value?: string) => {

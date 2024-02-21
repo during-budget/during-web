@@ -32,6 +32,7 @@ import TitleInput from '../Input/TitleInput';
 import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
+import AssetCardListEditor from '../../Asset/Editor/AssetCardListEditor';
 
 interface TransactionFromProps {
   budgetId: string;
@@ -63,9 +64,9 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
     setIsExpense(defaultValue.isExpense);
   }, [defaultValue.isExpense]);
 
-
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
+  const [isPaymentAsset, setIsPaymentAsset] = useState(false); // 체크
   const [paymentState, setPaymentState] = useState<string>('');
   const [dateState, setDateState] = useState<Date>(defaultValue.date || new Date());
   const [excludeAsset, setExcludeAsset] = useState(
@@ -266,6 +267,8 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         }}
         // defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={setIsOpenPaymentEditor}
+        isAsset={isPaymentAsset}
+        setIsAsset={setIsPaymentAsset}
       />
     </div>
   );
@@ -362,9 +365,10 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
           </p>
         )}
       </OverlayForm>
-      <PaymentEditor
+      <AssetCardListEditor
+        isAsset={isPaymentAsset}
         isOpen={isOpenPaymentEditor}
-        onClose={() => {
+        closeEditor={() => {
           setIsOpenPaymentEditor(false);
         }}
       />
