@@ -8,7 +8,7 @@ import './css/_reset.css';
 import './css/color.css';
 import './css/layout.css';
 import './css/text.css';
-import { useAppDispatch } from './hooks/useRedux';
+import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import AuthRedirect from './layout/AuthRedirect';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
@@ -123,7 +123,7 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useAppDispatch();
-
+  const { onComplete } = useAppSelector((state) => state.ui.payment);
   useEffect(() => {
     // event: Message Event
     const getWebviewMsg = (event: any) => {
@@ -137,9 +137,18 @@ function App() {
             }
             break;
           case 'payment':
-            window.ReactNativeWebView.postMessage(
-              JSON.stringify({ intent: 'test', content })
+            // 백엔드 구매 코드 구현
+            // const { payment, message } = await completePayment({ impUid, merchantUid });
+            onComplete && onComplete();
+            dispatch(uiActions.closePayment());
+            dispatch(
+              uiActions.showModal({
+                icon: '✓',
+                title: '결제 성공',
+                hideChannelButtonOnClose: true,
+              })
             );
+
             break;
         }
       } catch (e) {}
