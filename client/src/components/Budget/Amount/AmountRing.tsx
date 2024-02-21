@@ -72,6 +72,7 @@ function AmountRing(props: {
       r,
       showEyes: !!preview || (!isBasic && scheduledDeg > 10),
       isFront: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
+      showLine: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
     },
     {
       className: classes.current,
