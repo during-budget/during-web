@@ -152,7 +152,7 @@ function App() {
             break;
           case 'purchase_error':
             dispatch(uiActions.closePayment());
-            dispatch(uiActions.showErrorModal({ title: '결제 실패', description: undefined }));
+            dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
         }
       } catch (e) {}
     };
