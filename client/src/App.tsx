@@ -139,7 +139,7 @@ function App() {
           case 'payment':
             // 백엔드 구매 코드 구현
             // const { payment, message } = await completePayment({ impUid, merchantUid });
-            onComplete && onComplete();
+            onComplete && onComplete(content);
             dispatch(uiActions.closePayment());
             dispatch(
               uiActions.showModal({
