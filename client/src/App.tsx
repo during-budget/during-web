@@ -150,6 +150,8 @@ function App() {
             );
 
             break;
+          case 'purchase_error':
+            dispatch(uiActions.showErrorModal({ title: '결제 실패', description: undefined }));
         }
       } catch (e) {}
     };
