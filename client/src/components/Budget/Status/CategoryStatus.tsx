@@ -93,16 +93,12 @@ function CategoryStatus(props: { budgetId: string }) {
       <CategoryPlanButtons />
       <Button
         onClick={() => {
-          dispatch(uiActions.showCategoryLayer(true));
-          document
-            .getElementById('category-layout')
-            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          dispatch(uiActions.showCategoryList(true));
         }}
         styleClass="extra"
         className="flex-column"
       >
-        <span>더보기</span>
-        <span>↓</span>
+        <span className="text-md mt-0.75">더보기</span>
       </Button>
     </>
   );

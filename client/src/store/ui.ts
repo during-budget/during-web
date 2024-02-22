@@ -8,7 +8,7 @@ interface BudgetOptions {
   category: {
     showEditPlan: boolean;
     showSetting: boolean;
-    showLayout: boolean;
+    showList: boolean;
   };
 }
 export interface ModalOptions {
@@ -69,7 +69,7 @@ const initialState: {
     category: {
       showEditPlan: false,
       showSetting: false,
-      showLayout: false,
+      showList: false,
     },
   },
   emoji: {
@@ -152,11 +152,8 @@ const uiSlice = createSlice({
     showBudgetCategorySetting(state, action: PayloadAction<boolean>) {
       state.budget.category.showSetting = action.payload;
     },
-    showCategoryLayer(state, action: PayloadAction<boolean>) {
-      state.budget.category.showLayout = action.payload;
-      document
-        .getElementById('category-layout')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showCategoryList(state, action: PayloadAction<boolean>) {
+      state.budget.category.showList = action.payload;
     },
     setEmojiOverlay(state, action: PayloadAction<Partial<EmojiOptions>>) {
       const options = action.payload;
