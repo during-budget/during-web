@@ -46,7 +46,7 @@ const Landing = () => {
       navigate('/landing#base', { replace: true });
     } else {
       // NOTE: 로그인된 사용자가 /landing으로 접근할 경우 서비스 화면으로 이동
-      navigate('/budget', { replace: true });
+      navigate('/budget#base', { replace: true });
     }
 
     // 약관 및 정책 오버레이 링크로 바로 이동 시 오버레이 뜨도록

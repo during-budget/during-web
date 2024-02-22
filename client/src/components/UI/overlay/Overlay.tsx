@@ -17,7 +17,6 @@ export interface OverlayProps {
   isRight?: boolean;
   isLeft?: boolean;
   disableBackdrop?: boolean;
-  preventGoBack?: boolean;
 }
 
 function Overlay({
@@ -36,7 +35,6 @@ function Overlay({
   disableBackdrop,
   className,
   children,
-  preventGoBack,
 }: PropsWithChildren<OverlayProps>) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,15 +48,15 @@ function Overlay({
       body?.style.setProperty('overflow', 'scroll');
     }
 
-    if (!preventGoBack) {
-      if (isOpen) {
-        navigate(
-          `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
-        );
-      } else if (location.hash.includes(id)) {
-        navigate(-1);
-      }
+    // if (!preventGoBack) {
+    if (isOpen) {
+      navigate(
+        `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
+      );
+    } else if (location.hash.includes(id)) {
+      navigate(-1);
     }
+    // }
   }, [isOpen]);
 
   useEffect(() => {

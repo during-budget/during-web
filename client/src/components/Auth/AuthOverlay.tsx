@@ -37,7 +37,7 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
     try {
       const data = await guestLogin();
       if (data.user) {
-        navigate('/budget/init');
+        navigate('/budget/init#base');
       } else {
         throw new Error('계정을 생성하지 못했습니다.');
       }

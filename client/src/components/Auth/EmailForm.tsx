@@ -67,9 +67,9 @@ const EmailForm = () => {
         }
 
         if (message === 'REGISTER_SUCCESS') {
-          navigate('/budget/init');
+          navigate('/budget/init#base');
         } else if (message === 'LOGIN_SUCCESS') {
-          navigate('/budget');
+          navigate('/budget#base');
         } else {
           setErrorState(ERROR_MESSAGE[message]);
         }
