@@ -29,6 +29,7 @@ import { transactionActions } from '../store/transaction';
 import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
 import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
+import CategoryListOverlay from '../components/Budget/Category/CategoryListOverlay';
 
 function Budget() {
   const navigate = useNavigate();
@@ -100,6 +101,7 @@ function Budget() {
       {/* Overlays */}
       <TransactionDetail isDefaultBudget={isDefaultBudget} />
       <CategoryPlan budgetId={id} />
+      <CategoryListOverlay budgetId={id} />
       <BudgetCategorySetting budgetId={id} />
       <BudgetList />
       <CategoryAddOverlay />

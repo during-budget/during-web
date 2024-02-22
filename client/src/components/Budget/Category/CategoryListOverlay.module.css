@@ -3,6 +3,10 @@
   height: 95vh;
 }
 
+.open {
+  padding: 2rem;
+}
+
 .container h5 {
   margin-bottom: 2vh;
 }

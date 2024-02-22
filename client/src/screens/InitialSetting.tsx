@@ -2,14 +2,12 @@ import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import AssetCardEditItemList from '../components/Asset/Editor/AssetCardEditItemList';
 import AssetCardItemEditor from '../components/Asset/Editor/AssetCardItemEditor';
 import AssetCardListEditor, {
   AssetCardDataType,
 } from '../components/Asset/Editor/AssetCardListEditor';
-import AssetStatus from '../components/Asset/Status/AssetStatus';
-import CardStatus from '../components/Asset/Status/CardStatus';
 import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
+import CategoryListOverlay from '../components/Budget/Category/CategoryListOverlay';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import TransactionDetail from '../components/Budget/Transaction/TransactionDetail';
 import TransactionForm from '../components/Budget/Transaction/TransactionForm';
@@ -40,7 +38,7 @@ const InitialSetting = () => {
 
   const { assets, cards } = useAppSelector((state) => state.asset);
   const defaultBudgetId = useAppSelector((state) => state.user.info.defaultBudgetId);
-  
+
   useEffect(() => {
     const setDefaultBudget = async () => {
       try {
@@ -149,6 +147,7 @@ const InitialSetting = () => {
           {/* Overlays */}
           <TransactionDetail isDefaultBudget={true} />
           <CategoryPlan budgetId={defaultBudgetId} />
+          <CategoryListOverlay budgetId={defaultBudgetId} />
           <BudgetCategorySetting budgetId={defaultBudgetId} />
         </>
       ),
@@ -178,7 +177,9 @@ const InitialSetting = () => {
   const { title, status, list } = data[currentIdx];
 
   return (
-    <div className={`${classes.init} ${currentIdx === data.length - 1 ? classes.basic : ''}`}>
+    <div
+      className={`${classes.init} ${currentIdx === data.length - 1 ? classes.basic : ''}`}
+    >
       <div className={classes.content}>
         <header>
           <h1>{title}</h1>

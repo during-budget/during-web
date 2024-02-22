@@ -1,0 +1,54 @@
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.content .info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.content input {
+  width: 45%;
+  height: 5vh;
+  text-align: right;
+  scroll-margin: 5vh;
+}
+
+.title {
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.detail {
+  width: 100%;
+  font-size: 0.75rem;
+}
+
+.detail p {
+  display: flex;
+  gap: 2vw;
+  line-height: 1.125;
+}
+
+.detail .label {
+  font-weight: 500;
+}
+
+.detail .amount {
+  font-weight: 200;
+}
+
+.default {
+  padding: 1rem;
+  font-size: 1.125rem;
+}
+
+.auto {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}

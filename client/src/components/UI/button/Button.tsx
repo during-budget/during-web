@@ -14,6 +14,7 @@ interface ButtonProps {
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
   sizeClass?: 'xl' | 'lg' | 'md' | 'sm';
+  fontSize?: string;
   children?: React.ReactNode;
 }
 
@@ -27,6 +28,7 @@ function Button({
   disabled,
   styleClass,
   sizeClass,
+  fontSize,
   css: propsStyle,
   children,
 }: PropsWithChildren<ButtonProps>) {
@@ -37,7 +39,7 @@ function Button({
 
   let size = css({
     height: '3rem',
-    fontSize: 'var(--text-base)',
+    fontSize: `var(--text-${fontSize ? fontSize : 'base'})`,
   });
 
   switch (styleClass) {
@@ -65,13 +67,13 @@ function Button({
     case 'lg':
       size = css({
         height: '3.5rem',
-        fontSize: 'var(--text-base)',
+        fontSize: `var(--text-${fontSize ? fontSize : 'base'})`,
         fontWeight: 700,
       });
       break;
     case 'sm':
       size = css({
-        fontSize: 'var(--text-md)',
+        fontSize: `var(--text-${fontSize ? fontSize : 'md'})`,
         width: 'fit-content',
         height: '2rem',
         padding: '1rem',
