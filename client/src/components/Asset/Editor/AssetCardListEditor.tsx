@@ -182,7 +182,7 @@ const AssetCardListEditor = ({
                     {item.icon}
                   </Icon>
                   <div className={classes.info}>
-                    <span className={classes.detail}>
+                    <span className="text-sm">
                       {ASSET_CARD_DETAIL_TYPE[item.detail]}
                     </span>
                     <span className={classes.title}>{item.title}</span>
