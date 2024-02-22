@@ -40,6 +40,8 @@ function UserCategoryList(props: {
         isDefault: false,
       });
 
+      const list = document.getElementById('user-category-setting-list');
+      list?.scrollTo({top: list.scrollHeight + 100, behavior: 'smooth'});
       return [...prev, newCategory];
     });
 
