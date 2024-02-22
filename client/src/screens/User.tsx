@@ -73,7 +73,7 @@ function User() {
       items: [
         {
           icon: '💰',
-          label: '기본 예산 설정',
+          label: '반복 예산 설정',
           onClick: () => {
             navigate(`/budget/default/${defaultBudgetId}`);
           },

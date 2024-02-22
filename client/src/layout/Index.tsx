@@ -26,7 +26,7 @@ function Index() {
 
   const navData = [
     { path: '/budget', icon: <i className="fa-solid fa-home"></i> },
-    { path: '/asset', icon: <i className="fa-solid fa-sack-dollar"></i> },
+    // { path: '/asset', icon: <i className="fa-solid fa-sack-dollar"></i> },
     { path: '/store', icon: <i className="fa-solid fa-store"></i> },
     { path: '/user', icon: <i className="fa-solid fa-user"></i> },
   ];

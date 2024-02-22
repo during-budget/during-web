@@ -57,7 +57,7 @@ const InitialSetting = () => {
         }
       } catch (error) {
         const message = getErrorMessage(error);
-        Sentry.captureMessage(message || 'Initial Setting - 기본예산 로드 불가');
+        Sentry.captureMessage(message || 'Initial Setting - 반복예산 로드 불가');
       }
     };
 
@@ -81,54 +81,54 @@ const InitialSetting = () => {
   };
 
   const data = [
+    // {
+    //   title: '자산 설정',
+    //   status: (
+    //     <div className={classes.status}>
+    //       <AssetStatus assets={assets} {...editorProps} />
+    //     </div>
+    //   ),
+    //   list: (
+    //     <div className={classes.asset}>
+    //       <AssetCardEditItemList
+    //         id="asset-edit-item-list"
+    //         isAsset={true}
+    //         setOpen={setOpenEditor}
+    //         setTarget={(target?: AssetCardDataType) => {
+    //           setTargetState(target);
+    //         }}
+    //       />
+    //       <div className={classes.polyfill} />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: '결제수단 설정',
+    //   status: (
+    //     <div className={classes.status}>
+    //       <CardStatus
+    //         assets={assets.filter((item) => item.detail === 'account')}
+    //         cards={cards}
+    //         {...editorProps}
+    //       />
+    //     </div>
+    //   ),
+    //   list: (
+    //     <div className={classes.card}>
+    //       <AssetCardEditItemList
+    //         id="card-edit-item-list"
+    //         isAsset={false}
+    //         setOpen={setOpenEditor}
+    //         setTarget={(target?: AssetCardDataType) => {
+    //           setTargetState(target);
+    //         }}
+    //       />
+    //       <div className={classes.polyfill} />
+    //     </div>
+    //   ),
+    // },
     {
-      title: '자산 설정',
-      status: (
-        <div className={classes.status}>
-          <AssetStatus assets={assets} {...editorProps} />
-        </div>
-      ),
-      list: (
-        <div className={classes.asset}>
-          <AssetCardEditItemList
-            id="asset-edit-item-list"
-            isAsset={true}
-            setOpen={setOpenEditor}
-            setTarget={(target?: AssetCardDataType) => {
-              setTargetState(target);
-            }}
-          />
-          <div className={classes.polyfill} />
-        </div>
-      ),
-    },
-    {
-      title: '결제수단 설정',
-      status: (
-        <div className={classes.status}>
-          <CardStatus
-            assets={assets.filter((item) => item.detail === 'account')}
-            cards={cards}
-            {...editorProps}
-          />
-        </div>
-      ),
-      list: (
-        <div className={classes.card}>
-          <AssetCardEditItemList
-            id="card-edit-item-list"
-            isAsset={false}
-            setOpen={setOpenEditor}
-            setTarget={(target?: AssetCardDataType) => {
-              setTargetState(target);
-            }}
-          />
-          <div className={classes.polyfill} />
-        </div>
-      ),
-    },
-    {
-      title: '기본예산 설정',
+      title: '반복예산 설정',
       status: (
         <div className={classes.default}>
           <DefaultStatus budgetId={defaultBudgetId} />
@@ -178,7 +178,7 @@ const InitialSetting = () => {
   const { title, status, list } = data[currentIdx];
 
   return (
-    <div className={`${classes.init} ${currentIdx === 2 ? classes.basic : ''}`}>
+    <div className={`${classes.init} ${currentIdx === data.length - 1 ? classes.basic : ''}`}>
       <div className={classes.content}>
         <header>
           <h1>{title}</h1>
@@ -201,7 +201,7 @@ const InitialSetting = () => {
         }}
       />
       {/* Overlays */}
-      {currentIdx < 2 && (
+      {currentIdx < data.length - 1 && (
         <>
           <AssetCardListEditor
             isAsset={currentIdx === 0}

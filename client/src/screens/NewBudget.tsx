@@ -62,7 +62,7 @@ function NewBudget() {
         </Carousel>
         {/* Button */}
         <div className={classes.create}>
-          <p>기본 예산을 바탕으로 예산이 생성됩니다.</p>
+          <p>반복 예산을 바탕으로 예산이 생성됩니다.</p>
           <Button
             className={classes.button}
             onClick={() => {
@@ -76,7 +76,7 @@ function NewBudget() {
             state={{ from: location }}
             className={classes.link}
           >
-            기본 예산 보러가기
+            반복 예산 보러가기
           </Link>
         </div>
         {/* Overlays */}

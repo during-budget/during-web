@@ -120,6 +120,9 @@ const PaymentInput = ({
         const payment = payments.find((item) => item._id === value);
         onChange && onChange(value || '', payment?.detail === 'credit');
       }}
+      showEdit={() => {
+        setIsEditSetting(true);
+      }}
       value={value}
       disabled={disabled}
     />
