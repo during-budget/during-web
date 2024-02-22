@@ -51,6 +51,7 @@ const DraggableList = ({
       <Droppable droppableId={id}>
         {(provided) => (
           <ul
+            id={id}
             ref={provided.innerRef}
             className={`${id} ${className}`}
             {...provided.droppableProps}
