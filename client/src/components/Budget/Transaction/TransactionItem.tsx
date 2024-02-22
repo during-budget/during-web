@@ -99,7 +99,7 @@ function TransactionItem({ transaction, isDefaultBudget }: TransactionItemProps)
         <div className="mt-0.5 flex flex-wrap gap-xs text-sm">
           {tags &&
             tags.map((tag: string, i) => {
-              return <Tag key={i}>{tag}</Tag>;
+              return <Tag key={i} isDark={!isCurrent}>{tag}</Tag>;
             })}
         </div>
       </div>
