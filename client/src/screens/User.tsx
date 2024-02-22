@@ -232,6 +232,7 @@ function User() {
   const logoutHandler = async () => {
     // set sentry
     Sentry.setUser(null);
+    Channel.shutdown();
 
     try {
       submit({ intent: 'logout' }, { method: 'post' });
@@ -249,6 +250,7 @@ function User() {
   const deleteHandler = () => {
     // set sentry
     Sentry.setUser(null);
+    Channel.shutdown();
 
     dispatch(
       uiActions.showModal({

@@ -13,10 +13,10 @@ function Root() {
   // const { isGuest } = useAppSelector((state) => state.user.auth);
 
   useEffect(() => {
-    if (location.pathname !== '/user') {
-      Channel.hideChannelButton();
-    } else {
+    if (location.pathname === '/user' || location.pathname === '/landing') {
       Channel.showChannelButton();
+    } else {
+      Channel.hideChannelButton();
     }
   }, [location.pathname]);
 
