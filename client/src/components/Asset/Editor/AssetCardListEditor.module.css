@@ -31,14 +31,6 @@
   flex-direction: column;
 }
 
-.detail {
-  font-size: 0.75rem;
-}
-
-.title {
-  font-size: 1.125rem;
-}
-
 .add {
   margin-top: 2vh;
 }

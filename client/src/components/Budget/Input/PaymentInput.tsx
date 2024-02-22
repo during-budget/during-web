@@ -115,9 +115,6 @@ const PaymentInput = ({
       ref={paymentRef}
       className={className}
       data={paymentOptions}
-      showEdit={(isAsset: boolean) => {
-        setIsEditSetting(true);
-      }}
       onChange={(value?: string) => {
         localStorage.setItem('payment', value || '');
         const payment = payments.find((item) => item._id === value);
