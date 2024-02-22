@@ -46,7 +46,10 @@ const Modal = () => {
   useEffect(() => {
     if (isOpen) {
       Channel.hideChannelButton();
-    } else if (location.pathname === '/user' && !hideChannelButtonOnClose) {
+    } else if (
+      (location.pathname === '/user' || location.pathname === '/landing') &&
+      !hideChannelButtonOnClose
+    ) {
       Channel.showChannelButton();
     }
   }, [isOpen]);
