@@ -57,7 +57,7 @@ const Privacy = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
               <h6>(3) 서비스 제공을 위해 수집되는 사용자 입력 정보</h6>
               <ul>
                 <li>- 가계부 작성 및 조회를 위한 내역 및 카테고리 정보</li>
-                <li>- 반복되는 예산 관리를 위한 기본 예산 정보</li>
+                <li>- 반복되는 예산 관리를 위한 반복 예산 정보</li>
                 <li>- 자산 현황 조회를 위한 자산 및 카드 정보</li>
               </ul>
             </li>
