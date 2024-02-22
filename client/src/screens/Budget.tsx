@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
 import CategoryAddOverlay from '../components/Budget/Category/CategoryAddOverlay';
-import CategoryLayout from '../components/Budget/Category/CategoryLayout';
+import CategoryListOverlay from '../components/Budget/Category/CategoryListOverlay';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import BudgetList from '../components/Budget/List/BudgetList';
 import CategoryStatus from '../components/Budget/Status/CategoryStatus';
@@ -18,8 +18,8 @@ import TransactionForm from '../components/Budget/Transaction/TransactionForm';
 import TransactionList from '../components/Budget/Transaction/TransactionList';
 import TransactionNav from '../components/Budget/Transaction/TransactionNav';
 import BudgetHeader from '../components/Budget/UI/BudgetHeader';
-import Carousel from '../components/UI/widget/Carousel';
 import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
+import Carousel from '../components/UI/widget/Carousel';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppDispatch } from '../hooks/useRedux';
 import { budgetActions } from '../store/budget';
@@ -29,7 +29,6 @@ import { transactionActions } from '../store/transaction';
 import { BudgetDataType, getBudgetById } from '../util/api/budgetAPI';
 import { TransactionDataType } from '../util/api/transactionAPI';
 import classes from './Budget.module.css';
-import CategoryListOverlay from '../components/Budget/Category/CategoryListOverlay';
 
 function Budget() {
   const navigate = useNavigate();
@@ -78,25 +77,16 @@ function Budget() {
         {/* Status */}
         {isDefaultBudget ? defaultBudgetStatus : statusCarousel}
         <hr />
-        <div>
-          {/* Category */}
-          <section id="category-layout">
-            <CategoryLayout />
-          </section>
-          {/* Transactions */}
-          <section className={classes.transactions}>
-            <TransactionNav id="budget_layout" showAll={true} />
-            <TransactionList
-              className={classes.transactions}
-              isDefault={isDefaultBudget}
-            />
-            <TransactionForm
-              className={classes.form}
-              budgetId={id}
-              isDefaultBudget={isDefaultBudget}
-            />
-          </section>
-        </div>
+        {/* Transactions */}
+        <section className={classes.transactions}>
+          <TransactionNav id="budget_layout" showAll={true} />
+          <TransactionList className={classes.transactions} isDefault={isDefaultBudget} />
+          <TransactionForm
+            className={classes.form}
+            budgetId={id}
+            isDefaultBudget={isDefaultBudget}
+          />
+        </section>
       </main>
       {/* Overlays */}
       <TransactionDetail isDefaultBudget={isDefaultBudget} />

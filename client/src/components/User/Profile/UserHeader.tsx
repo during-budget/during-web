@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
 import Channel from '../../../models/Channel';
@@ -6,8 +7,8 @@ import { userActions } from '../../../store/user';
 import { updateUserInfo } from '../../../util/api/userAPI';
 import { getErrorMessage } from '../../../util/error';
 import Button from '../../UI/button/Button';
-import InputField from '../../UI/input/InputField';
 import Mask from '../../UI/component/Mask';
+import InputField from '../../UI/input/InputField';
 import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './UserHeader.module.css';
 
@@ -66,8 +67,10 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
   const guestHeader = (
     <div className={classes.guest}>
       <h3>둘러보는 중이에요</h3>
-      <Button onClick={openAuth} className="my-0.75">계정 등록 진행하기</Button>
-      <p className='text-md'>
+      <Button onClick={openAuth} className="my-0.75">
+        계정 등록 진행하기
+      </Button>
+      <p className="text-md">
         ⚠️ 탈퇴 및 세션 만료 등으로 인해 접속이 중단될 시<br />
         <strong>
           <u>계정 데이터를 복구할 수 없습니다.</u>
@@ -160,7 +163,7 @@ function UserHeader({ isGuest, img, svg, openAuth }: UserHeaderProps) {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setBirthdateState(event.target.value);
               }}
-              value={birthdateState}
+              value={birthdateState ? dayjs(birthdateState).format('YYYY-MM-DD') : ''}
             />
           </InputField>
           <InputField id="gender">
