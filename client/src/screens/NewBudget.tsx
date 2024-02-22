@@ -33,7 +33,7 @@ function NewBudget() {
   const createNewBudget = async () => {
     try {
       const { budget } = await createBudgetFromBasic(year, month);
-      navigate(`/budget/${budget._id}`);
+      navigate(`/budget/${budget._id}#base`);
     } catch (error) {
       const message = getErrorMessage(error);
       dispatch(

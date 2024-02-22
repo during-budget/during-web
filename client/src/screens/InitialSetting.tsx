@@ -197,7 +197,7 @@ const InitialSetting = () => {
         setIdx={setCurrentIdx}
         length={data.length}
         onComplete={() => {
-          navigate('/budget');
+          navigate('/budget#base');
         }}
       />
       {/* Overlays */}

@@ -98,7 +98,6 @@ const AgreementOverlay = ({ isOpen, onClose, isInit }: AgreementOverlayProps) =>
           isOpen,
           onClose: goBackHandler,
           disableBackdrop: true,
-          preventGoBack: true
         }}
         onSubmit={submitHandler}
         confirmCancelOptions={{
