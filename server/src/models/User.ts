@@ -1,4 +1,4 @@
-import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 
 import _ from "lodash";
 import { basicCategories } from "./_basicCategories";
@@ -10,7 +10,6 @@ import {
   cardSchema,
   paymentMethodSchema,
 } from "./PaymentMethod";
-import { basicChartSkin, basicTimeZone, basicTheme } from "./_basicSettings";
 
 interface ICategory {
   _id: Types.ObjectId;
@@ -31,14 +30,13 @@ const categorySchema = new Schema<ICategory>({
 
 interface UserEntity {
   _id: Types.ObjectId;
-  email: string | undefined;
-  userName: string | undefined;
-  picture: string | undefined;
+  email?: string;
+  userName?: string;
   isLocal: boolean;
-  snsId: {
-    google: string | undefined;
-    naver: string | undefined;
-    kakao: string | undefined;
+  snsId?: {
+    google?: string;
+    naver?: string;
+    kakao?: string;
   };
   isGuest: boolean;
   categories: ICategory[];
@@ -50,10 +48,10 @@ interface UserEntity {
   cards: ICard[];
   paymentMethods: IPaymentMethod[];
   auth?: string;
-  settings: {
-    chartSkin: string;
-    timeZone: string;
-    theme: string;
+  settings?: {
+    chartSkin?: string;
+    timeZone?: string;
+    theme?: string;
   };
 }
 
@@ -83,7 +81,6 @@ interface IUserModel extends Model<UserEntity, {}, IUserProps> {}
 
 const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
   {
-    // user fields
     email: {
       type: String,
     },
@@ -94,17 +91,11 @@ const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
     userName: {
       type: String,
     },
-    picture: { type: String },
-    snsId: {
-      type: Object,
-      default: {},
-    },
+    snsId: Object,
     isGuest: {
       type: Boolean,
       default: false,
     },
-
-    /* ____________ categories ____________ */
     categories: {
       type: [categorySchema],
       default: basicCategories,
@@ -125,14 +116,7 @@ const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
     auth: {
       type: String,
     },
-    settings: {
-      type: Object,
-      default: {
-        chartSkin: basicChartSkin,
-        timeZone: basicTimeZone,
-        theme: basicTheme,
-      },
-    },
+    settings: Object,
   },
   { timestamps: true }
 );
@@ -210,6 +194,7 @@ UserSchema.methods.cancelPM = function (transaction: {
 };
 
 const UserModel = model<UserEntity, IUserModel>("User", UserSchema);
+
 export {
   UserModel,
   UserEntity,
