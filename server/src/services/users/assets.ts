@@ -1,6 +1,6 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { IAsset, IUser } from "src/models/User";
+import { IAsset, UserEntity } from "src/models/User";
 import { ITransaction } from "src/models/Transaction";
 
 import { findDocumentById } from "src/utils/document";
@@ -8,7 +8,10 @@ import { findDocumentById } from "src/utils/document";
 import { findById as findPaymentMethodById } from "./paymentMethods";
 import * as TransactionService from "src/services/transactions";
 
-export const findById = (userRecord: IUser, _id: Types.ObjectId | string) => {
+export const findById = (
+  userRecord: UserEntity,
+  _id: Types.ObjectId | string
+) => {
   const { idx, value } = findDocumentById({
     arr: userRecord.assets,
     id: _id,
@@ -17,7 +20,7 @@ export const findById = (userRecord: IUser, _id: Types.ObjectId | string) => {
 };
 
 export const create = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   _asset: {
     icon?: string;
     title: string;
@@ -44,7 +47,7 @@ export const create = async (
 };
 
 export const update = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   asset: IAsset,
   newAsset: {
     icon: string;
@@ -110,7 +113,7 @@ export const update = async (
 };
 
 export const updateAll = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   newAssets: any[]
 ) => {
   const assetDict: { [key: string]: IAsset } = Object.fromEntries(
@@ -237,7 +240,7 @@ export const updateAll = async (
 };
 
 export const execAsset = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   assetId: Types.ObjectId,
   transactionRecord: HydratedDocument<ITransaction>
 ) => {
@@ -250,7 +253,7 @@ export const execAsset = async (
 };
 
 export const cancelAsset = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   assetId: Types.ObjectId,
   transactionRecord: HydratedDocument<ITransaction>
 ) => {
@@ -263,7 +266,7 @@ export const cancelAsset = async (
 };
 
 export const remove = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   cardId: Types.ObjectId
 ) => {
   let isUpdatedCards = false;

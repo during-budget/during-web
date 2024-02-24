@@ -1,22 +1,22 @@
 import { HydratedDocument, Types } from "mongoose";
-import { ICategory, IUser } from "src/models/User";
+import { ICategory, UserEntity } from "src/models/User";
 
 import { findDocumentById } from "src/utils/document";
 
-export const findDefaultExpenseCategory = (userRecord: IUser) => {
+export const findDefaultExpenseCategory = (userRecord: UserEntity) => {
   return {
     category: userRecord.categories[userRecord.categories.length - 2],
   };
 };
 
-export const findDefaultIncomeCategory = (userRecord: IUser) => {
+export const findDefaultIncomeCategory = (userRecord: UserEntity) => {
   return {
     category: userRecord.categories[userRecord.categories.length - 1],
   };
 };
 
 export const create = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   category: {
     isExpense: boolean;
     isIncome: boolean;
@@ -46,7 +46,7 @@ export const create = async (
 };
 
 export const findById = (
-  userRecord: IUser,
+  userRecord: UserEntity,
   categoryId: string | Types.ObjectId
 ) => {
   const { idx, value } = findDocumentById({
@@ -57,7 +57,7 @@ export const findById = (
 };
 
 export const update = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   category: ICategory,
   fields: { title: string; icon: string }
 ) => {
@@ -67,7 +67,7 @@ export const update = async (
 };
 
 export const updateAll = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   categories: { _id?: string; title: string; icon: string }[]
 ) => {
   const categoryDict: { [key: string]: ICategory } = Object.fromEntries(
@@ -156,7 +156,7 @@ export const updateAll = async (
 };
 
 export const updatePartially = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   isExpense: boolean,
   isIncome: boolean,
   categories: { _id?: string; title: string; icon: string }[]
@@ -247,7 +247,7 @@ export const updatePartially = async (
 };
 
 export const removeByIdx = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   idx: number
 ) => {
   userRecord.categories.splice(idx, 1);

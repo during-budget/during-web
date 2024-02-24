@@ -1,4 +1,4 @@
-import { IUser } from "@models/User";
+import { UserEntity } from "@models/User";
 import moment from "moment";
 import { HydratedDocument, Types } from "mongoose";
 import {
@@ -49,7 +49,7 @@ export const findThemeOptions = () => {
 };
 
 export const updateChartSkinSetting = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   chartSkin: string
 ) => {
   userRecord.settings = { ...userRecord.settings, chartSkin };
@@ -57,7 +57,7 @@ export const updateChartSkinSetting = async (
 };
 
 export const updateTimeZoneSetting = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   timeZone: string
 ) => {
   userRecord.settings = { ...userRecord.settings, timeZone };
@@ -65,7 +65,7 @@ export const updateTimeZoneSetting = async (
 };
 
 export const updateThemeSetting = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   theme: string
 ) => {
   userRecord.settings = { ...userRecord.settings, theme };

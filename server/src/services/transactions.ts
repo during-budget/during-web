@@ -1,5 +1,5 @@
 import { IBudget, ICategory } from "@models/Budget";
-import { IUser } from "@models/User";
+import { UserEntity } from "@models/User";
 import { HydratedDocument, Types } from "mongoose";
 import {
   ITransaction,
@@ -19,7 +19,7 @@ import {
 import { IsCurrentCannotBeUpdatedError } from "src/errors/ConfilicError";
 
 export const create = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   to: {
     budgetId: Types.ObjectId | string;
     categoryId: Types.ObjectId | string;
@@ -61,8 +61,10 @@ export const create = async (
   return { transaction: transactionRecord, budget: budgetRecord };
 };
 
-export const isUser = (transactionRecord: ITransaction, userRecord: IUser) =>
-  transactionRecord.userId.equals(userRecord._id);
+export const isUser = (
+  transactionRecord: ITransaction,
+  userRecord: UserEntity
+) => transactionRecord.userId.equals(userRecord._id);
 
 export const findAll = async () => {
   const transactionRecords = await TransactionModel.find({});
@@ -77,7 +79,7 @@ export const findByUser = async (userId: Types.ObjectId | String) => {
 };
 
 export const findByLinkedPaymentMethodIdBetweenDates = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   linkedPaymentMethodId: Types.ObjectId | string,
   startDate: Date,
   endDate: Date
@@ -93,7 +95,7 @@ export const findByLinkedPaymentMethodIdBetweenDates = async (
 };
 
 export const findByTag = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   tag: string
 ) => {
   const transactionRecords = await TransactionModel.find({
@@ -118,7 +120,7 @@ export const findByBudgetId = async (budgetId: Types.ObjectId | String) => {
 };
 
 export const findByPaymentMethod = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   paymentMethodId: Types.ObjectId
 ) => {
   const transactionRecordList = await Transaction.find({
@@ -130,7 +132,7 @@ export const findByPaymentMethod = async (
 };
 
 export const updateCategory = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   categoryId: Types.ObjectId,
   newCategory: { categoryId?: Types.ObjectId; _id?: Types.ObjectId }
 ) => {

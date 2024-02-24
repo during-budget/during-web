@@ -74,3 +74,12 @@ export class SnsIdNotFoundError extends NotFoundError {
     super("snsId");
   }
 }
+
+export class AgreementNotFoundError extends NotFoundError {
+  constructor(message?: string) {
+    super("agreement");
+    if (message) {
+      this.message = this.message += `(${message})`;
+    }
+  }
+}

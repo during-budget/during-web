@@ -1,4 +1,4 @@
-import { ICard, IUser } from "src/models/User";
+import { ICard, UserEntity } from "src/models/User";
 import { Transaction as TransactionModel } from "src/models/Transaction";
 
 import { HydratedDocument, Types } from "mongoose";
@@ -23,7 +23,10 @@ export const compareCardLinkedAsset = (card1: ICard, cared2: ICard) => {
   return "keep";
 };
 
-export const findById = (userRecord: IUser, _id: Types.ObjectId | string) => {
+export const findById = (
+  userRecord: UserEntity,
+  _id: Types.ObjectId | string
+) => {
   const { idx, value } = findDocumentById({
     arr: userRecord.cards,
     id: _id,
@@ -32,7 +35,7 @@ export const findById = (userRecord: IUser, _id: Types.ObjectId | string) => {
 };
 
 export const create = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   _card: {
     icon?: string;
     title: string;
@@ -65,7 +68,7 @@ export const create = async (
 };
 
 export const update = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   card: ICard,
   newCard: ICard
 ) => {
@@ -139,7 +142,7 @@ export const update = async (
 };
 
 export const updateAll = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   newCards: any[]
 ) => {
   const cardDict: { [key: string]: ICard } = Object.fromEntries(
@@ -284,7 +287,7 @@ export const updateAll = async (
 };
 
 export const remove = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   cardId: Types.ObjectId
 ) => {
   const { idx, card } = findById(userRecord, cardId);
@@ -303,7 +306,7 @@ export const remove = async (
 };
 
 export const createPostPaidTransaction = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   card: ICard,
   year: number,
   month: number,
@@ -335,7 +338,7 @@ export const createPostPaidTransaction = async (
 };
 
 export const findPostPaidTransactionsByYear = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   paymentMethodId: Types.ObjectId | string,
   year: number
 ) => {
@@ -349,7 +352,7 @@ export const findPostPaidTransactionsByYear = async (
 };
 
 export const findPostPaidTransaction = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   cardRecord: ICard,
   year: number,
   month: number
@@ -365,7 +368,7 @@ export const findPostPaidTransaction = async (
 };
 
 export const updatePostPaidTransactionAmount = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   card: ICard,
   year: number,
   month: number,
@@ -395,7 +398,7 @@ export const updatePostPaidTransactionAmount = async (
 };
 
 export const removePostPaidTransaction = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   card: ICard,
   year: number,
   month: number

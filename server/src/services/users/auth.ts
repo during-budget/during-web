@@ -1,20 +1,21 @@
 import { HydratedDocument } from "mongoose";
 
-import { IUser } from "src/models/User";
+import { UserEntity } from "src/models/User";
 
 type snsType = "google" | "naver" | "kakao";
 
-export const isAdmin = async (userRecord: IUser) => userRecord.auth === "admin";
+export const isAdmin = async (userRecord: UserEntity) =>
+  userRecord.auth === "admin";
 
-export const isLocalLoginActive = (userRecord: HydratedDocument<IUser>) =>
+export const isLocalLoginActive = (userRecord: HydratedDocument<UserEntity>) =>
   userRecord.isLocal;
 
 export const checkSnsIdActive = (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   sns: snsType
 ) => userRecord.snsId && sns in userRecord.snsId && userRecord.snsId[sns];
 
-export const countActiveSnsId = (userRecord: HydratedDocument<IUser>) => {
+export const countActiveSnsId = (userRecord: HydratedDocument<UserEntity>) => {
   let cnt = 0;
   if (checkSnsIdActive(userRecord, "google")) cnt += 1;
   if (checkSnsIdActive(userRecord, "naver")) cnt += 1;
@@ -22,18 +23,18 @@ export const countActiveSnsId = (userRecord: HydratedDocument<IUser>) => {
   return cnt;
 };
 
-export const hasActiveSnsId = (userRecord: HydratedDocument<IUser>) =>
+export const hasActiveSnsId = (userRecord: HydratedDocument<UserEntity>) =>
   countActiveSnsId(userRecord) > 0;
 
 export const disableLocalLogin = async (
-  userRecord: HydratedDocument<IUser>
+  userRecord: HydratedDocument<UserEntity>
 ) => {
   userRecord.isLocal = false;
   await userRecord.save();
 };
 
 export const updateSnsId = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   sns: snsType,
   id: string
 ) => {
@@ -43,7 +44,7 @@ export const updateSnsId = async (
 };
 
 export const updateEmailAndActivateLocalLogin = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   email: string
 ) => {
   userRecord.email = email;
@@ -53,11 +54,11 @@ export const updateEmailAndActivateLocalLogin = async (
 };
 
 export const removeSnsId = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   sns: snsType
 ) => {
   userRecord.snsId = { ...userRecord.snsId, [sns]: undefined };
   await userRecord.save();
 };
 
-export const isGuest = (userRecord: IUser) => userRecord.isGuest;
+export const isGuest = (userRecord: UserEntity) => userRecord.isGuest;
