@@ -80,5 +80,5 @@ export const current = async (userEntity: UserEntity): Promise<User> => {
 
   const agreements = await AgreementModel.find({ _id: { $in: agreementIds } });
 
-  return convertToUser({ userEntity, agreements });
+  return convertToUser(userEntity, { agreements });
 };

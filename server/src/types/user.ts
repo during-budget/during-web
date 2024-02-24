@@ -2,6 +2,11 @@ import { AgreementEntity } from "@models/Agreement";
 import { UserEntity } from "@models/User";
 import { Types } from "mongoose";
 import { AgreementType } from "./agreement";
+import {
+  basicChartSkin,
+  basicTheme,
+  basicTimeZone,
+} from "@models/_basicSettings";
 
 export type UserCategory = {
   _id: Types.ObjectId;
@@ -40,16 +45,41 @@ export type UserPaymentMethod = {
   isChecked: boolean;
 };
 
+enum Sns {
+  Google = "google",
+  Naver = "naver",
+  Kakao = "kakao",
+}
+
+type UserSnsId = {
+  [key in Sns]?: string;
+};
+
+enum UserSettingsField {
+  ChartSkin = "chartSkin",
+  TimeZone = "timeZone",
+  Theme = "theme",
+}
+
+type UserSettings = {
+  [key in UserSettingsField]: string;
+};
+
+enum UserAgreementField {
+  TermsOfUse = "termsOfUse",
+  PrivacyPolicy = "privacyPolicy",
+}
+
+type UserAgreement = {
+  [key in UserAgreementField]?: string;
+};
+
 export type User = {
   _id: Types.ObjectId;
   email?: string;
   userName?: string;
   isLocal: boolean;
-  snsId: {
-    google?: string;
-    naver?: string;
-    kakao?: string;
-  };
+  snsId: UserSnsId;
   isGuest?: boolean;
   categories: Array<UserCategory>;
   birthdate?: Date;
@@ -60,43 +90,55 @@ export type User = {
   cards: Array<UserCard>;
   paymentMethods: Array<UserPaymentMethod>;
   auth?: string;
-  settings: {
-    chartSkin: string;
-    timeZone: string;
-    theme: string;
-  };
-  agreement: {
-    termsOfUse?: string;
-    privacyPolicy?: string;
-  };
+  settings: UserSettings;
+  agreement: UserAgreement;
 };
 
-export function convertToUser(req: {
-  userEntity: UserEntity;
-  agreements: Array<AgreementEntity>;
-}): User {
-  const { userEntity, agreements } = req;
+export function convertToUser(
+  userEntity: UserEntity,
+  opts?: {
+    agreements?: Array<AgreementEntity>;
+  }
+): User {
+  const userSnsId: UserSnsId = {};
+  if (userEntity.snsId) {
+    for (const sns of [Sns.Google, Sns.Kakao, Sns.Naver]) {
+      if (sns in userEntity.snsId) {
+        userSnsId[sns] = "connected";
+      }
+    }
+  }
 
-  const temrsOfUseAgreement = agreements.find(
-    (agreement) => agreement.type === AgreementType.TermsOfUse
-  );
+  const userSettings: UserSettings = {
+    [UserSettingsField.ChartSkin]:
+      userEntity.settings?.chartSkin ?? basicChartSkin,
+    [UserSettingsField.TimeZone]:
+      userEntity.settings?.timeZone ?? basicTimeZone,
+    [UserSettingsField.Theme]: userEntity.settings?.theme ?? basicTheme,
+  };
 
-  const privacyPolicyAgreement = agreements.find(
-    (agreement) => agreement.type === AgreementType.PrivacyPolicy
-  );
+  const userAgreement: UserAgreement = {};
+
+  if (opts) {
+    const { agreements } = opts;
+
+    if (agreements) {
+      userAgreement[UserAgreementField.TermsOfUse] = agreements?.find(
+        (agreement) => agreement.type === AgreementType.TermsOfUse
+      )?.version;
+
+      userAgreement[UserAgreementField.PrivacyPolicy] = agreements?.find(
+        (agreement) => agreement.type === AgreementType.PrivacyPolicy
+      )?.version;
+    }
+  }
 
   return {
     _id: userEntity._id,
     email: userEntity.email,
     userName: userEntity.userName,
     isLocal: userEntity.isLocal,
-    snsId: userEntity.snsId
-      ? {
-          google: userEntity.snsId.google,
-          naver: userEntity.snsId.naver,
-          kakao: userEntity.snsId.kakao,
-        }
-      : {},
+    snsId: userSnsId,
     isGuest: userEntity.isGuest,
     categories: userEntity.categories,
     birthdate: userEntity.birthdate,
@@ -107,14 +149,7 @@ export function convertToUser(req: {
     cards: userEntity.cards,
     paymentMethods: userEntity.paymentMethods,
     auth: userEntity.auth,
-    settings: {
-      chartSkin: userEntity.settings.chartSkin,
-      timeZone: userEntity.settings.timeZone,
-      theme: userEntity.settings.theme,
-    },
-    agreement: {
-      termsOfUse: temrsOfUseAgreement?.version,
-      privacyPolicy: privacyPolicyAgreement?.version,
-    },
+    settings: userSettings,
+    agreement: userAgreement,
   };
 }

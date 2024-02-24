@@ -31,7 +31,7 @@ export const createBasicBudget = async (user: {
 };
 
 export const createWithBasicBudget = async (
-  user: { basicBudgetId: Types.ObjectId; settings: { timeZone?: string } },
+  user: { basicBudgetId: Types.ObjectId; settings?: { timeZone?: string } },
   basicBudgetRecord: HydratedDocument<IBudget>,
   year: number,
   month: number,
@@ -51,7 +51,7 @@ export const createWithBasicBudget = async (
 
   const save: Promise<any>[] = [budgetRecord.save()];
 
-  const tz = user.settings.timeZone ?? basicTimeZone;
+  const tz = user.settings?.timeZone ?? basicTimeZone;
   const lastDayOfTheMonth = new Date(year, month, 0).getDate();
 
   for (let transactionRecord of transactionRecordList) {

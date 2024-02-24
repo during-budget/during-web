@@ -13,6 +13,7 @@ import {
 import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
 import { NotPermittedError } from "src/errors/ForbiddenError";
 import { InvalidError } from "src/errors/InvalidError";
+import { basicTimeZone } from "@models/_basicSettings";
 
 // transaction controller
 
@@ -193,7 +194,7 @@ export const find = async (req: Request, res: Response) => {
         throw new FieldInvalidError(field);
     }
 
-    const tz = user.settings.timeZone;
+    const tz = user.settings?.timeZone ?? basicTimeZone;
     const startMMT = moment.tz(req.query.startDate, tz);
     const endMMT = moment.tz(req.query.endDate, tz);
 
