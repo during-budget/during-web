@@ -2,6 +2,7 @@ import { AgreementModel } from "@models/Agreement";
 import { UserEntity } from "@models/User";
 import { UserAgreementModel } from "@models/UserAgreement";
 import { InvalidError } from "src/errors/InvalidError";
+import { AgreementNotFoundError } from "src/errors/NotFoundError";
 import { AgreementType } from "src/types/agreement";
 import { User, convertToUser } from "src/types/user";
 
@@ -16,13 +17,13 @@ const agree = async (
   });
 
   if (!agreement) {
-    throw new Error(
-      `Unexpectd Error; agreement not found (${{ type, version }}})`
-    );
+    throw new AgreementNotFoundError(JSON.stringify({ type, version }));
   }
 
   if (agreement.isDestroyed) {
-    throw new InvalidError(`Agreement(${{ type, version }}}) is destroyed`);
+    throw new InvalidError(
+      `Agreement(${JSON.stringify({ type, version })}) is destroyed`
+    );
   }
 
   const exUserAgreement = await UserAgreementModel.findOne({
@@ -31,7 +32,9 @@ const agree = async (
   });
 
   if (exUserAgreement) {
-    throw new InvalidError(`Agreement is already made (${{ type, version }}})`);
+    throw new InvalidError(
+      `Agreement is already made (${JSON.stringify({ type, version })})`
+    );
   }
 
   await UserAgreementModel.create({
