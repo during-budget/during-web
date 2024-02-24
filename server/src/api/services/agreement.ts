@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AgreementModel, AgreementEntity } from "@models/Agreement";
-import { Agreement, AgreementType } from "src/types/agreement";
+import { AgreementType } from "src/types/agreement";
 
 export const createAgreement = async (req: {
   type: AgreementType;
