@@ -1,6 +1,6 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { IUser, User as UserModel } from "src/models/User";
+import { UserEntity, UserModel } from "src/models/User";
 
 import * as BudgetService from "src/services/budgets";
 import * as TransactionService from "src/services/transactions";
@@ -102,7 +102,7 @@ export const findByEmail = async (email: string) => {
 /* update */
 
 export const updateFields = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   user: {
     userName: string;
     birthdate: Date;
@@ -118,7 +118,7 @@ export const updateFields = async (
 };
 
 export const updateAgreement = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   agreement: {
     termsOfUse?: string;
     privacyPolicy?: string;
@@ -134,7 +134,7 @@ export const updateAgreement = async (
 
 /* remove */
 
-export const remove = async (userRecord: HydratedDocument<IUser>) => {
+export const remove = async (userRecord: HydratedDocument<UserEntity>) => {
   await Promise.all([
     TransactionService.removeByUserId(userRecord._id),
     BudgetService.removeByUserId(userRecord._id),

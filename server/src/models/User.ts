@@ -29,7 +29,7 @@ const categorySchema = new Schema<ICategory>({
   icon: String,
 });
 
-interface IUser {
+interface UserEntity {
   _id: Types.ObjectId;
   email: string | undefined;
   userName: string | undefined;
@@ -83,9 +83,9 @@ interface IUserProps {
   }) => boolean;
 }
 
-interface IUserModel extends Model<IUser, {}, IUserProps> {}
+interface IUserModel extends Model<UserEntity, {}, IUserProps> {}
 
-const userSchema = new Schema<IUser, IUserModel, IUserProps>(
+const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
   {
     // user fields
     email: {
@@ -145,7 +145,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
   { timestamps: true }
 );
 
-userSchema.methods.saveReqUser = async function () {
+UserSchema.methods.saveReqUser = async function () {
   try {
     return await this.save();
   } catch (err: any) {
@@ -153,7 +153,7 @@ userSchema.methods.saveReqUser = async function () {
   }
 };
 
-userSchema.methods.execPM = function (transaction: {
+UserSchema.methods.execPM = function (transaction: {
   linkedPaymentMethodId: Types.ObjectId;
   linkedPaymentMethodType: "asset" | "card";
   amount: number;
@@ -185,7 +185,7 @@ userSchema.methods.execPM = function (transaction: {
   return isUserUpdated;
 };
 
-userSchema.methods.cancelPM = function (transaction: {
+UserSchema.methods.cancelPM = function (transaction: {
   linkedPaymentMethodId: Types.ObjectId;
   linkedPaymentMethodType: "asset" | "card";
   amount: number;
@@ -217,10 +217,10 @@ userSchema.methods.cancelPM = function (transaction: {
   return isUserUpdated;
 };
 
-const User = model<IUser, IUserModel>("User", userSchema);
+const UserModel = model<UserEntity, IUserModel>("User", UserSchema);
 export {
-  User,
-  IUser,
+  UserModel,
+  UserEntity,
   IUserProps,
   ICategory,
   IUserModel,

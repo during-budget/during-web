@@ -1,4 +1,4 @@
-import { IUser } from "src/models/User";
+import { UserEntity } from "src/models/User";
 import { Challenge as ChallengeModel, IChallenge } from "src/models/Challenge";
 import { Transaction as TransactionModel } from "src/models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
@@ -13,7 +13,7 @@ type createDateType = {
 };
 
 const create = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   data: createDateType,
   opts: {
     type: "category" | "tag";
@@ -34,7 +34,7 @@ const create = async (
 };
 
 export const createCategoryChallenge = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   categoryId: Types.ObjectId | string,
   data: createDateType
 ) => {
@@ -52,7 +52,7 @@ export const createCategoryChallenge = async (
 };
 
 export const createTagChallenge = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   tag: string,
   data: createDateType
 ) => {
@@ -74,11 +74,11 @@ export const findById = async (challengeId: Types.ObjectId | string) => {
   return { challenge: challengeRecord };
 };
 
-export const isUser = (challengeRecord: IChallenge, userRecord: IUser) =>
+export const isUser = (challengeRecord: IChallenge, userRecord: UserEntity) =>
   challengeRecord.userId.equals(userRecord._id);
 
 export const findChallengeTransactions = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   challengeRecord: IChallenge
 ) => {
   if (challengeRecord.type === "category") {

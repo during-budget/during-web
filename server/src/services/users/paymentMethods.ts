@@ -1,4 +1,4 @@
-import { IPaymentMethod, IUser } from "src/models/User";
+import { IPaymentMethod, UserEntity } from "src/models/User";
 import { ITransaction } from "src/models/Transaction";
 import { HydratedDocument, Types } from "mongoose";
 import { findDocumentById } from "src/utils/document";
@@ -7,7 +7,7 @@ import { findById as findCardById } from "./cards";
 import { cancelAsset, execAsset } from "./assets";
 
 export const findById = (
-  userRecord: IUser,
+  userRecord: UserEntity,
   paymentMethodId: string | Types.ObjectId
 ) => {
   const { idx, value } = findDocumentById({
@@ -18,7 +18,7 @@ export const findById = (
 };
 
 export const execPaymentMethod = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   transactionRecord: HydratedDocument<ITransaction>
 ) => {
   if (!transactionRecord.linkedPaymentMethodId) return;
@@ -43,7 +43,7 @@ export const execPaymentMethod = async (
 };
 
 export const cancelPaymentMethod = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   transactionRecord: HydratedDocument<ITransaction>
 ) => {
   if (!transactionRecord.linkedPaymentMethodId) return;
@@ -67,7 +67,7 @@ export const cancelPaymentMethod = async (
   }
 };
 
-export const sort = async (userRecord: HydratedDocument<IUser>) => {
+export const sort = async (userRecord: HydratedDocument<UserEntity>) => {
   const pmAsset = [];
   const pmCard = [];
   for (let pm of userRecord.paymentMethods) {
@@ -78,7 +78,7 @@ export const sort = async (userRecord: HydratedDocument<IUser>) => {
   await userRecord.save();
 };
 export const updatePaymentMethods = async (
-  userRecord: HydratedDocument<IUser>,
+  userRecord: HydratedDocument<UserEntity>,
   newPaymentMethods: any[]
 ) => {
   if (!userRecord.paymentMethods)

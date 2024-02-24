@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
 
 import { Budget as BudgetModel, IBudget, ICategory } from "src/models/Budget";
-import { IUser } from "src/models/User";
+import { UserEntity } from "src/models/User";
 
 import * as TransactionService from "src/services/transactions";
 import { CategoryService as UserCategoryService } from "src/services/users";
@@ -34,7 +34,7 @@ export const findById = (
 };
 
 export const update = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   categoryId: Types.ObjectId,
   newCategory: { _id?: Types.ObjectId; categoryId?: Types.ObjectId }
 ) => {
@@ -56,7 +56,7 @@ export const update = async (
 };
 
 export const updateAll = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   budgetRecord: HydratedDocument<IBudget>,
   isExpense: boolean,
   categories: any[]
@@ -163,7 +163,10 @@ export const updateAmountPlanned = async (
   await budgetRecord.save();
 };
 
-export const remove = async (userRecord: IUser, categoryId: Types.ObjectId) => {
+export const remove = async (
+  userRecord: UserEntity,
+  categoryId: Types.ObjectId
+) => {
   const budgetRecordList = await BudgetModel.find({
     userId: userRecord._id,
     "categories.categoryId": categoryId,
