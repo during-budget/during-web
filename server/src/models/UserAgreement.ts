@@ -15,6 +15,6 @@ const UserAgreementSchema = new Schema<UserAgreementEntity>(
 );
 
 export const UserAgreementModel = model<UserAgreementEntity>(
-  "UserAgreement",
+  "user_agreement",
   UserAgreementSchema
 );

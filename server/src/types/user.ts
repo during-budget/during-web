@@ -52,7 +52,7 @@ export type User = {
   };
   isGuest?: boolean;
   categories: Array<UserCategory>;
-  birthDate?: Date;
+  birthdate?: Date;
   gender?: string;
   tel?: string;
   basicBudgetId: Types.ObjectId;
@@ -86,7 +86,32 @@ export function convertToUser(req: {
   );
 
   return {
-    ...userEntity,
+    _id: userEntity._id,
+    email: userEntity.email,
+    userName: userEntity.userName,
+    isLocal: userEntity.isLocal,
+    snsId: userEntity.snsId
+      ? {
+          google: userEntity.snsId.google,
+          naver: userEntity.snsId.naver,
+          kakao: userEntity.snsId.kakao,
+        }
+      : {},
+    isGuest: userEntity.isGuest,
+    categories: userEntity.categories,
+    birthdate: userEntity.birthdate,
+    gender: userEntity.gender,
+    tel: userEntity.tel,
+    basicBudgetId: userEntity.basicBudgetId,
+    assets: userEntity.assets,
+    cards: userEntity.cards,
+    paymentMethods: userEntity.paymentMethods,
+    auth: userEntity.auth,
+    settings: {
+      chartSkin: userEntity.settings.chartSkin,
+      timeZone: userEntity.settings.timeZone,
+      theme: userEntity.settings.theme,
+    },
     agreement: {
       termsOfUse: temrsOfUseAgreement?.version,
       privacyPolicy: privacyPolicyAgreement?.version,
