@@ -49,7 +49,7 @@ router.get(
       }>
     ) => {
       const { termsOfUseAgreement, privacyPolicyAgreement } =
-        await agreements.findAgreements();
+        await agreements.findValidAgreements();
 
       return res.status(200).send({
         agreement: {

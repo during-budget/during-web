@@ -117,21 +117,6 @@ export const updateFields = async (
   await userRecord.save();
 };
 
-export const updateAgreement = async (
-  userRecord: HydratedDocument<UserEntity>,
-  agreement: {
-    termsOfUse?: string;
-    privacyPolicy?: string;
-  }
-) => {
-  userRecord.agreement = {
-    termsOfUse: agreement.termsOfUse,
-    privacyPolicy: agreement.privacyPolicy,
-  };
-
-  await userRecord.save();
-};
-
 /* remove */
 
 export const remove = async (userRecord: HydratedDocument<UserEntity>) => {

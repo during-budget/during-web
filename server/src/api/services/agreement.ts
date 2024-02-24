@@ -21,7 +21,7 @@ export const createAgreement = async (req: {
   return agreement;
 };
 
-export const findAgreements = async (): Promise<{
+export const findValidAgreements = async (): Promise<{
   termsOfUseAgreement: AgreementEntity;
   privacyPolicyAgreement: AgreementEntity;
 }> => {

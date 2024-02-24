@@ -55,10 +55,6 @@ interface UserEntity {
     timeZone: string;
     theme: string;
   };
-  agreement?: {
-    termsOfUse?: string;
-    privacyPolicy?: string;
-  };
 }
 
 interface IUserProps {
@@ -136,10 +132,6 @@ const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
         timeZone: basicTimeZone,
         theme: basicTheme,
       },
-    },
-    agreement: {
-      type: Object,
-      default: {},
     },
   },
   { timestamps: true }
