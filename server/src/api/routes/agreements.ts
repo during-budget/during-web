@@ -3,7 +3,7 @@ const router = express.Router();
 import { body } from "express-validator";
 import { wrapAsync } from "../middleware/error";
 import { isAdmin, isLoggedIn } from "../middleware/auth";
-import * as agreements from "src/api/services/agreement";
+import * as agreementService from "src/api/services/agreement";
 import { validatorErrorChecker } from "../middleware/validator";
 import {
   Agreement,
@@ -26,7 +26,7 @@ router.post(
       req: { body: { type: AgreementType; version: string } },
       res: Response<{ agreement: Agreement }>
     ) => {
-      const agreement = await agreements.createAgreement(req.body);
+      const agreement = await agreementService.createAgreement(req.body);
 
       return res.status(200).send({
         agreement: convertToAgreement(agreement),
@@ -49,7 +49,7 @@ router.get(
       }>
     ) => {
       const { termsOfUseAgreement, privacyPolicyAgreement } =
-        await agreements.findValidAgreements();
+        await agreementService.findValidAgreements();
 
       return res.status(200).send({
         agreement: {
