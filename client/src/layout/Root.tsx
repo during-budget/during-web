@@ -23,15 +23,17 @@ function Root() {
   return (
     <>
       <Outlet />
-      <Modal />
       {/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
       <AmountOverlay />
       <PaymentOverlay />
+      <Modal />
     </>
   );
 }
 // <div>
-{/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
+{
+  /* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */
+}
 {
   /* {isGuest && !['/user'].includes(location.pathname) && location.pathname !== '/' && (
         <Link className={classes.guest} to="/user?register">

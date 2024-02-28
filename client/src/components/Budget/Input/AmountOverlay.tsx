@@ -21,6 +21,7 @@ const AmountOverlay = () => {
   const dispatch = useAppDispatch();
 
   const [isEvaluated, setIsEvaluated] = useState(true);
+  const [amountInputClass, setAmountInputState] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -28,56 +29,96 @@ const AmountOverlay = () => {
     }
   }, [isOpen]);
 
+  // complete button
   const submitHandler = async () => {
     const amount = getEvaluatedValue(value);
     onConfirm && onConfirm(amount);
     dispatch(uiActions.closeAmountInput());
   };
 
+  // C button
   const clearHandler = () => {
     dispatch(uiActions.setAmountValue(''));
     setIsEvaluated(false);
   };
 
-  const equalHandler = () => {
-    dispatch(uiActions.setAmountValue(getEvaluatedValue(value).toLocaleString()));
+  // = button
+  const equalHandler = async () => {
+    // await setAmountInputClass('');
+    await setAmountInputClass('');
+    try {
+      dispatch(uiActions.setAmountValue(getEvaluatedValue(value).toLocaleString()));
+    } catch (error) {
+      setAmountInputClass(classes.error);
+    }
     setIsEvaluated(true);
   };
 
+  const setAmountInputClass = (state: string) => {
+      return new Promise<void>(resolve => {
+        setTimeout(() => {
+          setAmountInputState(state);
+          resolve();
+        }, 10);
+        
+      })
+  }
+
+  // <- button
   const backspaceHandler = () => {
     const amount = value.slice(0, value.length - 1).replace(/,/g, '');
     dispatch(uiActions.setAmountValue((+amount).toLocaleString()));
     setIsEvaluated(false);
   };
 
+  // number & operator buttons
+  const buttonHandler = (item: string) => {
+    if (isEmptyExpr(value) && ['^', ')', '*', '/'].includes(item)) {
+      return;
+    } else if (isReplacingExpr(value, item)) {
+      if (isOperatorExceptParenthesis(item)) {
+        addValueToExpr(item);
+      } else {
+        replaceValue(item);
+      }
+    } else {
+      addValueToExpr(item);
+    }
+    setIsEvaluated(false);
+  };
+
+  const isEmptyExpr = (value: string) => {
+    return value === '';
+  };
+
+  const isOperatorExceptParenthesis = (item: string) => {
+    return ['+', '-', '/', '*', '00', '^', '.'].includes(item);
+  };
+
+  const isReplacingExpr = (prevExpr: string, newItem: string) => {
+    console.log('prev:', prevExpr, 'new:', newItem);
+    return (
+      isEmptyExpr(prevExpr) ||
+      (isEvaluated && !(prevExpr === '0' && newItem === '.')) ||
+      (prevExpr === '0' && newItem !== '.') ||
+      prevExpr === '00'
+    );
+  };
+
+  const addValueToExpr = (item: string) => {
+    const expr = (value + item).replace(/,/g, '');
+    dispatch(
+      uiActions.setAmountValue(expr.replace(/[0-9]+/g, (num) => (+num).toLocaleString()))
+    );
+  };
+
+  const replaceValue = (item: string) => {
+    dispatch(uiActions.setAmountValue(item));
+  };
+
   const getButtons = (values: string[]) => {
     return values.map((item) => (
-      <Button
-        key={item}
-        styleClass="extra"
-        onClick={() => {
-          if (
-            (isEvaluated && !(value === '0' && item === '.')) ||
-            value === '' ||
-            (value === '0' && item !== '.') ||
-            value === '00'
-          ) {
-            if (['+', '/', '*', '00', '^', '.'].includes(item)) {
-              return;
-            } else {
-              dispatch(uiActions.setAmountValue(item));
-            }
-          } else {
-            const expr = (value + item).replace(/,/g, '');
-            dispatch(
-              uiActions.setAmountValue(
-                expr.replace(/[0-9]+/g, (num) => (+num).toLocaleString())
-              )
-            );
-          }
-          setIsEvaluated(false);
-        }}
-      >
+      <Button key={item} styleClass="extra" onClick={buttonHandler.bind(null, item)}>
         {item}
       </Button>
     ));
@@ -104,6 +145,7 @@ const AmountOverlay = () => {
               const amount = +event?.target.value.replace(/\D/g, '');
               dispatch(uiActions.setAmountValue(amount.toLocaleString()));
             }}
+            className={amountInputClass}
           />
         </div>
 

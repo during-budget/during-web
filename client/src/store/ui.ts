@@ -117,6 +117,7 @@ const uiSlice = createSlice({
     },
     showErrorModal(state, action: PayloadAction<Partial<ModalOptions> | undefined>) {
       const options = action.payload;
+      console.log('error');
       state.modal = {
         ...initialState.modal,
         title: '문제가 발생했습니다',
