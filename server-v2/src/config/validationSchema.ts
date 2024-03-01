@@ -19,7 +19,11 @@ export const validationSchema = Joi.object({
   KAKAO_CLIENT_ID: Joi.string().required(),
 
   DB_URL: Joi.string().required(),
-  REDIS_URL: Joi.string().required(),
+
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().required(),
+  REDIS_USERNAME: Joi.string().required(),
+  REDIS_PASSWORD: Joi.string().required(),
 
   CRYPTO_KEY: Joi.string().required(),
   CRYPTO_SALT: Joi.string().required(),

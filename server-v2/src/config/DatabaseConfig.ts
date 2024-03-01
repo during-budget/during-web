@@ -5,6 +5,9 @@ export const DatabaseConfig = registerAs('Database', () => ({
     DB_URL: process.env.DB_URL,
   },
   redis: {
-    DB_URL: process.env.REDIS_URL,
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+    userName: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
   },
 }));
