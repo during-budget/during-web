@@ -9,4 +9,9 @@ export class TestController {
   getHello(): string {
     return this.testService.getHello();
   }
+
+  @Get('/test/config')
+  getConfig(): object {
+    return this.testService.getConfig();
+  }
 }
