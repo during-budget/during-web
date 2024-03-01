@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
 
-export default registerAs('test', () => ({
+export const TestConfig = registerAs('Test', () => ({
   key: process.env.KEY,
 }));

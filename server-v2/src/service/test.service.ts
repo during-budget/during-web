@@ -1,13 +1,15 @@
+import { DatabaseConfig } from '@config/DatabaseConfig';
+import { AppConfig } from '@config/appConfig';
+import { TestConfig } from '@config/testConfig';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import _testConfig from '@config/testConfig';
-import _dbConfig from '@config/dbConfig';
-
 @Injectable()
 export class TestService {
   constructor(
-    @Inject(_testConfig.KEY) private testConfig: ConfigType<typeof _testConfig>,
-    @Inject(_dbConfig.KEY) private dbConfig: ConfigType<typeof _dbConfig>,
+    @Inject(AppConfig.KEY) private appConfig: ConfigType<typeof AppConfig>,
+    @Inject(TestConfig.KEY) private testConfig: ConfigType<typeof TestConfig>,
+    @Inject(DatabaseConfig.KEY)
+    private dbConfig: ConfigType<typeof DatabaseConfig>,
   ) {}
 
   getHello(): string {
@@ -15,6 +17,10 @@ export class TestService {
   }
 
   getConfig(): object {
-    return { testConfig: this.testConfig, dbConfig: this.dbConfig };
+    return {
+      app: this.appConfig,
+      testConfig: this.testConfig,
+      dbConfig: this.dbConfig,
+    };
   }
 }
