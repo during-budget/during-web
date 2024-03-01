@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from '@config/validationSchema';
 import config from './config';
-import { DatabaseConfig } from './config/DatabaseConfig';
+import { DatabaseConfig } from '@config/DatabaseConfig';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigType } from '@nestjs/config';
-import { UserModule } from './module/user.module';
-import { TestModule } from './module/test.module';
+import module from './module';
 
 @Module({
   imports: [
@@ -22,8 +21,7 @@ import { TestModule } from './module/test.module';
       }),
       inject: [DatabaseConfig.KEY],
     }),
-    UserModule,
-    TestModule,
+    ...module,
   ],
   controllers: [],
   providers: [],
