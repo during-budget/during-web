@@ -3,6 +3,7 @@ import { AppConfig } from '@config/appConfig';
 import { TestConfig } from '@config/testConfig';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import { UserService } from './user.service';
 @Injectable()
 export class TestService {
   constructor(
@@ -10,6 +11,7 @@ export class TestService {
     @Inject(TestConfig.KEY) private testConfig: ConfigType<typeof TestConfig>,
     @Inject(DatabaseConfig.KEY)
     private dbConfig: ConfigType<typeof DatabaseConfig>,
+    private readonly userService: UserService,
   ) {}
 
   getHello(): string {
@@ -22,5 +24,9 @@ export class TestService {
       testConfig: this.testConfig,
       dbConfig: this.dbConfig,
     };
+  }
+
+  getUsers() {
+    return this.userService.model.find();
   }
 }

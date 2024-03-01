@@ -14,4 +14,9 @@ export class TestController {
   getConfig(): object {
     return this.testService.getConfig();
   }
+
+  @Get('/test/users')
+  getUsers(): object {
+    return this.testService.getUsers();
+  }
 }

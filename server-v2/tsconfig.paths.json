@@ -4,7 +4,8 @@
     "paths": {
       "@config/*": ["./src/config/*"],
       "@controller/*": ["./src/controller/*"],
-      "@service/*": ["./src/service/*"]
+      "@service/*": ["./src/service/*"],
+      "@schema/*": ["./src/schema/*"]
     }
   }
 }
