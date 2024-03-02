@@ -3,7 +3,8 @@ import { AppConfig } from '@config/appConfig';
 import { TestConfig } from '@config/testConfig';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { UserService } from './user.service';
+import { UserService } from '@modules/user/user.service';
+
 @Injectable()
 export class TestService {
   constructor(

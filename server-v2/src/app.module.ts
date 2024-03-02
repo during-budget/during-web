@@ -5,7 +5,7 @@ import config from './config';
 import { DatabaseConfig } from '@config/DatabaseConfig';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigType } from '@nestjs/config';
-import module from './module';
+import { Modules } from './modules';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import module from './module';
       }),
       inject: [DatabaseConfig.KEY],
     }),
-    ...module,
+    ...Object.values(Modules),
   ],
   controllers: [],
   providers: [],

@@ -3,9 +3,7 @@
     "baseUrl": "./",
     "paths": {
       "@config/*": ["./src/config/*"],
-      "@controller/*": ["./src/controller/*"],
-      "@service/*": ["./src/service/*"],
-      "@schema/*": ["./src/schema/*"]
+      "@modules/*": ["./src/modules/*"]
     }
   }
 }
