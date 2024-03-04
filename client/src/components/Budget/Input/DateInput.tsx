@@ -1,5 +1,6 @@
 import React from 'react';
 import { getNumericHypenDateString } from '../../../util/date';
+import { useAppSelector } from '../../../hooks/useRedux';
 
 interface DateInputProps {
   className: string;
@@ -9,6 +10,8 @@ interface DateInputProps {
 }
 
 const DateInput = ({ className, value, onChange, required }: DateInputProps) => {
+  const { date } = useAppSelector((state) => state.budget.current);
+  
   const dateTimeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(new Date(event.target.value));
   };
@@ -16,7 +19,7 @@ const DateInput = ({ className, value, onChange, required }: DateInputProps) => 
   return (
     <input
       className={className}
-      type="date"
+      type="datetime-local"
       placeholder="날짜를 입력하세요"
       value={
         value && !isNaN(value.valueOf())
@@ -24,6 +27,8 @@ const DateInput = ({ className, value, onChange, required }: DateInputProps) => 
           : getNumericHypenDateString(new Date())
       }
       onChange={dateTimeHandler}
+      min={getNumericHypenDateString(date.start)}
+      max={getNumericHypenDateString(date.end)}
       required={required}
     />
   );
