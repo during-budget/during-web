@@ -81,6 +81,7 @@ const userSlice = createSlice({
       };
     },
     logout(state) {
+      console.log('logouut');
       state = initialState;
     },
     setUserInfo(state, action: PayloadAction<UserInfoType>) {

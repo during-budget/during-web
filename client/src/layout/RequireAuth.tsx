@@ -8,7 +8,7 @@ import {
   useNavigation,
 } from 'react-router-dom';
 import LoadingSpinner from '../components/UI/component/LoadingSpinner';
-import { useAppDispatch } from '../hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import Channel from '../models/Channel';
 import { assetActions } from '../store/asset';
 import { settingActions } from '../store/setting';
@@ -25,13 +25,12 @@ interface RequireAuthProps {
 
 function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProps>) {
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const userData = useLoaderData() as Awaited<ReturnType<typeof userLoader>>;
+  const userDataFromServer = useLoaderData() as Awaited<ReturnType<typeof userLoader>>;
   const navigation = useNavigation();
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
-    if (userData) {
+    if (userDataFromServer) {
       // get user data
       const {
         _id,
@@ -45,10 +44,10 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
         cards,
         paymentMethods,
         settings,
-      } = userData;
+      } = userDataFromServer;
 
       // set user data
-      dispatch(userActions.login(userData)); // set login, user info, auth info
+      dispatch(userActions.login(userDataFromServer)); // set login, user info, auth info
       dispatch(userCategoryActions.setCategories(categories));
       dispatch(assetActions.setAssets(assets));
       dispatch(assetActions.setCards(cards));
@@ -83,14 +82,14 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
         },
       });
     }
-  }, [userData]);
+  }, [userDataFromServer]);
 
   if (navigation.state === 'loading') {
     return <LoadingSpinner isFull={true} />;
   }
 
   if (noRequired) {
-    if (userData) {
+    if (userDataFromServer) {
       // 로그인된 사용자가 자격 접근 필요없는 라우터에 접근할 경우
       return <Navigate to="/budget" replace />;
     } else {
@@ -98,7 +97,7 @@ function RequireAuth({ noRequired, children }: PropsWithChildren<RequireAuthProp
       return <>{children}</>;
     }
   } else {
-    if (userData) {
+    if (userDataFromServer) {
       // 로그인된 사용자가 자격접근 필요한 라우터에 접근할 경우
       return <>{children}</>;
     } else {

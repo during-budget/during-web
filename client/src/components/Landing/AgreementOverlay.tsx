@@ -46,8 +46,9 @@ const AgreementOverlay = ({ isOpen, onClose, isInit }: AgreementOverlayProps) =>
     Sentry.setUser(null);
     try {
       isInit && await fetchRequest({ url: '/users', method: 'delete' });
+      !isInit && await fetchRequest({ url: '/auth/logout' });
       dispatch(userActions.logout());
-      navigate(-1);
+      navigate('/landing#base');
     } catch (error) {
       dispatch(
         uiActions.showErrorModal({

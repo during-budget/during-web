@@ -17,7 +17,6 @@ const Terms = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
       className={classes.terms}
       isOpen={isOpen}
       onClose={onClose}
-      preventGoBack={!!agree}
     >
       <div className={classes.contents}>
         <h1>이용약관</h1>

@@ -48,7 +48,6 @@ function Overlay({
       body?.style.setProperty('overflow', 'scroll');
     }
 
-    // if (!preventGoBack) {
     if (isOpen) {
       navigate(
         `${location.pathname}${location.search}${location.hash}${hash || ''}#${id}`
@@ -56,7 +55,6 @@ function Overlay({
     } else if (location.hash.includes(id)) {
       navigate(-1);
     }
-    // }
   }, [isOpen]);
 
   useEffect(() => {

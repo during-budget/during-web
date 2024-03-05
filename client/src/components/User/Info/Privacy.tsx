@@ -16,7 +16,6 @@ const Privacy = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
       className={classes.privacy}
       isOpen={isOpen}
       onClose={onClose}
-      preventGoBack={!!agree}
     >
       <div className={classes.contents}>
         <section>
