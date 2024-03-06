@@ -9,6 +9,10 @@
   align-items: center;
 }
 
+.label {
+  font-size: 0.9rem;
+}
+
 .label::before {
   content: '';
   display: inline-block;
