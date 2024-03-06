@@ -63,6 +63,7 @@ function UserCategorySetting({ isOpen, onClose, className }: SettingOverlayProps
         noTransform: true,
         onClose,
       }}
+      formPadding='md'
       className={className}
     >
       <div className={classes.header}>

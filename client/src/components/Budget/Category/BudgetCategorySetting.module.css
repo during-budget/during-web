@@ -24,7 +24,7 @@
 
 /* Item classes */
 .budget-category-item {
-  margin: 0.5rem 0;
+  /* margin: 0.5rem 0; */
 }
 
 .info {
@@ -34,9 +34,9 @@
 }
 
 .info .icon {
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.5rem;
 }
 
 .info span.title {
@@ -46,5 +46,5 @@
 
 .info input.title {
   width: 100%;
-  height: 3rem;
+  height: 2.5rem;
 }

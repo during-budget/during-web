@@ -3,6 +3,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-bottom: 0.375rem;
 }
 
 .content .info {
@@ -13,9 +14,10 @@
 
 .content input {
   width: 45%;
-  height: 5vh;
+  height: 2.5rem;
   text-align: right;
   scroll-margin: 5vh;
+  font-size: 0.95rem;
 }
 
 .title {
@@ -25,7 +27,7 @@
 
 .detail {
   width: 100%;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .detail p {

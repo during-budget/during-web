@@ -55,7 +55,7 @@ textarea::placeholder {
 
 input[type='checkbox'] {
   accent-color: var(--primary);
-  width: 0.875rem;
+  width: 0.625rem;
 }
 
 textarea {

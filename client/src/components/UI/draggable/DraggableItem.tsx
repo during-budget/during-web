@@ -56,11 +56,7 @@ const DraggableItem = ({
     buttonAreaWidth = preventDrag ? '10%' : '20%';
   }
 
-  const itemStyle = css({
-    marginBottom: '1vh',
-  });
-
-  const draggingStyle = css(itemStyle, {
+  const draggingStyle = css({
     backgroundColor: '#fff',
     // padding: '0.5rem',
     borderRadius: '0.5rem',
@@ -101,7 +97,6 @@ const DraggableItem = ({
               {onCheck && (
                 <input
                   id={`draggable-check-${id}`}
-                  css={css({ width: '0.875rem' })}
                   type="checkbox"
                   name="category-setting"
                   checked={checked || false}
