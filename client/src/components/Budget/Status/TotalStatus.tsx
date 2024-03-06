@@ -59,7 +59,7 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
   const dash = isSmallScreen ? 477 : isLargeScreen ? 715 : 635;
 
   return (
-    <>
+    <div className='flex-column i-center'>
       {budgetId && <ExpenseTab id="total-nav" />}
       <AmountRing
         amount={budgetId ? currentTotal : new Amount(0, 0, 0)}
@@ -73,7 +73,7 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
       {budgetId && (
         <AmountDetail id="total" amount={currentTotal} editPlanHandler={updatePlan} />
       )}
-    </>
+    </div>
   );
 };
 

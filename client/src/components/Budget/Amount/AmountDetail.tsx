@@ -62,7 +62,7 @@ const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
       <RadioTab
         name={`${id}-amount-detail`}
         values={tabs}
-        className="j-center text-ml"
+        className="j-center text-md"
         isBold={false}
       />
       <ul>
