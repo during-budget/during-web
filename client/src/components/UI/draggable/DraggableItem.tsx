@@ -91,7 +91,7 @@ const DraggableItem = ({
             {...lockedProvided.draggableProps}
             ref={lockedProvided.innerRef}
             className={`flex j-between i-center ${className}`}
-            css={snapshot.isDragging ? itemStyle : draggingStyle}
+            css={snapshot.isDragging ? undefined : draggingStyle}
           >
             <div className="w-100 flex i-center" css={css({ gap: '3vw' })}>
               {onCheck && (
