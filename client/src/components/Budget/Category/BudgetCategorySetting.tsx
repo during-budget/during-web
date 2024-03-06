@@ -16,6 +16,7 @@ import OverlayForm from '../../UI/overlay/OverlayForm';
 import classes from './BudgetCategorySetting.module.css';
 import DefaultCategoryEdit from './DefaultCategoryEdit';
 import { css } from '@emotion/react';
+import { cn } from '../../../util/cn';
 
 interface BudgetCategorySettingProps {
   budgetId: string;
@@ -180,6 +181,7 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
       }}
       onSubmit={submitHandler}
       className={classes.budgetCategoryForm}
+      formPadding='md'
     >
       <h5>카테고리 목록 편집</h5>
       <DraggableList
@@ -208,7 +210,7 @@ const BudgetCategorySetting = ({ budgetId }: BudgetCategorySettingProps) => {
                 required={true}
               />
               <input
-                className={classes.title}
+                className={cn('text-md', classes.title)}
                 type="text"
                 value={item.title}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
