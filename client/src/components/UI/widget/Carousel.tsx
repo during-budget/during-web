@@ -59,7 +59,7 @@ function Carousel({
             <li
               key={id}
               id={id}
-              className={`js-carousel-item flex-column j-around i-center shrink-0 w-100 ${itemClassName}`}
+              className={`js-carousel-item flex-column i-center shrink-0 w-100 ${itemClassName}`}
               css={itemScrollStyle}
             >
               {item}
