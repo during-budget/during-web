@@ -60,8 +60,8 @@
 }
 
 .list {
-  height: 50vh;
-  margin-bottom: 1vh;
+  height: 40vh;
+  margin-bottom: 3vh;
   overflow: scroll;
   scrollbar-width: none;
 }
