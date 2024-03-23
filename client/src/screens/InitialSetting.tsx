@@ -60,7 +60,7 @@ const InitialSetting = () => {
     };
 
     setDefaultBudget();
-  }, []);
+  }, [defaultBudgetId]);
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [openListEditor, setOpenListEditor] = useState(false);

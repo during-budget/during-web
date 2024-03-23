@@ -72,6 +72,7 @@ const userSlice = createSlice({
         tel,
         birthdate,
       };
+
       state.agreement = agreement;
       state.auth = {
         email,
@@ -81,7 +82,6 @@ const userSlice = createSlice({
       };
     },
     logout(state) {
-      console.log('logouut');
       state = initialState;
     },
     setUserInfo(state, action: PayloadAction<UserInfoType>) {
