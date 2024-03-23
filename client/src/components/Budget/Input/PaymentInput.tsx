@@ -12,7 +12,7 @@ interface PaymentInputProps {
   defaultValue?: string;
   disabled?: boolean;
   setIsEditSetting: (isEdit: boolean) => void;
-  isAsset: boolean
+  isAsset: boolean;
   setIsAsset: (isAsset: boolean) => void;
 }
 
@@ -25,7 +25,7 @@ const PaymentInput = ({
   disabled,
   setIsEditSetting,
   isAsset,
-  setIsAsset
+  setIsAsset,
 }: PaymentInputProps) => {
   const paymentRef = useRef<any>(null);
 
@@ -44,7 +44,16 @@ const PaymentInput = ({
   const [paymentTab, setPaymentTab] = useState<any>({ element: null });
 
   useEffect(() => {
-    setIsAsset(storedPaymentMethods.find((item) => item._id === value)?.type === 'asset');
+    const paymentMethod = storedPaymentMethods.find((item) => item._id === value);
+    console.log(paymentMethod);
+    if (!paymentMethod) {
+      localStorage.setItem('payment', '');
+      onChange && onChange('', false);
+      return;
+    } else {
+      localStorage.setItem('payment', value || '');
+    }
+    setIsAsset(paymentMethod.type === 'asset');
   }, [value]);
 
   useEffect(() => {
@@ -116,7 +125,6 @@ const PaymentInput = ({
       className={className}
       data={paymentOptions}
       onChange={(value?: string) => {
-        localStorage.setItem('payment', value || '');
         const payment = payments.find((item) => item._id === value);
         onChange && onChange(value || '', payment?.detail === 'credit');
       }}
