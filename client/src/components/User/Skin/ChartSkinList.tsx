@@ -135,7 +135,7 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
             id !== 'basic' && (
               <li
                 key={id}
-                className={`${isLocked ? classes.lock : classes.unlock} ${
+                className={`${isLocked && skinState !== id ? classes.lock : classes.unlock} ${
                   skinState === id ? classes.selected : ''
                 }`}
                 onClick={clickHandler.bind(null, isLocked, id)}
@@ -147,12 +147,12 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
                   />
                 </div>
                 <Button
-                  styleClass={isLocked ? 'primary' : 'gray'}
+                  styleClass={isLocked && skinState !== id ? 'primary' : 'gray'}
                   sizeClass="sm"
                   className={classes.buy}
                   onClick={clickHandler.bind(null, isLocked, id)}
                 >
-                  {isLocked
+                  {isLocked && skinState !== id 
                     ? `₩${price?.toLocaleString() || '2,000'}`
                     : skinState === id
                     ? '설정중'
