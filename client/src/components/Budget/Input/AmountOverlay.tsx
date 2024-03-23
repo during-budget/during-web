@@ -55,14 +55,13 @@ const AmountOverlay = () => {
   };
 
   const setAmountInputClass = (state: string) => {
-      return new Promise<void>(resolve => {
-        setTimeout(() => {
-          setAmountInputState(state);
-          resolve();
-        }, 10);
-        
-      })
-  }
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        setAmountInputState(state);
+        resolve();
+      }, 10);
+    });
+  };
 
   // <- button
   const backspaceHandler = () => {
@@ -96,7 +95,6 @@ const AmountOverlay = () => {
   };
 
   const isReplacingExpr = (prevExpr: string, newItem: string) => {
-    console.log('prev:', prevExpr, 'new:', newItem);
     return (
       isEmptyExpr(prevExpr) ||
       (isEvaluated && !(prevExpr === '0' && newItem === '.')) ||
@@ -133,6 +131,7 @@ const AmountOverlay = () => {
           dispatch(uiActions.closeAmountInput());
         },
         hash,
+        isRight: true,
       }}
       onSubmit={submitHandler}
     >

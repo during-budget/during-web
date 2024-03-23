@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
@@ -8,7 +9,6 @@ import Button from '../UI/button/Button';
 import Overlay from '../UI/overlay/Overlay';
 import EmailForm from './EmailForm';
 import SNSButtons from './SNSButtons';
-import { css } from '@emotion/react';
 
 interface AuthProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
   const navigate = useNavigate();
 
   const platform = useAppSelector((state) => state.ui.platform);
-  
+
   const [isSns, setSnsAuth, setEmailAuth] = useToggle(true);
 
   useEffect(() => {
@@ -58,10 +58,7 @@ function AuthOverlay({ isOpen, onClose, hideGuest, showEmail }: AuthProps) {
           transform:
             isSns && isOpen ? 'translateY(40%) translateZ(0) !important' : undefined,
           '@media screen and (min-width: 840px)': {
-            transform:
-              isSns && isOpen
-                ? 'translate(-50%, 40%) translateZ(0) !important'
-                : 'translate(-50%, 100%)',
+            transform: 'translate(0, 100%) translateZ(0)',
           },
         })}
         isOpen={isOpen}
