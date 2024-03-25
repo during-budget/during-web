@@ -22,7 +22,7 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
       if (!budget) {
         navigateToNewBudget(year, month);
       } else {
-        navigate(`/budget/${budget._id}`);
+        navigate(`/budget/${budget._id}#base`);
       }
     } catch (error) {
       const message = getErrorMessage(error);
@@ -41,7 +41,7 @@ const BudgetNav = ({ title, start, end }: BudgetNavProps) => {
   };
 
   const navigateToNewBudget = (year: number, month: number) => {
-    navigate(`/budget/new?year=${year}&month=${month}`);
+    navigate(`/budget/new?year=${year}&month=${month}#base`);
   };
 
   return (

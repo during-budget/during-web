@@ -16,7 +16,7 @@
   height: 8vh;
   margin-bottom: 1vh;
   border-radius: 1rem;
-  background-color: var(--gray-1);
+  background-color: var(--gray-0);
 }
 
 .total label {
@@ -30,7 +30,7 @@
   width: 100%;
   display: block;
   text-align: center;
-  font-size: var(--size-2);
+  font-size: 1.5rem;
 }
 
 .total span {
@@ -47,7 +47,7 @@
   position: absolute;
   left: 36%;
   transform: translateY(-50%);
-  color: var(--gray-3);
+  color: var(--gray-200);
 }
 
 .alert {
@@ -60,8 +60,8 @@
 }
 
 .list {
-  height: 40vh;
-  margin-bottom: 1vh;
+  height: 36vh;
+  margin-bottom: 3vh;
   overflow: scroll;
   scrollbar-width: none;
 }
@@ -91,7 +91,7 @@
   padding: 1rem 2rem;
   text-align: right;
   border-radius: 1rem;
-  background-color: var(--gray-1);
+  background-color: var(--gray-0);
 }
 
 .left .info {
@@ -102,7 +102,7 @@
 }
 
 .left p {
-  font-size: var(--size-3);
+  font-size: 1.5rem;
   font-weight: 800;
 }
 

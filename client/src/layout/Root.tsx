@@ -13,25 +13,27 @@ function Root() {
   // const { isGuest } = useAppSelector((state) => state.user.auth);
 
   useEffect(() => {
-    if (location.pathname !== '/user') {
-      Channel.hideChannelButton();
-    } else {
+    if (location.pathname === '/user' || location.pathname === '/landing') {
       Channel.showChannelButton();
+    } else {
+      Channel.hideChannelButton();
     }
   }, [location.pathname]);
 
   return (
     <>
       <Outlet />
-      <Modal />
       {/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
       <AmountOverlay />
       <PaymentOverlay />
+      <Modal />
     </>
   );
 }
 // <div>
-{/* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */}
+{
+  /* 이 위치가 아닌 다른 곳에 위치시키려고 커맨드아웃시켰던 거 같은데. */
+}
 {
   /* {isGuest && !['/user'].includes(location.pathname) && location.pathname !== '/' && (
         <Link className={classes.guest} to="/user?register">

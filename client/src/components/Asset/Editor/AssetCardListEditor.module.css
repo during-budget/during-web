@@ -24,19 +24,12 @@
   display: flex;
   align-items: center;
   gap: 5vw;
+  margin-bottom: 0.75rem;
 }
 
 .info {
   display: flex;
   flex-direction: column;
-}
-
-.detail {
-  font-size: var(--size-8);
-}
-
-.title {
-  font-size: var(--size-5);
 }
 
 .add {

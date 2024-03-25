@@ -1,9 +1,15 @@
+import { privacyPolicyVersion } from '../../../constants/version';
 import { SettingOverlayProps } from '../../../screens/User';
 import Button from '../../UI/button/Button';
+import ConfirmCancelButtons from '../../UI/button/ConfirmCancelButtons';
 import Overlay from '../../UI/overlay/Overlay';
 import classes from './Privacy.module.css';
 
-const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
+interface AgreeOverlayProps extends SettingOverlayProps {
+  agree?: () => void 
+}
+
+const Privacy = ({ isOpen, onClose, agree }: AgreeOverlayProps) => {
   return (
     <Overlay
       id="privacy-policy"
@@ -15,7 +21,7 @@ const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
         <section>
           <h1>개인정보 처리방침</h1>
           <p>
-            웨일립스튜디오(이하 '회사')는 듀링가계부 서비스(이하 '서비스')를 제공하며
+            웨일블루스튜디오(이하 '회사')는 듀링가계부 서비스(이하 '서비스')를 제공하며
             개인정보보호법 및 관련 법령에 따라 사용자의 개인정보를 적법하고 안전하게
             보호합니다.
           </p>
@@ -50,7 +56,7 @@ const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
               <h6>(3) 서비스 제공을 위해 수집되는 사용자 입력 정보</h6>
               <ul>
                 <li>- 가계부 작성 및 조회를 위한 내역 및 카테고리 정보</li>
-                <li>- 반복되는 예산 관리를 위한 기본 예산 정보</li>
+                <li>- 반복되는 예산 관리를 위한 반복 예산 정보</li>
                 <li>- 자산 현황 조회를 위한 자산 및 카드 정보</li>
               </ul>
             </li>
@@ -190,10 +196,21 @@ const Privacy = ({ isOpen, onClose }: SettingOverlayProps) => {
         </section>
 
         <p>
-          <strong>최종개정일: 2023. 6. 2.</strong>
+          <strong>최종개정일: {privacyPolicyVersion}</strong>
         </p>
       </div>
-      <Button onClick={onClose}>닫기</Button>
+      <ConfirmCancelButtons
+        confirmMsg={agree ? '동의하기' : '닫기'}
+        closeMsg='닫기'
+        hideCancle={!agree}
+        disableSubmit={!!agree}
+        isBottomSticky={true}
+        onConfirm={() => {
+          agree && agree();
+          onClose();
+        }}
+        onClose={onClose}
+      />
     </Overlay>
   );
 };

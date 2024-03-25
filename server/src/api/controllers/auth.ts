@@ -20,6 +20,7 @@ import * as UserService from "src/services/users";
 import { SnsIdNotFoundError } from "src/errors/NotFoundError";
 import { AtLeastOneSnsIdIsRequiredError } from "src/errors/ConfilicError";
 import { FieldInvalidError } from "src/errors/InvalidError";
+import { convertToUser } from "src/types/user";
 const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
@@ -219,7 +220,7 @@ export const guest = async (
           }
           return res.status(200).send({
             message: LOGIN_SUCCESS,
-            user,
+            user: convertToUser(user),
           });
         });
       } catch (err: any) {

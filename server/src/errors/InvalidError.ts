@@ -1,11 +1,11 @@
 import { CustomError } from "./CustomError";
 
 export class InvalidError extends CustomError {
-  constructor() {
+  constructor(message?: string) {
     super();
     this.name = "InvalidError";
     this.status = 400;
-    this.message = "Invalid Request";
+    this.message = message || "Invalid Request";
   }
 }
 

@@ -64,7 +64,7 @@ function CategoryPlanItem({
     <DraggableItem id={id} idx={idx} preventDrag={preventDrag}>
       <div className={classes.content}>
         <div className={classes.info}>
-          <Icon>{icon}</Icon>
+          <Icon size='3rem'>{icon}</Icon>
           <div>
             <p className={classes.title}>{title}</p>
             <div className={classes.detail}>

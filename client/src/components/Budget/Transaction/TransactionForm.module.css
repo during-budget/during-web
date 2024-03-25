@@ -1,5 +1,5 @@
 .transaction-form {
-  clip-path: inset(-100% -100% calc(100% - 5.75rem) -100%);
+  clip-path: inset(-100% -100% calc(100% - 5.8rem) -100%);
   transform: translateY(calc(100% - (5.8rem + 9vh)));
   height: 85vh;
   transition: transform 0.3s var(--slow-in), clip-path 0.3s var(--slow-in),
@@ -14,7 +14,7 @@
 .transaction-form input,
 .transaction-form .select,
 .transaction-form textarea {
-  margin-bottom: var(--size-9);
+  margin-bottom: 0.625rem;
 }
 
 .transaction-form.expand .buttons,
@@ -42,22 +42,18 @@
   z-index: 5;
 }
 
-.field {
-  width: 100%;
-}
-
 .date-field {
-  min-width: calc(100% - var(--size-5));
+  min-width: calc(100% - 1.125rem);
 }
 
 .amount {
   display: flex;
   width: 100%;
-  gap: var(--size-8);
+  gap: 0.75rem;
 }
 
 .amount input {
-  margin-bottom: var(--size-5);
+  margin-bottom: 1.125rem;
 }
 
 .amount button {
@@ -71,7 +67,7 @@
 }
 
 .transaction-form.expand .amount input {
-  margin-bottom: var(--size-9);
+  margin-bottom: 0.625rem;
 }
 
 .transaction-form.expand .amount button {
@@ -91,7 +87,7 @@
 }
 
 .option {
-  font-size: var(--size-7);
+  font-size: 0.875rem;
   justify-content: start;
 }
 
@@ -105,7 +101,11 @@
 .note,
 .selects {
   display: flex;
-  gap: var(--size-10);
+  gap: 0.5rem;
+}
+
+.selects > div {
+  width: 100%;
 }
 
 .emoji {
@@ -115,7 +115,7 @@
 .emoji input {
   display: flex;
   box-sizing: border-box;
-  font-size: var(--size-3);
+  font-size: 1.5rem;
   width: 3.5rem;
   height: 3.5rem;
   text-align: center;
@@ -142,7 +142,7 @@
   bottom: 16vh;
   display: flex;
   justify-content: center;
-  gap: var(--size-6);
+  gap: 1rem;
   opacity: 0;
   transition: 0.1s var(--fast-in);
 }

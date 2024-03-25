@@ -229,12 +229,14 @@ const AssetCardItemEditor = ({
               value={targetState?.title || ''}
               onChange={setTitle}
               placeholder="이름을 입력하세요"
+              required
             />
             {isAsset ? (
-              <AssetFields
-                amount={(targetState as AssetDataType)?.amount || 0}
-                setAmount={setAmount}
-              />
+              // <AssetFields
+              //   amount={(targetState as AssetDataType)?.amount || 0}
+              //   setAmount={setAmount}
+              // />
+              <></>
             ) : (
               <CardFields
                 assetId={(targetState as CardDataType)?.linkedAssetId || ''}

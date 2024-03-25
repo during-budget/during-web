@@ -12,7 +12,6 @@ import AmountBars from '../Amount/AmountBars';
 import AmountDetail from '../Amount/AmountDetail';
 import CategoryPlanButtons from '../UI/CategoryPlanButtons';
 import ExpenseTab from '../UI/ExpenseTab';
-import classes from './CategoryStatus.module.css';
 import StatusHeader from './StatusHeader';
 
 function CategoryStatus(props: { budgetId: string }) {
@@ -94,16 +93,12 @@ function CategoryStatus(props: { budgetId: string }) {
       <CategoryPlanButtons />
       <Button
         onClick={() => {
-          dispatch(uiActions.showCategoryLayer(true));
-          document
-            .getElementById('category-layout')
-            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          dispatch(uiActions.showCategoryList(true));
         }}
         styleClass="extra"
-        className={classes.more}
+        className="flex-column"
       >
-        <span>더보기</span>
-        <span>↓</span>
+        <span className="text-md mt-0.75">더보기</span>
       </Button>
     </>
   );

@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
@@ -31,6 +32,7 @@ import TitleInput from '../Input/TitleInput';
 import CurrentTab from '../UI/CurrentTab';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './TransactionForm.module.css';
+import AssetCardListEditor from '../../Asset/Editor/AssetCardListEditor';
 
 interface TransactionFromProps {
   budgetId: string;
@@ -64,10 +66,9 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
 
   const [iconState, setIconState] = useState('');
   const [isOpenPaymentEditor, setIsOpenPaymentEditor] = useState(false);
+  const [isPaymentAsset, setIsPaymentAsset] = useState(false); // 체크
   const [paymentState, setPaymentState] = useState<string>('');
-  const [dateState, setDateState] = useState<Date>(
-    defaultValue.date || new Date()
-  );
+  const [dateState, setDateState] = useState<Date>(defaultValue.date || new Date());
   const [excludeAsset, setExcludeAsset] = useState(
     defaultValue.updateAsset === undefined ? false : !defaultValue.updateAsset
   );
@@ -80,6 +81,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
     } else {
       setPaymentState(defaultValue.linkedPaymentMethodId || '');
     }
+    setDateState(defaultValue.date || new Date());
   }, [defaultValue]);
 
   useEffect(() => {
@@ -233,13 +235,13 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       <AmountInput
         id="transaction-form-amount"
         ref={amountRef}
-        className={classes.field}
+        className="w-100"
         onFocus={expandHandler}
         onClick={expandHandler}
         defaultValue={defaultValue.amount ? defaultValue.amount.toString() : ''}
         required={true}
       />
-      <Button onClick={expandHandler} style={{ width: mode.isExpand ? 0 : '40%' }}>
+      <Button onClick={expandHandler} css={css({ width: mode.isExpand ? 0 : '40%' })}>
         내역 추가
       </Button>
     </div>
@@ -265,6 +267,8 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         }}
         // defaultValue={defaultValue.linkedPaymentMethodId}
         setIsEditSetting={setIsOpenPaymentEditor}
+        isAsset={isPaymentAsset}
+        setIsAsset={setIsPaymentAsset}
       />
     </div>
   );
@@ -279,7 +283,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
       />
       <TitleInput
         ref={titlesRef}
-        className={`${classes.field} ${classes.title}`}
+        className={`${classes.field} w-100`}
         defaultValue={defaultValue.title}
       />
     </div>
@@ -300,9 +304,10 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
         overlayOptions={{
           id: 'transaction-form',
           isOpen: mode.isExpand,
-          onClose: closeHandler,
+          onClose: closeHandler, // 여기서 문제 발생
           isClip: true,
           noTransition: true,
+          isRight: true,
         }}
         formPadding="sm"
         formHeight="60vh"
@@ -329,11 +334,7 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
             )}
             {selectField} {/* category, payment */}
             {noteField} {/* emoji, title */}
-            <TagInput
-              ref={tagsRef}
-              className={classes.field}
-              defaultValue={defaultValue.tags}
-            />
+            <TagInput ref={tagsRef} className="w-100" defaultValue={defaultValue.tags} />
             <MemoInput
               ref={memoRef}
               className={`${classes.field} ${classes.memo}`}
@@ -364,9 +365,10 @@ function TransactionForm({ budgetId, isDefaultBudget, className }: TransactionFr
           </p>
         )}
       </OverlayForm>
-      <PaymentEditor
+      <AssetCardListEditor
+        isAsset={isPaymentAsset}
         isOpen={isOpenPaymentEditor}
-        onClose={() => {
+        closeEditor={() => {
           setIsOpenPaymentEditor(false);
         }}
       />

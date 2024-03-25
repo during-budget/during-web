@@ -60,6 +60,10 @@
   color: var(--primary);
 }
 
+.text-error {
+  color: var(--error-text);
+}
+
 /* bg */
 .bg {
   background-color: var(--gray-0);

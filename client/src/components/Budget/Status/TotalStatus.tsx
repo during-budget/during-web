@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
+import useScreenEndPoint from '../../../hooks/useScreenEndPoint';
 import Amount from '../../../models/Amount';
 import { budgetCategoryActions } from '../../../store/budget-category';
 import { totalActions } from '../../../store/total';
@@ -20,6 +21,9 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
   // Get state from store
   const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
   const total = useAppSelector((state) => state.total);
+
+  // Get screen size
+  const [isLargeScreen, isSmallScreen] = useScreenEndPoint();
 
   // Get current total state
   const currentTotal = isExpense ? total.expense : total.income;
@@ -51,13 +55,11 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
     }
   };
 
-  // NOTE: Get dash for different font-size (match for rem)
-  const mediumScreen = window.matchMedia('(max-width: 400px)');
-  const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 475 : mediumScreen.matches ? 555 : 634;
+  // NOTE: Get dash for different font-size (_reset.css의 미디어쿼리 확인)
+  const dash = isSmallScreen ? 477 : isLargeScreen ? 715 : 635;
 
   return (
-    <>
+    <div className='flex-column i-center'>
       {budgetId && <ExpenseTab id="total-nav" />}
       <AmountRing
         amount={budgetId ? currentTotal : new Amount(0, 0, 0)}
@@ -71,7 +73,7 @@ const TotalStatus = ({ budgetId }: TotalStatusProps) => {
       {budgetId && (
         <AmountDetail id="total" amount={currentTotal} editPlanHandler={updatePlan} />
       )}
-    </>
+    </div>
   );
 };
 

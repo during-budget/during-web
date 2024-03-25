@@ -1,21 +1,20 @@
+import * as Sentry from '@sentry/browser';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import AssetCardEditItemList from '../components/Asset/Editor/AssetCardEditItemList';
 import AssetCardItemEditor from '../components/Asset/Editor/AssetCardItemEditor';
 import AssetCardListEditor, {
   AssetCardDataType,
 } from '../components/Asset/Editor/AssetCardListEditor';
-import AssetStatus from '../components/Asset/Status/AssetStatus';
-import CardStatus from '../components/Asset/Status/CardStatus';
 import BudgetCategorySetting from '../components/Budget/Category/BudgetCategorySetting';
+import CategoryListOverlay from '../components/Budget/Category/CategoryListOverlay';
 import CategoryPlan from '../components/Budget/Category/CategoryPlan';
 import TransactionDetail from '../components/Budget/Transaction/TransactionDetail';
 import TransactionForm from '../components/Budget/Transaction/TransactionForm';
 import TransactionList from '../components/Budget/Transaction/TransactionList';
 import TransactionNav from '../components/Budget/Transaction/TransactionNav';
-import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import StepNav from '../components/UI/nav/StepNav';
+import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
 import DefaultStatus from '../components/User/Default/DefaultStatus';
 import { useAppSelector } from '../hooks/useRedux';
 import { assetActions } from '../store/asset';
@@ -23,12 +22,11 @@ import { budgetActions } from '../store/budget';
 import { budgetCategoryActions } from '../store/budget-category';
 import { totalActions } from '../store/total';
 import { transactionActions } from '../store/transaction';
-import { uiActions } from '../store/ui';
 import {
   AssetDataType,
   CardDataType,
   updateAssetById,
-  updateCardById
+  updateCardById,
 } from '../util/api/assetAPI';
 import { getBudgetById } from '../util/api/budgetAPI';
 import { getErrorMessage } from '../util/error';
@@ -57,17 +55,12 @@ const InitialSetting = () => {
         }
       } catch (error) {
         const message = getErrorMessage(error);
-        dispatch(
-          uiActions.showErrorModal({
-            description: message || '기본 예산을 로드할 수 없습니다.',
-          })
-        );
-        if (!message) throw error;
+        Sentry.captureMessage(message || 'Initial Setting - 반복예산 로드 불가');
       }
     };
 
     setDefaultBudget();
-  }, []);
+  }, [defaultBudgetId]);
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [openListEditor, setOpenListEditor] = useState(false);
@@ -86,54 +79,54 @@ const InitialSetting = () => {
   };
 
   const data = [
+    // {
+    //   title: '자산 설정',
+    //   status: (
+    //     <div className={classes.status}>
+    //       <AssetStatus assets={assets} {...editorProps} />
+    //     </div>
+    //   ),
+    //   list: (
+    //     <div className={classes.asset}>
+    //       <AssetCardEditItemList
+    //         id="asset-edit-item-list"
+    //         isAsset={true}
+    //         setOpen={setOpenEditor}
+    //         setTarget={(target?: AssetCardDataType) => {
+    //           setTargetState(target);
+    //         }}
+    //       />
+    //       <div className={classes.polyfill} />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: '결제수단 설정',
+    //   status: (
+    //     <div className={classes.status}>
+    //       <CardStatus
+    //         assets={assets.filter((item) => item.detail === 'account')}
+    //         cards={cards}
+    //         {...editorProps}
+    //       />
+    //     </div>
+    //   ),
+    //   list: (
+    //     <div className={classes.card}>
+    //       <AssetCardEditItemList
+    //         id="card-edit-item-list"
+    //         isAsset={false}
+    //         setOpen={setOpenEditor}
+    //         setTarget={(target?: AssetCardDataType) => {
+    //           setTargetState(target);
+    //         }}
+    //       />
+    //       <div className={classes.polyfill} />
+    //     </div>
+    //   ),
+    // },
     {
-      title: '자산 설정',
-      status: (
-        <div className={classes.status}>
-          <AssetStatus assets={assets} {...editorProps} />
-        </div>
-      ),
-      list: (
-        <div className={classes.asset}>
-          <AssetCardEditItemList
-            id="asset-edit-item-list"
-            isAsset={true}
-            setOpen={setOpenEditor}
-            setTarget={(target?: AssetCardDataType) => {
-              setTargetState(target);
-            }}
-          />
-          <div className={classes.polyfill} />
-        </div>
-      ),
-    },
-    {
-      title: '결제수단 설정',
-      status: (
-        <div className={classes.status}>
-          <CardStatus
-            assets={assets.filter((item) => item.detail === 'account')}
-            cards={cards}
-            {...editorProps}
-          />
-        </div>
-      ),
-      list: (
-        <div className={classes.card}>
-          <AssetCardEditItemList
-            id="card-edit-item-list"
-            isAsset={false}
-            setOpen={setOpenEditor}
-            setTarget={(target?: AssetCardDataType) => {
-              setTargetState(target);
-            }}
-          />
-          <div className={classes.polyfill} />
-        </div>
-      ),
-    },
-    {
-      title: '기본예산 설정',
+      title: '반복예산 설정',
       status: (
         <div className={classes.default}>
           <DefaultStatus budgetId={defaultBudgetId} />
@@ -154,6 +147,7 @@ const InitialSetting = () => {
           {/* Overlays */}
           <TransactionDetail isDefaultBudget={true} />
           <CategoryPlan budgetId={defaultBudgetId} />
+          <CategoryListOverlay budgetId={defaultBudgetId} />
           <BudgetCategorySetting budgetId={defaultBudgetId} />
         </>
       ),
@@ -183,7 +177,9 @@ const InitialSetting = () => {
   const { title, status, list } = data[currentIdx];
 
   return (
-    <div className={`${classes.init} ${currentIdx === 2 ? classes.basic : ''}`}>
+    <div
+      className={`${classes.init} ${currentIdx === data.length - 1 ? classes.basic : ''}`}
+    >
       <div className={classes.content}>
         <header>
           <h1>{title}</h1>
@@ -202,11 +198,11 @@ const InitialSetting = () => {
         setIdx={setCurrentIdx}
         length={data.length}
         onComplete={() => {
-          navigate('/budget');
+          navigate('/budget#base');
         }}
       />
       {/* Overlays */}
-      {currentIdx < 2 && (
+      {currentIdx < data.length - 1 && (
         <>
           <AssetCardListEditor
             isAsset={currentIdx === 0}

@@ -11,14 +11,15 @@
 }
 
 .button {
+  max-width: 30rem;
   height: 8vh;
-  font-size: var(--size-4);
-  margin: 1vh 0;
+  font-size: 1.25rem;
+  margin: 1vh auto;
   margin-bottom: 2vh;
 }
 
 .link {
-  font-size: var(--size-5);
+  font-size: 1.125rem;
   font-weight: 600;
 }
 

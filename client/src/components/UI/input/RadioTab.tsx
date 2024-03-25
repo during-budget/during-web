@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import classes from './RadioTab.module.css';
+import { cn } from '../../../util/cn';
 
 interface RadioTabProps {
   className?: string;
@@ -51,8 +51,8 @@ function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTa
         display: 'flex',
         flexDirection: 'column',
         margin: '0.4rem auto',
-        width: '0.25rem',
-        height: '0.25rem',
+        width: '0.175rem',
+        height: '0.175rem',
         borderRadius: '50%',
         background: 'var(--primary)',
       },
@@ -61,7 +61,7 @@ function RadioTab({ className, name, values, isBold, isLine, isCenter }: RadioTa
   );
 
   return (
-    <ul className="flex scroll-x shrink-0" css={tabStyle}>
+    <ul className={cn('flex scroll-x shrink-0', className)} css={tabStyle}>
       {values
         .filter((item) => !item.hide)
         .map((item) => (

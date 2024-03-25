@@ -14,6 +14,7 @@
     "@reduxjs/toolkit": "^1.9.3",
     "@sentry/react": "^7.51.0",
     "add": "^2.0.6",
+    "clsx": "^2.1.0",
     "dayjs": "^1.11.7",
     "emoji-mart": "^5.5.2",
     "emoji_data_kr": "^1.1.0",
@@ -26,6 +27,7 @@
     "react-redux": "^8.0.5",
     "react-router": "^6.11.1",
     "react-router-dom": "^6.11.1",
+    "tailwind-merge": "^2.2.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

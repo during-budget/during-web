@@ -33,7 +33,9 @@ function TransactionList({ className, isDefault }: TransactionListProps) {
   });
 
   return (
-    <ol className={`${classes.container} ${classes.default} ${className || ''}`}>
+    <ol
+      className={`mx-auto ${classes.list} ${className || ''}`}
+    >
       {dateList.map((date) => {
         const id = isDefault ? undefined : getNumericHypenDateString(new Date(date));
 

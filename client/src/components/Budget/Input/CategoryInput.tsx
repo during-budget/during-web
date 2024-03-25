@@ -5,6 +5,7 @@ import { uiActions } from '../../../store/ui';
 import Select from '../../UI/input/Select';
 import ExpenseTab from '../UI/ExpenseTab';
 import classes from './CategoryInput.module.css';
+import { cn } from '../../../util/cn';
 
 interface CategoryInputProps {
   categoryId?: string;
@@ -49,19 +50,19 @@ const CategoryInput = React.forwardRef(
     const currentCategory = useMemo(
       () =>
         filteredCategories.find(
-          (item) => item.id === categoryId || item.id === defaultCategory.id
+          (item) => item.id === categoryId || item.id === defaultCategory?.id
         ),
       [categoryId]
     );
 
     // NOTE: 카테고리 목록 변경 시 기본 카테고리 아이콘으로 업데이트
     useEffect(() => {
-      setIcon && setIcon(defaultCategory.icon);
+      setIcon && setIcon(defaultCategory?.icon);
     }, [categoryOptions]);
 
     // NOTE: 현재 카테고리 변경 시 아이콘 업데이트 (주의: 카테고리 목록 변경 - 기본 아이콘 업데이트 이후 동작해야 함)
     useEffect(() => {
-      setIcon && setIcon(currentCategory?.icon || defaultCategory.icon);
+      setIcon && setIcon(currentCategory?.icon || defaultCategory?.icon);
     }, [currentCategory]);
 
     /** 카테고리 선택 시 아이콘 업데이트: 이모지 인풋 플레이스홀더 업데이트를 위한 핸들러 */
@@ -76,9 +77,8 @@ const CategoryInput = React.forwardRef(
       <>
         <Select
           ref={categoryRef}
-          className={className}
           data={categoryOptions}
-          defaultValue={categoryId || defaultCategory.id}
+          defaultValue={categoryId || defaultCategory?.id}
           onChange={iconHandler}
           showEdit={() => {
             dispatch(uiActions.setIsExpense(isExpense));

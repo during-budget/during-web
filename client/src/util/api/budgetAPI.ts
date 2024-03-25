@@ -27,7 +27,7 @@ export interface BudgetDataType {
   categories: BudgetCategoryType[];
 }
 
-/** 기본 예산 정보 바탕으로 특정 년/월의 예산 생성 */
+/** 반복 예산 정보 바탕으로 특정 년/월의 예산 생성 */
 export const createBudgetFromBasic = async (year: number, month: number) => {
   checkNetwork();
 
@@ -54,7 +54,7 @@ export const createBudgetFromBasic = async (year: number, month: number) => {
 
   if (!response.ok) {
     throw new Error(
-      data?.message || '기본 예산 바탕으로 예산 생성 중 문제가 발생했습니다.'
+      data?.message || '반복 예산 바탕으로 예산 생성 중 문제가 발생했습니다.'
     );
   }
 

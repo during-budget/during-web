@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import Amount from '../../models/Amount';
 import { uiActions } from '../../store/ui';
 import { completePayment, preparePayment } from '../../util/api/paymentAPI';
+import { cn } from '../../util/cn';
 import { getErrorMessage } from '../../util/error';
 import OverlayForm from '../UI/overlay/OverlayForm';
 import classes from './PaymentOverlay.module.css';
@@ -15,10 +16,19 @@ const PaymentOverlay = () => {
   const { isOpen, content, itemId, amount, onComplete } = useAppSelector(
     (state) => state.ui.payment
   );
+  const platform = useAppSelector((state) => state.ui.platform);
+
   const dispatch = useAppDispatch();
   const [paymentState, setPaymentState] = useState('card');
 
   const paymentHandler = async () => {
+    if (platform) {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({ intent: 'payment', content: itemId })
+      );
+      return;
+    }
+
     window.IMP?.init(DURING_STORE_CODE);
     try {
       const { message, payment } = await preparePayment(itemId);
@@ -161,6 +171,7 @@ const PaymentOverlay = () => {
         onClose: () => {
           dispatch(uiActions.closePayment());
         },
+        isCenter: true,
       }}
       confirmCancelOptions={{ confirmMsg: `${Amount.getAmountStr(amount)} 결제하기` }}
       onSubmit={paymentHandler}
@@ -287,7 +298,7 @@ const PaymentOverlay = () => {
       <label htmlFor='payment-card'>게임문화상품권</label> */}
         </div>
       </div>
-      <p className={classes.refund}>
+      <p className={cn(classes.refund, 'text-ms')}>
         ⓘ 구매 후 7일 이내에 한해 문의 채널을 통해 환불 가능합니다.
       </p>
     </OverlayForm>

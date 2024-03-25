@@ -1,5 +1,5 @@
 import { IItem } from "@models/Item";
-import { IUser } from "@models/User";
+import { UserEntity } from "@models/User";
 import axios from "axios";
 import { NotPermittedError } from "src/errors/ForbiddenError";
 import { PaymentNotFoundError } from "src/errors/NotFoundError";
@@ -103,7 +103,7 @@ export const findPaymentById = async (paymentId: Types.ObjectId | string) => {
 };
 
 export const findPaymentPaidByTitle = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   itemTitle: string
 ) => {
   const paymentRecord = await PaymentModel.findOne({
@@ -142,7 +142,7 @@ export const findPaymentsByUserId = async (userId: Types.ObjectId | string) => {
 };
 
 export const createPaymentReady = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   itemRecord: IItem
 ) => {
   const paymentRecord = await PaymentModel.create({
@@ -164,7 +164,7 @@ export const createPaymentReady = async (
 };
 
 export const completePaymentByUser = async (
-  userRecord: IUser,
+  userRecord: UserEntity,
   imp_uid: string
 ) => {
   // 포트원 결제 정보 조회

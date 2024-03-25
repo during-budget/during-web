@@ -6,7 +6,7 @@ import {
   redirect,
   useNavigate,
   useSearchParams,
-  useSubmit
+  useSubmit,
 } from 'react-router-dom';
 import Button from '../components/UI/button/Button';
 import EmojiOverlay from '../components/UI/overlay/EmojiOverlay';
@@ -16,12 +16,12 @@ import SettingList from '../components/User/Setting/SettingList';
 import ChartSkinSetting from '../components/User/Skin/ChartSkinSetting';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { userActions } from '../store/user';
-import { UserDataType } from '../util/api/userAPI';
 import classes from './User.module.css';
 
 export interface SettingOverlayProps {
   isOpen: boolean;
   onClose: () => void;
+  className?: string;
 }
 
 import Auth from '../components/Auth/AuthOverlay';
@@ -36,7 +36,7 @@ import {
   disconnectSnsId,
   getAuthURL,
   getSnsId,
-  providers
+  providers,
 } from '../util/api/authAPI';
 import { getErrorMessage } from '../util/error';
 import { fetchRequest } from '../util/request';
@@ -51,8 +51,9 @@ function User() {
 
   const { defaultBudgetId } = useAppSelector((state) => state.user.info);
   const { isGuest, isLocal, snsId } = useAppSelector((state) => state.user.auth);
-  const [showAuth, setShowAuth] = useState(false);
+  const platform = useAppSelector((state) => state.ui.platform);
 
+  const [showAuth, setShowAuth] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   const [showChartSkin, setShowChartSkin] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -72,9 +73,9 @@ function User() {
       items: [
         {
           icon: '💰',
-          label: '기본 예산 설정',
+          label: '반복 예산 설정',
           onClick: () => {
-            navigate(`/budget/default/${defaultBudgetId}`);
+            navigate(`/budget/default/${defaultBudgetId}#base`);
           },
         },
         {
@@ -98,37 +99,46 @@ function User() {
     {
       title: '로그인 설정',
       items: [
-        ...providers.map((provider) => {
-          return snsId[provider?.provider]
-            ? {
-                src: provider.src,
-                label: `${provider.label} 로그인 해제`,
-                onClick: async () => {
-                  try {
-                    const data = await disconnectSnsId(provider.provider);
-                    dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
-                    if (data?.snsId) {
-                      dispatch(userActions.setSnsId(data.snsId));
+        ...providers
+          .filter((item) => {
+            // NOTE: 구글 OAuth는 웹뷰 지원 X
+            if (item.provider === 'google' && platform) {
+              return false;
+            } else {
+              return true;
+            }
+          })
+          .map((provider) => {
+            return snsId && snsId[provider?.provider]
+              ? {
+                  src: provider.src,
+                  label: `${provider.label} 로그인 해제`,
+                  onClick: async () => {
+                    try {
+                      const data = await disconnectSnsId(provider.provider);
+                      dispatch(uiActions.showModal({ icon: '✓', title: '해제 완료' }));
+                      if (data?.snsId) {
+                        dispatch(userActions.setSnsId(data.snsId));
+                      }
+                    } catch (error) {
+                      const message = getErrorMessage(error);
+                      if (message) {
+                        dispatch(uiActions.showModal({ description: message }));
+                      } else {
+                        dispatch(uiActions.showErrorModal());
+                        throw error;
+                      }
                     }
-                  } catch (error) {
-                    const message = getErrorMessage(error);
-                    if (message) {
-                      dispatch(uiActions.showModal({ description: message }));
-                    } else {
-                      dispatch(uiActions.showErrorModal());
-                      throw error;
-                    }
-                  }
-                },
-              }
-            : {
-                src: provider.src,
-                label: `${provider.label} 계정 연결하기`,
-                onClick: async () => {
-                  window.open(getAuthURL(provider.provider), '_self');
-                },
-              };
-        }),
+                  },
+                }
+              : {
+                  src: provider.src,
+                  label: `${provider.label} 계정 연결하기`,
+                  onClick: async () => {
+                    window.open(getAuthURL(provider.provider), '_self');
+                  },
+                };
+          }),
         {
           icon: '✉️',
           label: isLocal ? '이메일 로그인 해제하기' : '이메일 등록하기',
@@ -222,6 +232,7 @@ function User() {
   const logoutHandler = async () => {
     // set sentry
     Sentry.setUser(null);
+    Channel.shutdown();
 
     try {
       submit({ intent: 'logout' }, { method: 'post' });
@@ -239,6 +250,7 @@ function User() {
   const deleteHandler = () => {
     // set sentry
     Sentry.setUser(null);
+    Channel.shutdown();
 
     dispatch(
       uiActions.showModal({
@@ -261,6 +273,8 @@ function User() {
     );
   };
 
+  // TODO: 아마 신규 로그인 방법 등록에 관한 코드인 듯........ 자세히 살펴볼 것
+
   useEffect(() => {
     getSnsId()
       .then((data: any) => {
@@ -282,25 +296,25 @@ function User() {
     return () => {};
   }, []);
 
-  const landingHandler = (user: UserDataType) => {
-    const { email, isLocal, snsId, isGuest } = user;
-    setShowAuth(false);
-    dispatch(
-      uiActions.showModal({
-        icon: '✓',
-        title: '등록 성공',
-        description: '계정 등록에 성공했습니다!',
-      })
-    );
-    dispatch(
-      userActions.setAuthInfo({
-        email,
-        isLocal,
-        snsId,
-        isGuest,
-      })
-    );
-  };
+  // const landingHandler = (user: UserDataType) => {
+  //   const { email, isLocal, snsId, isGuest } = user;
+  //   setShowAuth(false);
+  //   dispatch(
+  //     uiActions.showModal({
+  //       icon: '✓',
+  //       title: '등록 성공',
+  //       description: '계정 등록에 성공했습니다!',
+  //     })
+  //   );
+  //   dispatch(
+  //     userActions.setAuthInfo({
+  //       email,
+  //       isLocal,
+  //       snsId,
+  //       isGuest,
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     if (showEmailForm !== undefined || isRegister) {
@@ -371,10 +385,12 @@ function User() {
           <UserCategorySetting
             isOpen={showCategory}
             onClose={closeHandler(setShowCategory)}
+            className="p-0.75"
           />
           <ChartSkinSetting
             isOpen={showChartSkin}
             onClose={closeHandler(setShowChartSkin)}
+            className="p-0.75"
           />
           <Terms isOpen={showTerms} onClose={closeHandler(setShowTerms)} />
           <Privacy isOpen={showPrivacy} onClose={closeHandler(setShowPrivacy)} />

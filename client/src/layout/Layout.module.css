@@ -6,7 +6,7 @@
     padding-bottom: 2vh;
     width: 100%;
     height: 7vh;
-    border-top: 1px solid var(--gray-2);
+    border-top: 1px solid var(--gray-0);
     background-color: #fff;
     z-index: 1;
 }
@@ -19,7 +19,7 @@
     margin: 0 8vw;
     padding: 0 1vw;
     font-size: 3vh;
-    color: var(--gray-2);
+    color: var(--gray-100);
 }
 
 .link i {

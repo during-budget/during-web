@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import LoadingSpinner from '../component/LoadingSpinner';
 import { SerializedStyles, css } from '@emotion/react';
+import { cn } from '../../../util/cn';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
@@ -13,7 +14,8 @@ interface ButtonProps {
   disabled?: boolean;
   styleClass?: 'primary' | 'secondary' | 'extra' | 'gray';
   sizeClass?: 'xl' | 'lg' | 'md' | 'sm';
-  children?: React.ReactNode
+  fontSize?: string;
+  children?: React.ReactNode;
 }
 
 function Button({
@@ -26,6 +28,7 @@ function Button({
   disabled,
   styleClass,
   sizeClass,
+  fontSize,
   css: propsStyle,
   children,
 }: PropsWithChildren<ButtonProps>) {
@@ -36,7 +39,7 @@ function Button({
 
   let size = css({
     height: '3rem',
-    fontSize: 'var(--text-base)',
+    fontSize: `var(--text-${fontSize ? fontSize : 'base'})`,
   });
 
   switch (styleClass) {
@@ -64,25 +67,25 @@ function Button({
     case 'lg':
       size = css({
         height: '3.5rem',
-        fontSize: 'var(--text-base)',
+        fontSize: `var(--text-${fontSize ? fontSize : 'base'})`,
         fontWeight: 700,
       });
       break;
     case 'sm':
       size = css({
-        fontSize: 'var(--text-md)',
+        fontSize: `var(--text-${fontSize ? fontSize : 'md'})`,
         width: 'fit-content',
         height: '2rem',
         padding: '1rem',
       });
       break;
   }
-  
+
   return (
     <button
       type={type || 'button'}
-      className={`w-100 flex-center semi-bold round-sm ${className || ''}`}
-      css={css(style, size, propsStyle)}
+      className={cn('w-100 flex-center semi-bold round-sm', className)}
+      css={css(style, size, propsStyle )}
       onClick={onClick}
       disabled={disabled}
       name={name}

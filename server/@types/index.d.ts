@@ -4,13 +4,13 @@ import {
   ICard,
   ICategory,
   IPaymentMethod,
-  IUser,
+  UserEntity,
   IUserProps,
 } from "src/models/User";
 
 declare global {
   namespace Express {
-    interface User extends HydratedDocument<IUser, IUserProps> {
+    interface User extends HydratedDocument<UserEntity, IUserProps> {
       categories: Types.DocumentArray<ICategory>;
       assets: Types.DocumentArray<IAsset>;
       cards: Types.DocumentArray<ICard>;

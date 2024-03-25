@@ -1,5 +1,5 @@
 .header {
-  margin: 3vh 0;
+  margin: 1.5rem 0;
 }
 
 .top {
@@ -10,6 +10,7 @@
   padding: 2vh 0;
 }
 
+.back,
 .calendar {
   position: absolute;
   left: 5vw;
@@ -22,8 +23,8 @@
 
 .top button,
 .top a {
-  padding: var(--size-6);
-  font-size: var(--size-4);
+  padding: 1rem;
+  font-size: 1.25rem;
 }
 
 .bottom {
@@ -33,7 +34,7 @@
 }
 
 .bottom a {
-  font-size: var(--size-10);
+  font-size: 0.5rem;
 }
 
 .bottom h1 {

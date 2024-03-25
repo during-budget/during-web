@@ -14,6 +14,7 @@ interface EditInputProps {
   onConfirm?: (value: string) => void;
   convertDefaultValue?: (value: string) => void;
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  disableEdit?: boolean;
 }
 
 const EditInput = React.forwardRef(
@@ -29,6 +30,7 @@ const EditInput = React.forwardRef(
       onConfirm,
       convertDefaultValue,
       onFocus,
+      disableEdit,
     }: EditInputProps,
     ref
   ) => {
@@ -80,11 +82,13 @@ const EditInput = React.forwardRef(
     return (
       <div className={className}>
         <label htmlFor={id}>{label}</label>
-        <button
-          type="button"
-          className={`${classes.edit} ${classes.pencil} ${editClass}`}
-          onClick={editHandler}
-        ></button>
+        {!disableEdit && (
+          <button
+            type="button"
+            className={`${classes.edit} ${classes.pencil} ${editClass}`}
+            onClick={editHandler}
+          ></button>
+        )}
         {amountSpan}
       </div>
     );

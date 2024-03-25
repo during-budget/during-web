@@ -23,7 +23,13 @@ export interface UserDataType extends AuthDataType {
   cards: CardDataType[];
   paymentMethods: PaymentDataType[];
   settings: SettingDataType;
+  agreement: AgreementType
 }
+export interface AgreementType {
+  termsOfUse: string;
+  privacyPolicy: string;
+}
+
 
 export const updateUserInfo = async (info: Partial<UserInfoType>) => {
   checkNetwork();

@@ -8,7 +8,7 @@ import './css/_reset.css';
 import './css/color.css';
 import './css/layout.css';
 import './css/text.css';
-import { useAppDispatch } from './hooks/useRedux';
+import { useAppDispatch, useAppSelector } from './hooks/useRedux';
 import AuthRedirect from './layout/AuthRedirect';
 import CurrentBudgetNavigator, {
   loader as currentBudgetLoader,
@@ -16,6 +16,7 @@ import CurrentBudgetNavigator, {
 import ErrorBoundary from './layout/ErrorBoundary';
 import Index from './layout/Index';
 import PaymentRedirect from './layout/PaymentRedirect';
+import RequireAuth from './layout/RequireAuth';
 import Root, { loader as userLoader } from './layout/Root';
 import Asset from './screens/Asset';
 import Budget, { loader as budgetLoader } from './screens/Budget';
@@ -25,7 +26,6 @@ import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
 import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
-import RequireAuth from './layout/RequireAuth';
 
 const router = createBrowserRouter([
   {
@@ -123,23 +123,44 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useAppDispatch();
-
+  const { onComplete } = useAppSelector((state) => state.ui.payment);
   useEffect(() => {
     // event: Message Event
-    const setPlatform = (event: any) => {
+    const getWebviewMsg = (event: any) => {
       try {
-        const { platform } = JSON.parse(event.data);
+        const { intent, content } = JSON.parse(event.data);
 
-        if (platform === 'android' || platform === 'ios') {
-          dispatch(uiActions.setPlatform(platform));
+        switch (intent) {
+          case 'platform':
+            if (content === 'android' || content === 'ios') {
+              dispatch(uiActions.setPlatform(content));
+            }
+            break;
+          case 'payment':
+            // 백엔드 구매 코드 구현
+            // const { payment, message } = await completePayment({ impUid, merchantUid });
+            onComplete && onComplete(content);
+            dispatch(uiActions.closePayment());
+            dispatch(
+              uiActions.showModal({
+                icon: '✓',
+                title: '결제 성공',
+                hideChannelButtonOnClose: true,
+              })
+            );
+
+            break;
+          case 'purchase_error':
+            dispatch(uiActions.closePayment());
+            dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
         }
       } catch (e) {}
     };
 
     // android
-    document.addEventListener('message', setPlatform);
+    document.addEventListener('message', getWebviewMsg);
     // ios
-    window.addEventListener('message', setPlatform);
+    window.addEventListener('message', getWebviewMsg);
   }, []);
 
   return <RouterProvider router={router} />;

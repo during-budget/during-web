@@ -21,58 +21,6 @@ export const updateFields = async (req: Request, res: Response) => {
   });
 };
 
-/**
- * Update agreement
- */
-export const updateAgreement = async (req: Request, res: Response) => {
-  const user = req.user!;
-
-  await UserService.updateAgreement(user, req.body);
-
-  return res.status(200).send({
-    agreement: user.agreement,
-  });
-};
-
-export const updateAgreementTermsOfUse = async (
-  req: Request,
-  res: Response
-) => {
-  const user = req.user!;
-
-  await UserService.updateAgreement(user, {
-    ...(user.agreement ?? {}),
-    termsOfUse: req.body.termsOfUse,
-  });
-
-  return res.status(200).send({
-    agreement: user.agreement,
-  });
-};
-
-export const updateAgreementPrivacyPolicy = async (
-  req: Request,
-  res: Response
-) => {
-  const user = req.user!;
-
-  await UserService.updateAgreement(user, {
-    ...(user.agreement ?? {}),
-    privacyPolicy: req.body.privacyPolicy,
-  });
-
-  return res.status(200).send({
-    agreement: user.agreement,
-  });
-};
-
-/**
- * Read current user's info
- */
-export const current = (req: Request, res: Response) => {
-  return res.status(200).send({ user: req.user });
-};
-
 export const remove = async (req: Request, res: Response) => {
   const user = req.user!;
 

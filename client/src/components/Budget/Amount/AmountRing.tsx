@@ -70,17 +70,18 @@ function AmountRing(props: {
       dash: getDash(scheduledRatio),
       rotate: getRotate(scheduledRatio),
       r,
-      showEyes: !isBasic && scheduledDeg > 10,
+      showEyes: !!preview || (!isBasic && scheduledDeg > 10),
       isFront: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
+      showLine: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
     },
     {
       className: classes.current,
       dash: getDash(currentRatio),
       rotate: getRotate(currentRatio),
       r,
-      showEyes: !isBasic && currentDeg > 10,
+      showEyes: !!preview || (!isBasic && currentDeg > 10),
       showLine: !isBasic && currentDeg >= scheduledDeg && currentDeg >= 350, // almostFull
-      isFront: currentDeg >= 350, // almostFull
+      isFront: scheduledDeg > currentDeg && scheduledDeg >= 350, // almostFull
     },
   ];
 

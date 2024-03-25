@@ -1,3 +1,4 @@
+import { useAppSelector } from '../../../hooks/useRedux';
 import Amount from '../../../models/Amount';
 import classes from './AmountBars.module.css';
 
@@ -12,6 +13,7 @@ interface AmountBarsProps {
 
 const AmountBars = ({ data }: AmountBarsProps) => {
   const max = getMaxAmount(data.map((item) => item.amount));
+  const isExpense = useAppSelector((state) => state.ui.budget.isExpense);
 
   return (
     <ul className={classes.bars}>
@@ -34,12 +36,14 @@ const AmountBars = ({ data }: AmountBarsProps) => {
           {
             height: scheduled,
             className: `${classes.scheduled} ${
-              scheduled > planned ? classes.over : ''
+              scheduled > planned && isExpense ? classes.over : ''
             }`,
           },
           {
             height: current,
-            className: `${classes.current} ${current > planned ? classes.over : ''}`,
+            className: `${classes.current} ${
+              current > planned && isExpense ? classes.over : ''
+            }`,
           },
         ];
 

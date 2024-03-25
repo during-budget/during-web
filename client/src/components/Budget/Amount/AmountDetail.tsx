@@ -37,21 +37,21 @@ const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
       label: isLeft ? '예정 가능' : '예정 금액',
       amountStr: amount.getScheduledStr(isLeft),
       labelColor: 'var(--secondary)',
-      fontSize: 'var(--size-5)',
+      fontSize: '1.125rem',
       fontWeight: 400,
     },
     {
       label: '현재 금액',
       amountStr: amount.getCurrentStr(),
       labelColor: 'var(--primary)',
-      fontSize: 'var(--size-3)',
+      fontSize: '1.5rem',
       fontWeight: 700,
     },
     {
       label: isLeft ? '남은 목표' : '목표 금액',
       amountStr: amount.getPlannedStr(isLeft),
-      labelColor: 'var(--gray-1)',
-      fontSize: 'var(--size-5)',
+      labelColor: 'var(--gray-0)',
+      fontSize: '1.125rem',
       fontWeight: 100,
       editHandler: editPlanHandler,
     },
@@ -59,7 +59,12 @@ const AmountDetail = ({ id, amount, editPlanHandler }: AmountDetailProps) => {
 
   return (
     <div className={classes.container}>
-      <RadioTab name={`${id}-amount-detail`} values={tabs} isBold={false} />
+      <RadioTab
+        name={`${id}-amount-detail`}
+        values={tabs}
+        className="j-center text-md"
+        isBold={false}
+      />
       <ul>
         {details.map((data, i) => (
           <AmountDetailItem

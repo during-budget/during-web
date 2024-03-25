@@ -182,7 +182,7 @@ const AssetCardListEditor = ({
                     {item.icon}
                   </Icon>
                   <div className={classes.info}>
-                    <span className={classes.detail}>
+                    <span className="text-sm">
                       {ASSET_CARD_DETAIL_TYPE[item.detail]}
                     </span>
                     <span className={classes.title}>{item.title}</span>
@@ -192,7 +192,7 @@ const AssetCardListEditor = ({
             ))}
         </DraggableList>
         <Button className={classes.add} styleClass="extra" onClick={openAddHandler}>
-          {isAsset ? '자산 ' : '결제수단 '} 추가하기
+          {isAsset ? '자산 ' : '카드 '} 추가하기
         </Button>
       </OverlayForm>
       <AssetCardItemEditor

@@ -1,4 +1,4 @@
-import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 
 import _ from "lodash";
 import { basicCategories } from "./_basicCategories";
@@ -10,7 +10,6 @@ import {
   cardSchema,
   paymentMethodSchema,
 } from "./PaymentMethod";
-import { basicChartSkin, basicTimeZone, basicTheme } from "./_basicSettings";
 
 interface ICategory {
   _id: Types.ObjectId;
@@ -29,16 +28,15 @@ const categorySchema = new Schema<ICategory>({
   icon: String,
 });
 
-interface IUser {
+interface UserEntity {
   _id: Types.ObjectId;
-  email: string | undefined;
-  userName: string | undefined;
-  picture: string | undefined;
+  email?: string;
+  userName?: string;
   isLocal: boolean;
-  snsId: {
-    google: string | undefined;
-    naver: string | undefined;
-    kakao: string | undefined;
+  snsId?: {
+    google?: string;
+    naver?: string;
+    kakao?: string;
   };
   isGuest: boolean;
   categories: ICategory[];
@@ -50,14 +48,10 @@ interface IUser {
   cards: ICard[];
   paymentMethods: IPaymentMethod[];
   auth?: string;
-  settings: {
-    chartSkin: string;
-    timeZone: string;
-    theme: string;
-  };
-  agreement?: {
-    termsOfUse?: string;
-    privacyPolicy?: string;
+  settings?: {
+    chartSkin?: string;
+    timeZone?: string;
+    theme?: string;
   };
 }
 
@@ -83,11 +77,10 @@ interface IUserProps {
   }) => boolean;
 }
 
-interface IUserModel extends Model<IUser, {}, IUserProps> {}
+interface IUserModel extends Model<UserEntity, {}, IUserProps> {}
 
-const userSchema = new Schema<IUser, IUserModel, IUserProps>(
+const UserSchema = new Schema<UserEntity, IUserModel, IUserProps>(
   {
-    // user fields
     email: {
       type: String,
     },
@@ -98,17 +91,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     userName: {
       type: String,
     },
-    picture: { type: String },
-    snsId: {
-      type: Object,
-      default: {},
-    },
+    snsId: Object,
     isGuest: {
       type: Boolean,
       default: false,
     },
-
-    /* ____________ categories ____________ */
     categories: {
       type: [categorySchema],
       default: basicCategories,
@@ -129,23 +116,12 @@ const userSchema = new Schema<IUser, IUserModel, IUserProps>(
     auth: {
       type: String,
     },
-    settings: {
-      type: Object,
-      default: {
-        chartSkin: basicChartSkin,
-        timeZone: basicTimeZone,
-        theme: basicTheme,
-      },
-    },
-    agreement: {
-      type: Object,
-      default: {},
-    },
+    settings: Object,
   },
   { timestamps: true }
 );
 
-userSchema.methods.saveReqUser = async function () {
+UserSchema.methods.saveReqUser = async function () {
   try {
     return await this.save();
   } catch (err: any) {
@@ -153,7 +129,7 @@ userSchema.methods.saveReqUser = async function () {
   }
 };
 
-userSchema.methods.execPM = function (transaction: {
+UserSchema.methods.execPM = function (transaction: {
   linkedPaymentMethodId: Types.ObjectId;
   linkedPaymentMethodType: "asset" | "card";
   amount: number;
@@ -185,7 +161,7 @@ userSchema.methods.execPM = function (transaction: {
   return isUserUpdated;
 };
 
-userSchema.methods.cancelPM = function (transaction: {
+UserSchema.methods.cancelPM = function (transaction: {
   linkedPaymentMethodId: Types.ObjectId;
   linkedPaymentMethodType: "asset" | "card";
   amount: number;
@@ -217,10 +193,11 @@ userSchema.methods.cancelPM = function (transaction: {
   return isUserUpdated;
 };
 
-const User = model<IUser, IUserModel>("User", userSchema);
+const UserModel = model<UserEntity, IUserModel>("User", UserSchema);
+
 export {
-  User,
-  IUser,
+  UserModel,
+  UserEntity,
   IUserProps,
   ICategory,
   IUserModel,

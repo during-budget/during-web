@@ -32,10 +32,10 @@ const AuthRedirect = () => {
   useEffect(() => {
     switch (snsLoginMsg) {
       case 'LOGIN_SUCCESS':
-        navigate('/budget');
+        navigate('/budget#base');
         return;
       case 'REGISTER_SUCCESS':
-        navigate('/budget/init');
+        navigate('/budget/init#base');
         return;
       case 'EMAIL_IN_USE':
         dispatch(
@@ -71,7 +71,7 @@ const AuthRedirect = () => {
         break;
     }
 
-    navigate('/user');
+    navigate('/user#base');
   }, [snsLoginMsg]);
 
   return (

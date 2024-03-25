@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import classes from './OptionButton.module.css';
-import { css } from '@emotion/react';
+import { SerializedStyles, css } from '@emotion/react';
 
 function OptionButton(props: {
   menu: { name: string; action: () => void }[];
   onSelect?: () => void;
   className?: string;
-  contextStyle?: React.CSSProperties;
+  contextStyle?: SerializedStyles;
   disabled?: boolean;
 }) {
   const [isShowMenu, setIsShowMenu] = useState(false);
@@ -33,14 +33,14 @@ function OptionButton(props: {
     top: '1.65rem',
     minWidth: '10rem',
     '& li:hover': {
-        backgroundColor: 'var(--gray-100)'
+        backgroundColor: 'var(--gray-0)'
     }
   });
 
   const contextMenu = (
     <ul
       className="absolute right-0 text-left round-md p-0.5 z-10 bg-white shadow-0.2"
-      css={{ ...contextStyle, ...props.contextStyle }}
+      css={css(contextStyle, props.contextStyle)}
     >
       {props.menu.map((item) => {
         const { name, action } = item;

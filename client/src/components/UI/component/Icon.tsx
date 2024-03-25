@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 
-const DEFAULT_SIZE = '3rem';
-const DEFUALT_FONT_SIZE = '1.75rem';
+const DEFAULT_SIZE = '2.5rem';
+const DEFUALT_FONT_SIZE = '1.5rem';
 const DEFUALT_BORDER_RADIUS = '50%';
 const DEFAULT_SQUARE_BORDER_RADIUS = '0.5rem';
 

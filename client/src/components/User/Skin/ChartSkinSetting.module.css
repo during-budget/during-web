@@ -4,16 +4,16 @@
   justify-content: center;
   align-items: center;
   gap: 5vw;
-  margin: 3vh auto;
+  margin: 1.5rem auto;
 }
 
 .icon {
   flex-shrink: 0;
   position: relative;
-  width: 7rem;
-  height: 7rem;
+  width: 5.875rem;
+  height: 5.875rem;
   border-radius: 50%;
-  background-color: var(--gray-1);
+  background-color: var(--gray-0);
   margin: 0 auto;
   cursor: pointer;
 }
@@ -53,7 +53,7 @@
 }
 
 .lock .icon {
-  background-color: var(--gray-3);
+  background-color: var(--gray-200);
 }
 
 .center {

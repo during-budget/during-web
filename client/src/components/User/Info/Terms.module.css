@@ -25,6 +25,11 @@
   gap: 2.5rem;
 }
 
+.contents p,
+.contents li {
+  font-size: var(--text-md);
+}
+
 .contents::-webkit-scrollbar {
   display: none;
 }

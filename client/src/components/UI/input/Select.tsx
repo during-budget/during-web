@@ -80,7 +80,7 @@ const Select = React.forwardRef(
 
     return (
       <div className={`relative ${props.className}`} css={selectStyle(isExpand)}>
-        {isExpand && <div className="fixed-0 pointer o-0" onClick={closeList} />}
+        {isExpand && <div className="fixed position-0 pointer o-0" onClick={closeList} />}
         <div className="relative w-100 h-100">
           <div
             className="absolute position-0 round-sm o-0 z-4 pointer"

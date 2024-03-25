@@ -25,7 +25,7 @@ function ErrorBoundary() {
         description: '네트워크 연결을 확인해주세요',
       });
     } else if (message === 'NOT_LOGGED_IN') {
-      navigate('/landing');
+      navigate('/landing#base');
     } else if (message === 'NOT_PERMITTED') {
       setError({
         mark: '!',

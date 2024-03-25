@@ -13,7 +13,7 @@ function OverAmountMsg(props: { overAmount: number; className?: string }) {
     }
 
     return (
-        <p className={`${classes.container} ${props.className}`}>
+        <p className={`text-gray-300 ${props.className}`}>
             {overAmountMsg}
         </p>
     );

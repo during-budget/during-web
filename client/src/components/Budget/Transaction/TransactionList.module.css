@@ -1,9 +1,4 @@
-.container {
-  width: 90vw;
-  margin: 0 auto;
-  padding-bottom: 8rem; /* NOTE: Nav & TransactionForm height */
-}
-
-.container.default {
-  margin-top: 2vh;
+.list {
+    width: 90vw;
+    padding-bottom: 8rem; /* NOTE: Nav & TransactionForm Height */
 }

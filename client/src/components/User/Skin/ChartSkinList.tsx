@@ -1,5 +1,6 @@
 import { ChartSkinType, SKIN_DATA } from '../../../constants/chart-skin';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
+import useScreenEndPoint from '../../../hooks/useScreenEndPoint';
 import Amount from '../../../models/Amount';
 import { settingActions } from '../../../store/setting';
 import { uiActions } from '../../../store/ui';
@@ -63,9 +64,9 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
   };
 
   // NOTE: Get dash for different font-size (match for rem)
-  const mediumScreen = window.matchMedia('(max-width: 400px)');
-  const smallScreen = window.matchMedia('(max-width: 350px)');
-  const dash = smallScreen.matches ? 320 : mediumScreen.matches ? 360 : 420;
+  // get screensize
+  const [isLargeScreen, isSmallScreen] = useScreenEndPoint();
+  const dash = isSmallScreen ? 315 : isLargeScreen ? 475 : 425;
 
   const payHandler = async (skin: ChartSkinType) => {
     dispatch(
@@ -82,7 +83,9 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
               preview={skin}
             />
             <h3>{SKIN_DATA[skin].name}</h3>
-            <p>해당 상품 구매 후 적용 시 차트가 위와 같이 표시됩니다.</p>
+            <p className="text-md">
+              해당 상품 구매 후 적용 시 차트가 위와 같이 표시됩니다.
+            </p>
           </div>
         ),
         itemId: skin,
@@ -124,40 +127,54 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
   };
 
   return (
-    <ul className={classes.list}>
-      {Object.values(SKIN_DATA).map(({ id }) => {
-        const isLocked = !options.includes(id);
-        return (
-          id !== 'basic' && (
-            <li
-              key={id}
-              className={`${isLocked ? classes.lock : classes.unlock} ${
-                skinState === id ? classes.selected : ''
-              }`}
-              onClick={clickHandler.bind(null, isLocked, id)}
-            >
-              <div className={classes.icon}>
-                <Mask
-                  className={classes.profile}
-                  mask={`/assets/svg/${id}_profile.svg`}
-                />
-              </div>
-              <Button
-                styleClass={isLocked ? 'primary' : 'gray'}
-                className={classes.buy}
+    <>
+      <ul className={classes.list}>
+        {Object.values(SKIN_DATA).map(({ id }) => {
+          const isLocked = !options.includes(id);
+          return (
+            id !== 'basic' && (
+              <li
+                key={id}
+                className={`${isLocked && skinState !== id ? classes.lock : classes.unlock} ${
+                  skinState === id ? classes.selected : ''
+                }`}
                 onClick={clickHandler.bind(null, isLocked, id)}
               >
-                {isLocked
-                  ? `₩${price?.toLocaleString() || '2,000'}`
-                  : skinState === id
-                  ? '설정중'
-                  : '설정하기'}
-              </Button>
-            </li>
-          )
-        );
-      })}
-    </ul>
+                <div className={classes.icon}>
+                  <Mask
+                    className={classes.profile}
+                    mask={`/assets/svg/${id}_profile.svg`}
+                  />
+                </div>
+                <Button
+                  styleClass={isLocked && skinState !== id ? 'primary' : 'gray'}
+                  sizeClass="sm"
+                  className={classes.buy}
+                  onClick={clickHandler.bind(null, isLocked, id)}
+                >
+                  {isLocked && skinState !== id 
+                    ? `₩${price?.toLocaleString() || '2,000'}`
+                    : skinState === id
+                    ? '설정중'
+                    : '설정하기'}
+                </Button>
+              </li>
+            )
+          );
+        })}
+      </ul>
+      <Button
+        styleClass="extra"
+        onClick={() => {
+          dispatch(
+            settingActions.updateSelectedOption({ field: 'chartSkin', value: 'basic' })
+          );
+          updateChartSkin('basic');
+        }}
+      >
+        기본 모양으로 설정
+      </Button>
+    </>
   );
 };
 

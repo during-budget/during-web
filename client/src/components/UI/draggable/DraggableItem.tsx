@@ -56,13 +56,9 @@ const DraggableItem = ({
     buttonAreaWidth = preventDrag ? '10%' : '20%';
   }
 
-  const itemStyle = css({
-    marginBottom: '1vh',
-  });
-
-  const draggingStyle = css(itemStyle, {
+  const draggingStyle = css({
     backgroundColor: '#fff',
-    padding: '0.5rem',
+    // padding: '0.5rem',
     borderRadius: '0.5rem',
     boxShadow: 'var(--shadow-0.2)',
   });
@@ -95,13 +91,12 @@ const DraggableItem = ({
             {...lockedProvided.draggableProps}
             ref={lockedProvided.innerRef}
             className={`flex j-between i-center ${className}`}
-            css={snapshot.isDragging ? itemStyle : draggingStyle}
+            css={snapshot.isDragging ? undefined : draggingStyle}
           >
             <div className="w-100 flex i-center" css={css({ gap: '3vw' })}>
               {onCheck && (
                 <input
                   id={`draggable-check-${id}`}
-                  css={css({ width: '0.875rem' })}
                   type="checkbox"
                   name="category-setting"
                   checked={checked || false}

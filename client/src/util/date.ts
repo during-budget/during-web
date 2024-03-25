@@ -15,7 +15,7 @@ export const getNumericDotDateString = (date: Date) => {
 
 // yyyy-mm-dd
 export const getNumericHypenDateString = (date: Date) => {
-  return getLocaleNumericString(date, 'sv-SE');
+  return dayjs(date).format('YYYY-MM-DDTHH:mm');
 };
 
 export const getLocaleNumericString = (date: Date, locale: string) => {

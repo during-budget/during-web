@@ -1,6 +1,3 @@
-import { Express } from "express";
-import { configType } from "src/config/type";
-
 import users from "./users";
 import budgets from "./budgets";
 import transactions from "./transactions";
@@ -13,6 +10,7 @@ import settings from "./settings";
 import items from "./items";
 import payments from "./payments";
 import challenges from "./challenges";
+import agreements from "./agreements";
 import test from "./test";
 
 export default [
@@ -28,5 +26,6 @@ export default [
   { label: "payments", routes: payments },
   { label: "settings", routes: settings },
   { label: "challenges", routes: challenges },
+  { label: "agreements", routes: agreements },
   { label: "test", routes: test },
 ];

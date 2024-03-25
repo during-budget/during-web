@@ -3,6 +3,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-bottom: 0.375rem;
 }
 
 .content .info {
@@ -13,9 +14,10 @@
 
 .content input {
   width: 45%;
-  height: 5vh;
+  height: 2.5rem;
   text-align: right;
   scroll-margin: 5vh;
+  font-size: 0.95rem;
 }
 
 .title {
@@ -25,7 +27,7 @@
 
 .detail {
   width: 100%;
-  font-size: var(--size-8);
+  font-size: 0.7rem;
 }
 
 .detail p {
@@ -44,7 +46,7 @@
 
 .default {
   padding: 1rem;
-  font-size: var(--size-5);
+  font-size: 1.125rem;
 }
 
 .auto {

@@ -1,6 +1,6 @@
+import { css } from '@emotion/react';
 import { PropsWithChildren, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { css } from '@emotion/react';
 
 export interface OverlayProps {
   id: string;
@@ -14,6 +14,9 @@ export interface OverlayProps {
   className?: string;
   hash?: string;
   isCenter?: boolean;
+  isRight?: boolean;
+  isLeft?: boolean;
+  disableBackdrop?: boolean;
 }
 
 function Overlay({
@@ -27,6 +30,9 @@ function Overlay({
   lockBody,
   hash,
   isCenter,
+  isRight,
+  isLeft,
+  disableBackdrop,
   className,
   children,
 }: PropsWithChildren<OverlayProps>) {
@@ -53,15 +59,15 @@ function Overlay({
 
   useEffect(() => {
     if (isOpen && !location.hash.includes(id)) {
-      onClose();
+      // onClose();
     }
   }, [location]);
 
   const overlayStyle = (isCenter?: boolean) => {
     return css({
       '@media screen and (min-width: 840px)': {
-        left: isCenter ? '50%' : '0',
-        right: isCenter ? '50%' : '0',
+        left: isCenter ? 'unset' : isLeft ? '0' : 'unset',
+        right: isCenter ? 'unset' : isRight ? '0' : 'unset',
         width: '50%',
       },
     });
@@ -128,7 +134,9 @@ function Overlay({
       <div
         className="overlay-backdrop fixed position-0 v-hidden bg-black o-0"
         css={backdropStyle(isHideBackdrop, isOpen)}
-        onClick={onClose}
+        onClick={() => {
+          !disableBackdrop && onClose();
+        }}
       ></div>
       <div
         className={`overlay-container border-box fixed-important bottom-0 w-100 round-top-1\.5xl bg-white shadow-0 z-3 ${

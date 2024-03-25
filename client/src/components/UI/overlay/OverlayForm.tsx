@@ -11,6 +11,7 @@ interface OverlayFormProps {
   overlayOptions: Omit<OverlayProps, 'className'>;
   confirmCancelOptions?: ConfirmCancelButtonsProps;
   onSubmit: () => Promise<void>;
+  onError?: (error: unknown) => void; 
   formHeight?: string;
   formPadding?: 'lg' | 'md' | 'sm';
   className?: string;
@@ -20,6 +21,7 @@ const OverlayForm = ({
   overlayOptions,
   confirmCancelOptions,
   onSubmit,
+  onError,
   formHeight,
   formPadding,
   className,
@@ -37,6 +39,7 @@ const OverlayForm = ({
       setIsPending(false);
     } catch (error) {
       const message = getErrorMessage(error);
+      onError && onError(error);
       setIsPending(false);
       dispatch(
         uiActions.showErrorModal({
