@@ -26,7 +26,7 @@ export const findChartSkinOptionsPaid = async (userId: Types.ObjectId) => {
     await PaymentService.findPaymentsChartSkinPaid(userId);
 
   return {
-    defaultOptions: "cat",
+    defaultOptions: "basic",
     options: [
       "basic",
       "cat",
