@@ -26,9 +26,10 @@ export const findChartSkinOptionsPaid = async (userId: Types.ObjectId) => {
     await PaymentService.findPaymentsChartSkinPaid(userId);
 
   return {
-    defaultOptions: "basic",
+    defaultOptions: "cat",
     options: [
       "basic",
+      "cat",
       ...paymentRecords.map((paymentRecord) => paymentRecord.itemTitle),
     ],
   };
