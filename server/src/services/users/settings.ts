@@ -29,6 +29,7 @@ export const findChartSkinOptionsPaid = async (userId: Types.ObjectId) => {
     defaultOptions: "basic",
     options: [
       "basic",
+      "cat",
       ...paymentRecords.map((paymentRecord) => paymentRecord.itemTitle),
     ],
   };
