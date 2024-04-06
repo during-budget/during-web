@@ -1,4 +1,4 @@
-import { IItem } from "@models/Item";
+import { ItemEntity } from "@models/Item";
 import { UserEntity } from "@models/User";
 import axios from "axios";
 import { NotPermittedError } from "src/errors/ForbiddenError";
@@ -10,11 +10,7 @@ import {
   PaymentIsNotPaidError,
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
-import {
-  IPayment,
-  Payment as PaymentModel,
-  TRawPayment,
-} from "src/models/Payment";
+import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
 
 /**
  * @function getAccessToken
@@ -143,7 +139,7 @@ export const findPaymentsByUserId = async (userId: Types.ObjectId | string) => {
 
 export const createPaymentReady = async (
   userRecord: UserEntity,
-  itemRecord: IItem
+  itemRecord: ItemEntity
 ) => {
   const paymentRecord = await PaymentModel.create({
     userId: userRecord._id,
@@ -225,6 +221,8 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
   throw new FakePaymentAttemptError();
 };
 
-export const remove = async (paymentRecord: HydratedDocument<IPayment>) => {
+export const remove = async (
+  paymentRecord: HydratedDocument<PaymentEntity>
+) => {
   await paymentRecord.remove();
 };

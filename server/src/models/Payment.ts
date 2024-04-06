@@ -58,7 +58,7 @@ export type TRawPayment = {
   customer_uid_usage: "issue";
 };
 
-export interface IPayment {
+export interface PaymentEntity {
   _id: Types.ObjectId;
   merchant_uid: string; // same as _id
 
@@ -76,7 +76,7 @@ export interface IPayment {
   rawPaymentData: any;
 }
 
-export const paymentSchema = new Schema<IPayment>(
+export const paymentSchema = new Schema<PaymentEntity>(
   {
     merchant_uid: String,
 
@@ -101,5 +101,5 @@ paymentSchema.pre("save", function (next) {
   next();
 });
 
-const Payment = model<IPayment>("Payment", paymentSchema);
-export { Payment };
+const PaymentModel = model<PaymentEntity>("Payment", paymentSchema);
+export { PaymentModel };

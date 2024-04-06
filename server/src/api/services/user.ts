@@ -5,6 +5,8 @@ import { InvalidError } from "src/errors/InvalidError";
 import { AgreementNotFoundError } from "src/errors/NotFoundError";
 import { AgreementType } from "src/types/agreement";
 import { User, convertToUser } from "src/types/user";
+import { PaymentModel } from "@models/Payment";
+import { ItemEntity, ItemModel } from "@models/Item";
 
 const agree = async (
   user: Pick<UserEntity, "_id">,
@@ -80,5 +82,24 @@ export const current = async (userEntity: UserEntity): Promise<User> => {
 
   const agreements = await AgreementModel.find({ _id: { $in: agreementIds } });
 
-  return convertToUser(userEntity, { agreements });
+  const paidItems = await (async (): Promise<Array<ItemEntity> | undefined> => {
+    const paidPayments = await PaymentModel.find({
+      userId: userEntity._id,
+      status: "paid",
+    });
+
+    if (!paidPayments.length) {
+      return undefined;
+    }
+
+    const itemTitles = paidPayments.map(
+      (paymentEntity) => paymentEntity.itemTitle
+    );
+
+    return ItemModel.find({
+      title: { $in: itemTitles },
+    });
+  })();
+
+  return convertToUser(userEntity, { agreements, paidItems });
 };

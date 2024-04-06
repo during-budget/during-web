@@ -1,13 +1,13 @@
 import { Schema, Types, model } from "mongoose";
 
-export interface IItem {
+export interface ItemEntity {
   _id: Types.ObjectId;
-  type: "chartSkin";
+  type: "chartSkin" | "advertisement";
   title: string;
   price: Number;
 }
 
-export const itemSchema = new Schema<IItem>(
+export const itemSchema = new Schema<ItemEntity>(
   {
     type: String,
     title: String,
@@ -18,5 +18,5 @@ export const itemSchema = new Schema<IItem>(
 
 itemSchema.index({ type: 1, title: 1 });
 
-const Item = model<IItem>("Item", itemSchema);
-export { Item };
+const ItemModel = model<ItemEntity>("Item", itemSchema);
+export { ItemModel };
