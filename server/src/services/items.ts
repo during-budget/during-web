@@ -1,4 +1,4 @@
-import { Item as ItemModel } from "src/models/Item";
+import { ItemModel } from "src/models/Item";
 
 export const create = async (
   type: "chartSkin",

@@ -7,6 +7,7 @@ import {
   basicTheme,
   basicTimeZone,
 } from "@models/_basicSettings";
+import { ItemEntity } from "@models/Item";
 
 export type UserCategory = {
   _id: Types.ObjectId;
@@ -92,12 +93,14 @@ export type User = {
   auth?: string;
   settings: UserSettings;
   agreement: UserAgreement;
+  items: Array<Pick<ItemEntity, "type" | "title">>;
 };
 
 export function convertToUser(
   userEntity: UserEntity,
   opts?: {
     agreements?: Array<AgreementEntity>;
+    paidItems?: Array<ItemEntity>;
   }
 ): User {
   const userSnsId: UserSnsId = {};
@@ -119,17 +122,26 @@ export function convertToUser(
 
   const userAgreement: UserAgreement = {};
 
-  if (opts) {
-    const { agreements } = opts;
+  let userItems: Array<Pick<ItemEntity, "type" | "title">> = [];
 
-    if (agreements) {
-      userAgreement[UserAgreementField.TermsOfUse] = agreements?.find(
+  if (opts) {
+    if ("agreements" in opts && opts.agreements) {
+      const agreements = opts.agreements;
+
+      userAgreement[UserAgreementField.TermsOfUse] = agreements.find(
         (agreement) => agreement.type === AgreementType.TermsOfUse
       )?.version;
 
-      userAgreement[UserAgreementField.PrivacyPolicy] = agreements?.find(
+      userAgreement[UserAgreementField.PrivacyPolicy] = agreements.find(
         (agreement) => agreement.type === AgreementType.PrivacyPolicy
       )?.version;
+    }
+
+    if ("paidItems" in opts && opts.paidItems) {
+      userItems = opts.paidItems.map((itemEntity) => ({
+        type: itemEntity.type,
+        title: itemEntity.title,
+      }));
     }
   }
 
@@ -151,5 +163,6 @@ export function convertToUser(
     auth: userEntity.auth,
     settings: userSettings,
     agreement: userAgreement,
+    items: userItems,
   };
 }
