@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { TestService } from './test.service';
+import { LocalAuthGuard } from '@modules/auth/local.auth.guard';
 
 @Controller()
 export class TestController {
@@ -16,7 +17,8 @@ export class TestController {
   }
 
   @Get('/test/users')
-  getUsers(): object {
-    return this.testService.getUsers();
+  @UseGuards(LocalAuthGuard)
+  testUser(@Request() req): any {
+    return { User: req.user, msg: 'User logged in' };
   }
 }
