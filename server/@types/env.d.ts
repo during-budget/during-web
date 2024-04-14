@@ -35,5 +35,8 @@ declare namespace NodeJS {
 
     PORTONE_IMP_KEY: string;
     PORTONE_IMP_SECRET: string;
+
+    GOOGLE_CREDENTIALS_CLIENT_EMAIL: string;
+    GOOGLE_CREDENTIALS_PRIVATE_KEY: string;
   }
 }

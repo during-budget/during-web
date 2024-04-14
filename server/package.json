@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development npm run build:live",
     "prod": "cross-env NODE_ENV=production node -r ./tsconfig-paths-bootstrap.js dist/src/app.js",
     "build": "tsc -p . && npm run build:copy-files",
-    "build:live": "ts-node -r tsconfig-paths/register src/app.ts",
+    "build:live": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/app.ts",
     "build:copy-files": "mkdir dist/src/utils/emailTemplates && cp src/utils/emailTemplates/authEmail.ejs dist/src/utils/emailTemplates/authEmail.ejs",
     "test": "jest -c ./jest.config.json --detectOpenHandles --forceExit"
   },
@@ -27,7 +27,8 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
-    "google-auth-library": "^8.8.0",
+    "google-auth-library": "^8.9.0",
+    "googleapis": "^134.0.0",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.43",
     "mongoose": "^6.8.3",

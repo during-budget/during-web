@@ -70,6 +70,19 @@ const config: configType = {
       callbackURL: "/api/auth/kakao/callback",
     },
   },
+  GOOGLE_CREDENTIALS: (() => {
+    if (
+      !process.env.GOOGLE_CREDENTIALS_CLIENT_EMAIL ||
+      !process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY
+    ) {
+      throw new Error("CONFIG ERROR: Google Credentials missing");
+    }
+
+    return {
+      client_email: process.env.GOOGLE_CREDENTIALS_CLIENT_EMAIL,
+      private_key: process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY,
+    };
+  })(),
 };
 
 console.log(`✅ config is set; `, config);
