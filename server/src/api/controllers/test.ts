@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { logger } from "src/api/middleware/loggers";
-
+import * as InAppProductService from "../../services/inAppProducts";
 /**
  * Hello
  *
@@ -12,5 +12,15 @@ export const hello = async (req: Request, res: Response) => {
   } catch (err: any) {
     logger.error(err.message);
     return res.status(500).send({ message: err.message });
+  }
+};
+
+export const getInAppProducts = async (req: Request, res: Response) => {
+  try {
+    const result = await InAppProductService.getInAppProducts();
+    return res.status(200).send(result);
+  } catch (err: any) {
+    console.log({ err });
+    return res.status(500).send({ err });
   }
 };
