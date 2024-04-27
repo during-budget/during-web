@@ -21,6 +21,8 @@ type GetInAppProductsResponse = {
   tokenPagination: object;
 };
 
+type GetInAppProductResponse = InAppProduct;
+
 // reference: https://developers.google.com/android-publisher/api-ref/rest/v3/inappproducts?hl=ko#InAppProductListing
 export type InAppProduct = {
   packageName: string;
@@ -88,6 +90,15 @@ export class GoogleAndroidPublisher {
     return this.request<GetInAppProductsResponse>({
       method: "GET",
       url: `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${GooglePackageName}/inappproducts`,
+    });
+  };
+
+  getInAppProductRequest = async (
+    sku: string
+  ): Promise<GetInAppProductResponse> => {
+    return this.request<GetInAppProductResponse>({
+      method: "GET",
+      url: `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${GooglePackageName}/inappproducts/${sku}`,
     });
   };
 }

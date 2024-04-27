@@ -33,6 +33,28 @@ export const find = async (req: Request, res: Response) => {
   });
 };
 
+export const isItemAvailable = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+
+  if (!("title" in req.query) || !req.query.title)
+    throw new FieldRequiredError("title");
+
+  const title = req.query.title.toString();
+
+  const isInAppProduct =
+    "is-mobile" in req.query || !req.query["is-mobile"]
+      ? req.query["is-mobile"] === "true"
+      : false;
+
+  const result = await ItemService.isItemAvailable(
+    userId,
+    title,
+    isInAppProduct
+  );
+
+  return res.status(200).send(result);
+};
+
 export const update = async (req: Request, res: Response) => {
   if (!("title" in req.body)) throw new FieldRequiredError("title");
   if (!("price" in req.body)) throw new FieldRequiredError("price");

@@ -99,7 +99,7 @@ export const findPaymentById = async (paymentId: Types.ObjectId | string) => {
 };
 
 export const findPaymentPaidByTitle = async (
-  userRecord: UserEntity,
+  userRecord: Pick<UserEntity, "_id">,
   itemTitle: string
 ) => {
   const paymentRecord = await PaymentModel.findOne({
