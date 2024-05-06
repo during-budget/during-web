@@ -8,6 +8,6 @@ router.get("/echo", async (req: Request, res: Response) => {
   return res.status(200).send({ message: req.query.message });
 });
 
-router.get("/in-app-products", wrapAsync(TestController.getInAppProducts));
+// router.get("/in-app-products", wrapAsync(TestController.getInAppProducts));
 
 export default router;
