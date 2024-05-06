@@ -1,10 +1,14 @@
 import { CustomError } from "./CustomError";
 
-class ConflictError extends CustomError {
-  constructor() {
+export class ConflictError extends CustomError {
+  constructor(message?: string) {
     super();
     this.name = "ConflictError";
     this.status = 409;
+
+    if (message) {
+      this.message = message;
+    }
   }
 }
 
@@ -26,5 +30,11 @@ export class AtLeastOneSnsIdIsRequiredError extends ConflictError {
   constructor() {
     super();
     this.message = "AT_LEAST_ONE_SNSID_IS_REQUIRED";
+  }
+}
+
+export class InvalidInAppProductPurchaseStateError extends ConflictError {
+  constructor() {
+    super("INVALID_IN_APP_PRODUCT_PURCHASE_STATE");
   }
 }

@@ -12,6 +12,11 @@ router.post(
   isPortOneWebHook,
   wrapAsync(payments.completeByWebhook)
 );
+router.post(
+  "/complete-by-mobile-user",
+  isLoggedIn,
+  wrapAsync(payments.completePaymentByMobileUser)
+);
 
 router.get("/", isLoggedIn, wrapAsync(payments.find));
 

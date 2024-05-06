@@ -1,4 +1,7 @@
 import express, { Request, Response } from "express";
+// import * as TestController from "../controllers/test";
+// import { wrapAsync } from "../middleware/error";
+
 const router = express.Router();
 
 router.get("/echo", async (req: Request, res: Response) => {

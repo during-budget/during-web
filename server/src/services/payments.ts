@@ -2,15 +2,26 @@ import { ItemEntity } from "@models/Item";
 import { UserEntity } from "@models/User";
 import axios from "axios";
 import { NotPermittedError } from "src/errors/ForbiddenError";
-import { PaymentNotFoundError } from "src/errors/NotFoundError";
+import {
+  ItemNotFoundError,
+  PaymentNotFoundError,
+} from "src/errors/NotFoundError";
 import {
   FakePaymentAttemptError,
   FetchingAccessTokenFailedError,
   FetchingPaymentFailedError,
+  PaiedAlreadyError,
   PaymentIsNotPaidError,
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
 import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
+import * as InAppProductService from "./inAppProducts";
+import { InAppProductPurchaseState } from "src/lib/googleAPIs";
+import {
+  ConflictError,
+  InvalidInAppProductPurchaseStateError,
+} from "src/errors/ConfilicError";
+import * as ItemService from "./items";
 
 /**
  * @function getAccessToken
@@ -99,7 +110,7 @@ export const findPaymentById = async (paymentId: Types.ObjectId | string) => {
 };
 
 export const findPaymentPaidByTitle = async (
-  userRecord: UserEntity,
+  userRecord: Pick<UserEntity, "_id">,
   itemTitle: string
 ) => {
   const paymentRecord = await PaymentModel.findOne({
@@ -219,6 +230,65 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
     throw new PaymentIsNotPaidError();
   }
   throw new FakePaymentAttemptError();
+};
+
+export const completePaymentByMobileUser = async (
+  userRecord: Pick<UserEntity, "_id">,
+  inAppProductId: string,
+  token: string
+): Promise<PaymentEntity> => {
+  // itemRecord 조회
+  const { item: itemRecord } = await ItemService.findByTitle(inAppProductId);
+
+  if (!itemRecord) {
+    throw new ItemNotFoundError();
+  }
+
+  // 이미 결제 완료된 상태의 payment가 있는지 확인
+  const exPaymentRecord = await PaymentModel.findOne({
+    userId: userRecord._id,
+    itemId: itemRecord._id,
+    status: "paid",
+  });
+
+  if (exPaymentRecord) {
+    throw new PaiedAlreadyError();
+  }
+
+  // 인앱 결제 정보 조회
+  const purchase = await InAppProductService.findInAppProductPurchase(
+    inAppProductId,
+    token
+  );
+
+  switch (purchase.purchaseState) {
+    case InAppProductPurchaseState.PAID: {
+      break;
+    }
+
+    case InAppProductPurchaseState.CANCELLED:
+    case InAppProductPurchaseState.READY: {
+      throw new InvalidInAppProductPurchaseStateError();
+    }
+
+    default:
+      throw new Error(
+        `Unexpected Error; Not supported purchase state (${purchase.purchaseState})`
+      );
+  }
+
+  // DB에 결제 정보 생성
+  const paymentRecord = await PaymentModel.create({
+    userId: userRecord._id,
+    itemId: itemRecord._id,
+    itemType: itemRecord.type,
+    itemTitle: itemRecord.title,
+    amount: itemRecord.price,
+    status: "paid",
+    rawPaymentData: purchase,
+  });
+
+  return paymentRecord;
 };
 
 export const remove = async (

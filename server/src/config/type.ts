@@ -1,3 +1,5 @@
+import { JWTInput } from "google-auth-library";
+
 type configType = {
   NODE_ENV: string;
   allowList: string[];
@@ -28,6 +30,9 @@ type configType = {
       callbackURL: string;
     };
   };
+
+  GOOGLE_CREDENTIALS: Pick<JWTInput, "client_email" | "private_key">;
+
   //   SERVER_URL: string;
 
   //   CLIENT: string;

@@ -1,4 +1,8 @@
+import { Types } from "mongoose";
+import { ItemNotFoundError } from "src/errors/NotFoundError";
 import { ItemModel } from "src/models/Item";
+import * as PaymentService from "src/services/payments";
+import * as InAppProductService from "src/services/inAppProducts";
 
 export const create = async (
   type: "chartSkin",
@@ -28,6 +32,53 @@ export const findByTitle = async (title: string) => {
   });
 
   return { item: itemRecord };
+};
+
+export const findByTypeAndTitle = async (title: string) => {
+  const itemRecord = await ItemModel.findOne({
+    title,
+  });
+
+  return { item: itemRecord };
+};
+
+export const isItemAvailable = async (
+  userId: Types.ObjectId,
+  title: string,
+  isInAppProduct: boolean
+): Promise<
+  | { isAvailable: true }
+  | {
+      isAvailable: false;
+      message: "PAIED_ALREADY" | "IN_APP_PRODUCT_NOT_ACTIVE";
+    }
+> => {
+  const { item: itemRecord } = await findByTitle(title);
+
+  if (!itemRecord) {
+    throw new ItemNotFoundError();
+  }
+
+  if (isInAppProduct) {
+    const isInAppProductActive = await InAppProductService.isInAppProductActive(
+      itemRecord.title
+    );
+
+    if (!isInAppProductActive) {
+      return { isAvailable: false, message: "IN_APP_PRODUCT_NOT_ACTIVE" };
+    }
+  }
+
+  const { payment: exPayment } = await PaymentService.findPaymentPaidByTitle(
+    { _id: userId },
+    itemRecord.title
+  );
+
+  if (exPayment) {
+    return { isAvailable: false, message: "PAIED_ALREADY" };
+  }
+
+  return { isAvailable: true };
 };
 
 export const updateById = async (

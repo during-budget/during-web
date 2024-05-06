@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { logger } from "src/api/middleware/loggers";
-
 /**
  * Hello
  *
