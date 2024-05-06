@@ -57,6 +57,12 @@ export class InAppProductNotFoundError extends NotFoundError {
   }
 }
 
+export class InAppProductPurchaseNotFoundError extends NotFoundError {
+  constructor() {
+    super("in_app_product_purchase");
+  }
+}
+
 export class PaymentNotFoundError extends NotFoundError {
   constructor() {
     super("payment");

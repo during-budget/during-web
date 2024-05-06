@@ -66,6 +66,29 @@ export const completeByWebhook = async (req: Request, res: Response) => {
   return res.status(200).send();
 };
 
+export const completePaymentByMobileUser = async (
+  req: Request,
+  res: Response
+) => {
+  const user = req.user!;
+
+  /* validate */
+  for (let field of ["title", "token"]) {
+    if (!(field in req.body)) throw new FieldRequiredError(field);
+  }
+
+  const title = req.body.title as string;
+  const token = req.body.token as string;
+
+  const payment = await PaymentService.completePaymentByMobileUser(
+    user,
+    title,
+    token
+  );
+
+  return res.status(200).send({ payment });
+};
+
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
 

@@ -23,6 +23,8 @@ type GetInAppProductsResponse = {
 
 type GetInAppProductResponse = InAppProduct;
 
+type GetInAppProductPurchaseResponse = InAppProductPurchase;
+
 // reference: https://developers.google.com/android-publisher/api-ref/rest/v3/inappproducts?hl=ko#InAppProductListing
 export type InAppProduct = {
   packageName: string;
@@ -46,6 +48,17 @@ export type InAppProduct = {
   | { subscriptionTaxesAndComplianceSettings: object }
   | { managedProductTaxesAndComplianceSettings: object }
 );
+
+// reference: https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products?hl=ko#ProductPurchase
+export enum InAppProductPurchaseState {
+  PAID = 0,
+  CANCELLED = 1,
+  READY = 2,
+}
+
+export type InAppProductPurchase = {
+  purchaseState: InAppProductPurchaseState;
+};
 
 export class GoogleAndroidPublisher {
   constructor(
@@ -86,19 +99,24 @@ export class GoogleAndroidPublisher {
     }
   };
 
-  getInAppProductsRequest = async (): Promise<GetInAppProductsResponse> => {
+  getInAppProducts = async (): Promise<GetInAppProductsResponse> => {
     return this.request<GetInAppProductsResponse>({
       method: "GET",
       url: `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${GooglePackageName}/inappproducts`,
     });
   };
 
-  getInAppProductRequest = async (
-    sku: string
-  ): Promise<GetInAppProductResponse> => {
+  getInAppProduct = async (sku: string): Promise<GetInAppProductResponse> => {
     return this.request<GetInAppProductResponse>({
       method: "GET",
       url: `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${GooglePackageName}/inappproducts/${sku}`,
+    });
+  };
+
+  getInAppProductPurchase = async (sku: string, token: string) => {
+    return this.request<GetInAppProductPurchaseResponse>({
+      method: "GET",
+      url: `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${GooglePackageName}/purchases/products/${sku}/tokens/${token}`,
     });
   };
 }
