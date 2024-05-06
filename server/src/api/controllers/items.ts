@@ -4,6 +4,7 @@ import _ from "lodash";
 import * as ItemService from "src/services/items";
 import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
 import { ItemNotFoundError } from "src/errors/NotFoundError";
+import * as InAppProductService from "src/services/inAppProducts";
 
 export const create = async (req: Request, res: Response) => {
   if (!("type" in req.body)) throw new FieldRequiredError("type");
@@ -31,6 +32,17 @@ export const find = async (req: Request, res: Response) => {
   return res.status(200).send({
     items,
   });
+};
+
+export const getInAppProducts = async (req: Request, res: Response) => {
+  try {
+    const { inAppProducts } = await InAppProductService.getInAppProducts();
+
+    return res.status(200).send({ inAppProducts });
+  } catch (err: any) {
+    console.log({ err });
+    return res.status(500).send({ err });
+  }
 };
 
 export const isItemAvailable = async (req: Request, res: Response) => {
