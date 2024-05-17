@@ -23,7 +23,7 @@ const PaymentOverlay = () => {
 
   const paymentHandler = async () => {
     if (platform) {
-      window.ReactNativeWebView.postMessage(
+      window.ReactNativeWebView?.postMessage(
         JSON.stringify({ intent: 'payment', content: itemId })
       );
       return;

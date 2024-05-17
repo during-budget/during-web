@@ -5,7 +5,7 @@ import Button from '../UI/button/Button';
 import classes from './AdRemove.module.css';
 
 interface AddRemoveProps {
-  price?: number;
+  price: number;
 }
 
 const AdRemove = ({ price }: AddRemoveProps) => {
@@ -21,7 +21,7 @@ const AdRemove = ({ price }: AddRemoveProps) => {
           </div>
         ),
         itemId,
-        amount: price || 6000,
+        amount: price,
         onComplete: async (itemId: string) => {
           try {
             // await updateChartSkin(chartSkin);
@@ -63,7 +63,7 @@ const AdRemove = ({ price }: AddRemoveProps) => {
       <h4>🚫 광고 없애기 🚫</h4>
       <Button
         onClick={() => {
-          payHandler('ad');
+          payHandler('remove_ad');
         }}
       >
         {`₩${price?.toLocaleString() || '4,900'}`}
