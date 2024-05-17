@@ -26,6 +26,7 @@ import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
 import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
+import { completeMobilePayment } from './util/api/paymentAPI';
 
 const router = createBrowserRouter([
   {
@@ -124,9 +125,21 @@ const router = createBrowserRouter([
 function App() {
   const dispatch = useAppDispatch();
   const { onComplete } = useAppSelector((state) => state.ui.payment);
+  const purchasedItems = useAppSelector((state) => state.user.items);
+
+  useEffect(() => {
+    const filterRemoveAds = purchasedItems.filter(
+      (items) => items.title === 'remove_ad'
+    );
+
+    window.ReactNativeWebView?.postMessage(
+      JSON.stringify({ intent: 'ad', content: !!filterRemoveAds.length })
+    );
+  }, [purchasedItems]);
+
   useEffect(() => {
     // event: Message Event
-    const getWebviewMsg = (event: any) => {
+    const getWebviewMsg = async (event: any) => {
       try {
         const { intent, content } = JSON.parse(event.data);
 
@@ -138,8 +151,8 @@ function App() {
             break;
           case 'payment':
             // 백엔드 구매 코드 구현
-            // const { payment, message } = await completePayment({ impUid, merchantUid });
-            onComplete && onComplete(content);
+            await completeMobilePayment(content);
+            onComplete && onComplete(content.id);
             dispatch(uiActions.closePayment());
             dispatch(
               uiActions.showModal({

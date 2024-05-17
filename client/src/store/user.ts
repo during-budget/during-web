@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AuthDataType, SnsIdType } from '../util/api/authAPI';
-import { AgreementType, UserDataType } from '../util/api/userAPI';
+import { AgreementType, StoreItemType, UserDataType } from '../util/api/userAPI';
 
 export interface UserInfoType {
   _id: string;
@@ -12,12 +12,12 @@ export interface UserInfoType {
   gender?: string;
 }
 
-
 const initialState: {
   isAuth: boolean;
   auth: AuthDataType;
   info: UserInfoType;
   agreement: AgreementType;
+  items: StoreItemType[];
 } = {
   isAuth: false,
   auth: {
@@ -42,6 +42,7 @@ const initialState: {
     termsOfUse: '',
     privacyPolicy: '',
   },
+  items: [],
 };
 
 const userSlice = createSlice({
@@ -62,6 +63,7 @@ const userSlice = createSlice({
         isLocal,
         basicBudgetId: defaultBudgetId,
         agreement,
+        items,
       } = action.payload;
 
       state.info = {
@@ -74,6 +76,7 @@ const userSlice = createSlice({
       };
 
       state.agreement = agreement;
+      state.items = items;
       state.auth = {
         email,
         isLocal,
