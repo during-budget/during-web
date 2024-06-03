@@ -42,7 +42,16 @@ export const findInAppProductPurchase = async (
   token: string
 ): Promise<InAppProductPurchase> => {
   try {
+    console.log(
+      "[TEST] InAppProductService.findInAppProductPurchase is called",
+      { sku, token }
+    );
+
     const client = new GoogleAndroidPublisher();
+
+    console.log(
+      "[TEST] InAppProductService.findInAppProductPurchase :: client is constructed"
+    );
 
     const inAppProduct = await findInAppProductBySku(sku);
 
@@ -50,7 +59,16 @@ export const findInAppProductPurchase = async (
       throw new InAppProductNotFoundError();
     }
 
+    console.log(
+      "[TEST] InAppProductService.findInAppProductPurchase :: inAppProduct is found",
+      { inAppProduct }
+    );
+
     const purchase = await client.getInAppProductPurchase(sku, token);
+
+    console.log("[TEST] InAppProductService.findInAppProductPurchase :: ", {
+      purchase,
+    });
 
     if (!purchase) {
       throw new InAppProductPurchaseNotFoundError();
@@ -58,6 +76,11 @@ export const findInAppProductPurchase = async (
 
     return purchase;
   } catch (err: any) {
+    console.log(
+      "[TEST] InAppProductService.findInAppProductPurchase::error",
+      err
+    );
+
     throw new Error(
       `Unexpected Error; Failed to get in-app product purchase (rawError: ${JSON.stringify(
         err?.response?.data?.error ?? {}
