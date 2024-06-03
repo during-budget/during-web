@@ -19,6 +19,7 @@ export default async (app: Express, config: configType) => {
   await redisLoader(config);
   // loggerLoader(config);
 
+  // NOTE: TEMP LOGGER
   morgan.token("body", (req) => JSON.stringify((req as any).body));
   morgan.token("time", () =>
     dayjs().tz("Asia/Seoul").format("YYYY-MM-DD HH:mm:ss")

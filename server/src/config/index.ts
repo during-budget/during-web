@@ -85,6 +85,7 @@ const config: configType = {
   })(),
 };
 
-console.log(`✅ config is set; `, config);
+// console.log(`✅ config is set; `, config);
+console.log(`✅ config is set`);
 
 export default config;
