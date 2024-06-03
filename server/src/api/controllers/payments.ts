@@ -86,6 +86,8 @@ export const completePaymentByMobileUser = async (
     token
   );
 
+  console.log("[TEST] completePaymentByMobileUser result: ", { payment });
+
   return res.status(200).send({ payment });
 };
 
