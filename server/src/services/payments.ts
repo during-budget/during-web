@@ -237,12 +237,28 @@ export const completePaymentByMobileUser = async (
   inAppProductId: string,
   token: string
 ): Promise<PaymentEntity> => {
+  console.log(
+    "[TEST] PaymentContoller.completePaymentByMobileUser is called with ",
+    {
+      userRecord: userRecord._id,
+      inAppProductId,
+      token,
+    }
+  );
+
   // itemRecord 조회
   const { item: itemRecord } = await ItemService.findByTitle(inAppProductId);
 
   if (!itemRecord) {
     throw new ItemNotFoundError();
   }
+
+  console.log(
+    "[TEST] PaymentContoller.completePaymentByMobileUser :: itemRecord is found",
+    {
+      itemRecord,
+    }
+  );
 
   // 이미 결제 완료된 상태의 payment가 있는지 확인
   const exPaymentRecord = await PaymentModel.findOne({
@@ -255,10 +271,19 @@ export const completePaymentByMobileUser = async (
     throw new PaiedAlreadyError();
   }
 
+  console.log(
+    "[TEST] PaymentContoller.completePaymentByMobileUser :: exPaymentRecord is not found"
+  );
+
   // 인앱 결제 정보 조회
   const purchase = await InAppProductService.findInAppProductPurchase(
     inAppProductId,
     token
+  );
+
+  console.log(
+    "[TEST] PaymentContoller.completePaymentByMobileUser :: purchase is found",
+    { purchase }
   );
 
   switch (purchase.purchaseState) {
@@ -287,6 +312,11 @@ export const completePaymentByMobileUser = async (
     status: "paid",
     rawPaymentData: purchase,
   });
+
+  console.log(
+    "[TEST] PaymentContoller.completePaymentByMobileUser :: paymentRecord is made",
+    { paymentRecord }
+  );
 
   return paymentRecord;
 };

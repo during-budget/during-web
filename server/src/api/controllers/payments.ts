@@ -72,6 +72,8 @@ export const completePaymentByMobileUser = async (
 ) => {
   const user = req.user!;
 
+  console.log("[TEST] PaymentContoller.completePaymentByMobileUser ... ");
+
   /* validate */
   for (let field of ["title", "token"]) {
     if (!(field in req.body)) throw new FieldRequiredError(field);
@@ -86,7 +88,9 @@ export const completePaymentByMobileUser = async (
     token
   );
 
-  console.log("[TEST] completePaymentByMobileUser result: ", { payment });
+  console.log("[TEST] PaymentContoller.completePaymentByMobileUser result: ", {
+    payment,
+  });
 
   return res.status(200).send({ payment });
 };
