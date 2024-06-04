@@ -150,7 +150,6 @@ function App() {
             }
             break;
           case 'payment':
-            // 백엔드 구매 코드 구현
             await completeMobilePayment(content);
             onComplete && onComplete(content.id);
             dispatch(uiActions.closePayment());
@@ -161,7 +160,6 @@ function App() {
                 hideChannelButtonOnClose: true,
               })
             );
-            dispatch(uiActions.endPayment());
             break;
           case 'purchase_error':
             dispatch(uiActions.closePayment());
@@ -174,7 +172,7 @@ function App() {
     document.addEventListener('message', getWebviewMsg);
     // ios
     window.addEventListener('message', getWebviewMsg);
-  }, []);
+  }, [onComplete]);
 
   return <RouterProvider router={router} />;
 }
