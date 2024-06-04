@@ -21,39 +21,8 @@ const AdRemove = ({ price }: AddRemoveProps) => {
           </div>
         ),
         itemId,
-        amount: price,
-        onComplete: async (itemId: string) => {
-          try {
-            // await updateChartSkin(chartSkin);
-            // const { options } = await getOptions('chartSkin');
-            // dispatch(
-            //   settingActions.updateSetting({
-            //     chartSkin: {
-            //       selected: chartSkin,
-            //       options,
-            //     },
-            //   })
-            // );
-          } catch (error) {
-            const message = getErrorMessage(error);
-            if (message) {
-              dispatch(
-                uiActions.showModal({
-                  title: '문제가 발생했습니다',
-                  description: message,
-                })
-              );
-            } else {
-              dispatch(
-                uiActions.showErrorModal({
-                  title: '광고 제거를 적용할 수 없습니다',
-                  description: '사용자 설정의 문의 채널로 문의 바랍니다.',
-                })
-              );
-              throw error;
-            }
-          }
-        },
+        amount: price || 4900,
+        onComplete: undefined
       })
     );
   };

@@ -103,6 +103,9 @@ const userSlice = createSlice({
     setSnsId(state, action: PayloadAction<SnsIdType>) {
       state.auth.snsId = action.payload;
     },
+    setItems(state, action: PayloadAction<StoreItemType[]>) {
+      state.items = action.payload;
+    },
   },
 });
 
