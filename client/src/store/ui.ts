@@ -41,6 +41,7 @@ interface PaymentOptions {
   content?: React.ReactNode;
   onComplete?: (itemTitle?: any) => void;
   amount: number;
+  isPending: boolean;
 }
 
 interface AmountOptions {
@@ -99,6 +100,7 @@ const initialState: {
     isOpen: false,
     itemId: '',
     amount: 0,
+    isPending: false,
   },
   amount: {
     isOpen: false,
@@ -171,6 +173,12 @@ const uiSlice = createSlice({
     },
     setPayment(state, action: PayloadAction<Omit<PaymentOptions, 'isOpen'>>) {
       state.payment = { ...action.payload, isOpen: true };
+    },
+    startPayment(state) {
+      state.payment = { ...state.payment, isPending: true };
+    },
+    endPayment(state) {
+      state.payment = { ...state.payment, isPending: false };
     },
     closePayment(state) {
       state.payment = initialState.payment;
