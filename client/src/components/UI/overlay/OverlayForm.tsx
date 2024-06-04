@@ -15,6 +15,8 @@ interface OverlayFormProps {
   formHeight?: string;
   formPadding?: 'lg' | 'md' | 'sm';
   className?: string;
+  isOuterPending?: boolean;
+  outerPending?: boolean;
 }
 
 const OverlayForm = ({
@@ -24,6 +26,8 @@ const OverlayForm = ({
   onError,
   formHeight,
   formPadding,
+  isOuterPending,
+  outerPending,
   className,
   children,
 }: PropsWithChildren<OverlayFormProps>) => {
@@ -65,7 +69,7 @@ const OverlayForm = ({
         <ConfirmCancelButtons
           onClose={overlayOptions.onClose}
           isClose={!overlayOptions.isOpen}
-          isPending={isPending}
+          isPending={isOuterPending ? outerPending : isPending}
           {...confirmCancelOptions}
         />
       </form>

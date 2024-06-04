@@ -13,7 +13,7 @@ const { DURING_STORE_CODE, DURING_CLIENT } = import.meta.env;
 
 const PaymentOverlay = () => {
   const { _id: userId, email, userName } = useAppSelector((state) => state.user.info);
-  const { isOpen, content, itemId, amount, onComplete } = useAppSelector(
+  const { isOpen, content, itemId, amount, onComplete, isPending } = useAppSelector(
     (state) => state.ui.payment
   );
   const platform = useAppSelector((state) => state.ui.platform);
@@ -22,6 +22,8 @@ const PaymentOverlay = () => {
   const [paymentState, setPaymentState] = useState('card');
 
   const paymentHandler = async () => {
+    dispatch(uiActions.startPayment());
+
     if (platform) {
       window.ReactNativeWebView?.postMessage(
         JSON.stringify({ intent: 'payment', content: itemId })
@@ -71,6 +73,7 @@ const PaymentOverlay = () => {
             Sentry.captureMessage(
               `결제오류(${merchantUid}/${impUid}): [${errorCode}] ${errorMsg}`
             );
+            dispatch(uiActions.endPayment());
           } else {
             try {
               const { payment, message } = await completePayment({ impUid, merchantUid });
@@ -102,8 +105,10 @@ const PaymentOverlay = () => {
                   })
                 );
               }
+              dispatch(uiActions.endPayment());
               dispatch(uiActions.closePayment());
             } catch (error) {
+              dispatch(uiActions.endPayment());
               dispatch(uiActions.closePayment());
               const message = getErrorMessage(error);
               if (message) {
@@ -130,6 +135,7 @@ const PaymentOverlay = () => {
         }
       );
     } catch (error) {
+      dispatch(uiActions.endPayment());
       dispatch(uiActions.closePayment());
       const message = getErrorMessage(error);
 
@@ -175,6 +181,8 @@ const PaymentOverlay = () => {
       }}
       confirmCancelOptions={{ confirmMsg: `${Amount.getAmountStr(amount)} 결제하기` }}
       onSubmit={paymentHandler}
+      isOuterPending={true}
+      outerPending={isPending}
     >
       <div className={classes.gap}>
         {content}

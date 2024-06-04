@@ -161,7 +161,7 @@ function App() {
                 hideChannelButtonOnClose: true,
               })
             );
-
+            dispatch(uiActions.endPayment());
             break;
           case 'purchase_error':
             dispatch(uiActions.closePayment());
