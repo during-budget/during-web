@@ -41,7 +41,7 @@ interface PaymentOptions {
   content?: React.ReactNode;
   onComplete?: (itemTitle?: any) => void;
   amount: number;
-  isPending: boolean;
+  isPending?: boolean;
 }
 
 interface AmountOptions {

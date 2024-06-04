@@ -32,7 +32,7 @@ const Store = () => {
         <p className={cn(classes.center, 'text-md')}>
           듀링 스킨을 통해 차트를 꾸밀 수 있습니다.
         </p>
-        <ChartSkinList price={platform ? 1500 : 1300} />
+        <ChartSkinList price={1500} /> {/* platform ? 1500 : 1300 } /> */}
       </section>
     </div>
   );
