@@ -26,7 +26,9 @@ import NewBudget from './screens/NewBudget';
 import Store from './screens/Store';
 import User, { action as userAction } from './screens/User';
 import { uiActions } from './store/ui';
+import { userActions } from './store/user';
 import { completeMobilePayment } from './util/api/paymentAPI';
+import { getUserState } from './util/api/userAPI';
 
 const router = createBrowserRouter([
   {
@@ -128,9 +130,7 @@ function App() {
   const purchasedItems = useAppSelector((state) => state.user.items);
 
   useEffect(() => {
-    const filterRemoveAds = purchasedItems.filter(
-      (items) => items.title === 'remove_ad'
-    );
+    const filterRemoveAds = purchasedItems.filter((items) => items.title === 'remove_ad');
 
     window.ReactNativeWebView?.postMessage(
       JSON.stringify({ intent: 'ad', content: !!filterRemoveAds.length })
@@ -151,7 +151,15 @@ function App() {
             break;
           case 'payment':
             await completeMobilePayment(content);
-            onComplete && onComplete(content.id);
+            if (content.id === 'remove_ad') {
+              window.ReactNativeWebView?.postMessage(
+                JSON.stringify({ intent: 'ad', content: true })
+              );
+              const data = await getUserState();
+              dispatch(userActions.setItems(data?.user?.items || []));
+            } else {
+              onComplete && onComplete(content.id);
+            }
             dispatch(uiActions.closePayment());
             dispatch(
               uiActions.showModal({
@@ -163,7 +171,9 @@ function App() {
             break;
           case 'purchase_error':
             dispatch(uiActions.closePayment());
-            dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
+            if (!['E_USER_CANCELLED', 'E_ALREADY_OWNED'].includes(content.code)) {
+              dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
+            }
         }
       } catch (e) {}
     };

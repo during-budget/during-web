@@ -12,6 +12,7 @@
 .item {
   gap: 1rem;
   margin: 2.5rem;
+  margin-top: 0;
 }
 
 .detail {

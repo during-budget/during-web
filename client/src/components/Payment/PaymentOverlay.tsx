@@ -107,7 +107,6 @@ const PaymentOverlay = () => {
 
               dispatch(uiActions.closePayment());
             } catch (error) {
-
               dispatch(uiActions.closePayment());
               const message = getErrorMessage(error);
               if (message) {
@@ -184,19 +183,20 @@ const PaymentOverlay = () => {
     >
       <div className={classes.gap}>
         {content}
-        <div>
-          <div className={classes.options}>
-            <input
-              id="payment-card"
-              type="radio"
-              name="payment"
-              value="card"
-              onChange={paymentCheckHandler}
-              checked={paymentState === 'card'}
-            />
-            <label htmlFor="payment-card">
-              <p>카드결제 및 간편결제</p>
-              {/* <div className={classes.pay}>
+        {!platform && (
+          <div>
+            <div className={classes.options}>
+              <input
+                id="payment-card"
+                type="radio"
+                name="payment"
+                value="card"
+                onChange={paymentCheckHandler}
+                checked={paymentState === 'card'}
+              />
+              <label htmlFor="payment-card">
+                <p>카드결제 및 간편결제</p>
+                {/* <div className={classes.pay}>
                 <img
                   className={classes.naver}
                   src={`https://developer.pay.naver.com/static/img/logo_${
@@ -221,21 +221,21 @@ const PaymentOverlay = () => {
                 />
                 <img />
               </div> */}
-            </label>
-          </div>
-          <div className={classes.flex}>
-            <div className={classes.options}>
-              <input
-                id="payment-trans"
-                type="radio"
-                name="payment"
-                value="trans"
-                onChange={paymentCheckHandler}
-                checked={paymentState === 'trans'}
-              />
-              <label htmlFor="payment-trans">실시간계좌이체</label>
+              </label>
             </div>
-            {/* <div className={classes.options}>
+            <div className={classes.flex}>
+              <div className={classes.options}>
+                <input
+                  id="payment-trans"
+                  type="radio"
+                  name="payment"
+                  value="trans"
+                  onChange={paymentCheckHandler}
+                  checked={paymentState === 'trans'}
+                />
+                <label htmlFor="payment-trans">실시간계좌이체</label>
+              </div>
+              {/* <div className={classes.options}>
               <input
                 id="payment-vbank"
                 type="radio"
@@ -246,8 +246,8 @@ const PaymentOverlay = () => {
               />
               <label htmlFor="payment-vbank">무통장입금</label>
             </div> */}
-          </div>
-          {/* <div className={`${classes.flex} ${classes.culture}`}>
+            </div>
+            {/* <div className={`${classes.flex} ${classes.culture}`}>
             <div className={classes.options}>
               <input
                 id="payment-cultureland"
@@ -294,7 +294,7 @@ const PaymentOverlay = () => {
               </label>
             </div>
           </div> */}
-          {/* <input id='payment-smartculture' type="radio" name="payment" value="smartculture" />
+            {/* <input id='payment-smartculture' type="radio" name="payment" value="smartculture" />
       <label htmlFor='payment-smartculture'>문화상품권</label>
 
       <input id='payment-cultureland' type="radio" name="payment" value="cultureland" />
@@ -302,7 +302,8 @@ const PaymentOverlay = () => {
 
       <input id='payment-card' type="radio" name="payment" value="card" />
       <label htmlFor='payment-card'>게임문화상품권</label> */}
-        </div>
+          </div>
+        )}
       </div>
       <p className={cn(classes.refund, 'text-ms')}>
         ⓘ 구매 후 7일 이내에 한해 문의 채널을 통해 환불 가능합니다.
