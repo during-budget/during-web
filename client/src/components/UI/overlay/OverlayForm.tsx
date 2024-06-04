@@ -11,7 +11,7 @@ interface OverlayFormProps {
   overlayOptions: Omit<OverlayProps, 'className'>;
   confirmCancelOptions?: ConfirmCancelButtonsProps;
   onSubmit: () => Promise<void>;
-  onError?: (error: unknown) => void; 
+  onError?: (error: unknown) => void;
   formHeight?: string;
   formPadding?: 'lg' | 'md' | 'sm';
   className?: string;
@@ -60,7 +60,11 @@ const OverlayForm = ({
   }`;
 
   return (
-    <Overlay {...overlayOptions} className={`${className}`}>
+    <Overlay
+      {...overlayOptions}
+      className={`${className}`}
+      disableBackdrop={isPending || outerPending}
+    >
       <form onSubmit={submitHandler} className={paddingClass}>
         <div className="scroll" style={{ height: formHeight }}>
           {children}
