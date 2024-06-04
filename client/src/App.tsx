@@ -171,9 +171,9 @@ function App() {
             break;
           case 'purchase_error':
             dispatch(uiActions.closePayment());
-            if (!['E_USER_CANCELLED', 'E_ALREADY_OWNED'].includes(content.code)) {
-              dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
-            }
+            // if (!['E_USER_CANCELLED', 'E_ALREADY_OWNED'].includes(content.code)) {
+            //    dispatch(uiActions.showErrorModal({ icon: '!', title: '결제 실패' }));
+            // }
         }
       } catch (e) {}
     };
@@ -182,6 +182,11 @@ function App() {
     document.addEventListener('message', getWebviewMsg);
     // ios
     window.addEventListener('message', getWebviewMsg);
+
+    return () => {
+      document.removeEventListener('message', getWebviewMsg);
+      window.removeEventListener('message', getWebviewMsg);
+    }
   }, [onComplete]);
 
   return <RouterProvider router={router} />;
