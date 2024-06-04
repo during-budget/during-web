@@ -153,7 +153,7 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
                   onClick={clickHandler.bind(null, isLocked, id)}
                 >
                   {isLocked && skinState !== id 
-                    ? `₩${price?.toLocaleString() || '2,000'}`
+                    ? `₩${price?.toLocaleString() || '1,500'}`
                     : skinState === id
                     ? '설정중'
                     : '설정하기'}

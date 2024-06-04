@@ -177,9 +177,6 @@ const uiSlice = createSlice({
     startPayment(state) {
       state.payment = { ...state.payment, isPending: true };
     },
-    endPayment(state) {
-      state.payment = { ...state.payment, isPending: false };
-    },
     closePayment(state) {
       state.payment = initialState.payment;
     },

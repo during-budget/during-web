@@ -73,7 +73,6 @@ const PaymentOverlay = () => {
             Sentry.captureMessage(
               `결제오류(${merchantUid}/${impUid}): [${errorCode}] ${errorMsg}`
             );
-            dispatch(uiActions.endPayment());
           } else {
             try {
               const { payment, message } = await completePayment({ impUid, merchantUid });
@@ -105,10 +104,10 @@ const PaymentOverlay = () => {
                   })
                 );
               }
-              dispatch(uiActions.endPayment());
+
               dispatch(uiActions.closePayment());
             } catch (error) {
-              dispatch(uiActions.endPayment());
+
               dispatch(uiActions.closePayment());
               const message = getErrorMessage(error);
               if (message) {
@@ -135,7 +134,6 @@ const PaymentOverlay = () => {
         }
       );
     } catch (error) {
-      dispatch(uiActions.endPayment());
       dispatch(uiActions.closePayment());
       const message = getErrorMessage(error);
 
