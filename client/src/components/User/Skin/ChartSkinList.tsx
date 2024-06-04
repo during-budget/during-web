@@ -89,7 +89,7 @@ const ChartSkinList = ({ price }: ChartSkinListProps) => {
           </div>
         ),
         itemId: skin,
-        amount: price || 2000,
+        amount: price || 1500,
         onComplete: async (chartSkin: ChartSkinType) => {
           try {
             await updateChartSkin(chartSkin);
