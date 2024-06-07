@@ -52,7 +52,7 @@ const BudgetItem = ({ budget, startDate, endDate, onClose }: BudgetItemProps) =>
           r="2.25rem"
           dash={dash}
           thickness="1rem"
-          skinScale={0.858}
+          skinScale={0.825}
         />{' '}
         {dateInfo}
       </Link>

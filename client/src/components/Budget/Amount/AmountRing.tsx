@@ -14,13 +14,14 @@ function AmountRing(props: {
   skinScale: number;
   showMsg?: boolean;
   preview?: string;
+  hideInform?: boolean;
 }) {
   const skin = useAppSelector((state) => state.setting.chartSkin.selected);
   const skinData = Object.keys(SKIN_DATA).includes(skin)
     ? SKIN_DATA[skin]
     : SKIN_DATA.basic;
 
-  const { size, amount, r, showMsg, preview } = props;
+  const { size, amount, r, showMsg, preview, hideInform } = props;
 
   const rawCurrentRatio = amount.getCurrentRatio();
   const rawScheduledRatio = rawCurrentRatio + amount.getScheduledRatio();
@@ -105,7 +106,7 @@ function AmountRing(props: {
         <div className={classes.rounded} style={{ opacity: hideRounded ? 0 : 1 }} />
         <div className={classes.cover} style={{ opacity: hideCover ? 0 : 1 }} />
       </div>
-      {}
+      {hideInform && 
       <div className={classes.informs}>
         {amount.state.map((state) => (
           <Inform
@@ -128,6 +129,7 @@ function AmountRing(props: {
           </Inform>
         ))}
       </div>
+      }
     </div>
   );
 }
