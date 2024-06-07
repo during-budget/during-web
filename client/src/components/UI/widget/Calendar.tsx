@@ -156,30 +156,32 @@ function Calendar({
       <Fragment key={i}>
         {!isMonthTop && getMonthTr(week, i)}
         <tr key={i}>
-          {week.map((day, i) => (
-            <td
-              key={i}
-              className={`relative pt-0.25 text-md v-top light ${getTdClass(day)}`}
-              css={css(
-                {
-                  height: cellHeight || 'auto',
-                },
-                tdHoverStyle
-              )}
-              data-date={day?.format('YYYY-MM-DD')}
-              onClick={onDateClick}
-            >
-              <span
-                className={
-                  isToday(day) ? 'extra-bold text-primary flex-column i-center' : ''
-                }
-                css={isToday(day) ? todayAfterStyle : undefined}
+          {week.map((day, i) => {
+            return (
+              <td
+                key={i}
+                className={`relative pt-0.25 text-md v-top light ${getTdClass(day)}`}
+                css={css(
+                  {
+                    height: cellHeight || 'auto',
+                  },
+                  tdHoverStyle
+                )}
+                data-date={day?.format('YYYY-MM-DD')}
+                onClick={onDateClick}
               >
-                {day?.format('D')}
-              </span>
-              {day && data && data[day.format('YYYY-MM-DD')]}
-            </td>
-          ))}
+                <span
+                  className={
+                    isToday(day) ? 'extra-bold text-primary flex-column i-center' : ''
+                  }
+                  css={isToday(day) ? todayAfterStyle : undefined}
+                >
+                  {day?.format('D')}
+                </span>
+                {day && data && data[day.format('YYYY-MM-DD')]}
+              </td>
+            );
+          })}
         </tr>
       </Fragment>
     );

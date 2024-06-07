@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
 import { DEFAULT_DATE_PREFIX, DEFAULT_DATE_SUFFIX } from '../../../constants/date';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { TransactionType } from '../../../util/api/transactionAPI';
-import { getNumericHypenDateString } from '../../../util/date';
 import TransactionGroup from './TransactionGroup';
 import classes from './TransactionList.module.css';
 
@@ -33,11 +33,9 @@ function TransactionList({ className, isDefault }: TransactionListProps) {
   });
 
   return (
-    <ol
-      className={`mx-auto ${classes.list} ${className || ''}`}
-    >
+    <ol className={`mx-auto ${classes.list} ${className || ''}`}>
       {dateList.map((date) => {
-        const id = isDefault ? undefined : getNumericHypenDateString(new Date(date));
+        const id = isDefault ? undefined : dayjs(new Date(date)).format('YYYY-MM-DD');
 
         return (
           <li key={date}>

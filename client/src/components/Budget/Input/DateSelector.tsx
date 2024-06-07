@@ -1,5 +1,5 @@
+import dayjs from 'dayjs';
 import React from 'react';
-import { getNumericHypenDateString } from '../../../util/date';
 
 interface DateSelectorProps {
   className: string;
@@ -20,14 +20,14 @@ const DateSelector = ({ className, value, onChange, required }: DateSelectorProp
       className={className}
       value={
         value && !isNaN(value.valueOf())
-          ? getNumericHypenDateString(value)
-          : getNumericHypenDateString(new Date(0, 0, 1))
+          ? dayjs(value).format('YYYY-MM-DD')
+          : dayjs(new Date(0, 0, 1)).format('YYYY-MM-DD')
       }
       onChange={dateTimeHandler}
       required={required}
     >
       {dateList.map((item) => (
-        <option key={item} value={getNumericHypenDateString(new Date(0, 0, item))}>
+        <option key={item} value={dayjs(new Date(0, 0, item)).format('YYYY-MM-DD')}>
           매월 {item}일
         </option>
       ))}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../../hooks/useRedux';
 import RadioTab from '../../UI/input/RadioTab';
 import Select from '../../UI/input/Select';
@@ -45,7 +45,6 @@ const PaymentInput = ({
 
   useEffect(() => {
     const paymentMethod = storedPaymentMethods.find((item) => item._id === value);
-    console.log(paymentMethod);
     if (!paymentMethod) {
       localStorage.setItem('payment', '');
       onChange && onChange('', false);

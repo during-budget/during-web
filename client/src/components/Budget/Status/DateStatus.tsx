@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hooks/useRedux';
 import { TransactionType } from '../../../util/api/transactionAPI';
-import { getNumericHypenDateString } from '../../../util/date';
 import MonthlyStatus from '../Date/MonthlyStatus';
 import WeeklyStatus from '../Date/WeeklyStatus';
 import StatusHeader from './StatusHeader';
@@ -66,7 +66,7 @@ const getDailyAmountObj = (transactions: TransactionType[]) => {
 
   transactions.forEach((item) => {
     const { date, isExpense, amount } = item;
-    const dateStr = date ? getNumericHypenDateString(date) : '';
+    const dateStr = date ? dayjs(date).format('YYYY-MM-DD') : '';
     const key = isExpense ? 'expense' : 'income';
 
     if (isExcept(item)) {
