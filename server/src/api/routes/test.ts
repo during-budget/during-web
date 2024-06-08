@@ -1,6 +1,7 @@
 import {
   migrateChartSkinCatToBasic as migrateCatChartSkins,
   migrateItemPrices,
+  checkDuplicatedPayments,
 } from "@controllers/test";
 import express, { Request, Response } from "express";
 import { isAdmin } from "../middleware/auth";
@@ -30,5 +31,7 @@ router.post(
   isAdmin,
   wrapAsync(migrateCatChartSkins)
 );
+
+router.post("/check-duplicated-payments", wrapAsync(checkDuplicatedPayments));
 
 export default router;

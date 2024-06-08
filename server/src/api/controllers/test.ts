@@ -3,6 +3,7 @@ import { PaymentModel } from "@models/Payment";
 import { UserModel } from "@models/User";
 import { ChartSkinTitle } from "@models/_basicSettings";
 import { Request, Response } from "express";
+import { countBy, groupBy } from "lodash";
 import { HydratedDocument } from "mongoose";
 import { logger } from "src/api/middleware/loggers";
 
@@ -103,6 +104,40 @@ export const migrateChartSkinCatToBasic = async (
 
     return res.status(200).send({
       message: `Migration Done; ${notPaidCatUsers.length} user settings are updated`,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const checkDuplicatedPayments = async (req: Request, res: Response) => {
+  try {
+    const payments = (await PaymentModel.find({ status: "paid" })).map(
+      (payment) => ({
+        _id: payment._id,
+        userId: payment.userId,
+        itemId: payment.itemId,
+        createdAt: (payment as any).createdAt,
+        key: [payment.userId.toString(), payment.itemId.toString()].join("//"),
+      })
+    );
+
+    const paymentsByKey = groupBy(payments, "key");
+    const duplicatedPayments: Array<{ key: string; payments: Array<object> }> =
+      [];
+
+    for (const [key, payments] of Object.entries(paymentsByKey)) {
+      if (payments.length > 1) {
+        duplicatedPayments.push({ key, payments });
+      }
+    }
+
+    return res.status(200).send({
+      duplicatedPaymentsCnt: duplicatedPayments.length,
+      duplicatedPayments,
+      paymentsByKeyCnt: paymentsByKey.length,
+      paymentsByKey,
     });
   } catch (err: any) {
     logger.error(err.message);
