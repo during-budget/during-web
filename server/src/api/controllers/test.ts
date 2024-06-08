@@ -1,4 +1,6 @@
 import { ItemEntity, ItemModel, ItemType } from "@models/Item";
+import { PaymentModel } from "@models/Payment";
+import { UserModel } from "@models/User";
 import { ChartSkinTitle } from "@models/_basicSettings";
 import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
@@ -58,6 +60,49 @@ export const migrateItemPrices = async (req: Request, res: Response) => {
 
     return res.status(200).send({
       message: `Migration Done; ${itemsToUpdate.length} items are updated`,
+    });
+  } catch (err: any) {
+    logger.error(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+export const migrateChartSkinCatToBasic = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const usersAll = await UserModel.find({});
+
+    const catUsers = await UserModel.find({
+      "settings.chartSkin": ChartSkinTitle.Cat,
+    });
+
+    const paidCatUsersIdSet = new Set(
+      (
+        await PaymentModel.find({
+          userId: { $in: catUsers.map(({ _id }) => _id) },
+          itemType: "chartSkin",
+          itemTitle: ChartSkinTitle.Cat,
+          status: "paid",
+        })
+      ).map(({ userId }) => userId.toString())
+    );
+
+    const notPaidCatUsers = catUsers.filter(
+      (user) => !paidCatUsersIdSet.has(user._id.toString())
+    );
+
+    await Promise.all(
+      notPaidCatUsers.map((user) => {
+        user.settings = { ...user.settings, chartSkin: ChartSkinTitle.Basic };
+
+        return user.save();
+      })
+    );
+
+    return res.status(200).send({
+      message: `Migration Done; ${notPaidCatUsers.length} user settings are updated`,
     });
   } catch (err: any) {
     logger.error(err.message);

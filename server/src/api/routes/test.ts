@@ -1,4 +1,7 @@
-import { migrateItemPrices } from "@controllers/test";
+import {
+  migrateChartSkinCatToBasic as migrateCatChartSkins,
+  migrateItemPrices,
+} from "@controllers/test";
 import express, { Request, Response } from "express";
 import { isAdmin } from "../middleware/auth";
 import { wrapAsync } from "../middleware/error";
@@ -14,5 +17,11 @@ router.get("/echo", async (req: Request, res: Response) => {
 });
 
 router.post("/migrate-item-prices", isAdmin, wrapAsync(migrateItemPrices));
+
+router.post(
+  "/migrate-cat-chartSkins",
+  isAdmin,
+  wrapAsync(migrateCatChartSkins)
+);
 
 export default router;
