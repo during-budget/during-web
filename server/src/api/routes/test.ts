@@ -16,6 +16,13 @@ router.get("/echo", async (req: Request, res: Response) => {
   return res.status(200).send({ message: req.query.message });
 });
 
+router.get(
+  "/throw-error",
+  wrapAsync(async (req: Request, res: Response) => {
+    throw new Error("Intended Error");
+  })
+);
+
 router.post("/migrate-item-prices", isAdmin, wrapAsync(migrateItemPrices));
 
 router.post(
