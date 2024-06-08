@@ -94,7 +94,9 @@ const setupRoutes = (app: Express) => {
 
 const setupErrorHandler = (app: Express) => {
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger?.error(err.message);
+    // logger?.error(err.message);
+
+    console.log("[ERROR] ", err.message);
     return res.status(err.status ?? 500).send({ message: err.message });
   });
 };
