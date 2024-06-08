@@ -1,5 +1,7 @@
-import { hello } from "@controllers/test";
+import { migrateItemPrices } from "@controllers/test";
 import express, { Request, Response } from "express";
+import { isAdmin } from "../middleware/auth";
+import { wrapAsync } from "../middleware/error";
 // import * as TestController from "../controllers/test";
 // import { wrapAsync } from "../middleware/error";
 
@@ -10,5 +12,7 @@ router.get("/echo", async (req: Request, res: Response) => {
 
   return res.status(200).send({ message: req.query.message });
 });
+
+router.post("/migrate-item-prices", isAdmin, wrapAsync(migrateItemPrices));
 
 export default router;
