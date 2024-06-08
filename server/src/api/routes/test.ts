@@ -32,6 +32,10 @@ router.post(
   wrapAsync(migrateCatChartSkins)
 );
 
-router.post("/check-duplicated-payments", wrapAsync(checkDuplicatedPayments));
+router.post(
+  "/check-duplicated-payments",
+  isAdmin,
+  wrapAsync(checkDuplicatedPayments)
+);
 
 export default router;
