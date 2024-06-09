@@ -11,8 +11,8 @@ import { wrapAsync } from "../middleware/error";
 
 const router = express.Router();
 
-router.get("/echo", async (req: Request, res: Response) => {
-  console.log("[TEST] echo!", { message: req.query.message });
+router.get("/echo2", async (req: Request, res: Response) => {
+  console.log("[TEST] echo2!", { message: req.query.message });
 
   return res.status(200).send({ message: req.query.message });
 });
