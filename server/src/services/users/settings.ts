@@ -11,7 +11,7 @@ import {
 import * as PaymentService from "src/services/payments";
 
 export const isFreeChartSkinOption = (chartSkin: string) =>
-  chartSkin === "basic" || chartSkin === "cat";
+  chartSkin === ChartSkinTitle.Basic;
 
 export const isValidChartSkinOption = (
   _chartSkin: string
