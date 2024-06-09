@@ -1,11 +1,11 @@
-export const basicChartSkin = "cat";
-
 export enum ChartSkinTitle {
   Basic = "basic",
   Cat = "cat",
   Bunny = "bunny",
   Bear = "bear",
 }
+
+export const basicChartSkin = ChartSkinTitle.Basic;
 
 export const chartSkins = Object.values(ChartSkinTitle);
 
