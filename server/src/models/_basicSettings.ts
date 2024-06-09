@@ -1,5 +1,13 @@
 export const basicChartSkin = "cat";
-export const chartSkins = ["basic", "cat", "bunny", "bear"];
+
+export enum ChartSkinTitle {
+  Basic = "basic",
+  Cat = "cat",
+  Bunny = "bunny",
+  Bear = "bear",
+}
+
+export const chartSkins = Object.values(ChartSkinTitle);
 
 export const basicTimeZone = "Asia/Seoul";
 

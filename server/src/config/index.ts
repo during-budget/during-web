@@ -78,6 +78,21 @@ const config: configType = {
       throw new Error("CONFIG ERROR: Google Credentials missing");
     }
 
+    if (mode === "production") {
+      if (!process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY_NEWLINE_SEP) {
+        throw new Error(
+          "CONFIG ERROR: Google Credentials newline seperator missing"
+        );
+      }
+
+      return {
+        client_email: process.env.GOOGLE_CREDENTIALS_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.split(
+          process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY_NEWLINE_SEP
+        ).join("\n"),
+      };
+    }
+
     return {
       client_email: process.env.GOOGLE_CREDENTIALS_CLIENT_EMAIL,
       private_key: process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY,
@@ -85,7 +100,6 @@ const config: configType = {
   })(),
 };
 
-// console.log(`✅ config is set; `, config);
-console.log(`✅ config is set`);
+console.log(`✅ config is set; `, config);
 
 export default config;

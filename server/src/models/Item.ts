@@ -1,8 +1,12 @@
 import { Schema, Types, model } from "mongoose";
 
+export enum ItemType {
+  ChartSkin = "chartSkin",
+  Advertisement = "advertisement",
+}
 export interface ItemEntity {
   _id: Types.ObjectId;
-  type: "chartSkin" | "advertisement";
+  type: ItemType;
   title: string;
   price: Number;
 }

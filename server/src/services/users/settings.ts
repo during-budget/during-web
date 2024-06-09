@@ -3,9 +3,9 @@ import moment from "moment";
 import { HydratedDocument, Types } from "mongoose";
 import {
   basicTimeZone,
-  chartSkins,
   basicTheme,
   themes,
+  ChartSkinTitle,
 } from "src/models/_basicSettings";
 
 import * as PaymentService from "src/services/payments";
@@ -13,8 +13,10 @@ import * as PaymentService from "src/services/payments";
 export const isFreeChartSkinOption = (chartSkin: string) =>
   chartSkin === "basic" || chartSkin === "cat";
 
-export const isValidChartSkinOption = (chartSkin: string) =>
-  chartSkins.includes(chartSkin);
+export const isValidChartSkinOption = (
+  _chartSkin: string
+): _chartSkin is ChartSkinTitle =>
+  Object.values(ChartSkinTitle).some((chartSkin) => chartSkin === _chartSkin);
 
 export const isValidTimeZoneOption = (timeZone: string) =>
   moment.tz.zone(timeZone);
@@ -51,7 +53,7 @@ export const findThemeOptions = () => {
 
 export const updateChartSkinSetting = async (
   userRecord: HydratedDocument<UserEntity>,
-  chartSkin: string
+  chartSkin: ChartSkinTitle
 ) => {
   userRecord.settings = { ...userRecord.settings, chartSkin };
   await userRecord.save();
