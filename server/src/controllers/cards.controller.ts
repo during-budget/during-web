@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "src/api/middleware/auth";
+import { isLoggedIn } from "src/middleware/auth";
 
-import * as cards from "src/api/controllers/cards";
+import * as cards from "src/controllers/cards.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.put("/", isLoggedIn, wrapAsync(cards.updateAll));

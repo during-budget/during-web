@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "src/api/middleware/auth";
+import { isLoggedIn } from "src/middleware/auth";
 
-import * as categories from "src/api/controllers/categories";
+import * as categories from "src/controllers/categories.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.put("/", isLoggedIn, wrapAsync(categories.updateAll));

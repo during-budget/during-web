@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "src/api/middleware/auth";
-import * as budgets from "src/api/controllers/budgets";
+import { isLoggedIn } from "src/middleware/auth";
+import * as budgets from "src/controllers/budgets.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.post("/basic", isLoggedIn, wrapAsync(budgets.createWithBasic));

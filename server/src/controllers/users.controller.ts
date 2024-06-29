@@ -1,8 +1,8 @@
 import express, { Response } from "express";
 const router = express.Router();
-import * as users from "src/api/controllers/users";
-import * as userService from "src/api/services/user";
-import { isLoggedIn, isAdmin } from "src/api/middleware/auth";
+import * as users from "src/controllers/users.controller1";
+import * as userAgreementService from "src/services/users/agreement";
+import { isLoggedIn, isAdmin } from "src/middleware/auth";
 import { wrapAsync } from "../middleware/error";
 import { body } from "express-validator";
 import { validatorErrorChecker } from "../middleware/validator";
@@ -35,7 +35,10 @@ router.put(
         };
       }>
     ) => {
-      const agreement = await userService.updateAgreement(req.user, req.body);
+      const agreement = await userAgreementService.updateAgreement(
+        req.user,
+        req.body
+      );
 
       return res.status(200).send({
         agreement,
@@ -56,7 +59,7 @@ router.get(
         user: User;
       }>
     ) => {
-      const user = await userService.current(req.user);
+      const user = await userAgreementService.current(req.user);
 
       return res.status(200).send({
         user,

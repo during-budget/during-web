@@ -1,5 +1,5 @@
-import { devLogger } from "src/api/middleware/loggers/devLogger";
-import { prodLogger } from "src/api/middleware/loggers/prodLogger";
+import { devLogger } from "src/middleware/loggers/devLogger";
+import { prodLogger } from "src/middleware/loggers/prodLogger";
 
 let logger: any = null;
 

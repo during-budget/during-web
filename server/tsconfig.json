@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "paths": {
       "@models/*": ["src/models/*"],
-      "@controllers/*": ["src/api/controllers/*"]
+      "@controllers/*": ["src/api/controllers1/*"]
     },
     "skipLibCheck": true
   },

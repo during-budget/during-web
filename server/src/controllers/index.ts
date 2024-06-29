@@ -1,17 +1,17 @@
-import users from "./users";
+import users from "./users.controller";
 import budgets from "./budgets";
-import transactions from "./transactions";
+import transactions from "./transactions.controller";
 import categories from "./categories";
 import assets from "./assets";
 import cards from "./cards";
-import paymentMethods from "./paymentMethods";
+import paymentMethods from "./paymentMethods.controller";
 import auth from "./auth";
-import settings from "./settings";
+import settings from "./settings.controller";
 import items from "./items";
-import payments from "./payments";
+import payments from "./payments.controller";
 import challenges from "./challenges";
 import agreements from "./agreements";
-import test from "./test";
+import test from "./test.controller";
 
 export default [
   { label: "users", routes: users },

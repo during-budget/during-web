@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "src/api/middleware/auth";
+import { isLoggedIn } from "src/middleware/auth";
 
-import * as challenges from "src/api/controllers/challenges";
+import * as challenges from "src/controllers/challenges.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.post("/", isLoggedIn, wrapAsync(challenges.create));

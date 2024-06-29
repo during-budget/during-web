@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn, isNotLoggedIn } from "src/api/middleware/auth";
-import * as auth from "src/api/controllers/auth";
+import { isLoggedIn, isNotLoggedIn } from "src/middleware/auth";
+import * as auth from "src/controllers/auth.controller1";
 import passport from "passport";
 import { wrapAsync } from "../middleware/error";
 

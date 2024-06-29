@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isLoggedIn } from "src/api/middleware/auth";
+import { isLoggedIn } from "src/middleware/auth";
 
-import * as settings from "src/api/controllers/settings";
+import * as settings from "src/controllers/settings.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.get("/", isLoggedIn, wrapAsync(settings.find));

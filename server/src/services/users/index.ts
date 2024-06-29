@@ -11,6 +11,7 @@ import * as PaymentMethodService from "./paymentMethods";
 import * as AssetService from "./assets";
 import * as CardService from "./cards";
 import * as SettingService from "./settings";
+import * as AgreementService from "./agreement";
 
 import { generateRandomString } from "src/utils/randomString";
 
@@ -21,6 +22,7 @@ export {
   AssetService,
   CardService,
   SettingService,
+  AgreementService,
 };
 
 /* create user */

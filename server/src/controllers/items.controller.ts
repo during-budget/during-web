@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { isAdmin, isLoggedIn } from "src/api/middleware/auth";
+import { isAdmin, isLoggedIn } from "src/middleware/auth";
 
-import * as items from "src/api/controllers/items";
+import * as items from "src/controllers/items.controller1";
 import { wrapAsync } from "../middleware/error";
 
 router.post("/", isAdmin, wrapAsync(items.create));
