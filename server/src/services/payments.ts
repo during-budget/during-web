@@ -15,13 +15,13 @@ import {
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
 import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
-import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 import { InAppProductPurchaseState } from "src/lib/googleAPIs";
 import {
   ConflictError,
   InvalidInAppProductPurchaseStateError,
 } from "src/errors/ConfilicError";
 import * as ItemService from "./items";
+import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 
 /**
  * @function getAccessToken
@@ -232,11 +232,56 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
   throw new FakePaymentAttemptError();
 };
 
+export enum InAppPlatform {
+  Android = "android",
+  IOS = "ios",
+}
+
+type CompletePaymentByAndroidReq = {
+  platform: InAppPlatform.Android;
+  title: string;
+  token: string;
+};
+
+type IOSPayload = {
+  // transactionDate: Date;
+  // transactionId: string;
+  productId: string;
+  transactionReceipt: string;
+};
+
+export function validateIOSPayload(
+  payload: Record<string, any>
+): payload is IOSPayload {
+  if (!("productId" in payload) || typeof payload.productId !== "string")
+    return false;
+  if (
+    !("transactionReceipt" in payload) ||
+    typeof payload.transactionReceipt !== "string"
+  )
+    return false;
+
+  return true;
+}
+
+type CompletePaymentByIOSReq = {
+  platform: InAppPlatform.IOS;
+  payload: IOSPayload;
+};
+
+export type CompletePaymentByMobileUserReq =
+  | CompletePaymentByAndroidReq
+  | CompletePaymentByIOSReq;
+
 export const completePaymentByMobileUser = async (
-  userRecord: Pick<UserEntity, "_id">,
-  inAppProductId: string,
-  token: string
+  req: CompletePaymentByMobileUserReq,
+  userRecord: Pick<UserEntity, "_id">
 ): Promise<PaymentEntity> => {
+  const { platform } = req;
+
+  const inAppProductId =
+    platform === InAppPlatform.Android ? req.title : req.payload.productId;
+
   // itemRecord 조회
   const { item: itemRecord } = await ItemService.findByTitle(inAppProductId);
 
@@ -255,38 +300,57 @@ export const completePaymentByMobileUser = async (
     throw new PaiedAlreadyError();
   }
 
-  // 인앱 결제 정보 조회
-  const helper = new GoogleInAppHelper();
-  const purchase = await helper.findInAppProductPurchase(inAppProductId, token);
+  switch (platform) {
+    case InAppPlatform.Android: {
+      const { token } = req;
 
-  switch (purchase.purchaseState) {
-    case InAppProductPurchaseState.PAID: {
-      break;
-    }
-
-    case InAppProductPurchaseState.CANCELLED:
-    case InAppProductPurchaseState.READY: {
-      throw new InvalidInAppProductPurchaseStateError();
-    }
-
-    default:
-      throw new Error(
-        `Unexpected Error; Not supported purchase state (${purchase.purchaseState})`
+      // 인앱 결제 정보 조회
+      const helper = new GoogleInAppHelper();
+      const purchase = await helper.findInAppProductPurchase(
+        inAppProductId,
+        token
       );
+
+      switch (purchase.purchaseState) {
+        case InAppProductPurchaseState.PAID: {
+          break;
+        }
+
+        case InAppProductPurchaseState.CANCELLED:
+        case InAppProductPurchaseState.READY: {
+          throw new InvalidInAppProductPurchaseStateError();
+        }
+
+        default:
+          throw new Error(
+            `Unexpected Error; Not supported purchase state (${purchase.purchaseState})`
+          );
+      }
+
+      // DB에 결제 정보 생성
+      const paymentRecord = await PaymentModel.create({
+        userId: userRecord._id,
+        itemId: itemRecord._id,
+        itemType: itemRecord.type,
+        itemTitle: itemRecord.title,
+        amount: itemRecord.price,
+        status: "paid",
+        rawPaymentData: purchase,
+      });
+
+      return paymentRecord;
+    }
+
+    case InAppPlatform.IOS: {
+      throw new Error(
+        "Unexpected Error; IOS receipt validation is not available now"
+      );
+    }
+
+    default: {
+      throw new Error(`Unexpected Error; Not supported platform (${platform})`);
+    }
   }
-
-  // DB에 결제 정보 생성
-  const paymentRecord = await PaymentModel.create({
-    userId: userRecord._id,
-    itemId: itemRecord._id,
-    itemType: itemRecord.type,
-    itemTitle: itemRecord.title,
-    amount: itemRecord.price,
-    status: "paid",
-    rawPaymentData: purchase,
-  });
-
-  return paymentRecord;
 };
 
 export const remove = async (

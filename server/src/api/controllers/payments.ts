@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import _ from "lodash";
 
-import { FieldRequiredError } from "src/errors/InvalidError";
+import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
 
 import * as PaymentService from "src/services/payments";
 import * as ItemService from "src/services/items";
@@ -12,6 +12,11 @@ import {
 } from "src/errors/NotFoundError";
 import { AuthService } from "src/services/users";
 import { NotPermittedError } from "src/errors/ForbiddenError";
+import {
+  CompletePaymentByMobileUserReq,
+  InAppPlatform,
+} from "src/services/payments";
+import { isEnumValue } from "src/lib/const.lib";
 
 export const prepare = async (req: Request, res: Response) => {
   const user = req.user!;
@@ -67,23 +72,54 @@ export const completeByWebhook = async (req: Request, res: Response) => {
 };
 
 export const completePaymentByMobileUser = async (
-  req: Request,
+  { user, body }: Request,
   res: Response
 ) => {
-  const user = req.user!;
+  /** validateReq */
+  const validateReq = (body: Record<string, any>): void => {
+    /** validate platform */
 
-  /* validate */
-  for (let field of ["title", "token"]) {
-    if (!(field in req.body)) throw new FieldRequiredError(field);
-  }
+    if (!("platform" in body)) throw new FieldRequiredError("flatform");
 
-  const title = req.body.title as string;
-  const token = req.body.token as string;
+    const platform = body.platform;
+
+    if (typeof platform !== "string" || !isEnumValue(InAppPlatform, platform))
+      throw new FieldInvalidError("flatform");
+
+    switch (platform) {
+      case InAppPlatform.Android: {
+        for (let field of ["title", "token"]) {
+          if (!(field in body)) throw new FieldRequiredError(field);
+        }
+
+        return;
+      }
+
+      case InAppPlatform.IOS: {
+        for (let field of ["payload"]) {
+          if (!(field in body)) throw new FieldRequiredError(field);
+        }
+
+        if (!PaymentService.validateIOSPayload(body.payload)) {
+          throw new FieldInvalidError("payload");
+        }
+
+        return;
+      }
+
+      default: {
+        throw new Error(
+          `Unexpected Error; Not supported platform (${platform})`
+        );
+      }
+    }
+  };
+
+  validateReq(body);
 
   const payment = await PaymentService.completePaymentByMobileUser(
-    user,
-    title,
-    token
+    body as CompletePaymentByMobileUserReq,
+    user!
   );
 
   return res.status(200).send({ payment });
