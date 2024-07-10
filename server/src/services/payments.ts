@@ -22,6 +22,10 @@ import {
 } from "src/errors/ConfilicError";
 import * as ItemService from "./items";
 import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
+import {
+  CompletePaymentByMobileUserReq,
+  InAppPlatform,
+} from "src/types/payment";
 
 /**
  * @function getAccessToken
@@ -231,47 +235,6 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
   }
   throw new FakePaymentAttemptError();
 };
-
-export enum InAppPlatform {
-  Android = "android",
-  IOS = "ios",
-}
-
-type CompletePaymentByAndroidReq = {
-  platform: InAppPlatform.Android;
-  title: string;
-  token: string;
-};
-
-type IOSPayload = {
-  // transactionDate: Date;
-  // transactionId: string;
-  productId: string;
-  transactionReceipt: string;
-};
-
-export function validateIOSPayload(
-  payload: Record<string, any>
-): payload is IOSPayload {
-  if (!("productId" in payload) || typeof payload.productId !== "string")
-    return false;
-  if (
-    !("transactionReceipt" in payload) ||
-    typeof payload.transactionReceipt !== "string"
-  )
-    return false;
-
-  return true;
-}
-
-type CompletePaymentByIOSReq = {
-  platform: InAppPlatform.IOS;
-  payload: IOSPayload;
-};
-
-export type CompletePaymentByMobileUserReq =
-  | CompletePaymentByAndroidReq
-  | CompletePaymentByIOSReq;
 
 export const completePaymentByMobileUser = async (
   req: CompletePaymentByMobileUserReq,

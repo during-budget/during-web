@@ -12,11 +12,12 @@ import {
 } from "src/errors/NotFoundError";
 import { AuthService } from "src/services/users";
 import { NotPermittedError } from "src/errors/ForbiddenError";
-import {
-  CompletePaymentByMobileUserReq,
-  InAppPlatform,
-} from "src/services/payments";
 import { isEnumValue } from "src/lib/const.lib";
+import {
+  InAppPlatform,
+  CompletePaymentByMobileUserReq,
+  validateIOSPayload,
+} from "src/types/payment";
 
 export const prepare = async (req: Request, res: Response) => {
   const user = req.user!;
@@ -100,7 +101,7 @@ export const completePaymentByMobileUser = async (
           if (!(field in body)) throw new FieldRequiredError(field);
         }
 
-        if (!PaymentService.validateIOSPayload(body.payload)) {
+        if (!validateIOSPayload(body.payload)) {
           throw new FieldInvalidError("payload");
         }
 
