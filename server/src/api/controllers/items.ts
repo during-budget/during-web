@@ -4,7 +4,7 @@ import _ from "lodash";
 import * as ItemService from "src/services/items";
 import { FieldInvalidError, FieldRequiredError } from "src/errors/InvalidError";
 import { ItemNotFoundError } from "src/errors/NotFoundError";
-import * as InAppProductService from "src/services/inAppProducts";
+import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 
 export const create = async (req: Request, res: Response) => {
   if (!("type" in req.body)) throw new FieldRequiredError("type");
@@ -36,7 +36,8 @@ export const find = async (req: Request, res: Response) => {
 
 export const getInAppProducts = async (req: Request, res: Response) => {
   try {
-    const { inAppProducts } = await InAppProductService.getInAppProducts();
+    const helper = new GoogleInAppHelper();
+    const { inAppProducts } = await helper.getInAppProducts();
 
     return res.status(200).send({ inAppProducts });
   } catch (err: any) {
