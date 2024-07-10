@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { ItemNotFoundError } from "src/errors/NotFoundError";
 import { ItemModel } from "src/models/Item";
 import * as PaymentService from "src/services/payments";
-import * as InAppProductService from "src/services/inAppProducts";
+import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 
 export const create = async (
   type: "chartSkin",
@@ -60,7 +60,8 @@ export const isItemAvailable = async (
   }
 
   if (isInAppProduct) {
-    const isInAppProductActive = await InAppProductService.isInAppProductActive(
+    const helper = new GoogleInAppHelper();
+    const isInAppProductActive = await helper.isInAppProductActive(
       itemRecord.title
     );
 

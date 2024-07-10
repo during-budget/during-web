@@ -15,7 +15,7 @@ import {
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
 import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
-import * as InAppProductService from "./inAppProducts";
+import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 import { InAppProductPurchaseState } from "src/lib/googleAPIs";
 import {
   ConflictError,
@@ -256,10 +256,8 @@ export const completePaymentByMobileUser = async (
   }
 
   // 인앱 결제 정보 조회
-  const purchase = await InAppProductService.findInAppProductPurchase(
-    inAppProductId,
-    token
-  );
+  const helper = new GoogleInAppHelper();
+  const purchase = await helper.findInAppProductPurchase(inAppProductId, token);
 
   switch (purchase.purchaseState) {
     case InAppProductPurchaseState.PAID: {
