@@ -64,13 +64,7 @@ export const completePayment = async (info: {
   return data as { payment?: PaymentDataType; message?: string };
 };
 
-export const completeMobilePayment = async ({
-  id,
-  token,
-}: {
-  id: string;
-  token: string;
-}) => {
+export const completeMobilePayment = async (payload: any) => {
   const url = `${BASE_URL}/complete-by-mobile-user`;
 
   let response, data;
@@ -79,10 +73,7 @@ export const completeMobilePayment = async ({
     response = await fetch(url, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({
-        title: id,
-        token,
-      }),
+      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
       },
