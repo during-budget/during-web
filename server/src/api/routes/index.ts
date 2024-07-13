@@ -12,7 +12,7 @@ import payments from "./payments";
 import challenges from "./challenges";
 import agreements from "./agreements";
 import test from "./test";
-import backups from "./backups";
+import backups from "./backup.controller";
 
 export default [
   { label: "users", routes: users },
