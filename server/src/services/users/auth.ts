@@ -1,6 +1,6 @@
 import { HydratedDocument } from "mongoose";
 
-import { UserEntity } from "src/models/User";
+import { UserEntity } from "src/models/user.model";
 
 type snsType = "google" | "naver" | "kakao";
 

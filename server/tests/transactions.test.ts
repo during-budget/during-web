@@ -4,8 +4,8 @@
 import httpMocks from "node-mocks-http";
 import { Types } from "mongoose";
 
-jest.mock("@models/Transaction");
-import { TransactionModel } from "src/models/Transaction";
+jest.mock("@models/transaction.model");
+import { TransactionModel } from "src/models/transaction.model";
 import * as transactions from "src/api/controllers/transactions";
 
 describe("GET /transactions?linkedPaymentMethodId=*** (결제 수단으로 카드 찾는 API)", () => {

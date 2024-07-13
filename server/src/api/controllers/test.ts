@@ -1,6 +1,6 @@
-import { ItemEntity, ItemModel, ItemType } from "@models/Item";
-import { PaymentModel } from "@models/Payment";
-import { UserModel } from "@models/User";
+import { ItemEntity, ItemModel, ItemType } from "@models/item.model";
+import { PaymentModel } from "@models/payment.model";
+import { UserModel } from "@models/user.model";
 import { ChartSkinTitle } from "@models/_basicSettings";
 import { Request, Response } from "express";
 import { countBy, groupBy } from "lodash";

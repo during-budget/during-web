@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { BudgetModel, IBudget, ICategory } from "src/models/Budget";
-import { UserEntity } from "src/models/User";
+import { BudgetModel, IBudget, ICategory } from "src/models/budget.model";
+import { UserEntity } from "src/models/user.model";
 
 import * as TransactionService from "src/services/transactions";
 import { CategoryService as UserCategoryService } from "src/services/users";

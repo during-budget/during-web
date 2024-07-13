@@ -1,5 +1,5 @@
-import { ItemEntity } from "@models/Item";
-import { UserEntity } from "@models/User";
+import { ItemEntity } from "@models/item.model";
+import { UserEntity } from "@models/user.model";
 import axios from "axios";
 import { NotPermittedError } from "src/errors/ForbiddenError";
 import {
@@ -14,7 +14,11 @@ import {
   PaymentIsNotPaidError,
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
-import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
+import {
+  PaymentEntity,
+  PaymentModel,
+  TRawPayment,
+} from "src/models/payment.model";
 import { InAppProductPurchaseState } from "src/lib/googleAPIs";
 import {
   ConflictError,

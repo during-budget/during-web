@@ -1,4 +1,4 @@
-import { UserEntity } from "@models/User";
+import { UserEntity } from "@models/user.model";
 import moment from "moment";
 import { HydratedDocument, Types } from "mongoose";
 import {

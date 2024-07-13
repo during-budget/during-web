@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { BudgetModel, IBudget } from "src/models/Budget";
-import { ITransaction } from "src/models/Transaction";
+import { BudgetModel, IBudget } from "src/models/budget.model";
+import { ITransaction } from "src/models/transaction.model";
 import { basicTimeZone } from "src/models/_basicSettings";
 
 import moment from "moment-timezone";

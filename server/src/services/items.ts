@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { ItemNotFoundError } from "src/errors/NotFoundError";
-import { ItemModel } from "src/models/Item";
+import { ItemModel } from "@models/item.model";
 import * as PaymentService from "src/services/payments";
 import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 

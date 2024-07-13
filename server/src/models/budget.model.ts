@@ -1,6 +1,6 @@
 import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 import _ from "lodash";
-import { TransactionModel } from "./Transaction";
+import { TransactionModel } from "./transaction.model";
 
 interface ICategory {
   categoryId: Types.ObjectId;

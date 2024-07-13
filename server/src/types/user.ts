@@ -1,5 +1,5 @@
-import { AgreementEntity } from "@models/Agreement";
-import { UserEntity } from "@models/User";
+import { AgreementEntity } from "@models/agreement.model";
+import { UserEntity } from "@models/user.model";
 import { Types } from "mongoose";
 import { AgreementType } from "./agreement";
 import {
@@ -7,7 +7,7 @@ import {
   basicTheme,
   basicTimeZone,
 } from "@models/_basicSettings";
-import { ItemEntity } from "@models/Item";
+import { ItemEntity } from "@models/item.model";
 
 export type UserCategory = {
   _id: Types.ObjectId;

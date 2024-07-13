@@ -1,6 +1,6 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { UserEntity, UserModel } from "src/models/User";
+import { UserEntity, UserModel } from "src/models/user.model";
 
 import * as BudgetService from "src/services/budgets";
 import * as TransactionService from "src/services/transactions";
