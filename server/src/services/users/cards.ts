@@ -1,5 +1,5 @@
 import { ICard, UserEntity } from "src/models/User";
-import { Transaction as TransactionModel } from "src/models/Transaction";
+import { TransactionModel } from "src/models/Transaction";
 
 import { HydratedDocument, Types } from "mongoose";
 import { findDocumentById } from "src/utils/document";
