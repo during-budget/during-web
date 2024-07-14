@@ -8,7 +8,7 @@ const router = express.Router();
 /** migration 1 */
 router.post(
   "/set-isDestroyed",
-  // isAdmin,
+  isAdmin,
   wrapAsync(async (req: Request, res: Response) => {
     const { count } = await PaymentService.setIsDestroyed();
 
@@ -19,7 +19,7 @@ router.post(
 /** migration 2 */
 router.post(
   "/destroy-unpaid-payments",
-  // isAdmin,
+  isAdmin,
   wrapAsync(async (req: Request, res: Response) => {
     const { count } = await PaymentService.destroyUnpaidPayments();
 
@@ -30,7 +30,7 @@ router.post(
 /** migration 3 */
 router.post(
   "/set-platform",
-  // isAdmin,
+  isAdmin,
   wrapAsync(async (req: Request, res: Response) => {
     const result = await PaymentService.setPlatform();
 
