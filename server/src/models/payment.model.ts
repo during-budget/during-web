@@ -75,9 +75,7 @@ paymentSchema.index(
   },
   {
     unique: true,
-    partialFilterExpression: {
-      isDestroyed: { $eq: false },
-    },
+    sparse: true,
   }
 );
 
