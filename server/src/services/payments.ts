@@ -17,6 +17,7 @@ import { HydratedDocument, Types } from "mongoose";
 import {
   PaymentEntity,
   PaymentModel,
+  PaymentStatus,
   TRawPayment,
 } from "src/models/payment.model";
 import { InAppProductPurchaseState } from "src/lib/googleAPIs";
@@ -124,7 +125,7 @@ export const findPaymentPaidByTitle = async (
   const paymentRecord = await PaymentModel.findOne({
     userId: userRecord._id,
     itemTitle,
-    status: "paid",
+    status: PaymentStatus.Paid,
   });
   return { payment: paymentRecord };
 };
@@ -137,7 +138,7 @@ export const findPaymentChartSkinPaidByTitle = async (
     userId,
     itemType: "chartSkin",
     itemTitle: chartSkinTitle,
-    status: "paid",
+    status: PaymentStatus.Paid,
   });
   return { payment: paymentRecord };
 };
@@ -146,7 +147,7 @@ export const findPaymentsChartSkinPaid = async (userId: Types.ObjectId) => {
   const paymentRecords = await PaymentModel.find({
     userId,
     itemType: "chartSkin",
-    status: "paid",
+    status: PaymentStatus.Paid,
   });
   return { payments: paymentRecords };
 };
@@ -166,7 +167,7 @@ export const createPaymentReady = async (
     itemType: itemRecord.type,
     itemTitle: itemRecord.title,
     amount: itemRecord.price,
-    status: "ready",
+    status: PaymentStatus.Ready,
   });
 
   /* Pre-register payment information */
@@ -196,10 +197,10 @@ export const completePaymentByUser = async (
 
   // 결제 정보 검증
   if (rawPaymentData.amount === paymentRecord.amount) {
-    if (rawPaymentData.status === "paid") {
+    if (rawPaymentData.status === PaymentStatus.Paid) {
       // 웹훅이 먼저 호출되지 않은 경우 DB에 결제 정보 저장
-      if (paymentRecord.status !== "paid") {
-        paymentRecord.status = "paid";
+      if (paymentRecord.status !== PaymentStatus.Paid) {
+        paymentRecord.status = PaymentStatus.Paid;
         paymentRecord.rawPaymentData = rawPaymentData;
         await paymentRecord.save();
       }
@@ -223,14 +224,14 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
 
   // DB에 결제 정보 저장
   if (rawPaymentData.amount === paymentRecord.amount) {
-    if (rawPaymentData.status === "paid") {
-      paymentRecord.status = "paid";
+    if (rawPaymentData.status === PaymentStatus.Paid) {
+      paymentRecord.status = PaymentStatus.Paid;
       paymentRecord.rawPaymentData = rawPaymentData;
       await paymentRecord.save();
       return;
     }
-    if (rawPaymentData.status === "cancelled") {
-      paymentRecord.status = "cancelled";
+    if (rawPaymentData.status === PaymentStatus.Cancelled) {
+      paymentRecord.status = PaymentStatus.Cancelled;
       paymentRecord.rawPaymentData = rawPaymentData;
       await paymentRecord.save();
       return;
@@ -260,7 +261,7 @@ export const completePaymentByMobileUser = async (
   const exPaymentRecord = await PaymentModel.findOne({
     userId: userRecord._id,
     itemId: itemRecord._id,
-    status: "paid",
+    status: PaymentStatus.Paid,
   });
 
   if (exPaymentRecord) {
@@ -301,7 +302,7 @@ export const completePaymentByMobileUser = async (
         itemType: itemRecord.type,
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
-        status: "paid",
+        status: PaymentStatus.Paid,
         rawPaymentData: purchase,
       });
 
