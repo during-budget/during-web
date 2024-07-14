@@ -86,6 +86,7 @@ export const current = async (userEntity: UserEntity): Promise<User> => {
     const paidPayments = await PaymentModel.find({
       userId: userEntity._id,
       status: PaymentStatus.Paid,
+      isDestroyed: false,
     });
 
     if (!paidPayments.length) {

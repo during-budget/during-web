@@ -114,7 +114,10 @@ const getRawPayment = async (imp_uid: string) => {
 };
 
 export const findPaymentById = async (paymentId: Types.ObjectId | string) => {
-  const paymentRecord = await PaymentModel.findById(paymentId);
+  const paymentRecord = await PaymentModel.findOne({
+    _id: paymentId,
+    isDestroyed: false,
+  });
   return { payment: paymentRecord };
 };
 
@@ -126,6 +129,7 @@ export const findPaymentPaidByTitle = async (
     userId: userRecord._id,
     itemTitle,
     status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payment: paymentRecord };
 };
@@ -139,6 +143,7 @@ export const findPaymentChartSkinPaidByTitle = async (
     itemType: "chartSkin",
     itemTitle: chartSkinTitle,
     status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payment: paymentRecord };
 };
@@ -148,12 +153,16 @@ export const findPaymentsChartSkinPaid = async (userId: Types.ObjectId) => {
     userId,
     itemType: "chartSkin",
     status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payments: paymentRecords };
 };
 
 export const findPaymentsByUserId = async (userId: Types.ObjectId | string) => {
-  const paymentRecordList = await PaymentModel.find({ userId });
+  const paymentRecordList = await PaymentModel.find({
+    userId,
+    isDestroyed: false,
+  });
   return { payments: paymentRecordList };
 };
 
@@ -187,9 +196,10 @@ export const completePaymentByUser = async (
   const rawPaymentData = await getRawPayment(imp_uid);
 
   // 포트원 결제 정보로 DB의 결제 정보 조회
-  const paymentRecord = await PaymentModel.findById(
-    rawPaymentData.merchant_uid
-  );
+  const paymentRecord = await PaymentModel.findOne({
+    _id: rawPaymentData.merchant_uid,
+    isDestroyed: false,
+  });
   if (!paymentRecord) throw new PaymentNotFoundError();
 
   if (!paymentRecord.userId.equals(userRecord._id))
@@ -217,9 +227,10 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
   const rawPaymentData = await getRawPayment(imp_uid);
 
   // 포트원 결제 정보로 DB의 결제 정보 조회
-  const paymentRecord = await PaymentModel.findById(
-    rawPaymentData.merchant_uid
-  );
+  const paymentRecord = await PaymentModel.findOne({
+    _id: rawPaymentData.merchant_uid,
+    isDestroyed: false,
+  });
   if (!paymentRecord) throw new PaymentNotFoundError();
 
   // DB에 결제 정보 저장
@@ -262,6 +273,7 @@ export const completePaymentByMobileUser = async (
     userId: userRecord._id,
     itemId: itemRecord._id,
     status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
 
   if (exPaymentRecord) {

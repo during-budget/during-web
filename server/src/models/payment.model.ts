@@ -82,6 +82,7 @@ export interface PaymentEntity {
   rawPaymentData: any;
 
   isDestroyed: boolean;
+  destroyedAt?: Date;
 }
 
 export const paymentSchema = new Schema<PaymentEntity>(
@@ -100,6 +101,8 @@ export const paymentSchema = new Schema<PaymentEntity>(
     rawPaymentData: Object,
 
     isDestroyed: { type: Boolean, default: false },
+
+    destroyedAt: Date,
   },
   { timestamps: true }
 );
