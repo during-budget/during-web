@@ -1,6 +1,6 @@
 import { Schema, model, Model, Types, HydratedDocument } from "mongoose";
 import _ from "lodash";
-import { Transaction } from "./Transaction";
+import { TransactionModel } from "./transaction.model";
 
 interface ICategory {
   categoryId: Types.ObjectId;
@@ -185,7 +185,7 @@ budgetSchema.methods.calculate = async function () {
   }
 
   /* calculate transactions */
-  const transactions = await Transaction.find({ budgetId: this._id });
+  const transactions = await TransactionModel.find({ budgetId: this._id });
   for (let i = 0; i < transactions.length; i++) {
     const categoryIdx =
       categoryMap.get(transactions[i].category.categoryId.toString()) ?? -1;
@@ -241,5 +241,5 @@ budgetSchema.methods.calculate = async function () {
   return;
 };
 
-const Budget = model<IBudget, BudgetModelType>("Budget", budgetSchema);
-export { Budget, IBudget, IBudgetProps, BudgetModelType, ICategory };
+const BudgetModel = model<IBudget, BudgetModelType>("Budget", budgetSchema);
+export { BudgetModel, IBudget, IBudgetProps, BudgetModelType, ICategory };

@@ -4,8 +4,8 @@
 import httpMocks from "node-mocks-http";
 import { Types } from "mongoose";
 
-jest.mock("@models/Transaction");
-import { Transaction } from "src/models/Transaction";
+jest.mock("@models/transaction.model");
+import { TransactionModel } from "src/models/transaction.model";
 import * as transactions from "src/api/controllers/transactions";
 
 describe("GET /transactions?linkedPaymentMethodId=*** (결제 수단으로 카드 찾는 API)", () => {
@@ -53,7 +53,7 @@ describe("GET /transactions?linkedPaymentMethodId=*** (결제 수단으로 카�
     });
     const res = httpMocks.createResponse();
 
-    Transaction.find = jest.fn().mockResolvedValueOnce([
+    TransactionModel.find = jest.fn().mockResolvedValueOnce([
       {
         amount: 10,
         date: new Date("2000-01-15"),

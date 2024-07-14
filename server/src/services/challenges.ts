@@ -1,6 +1,6 @@
-import { UserEntity } from "src/models/User";
-import { Challenge as ChallengeModel, IChallenge } from "src/models/Challenge";
-import { Transaction as TransactionModel } from "src/models/Transaction";
+import { UserEntity } from "src/models/user.model";
+import { ChallengeModel, IChallenge } from "@models/challenge.model";
+import { TransactionModel } from "src/models/transaction.model";
 import { HydratedDocument, Types } from "mongoose";
 import { CategoryService } from "./users";
 import { CategoryNotFoundError } from "src/errors/NotFoundError";

@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
 
-import { IAsset, UserEntity } from "src/models/User";
-import { ITransaction } from "src/models/Transaction";
+import { IAsset, UserEntity } from "src/models/user.model";
+import { ITransaction } from "src/models/transaction.model";
 
 import { findDocumentById } from "src/utils/document";
 

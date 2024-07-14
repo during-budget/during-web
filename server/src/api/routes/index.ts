@@ -12,6 +12,8 @@ import payments from "./payments";
 import challenges from "./challenges";
 import agreements from "./agreements";
 import test from "./test";
+import backups from "./backup.controller";
+import migrationRouter from "./migration.router";
 
 export default [
   { label: "users", routes: users },
@@ -28,4 +30,6 @@ export default [
   { label: "challenges", routes: challenges },
   { label: "agreements", routes: agreements },
   { label: "test", routes: test },
+  { label: "backups", routes: backups },
+  { label: "migrations", routes: migrationRouter },
 ];

@@ -1,4 +1,4 @@
-import { AgreementEntity } from "@models/Agreement";
+import { AgreementEntity } from "@models/agreement.model";
 
 export enum AgreementType {
   TermsOfUse = "TERMS_OF_USE",

@@ -6,7 +6,7 @@ import { isLoggedIn, isAdmin } from "src/api/middleware/auth";
 import { wrapAsync } from "../middleware/error";
 import { body } from "express-validator";
 import { validatorErrorChecker } from "../middleware/validator";
-import { UserEntity } from "@models/User";
+import { UserEntity } from "@models/user.model";
 import { User } from "src/types/user";
 
 router.put("/", isLoggedIn, wrapAsync(users.updateFields));

@@ -34,5 +34,5 @@ export const challengeSchema = new Schema<IChallenge>(
 
 challengeSchema.index({ userId: 1 });
 
-const Challenge = model<IChallenge>("Challenge", challengeSchema);
-export { Challenge };
+const ChallengeModel = model<IChallenge>("Challenge", challengeSchema);
+export { ChallengeModel };
