@@ -1,5 +1,5 @@
-import { IPaymentMethod, UserEntity } from "src/models/User";
-import { ITransaction } from "src/models/Transaction";
+import { IPaymentMethod, UserEntity } from "src/models/user.model";
+import { ITransaction } from "src/models/transaction.model";
 import { HydratedDocument, Types } from "mongoose";
 import { findDocumentById } from "src/utils/document";
 

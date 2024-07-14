@@ -1,5 +1,5 @@
-import { ItemEntity } from "@models/Item";
-import { UserEntity } from "@models/User";
+import { ItemEntity } from "@models/item.model";
+import { UserEntity } from "@models/user.model";
 import axios from "axios";
 import { NotPermittedError } from "src/errors/ForbiddenError";
 import {
@@ -14,8 +14,13 @@ import {
   PaymentIsNotPaidError,
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
-import { PaymentEntity, PaymentModel, TRawPayment } from "src/models/Payment";
-import { InAppProductPurchaseState } from "src/lib/googleAPIs";
+import {
+  PaymentEntity,
+  PaymentModel,
+  PaymentStatus,
+  Platform,
+} from "src/models/payment.model";
+import { AndroidPurchaseState } from "src/types/payment.type";
 import {
   ConflictError,
   InvalidInAppProductPurchaseStateError,
@@ -26,6 +31,7 @@ import {
   CompletePaymentByMobileUserReq,
   InAppPlatform,
 } from "src/types/payment";
+import { RawPaymentDataByPlatform } from "src/types/payment.type";
 
 /**
  * @function getAccessToken
@@ -98,7 +104,7 @@ const getRawPayment = async (imp_uid: string) => {
       method: "get",
       headers: { Authorization: accessToken },
     });
-    return res.response as TRawPayment; // 조회한 결제 정보
+    return res.response as RawPaymentDataByPlatform<Platform.Portone>; // 조회한 결제 정보
   } catch (err: any) {
     switch (err.response.status) {
       case 404:
@@ -109,7 +115,10 @@ const getRawPayment = async (imp_uid: string) => {
 };
 
 export const findPaymentById = async (paymentId: Types.ObjectId | string) => {
-  const paymentRecord = await PaymentModel.findById(paymentId);
+  const paymentRecord = await PaymentModel.findOne({
+    _id: paymentId,
+    isDestroyed: false,
+  });
   return { payment: paymentRecord };
 };
 
@@ -120,7 +129,8 @@ export const findPaymentPaidByTitle = async (
   const paymentRecord = await PaymentModel.findOne({
     userId: userRecord._id,
     itemTitle,
-    status: "paid",
+    status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payment: paymentRecord };
 };
@@ -133,7 +143,8 @@ export const findPaymentChartSkinPaidByTitle = async (
     userId,
     itemType: "chartSkin",
     itemTitle: chartSkinTitle,
-    status: "paid",
+    status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payment: paymentRecord };
 };
@@ -142,13 +153,17 @@ export const findPaymentsChartSkinPaid = async (userId: Types.ObjectId) => {
   const paymentRecords = await PaymentModel.find({
     userId,
     itemType: "chartSkin",
-    status: "paid",
+    status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
   return { payments: paymentRecords };
 };
 
 export const findPaymentsByUserId = async (userId: Types.ObjectId | string) => {
-  const paymentRecordList = await PaymentModel.find({ userId });
+  const paymentRecordList = await PaymentModel.find({
+    userId,
+    isDestroyed: false,
+  });
   return { payments: paymentRecordList };
 };
 
@@ -162,7 +177,7 @@ export const createPaymentReady = async (
     itemType: itemRecord.type,
     itemTitle: itemRecord.title,
     amount: itemRecord.price,
-    status: "ready",
+    status: PaymentStatus.Ready,
   });
 
   /* Pre-register payment information */
@@ -182,9 +197,10 @@ export const completePaymentByUser = async (
   const rawPaymentData = await getRawPayment(imp_uid);
 
   // 포트원 결제 정보로 DB의 결제 정보 조회
-  const paymentRecord = await PaymentModel.findById(
-    rawPaymentData.merchant_uid
-  );
+  const paymentRecord = await PaymentModel.findOne({
+    _id: rawPaymentData.merchant_uid,
+    isDestroyed: false,
+  });
   if (!paymentRecord) throw new PaymentNotFoundError();
 
   if (!paymentRecord.userId.equals(userRecord._id))
@@ -192,11 +208,15 @@ export const completePaymentByUser = async (
 
   // 결제 정보 검증
   if (rawPaymentData.amount === paymentRecord.amount) {
-    if (rawPaymentData.status === "paid") {
+    if (rawPaymentData.status === PaymentStatus.Paid) {
       // 웹훅이 먼저 호출되지 않은 경우 DB에 결제 정보 저장
-      if (paymentRecord.status !== "paid") {
-        paymentRecord.status = "paid";
+      if (paymentRecord.status !== PaymentStatus.Paid) {
+        paymentRecord.status = PaymentStatus.Paid;
         paymentRecord.rawPaymentData = rawPaymentData;
+
+        paymentRecord.platform = Platform.Portone;
+        paymentRecord.uid = rawPaymentData.merchant_uid;
+
         await paymentRecord.save();
       }
       return { payment: paymentRecord };
@@ -212,21 +232,26 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
   const rawPaymentData = await getRawPayment(imp_uid);
 
   // 포트원 결제 정보로 DB의 결제 정보 조회
-  const paymentRecord = await PaymentModel.findById(
-    rawPaymentData.merchant_uid
-  );
+  const paymentRecord = await PaymentModel.findOne({
+    _id: rawPaymentData.merchant_uid,
+    isDestroyed: false,
+  });
   if (!paymentRecord) throw new PaymentNotFoundError();
 
   // DB에 결제 정보 저장
   if (rawPaymentData.amount === paymentRecord.amount) {
-    if (rawPaymentData.status === "paid") {
-      paymentRecord.status = "paid";
+    if (rawPaymentData.status === PaymentStatus.Paid) {
+      paymentRecord.status = PaymentStatus.Paid;
       paymentRecord.rawPaymentData = rawPaymentData;
+
+      paymentRecord.platform = Platform.Portone;
+      paymentRecord.uid = rawPaymentData.merchant_uid;
+
       await paymentRecord.save();
       return;
     }
-    if (rawPaymentData.status === "cancelled") {
-      paymentRecord.status = "cancelled";
+    if (rawPaymentData.status === PaymentStatus.Cancelled) {
+      paymentRecord.status = PaymentStatus.Cancelled;
       paymentRecord.rawPaymentData = rawPaymentData;
       await paymentRecord.save();
       return;
@@ -256,7 +281,8 @@ export const completePaymentByMobileUser = async (
   const exPaymentRecord = await PaymentModel.findOne({
     userId: userRecord._id,
     itemId: itemRecord._id,
-    status: "paid",
+    status: PaymentStatus.Paid,
+    isDestroyed: false,
   });
 
   if (exPaymentRecord) {
@@ -269,24 +295,24 @@ export const completePaymentByMobileUser = async (
 
       // 인앱 결제 정보 조회
       const helper = new GoogleInAppHelper();
-      const purchase = await helper.findInAppProductPurchase(
+      const rawPaymentData = await helper.findInAppProductPurchase(
         inAppProductId,
         token
       );
 
-      switch (purchase.purchaseState) {
-        case InAppProductPurchaseState.PAID: {
+      switch (rawPaymentData.purchaseState) {
+        case AndroidPurchaseState.PAID: {
           break;
         }
 
-        case InAppProductPurchaseState.CANCELLED:
-        case InAppProductPurchaseState.READY: {
+        case AndroidPurchaseState.CANCELLED:
+        case AndroidPurchaseState.READY: {
           throw new InvalidInAppProductPurchaseStateError();
         }
 
         default:
           throw new Error(
-            `Unexpected Error; Not supported purchase state (${purchase.purchaseState})`
+            `Unexpected Error; Not supported purchase state (${rawPaymentData.purchaseState})`
           );
       }
 
@@ -297,8 +323,10 @@ export const completePaymentByMobileUser = async (
         itemType: itemRecord.type,
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
-        status: "paid",
-        rawPaymentData: purchase,
+        status: PaymentStatus.Paid,
+        rawPaymentData: rawPaymentData,
+        platform: Platform.Android,
+        uid: rawPaymentData.orderId,
       });
 
       return paymentRecord;

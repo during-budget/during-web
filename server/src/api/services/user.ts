@@ -1,12 +1,12 @@
-import { AgreementModel } from "@models/Agreement";
-import { UserEntity } from "@models/User";
-import { UserAgreementModel } from "@models/UserAgreement";
+import { AgreementModel } from "@models/agreement.model";
+import { UserEntity } from "@models/user.model";
+import { UserAgreementModel } from "@models/userAgreement.model";
 import { InvalidError } from "src/errors/InvalidError";
 import { AgreementNotFoundError } from "src/errors/NotFoundError";
 import { AgreementType } from "src/types/agreement";
 import { User, convertToUser } from "src/types/user";
-import { PaymentModel } from "@models/Payment";
-import { ItemEntity, ItemModel } from "@models/Item";
+import { PaymentModel, PaymentStatus } from "@models/payment.model";
+import { ItemEntity, ItemModel } from "@models/item.model";
 
 const agree = async (
   user: Pick<UserEntity, "_id">,
@@ -85,7 +85,8 @@ export const current = async (userEntity: UserEntity): Promise<User> => {
   const paidItems = await (async (): Promise<Array<ItemEntity> | undefined> => {
     const paidPayments = await PaymentModel.find({
       userId: userEntity._id,
-      status: "paid",
+      status: PaymentStatus.Paid,
+      isDestroyed: false,
     });
 
     if (!paidPayments.length) {

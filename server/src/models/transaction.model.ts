@@ -83,5 +83,5 @@ transactionSchema.index({
   Date: -1,
 });
 
-const Transaction = model<ITransaction>("Transaction", transactionSchema);
-export { Transaction, ITransaction };
+const TransactionModel = model<ITransaction>("Transaction", transactionSchema);
+export { TransactionModel, ITransaction };

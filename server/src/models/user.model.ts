@@ -9,7 +9,7 @@ import {
   assetSchema,
   cardSchema,
   paymentMethodSchema,
-} from "./PaymentMethod";
+} from "./paymentMethod.model";
 
 interface ICategory {
   _id: Types.ObjectId;

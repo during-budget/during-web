@@ -1,5 +1,5 @@
 import { HydratedDocument, Types } from "mongoose";
-import { ICategory, UserEntity } from "src/models/User";
+import { ICategory, UserEntity } from "src/models/user.model";
 
 import { findDocumentById } from "src/utils/document";
 

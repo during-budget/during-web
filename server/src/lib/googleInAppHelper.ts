@@ -1,12 +1,10 @@
+import { Platform } from "@models/payment.model";
 import {
   InAppProductNotFoundError,
   InAppProductPurchaseNotFoundError,
 } from "src/errors/NotFoundError";
-import {
-  GoogleAndroidPublisher,
-  InAppProduct,
-  InAppProductPurchase,
-} from "src/lib/googleAPIs";
+import { GoogleAndroidPublisher, InAppProduct } from "src/lib/googleAPIs";
+import { RawPaymentDataByPlatform } from "src/types/payment.type";
 
 export class GoogleInAppHelper {
   client: GoogleAndroidPublisher;
@@ -36,7 +34,7 @@ export class GoogleInAppHelper {
   async findInAppProductPurchase(
     sku: string,
     token: string
-  ): Promise<InAppProductPurchase> {
+  ): Promise<RawPaymentDataByPlatform<Platform.Android>> {
     try {
       const inAppProduct = await this.client.getInAppProduct(sku);
 
