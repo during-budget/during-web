@@ -1,6 +1,11 @@
+import { Platform } from "@models/payment.model";
 import axios from "axios";
 import { google } from "googleapis";
 import config from "src/config";
+import {
+  AndroidRawPaymentData,
+  RawPaymentDataByPlatform,
+} from "src/types/payment.type";
 
 // references:
 // https://medium.com/@su_bak/google-play-android-developer-api-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95-d39ca46ff9ca
@@ -23,7 +28,8 @@ type GetInAppProductsResponse = {
 
 type GetInAppProductResponse = InAppProduct;
 
-type GetInAppProductPurchaseResponse = InAppProductPurchase;
+type GetInAppProductPurchaseResponse =
+  RawPaymentDataByPlatform<Platform.Android>;
 
 // reference: https://developers.google.com/android-publisher/api-ref/rest/v3/inappproducts?hl=ko#InAppProductListing
 export type InAppProduct = {
@@ -49,16 +55,7 @@ export type InAppProduct = {
   | { managedProductTaxesAndComplianceSettings: object }
 );
 
-// reference: https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products?hl=ko#ProductPurchase
-export enum InAppProductPurchaseState {
-  PAID = 0,
-  CANCELLED = 1,
-  READY = 2,
-}
-
-export type InAppProductPurchase = {
-  purchaseState: InAppProductPurchaseState;
-};
+export type InAppProductPurchase = AndroidRawPaymentData;
 
 export class GoogleAndroidPublisher {
   constructor(

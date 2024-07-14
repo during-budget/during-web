@@ -18,9 +18,9 @@ import {
   PaymentEntity,
   PaymentModel,
   PaymentStatus,
-  TRawPayment,
+  Platform,
 } from "src/models/payment.model";
-import { InAppProductPurchaseState } from "src/lib/googleAPIs";
+import { AndroidPurchaseState } from "src/types/payment.type";
 import {
   ConflictError,
   InvalidInAppProductPurchaseStateError,
@@ -31,6 +31,7 @@ import {
   CompletePaymentByMobileUserReq,
   InAppPlatform,
 } from "src/types/payment";
+import { RawPaymentDataByPlatform } from "src/types/payment.type";
 
 /**
  * @function getAccessToken
@@ -103,7 +104,7 @@ const getRawPayment = async (imp_uid: string) => {
       method: "get",
       headers: { Authorization: accessToken },
     });
-    return res.response as TRawPayment; // 조회한 결제 정보
+    return res.response as RawPaymentDataByPlatform<Platform.Portone>; // 조회한 결제 정보
   } catch (err: any) {
     switch (err.response.status) {
       case 404:
@@ -212,6 +213,10 @@ export const completePaymentByUser = async (
       if (paymentRecord.status !== PaymentStatus.Paid) {
         paymentRecord.status = PaymentStatus.Paid;
         paymentRecord.rawPaymentData = rawPaymentData;
+
+        paymentRecord.platform = Platform.Portone;
+        paymentRecord.uid = rawPaymentData.merchant_uid;
+
         await paymentRecord.save();
       }
       return { payment: paymentRecord };
@@ -238,6 +243,10 @@ export const completePaymentByWebhook = async (imp_uid: string) => {
     if (rawPaymentData.status === PaymentStatus.Paid) {
       paymentRecord.status = PaymentStatus.Paid;
       paymentRecord.rawPaymentData = rawPaymentData;
+
+      paymentRecord.platform = Platform.Portone;
+      paymentRecord.uid = rawPaymentData.merchant_uid;
+
       await paymentRecord.save();
       return;
     }
@@ -286,24 +295,24 @@ export const completePaymentByMobileUser = async (
 
       // 인앱 결제 정보 조회
       const helper = new GoogleInAppHelper();
-      const purchase = await helper.findInAppProductPurchase(
+      const rawPaymentData = await helper.findInAppProductPurchase(
         inAppProductId,
         token
       );
 
-      switch (purchase.purchaseState) {
-        case InAppProductPurchaseState.PAID: {
+      switch (rawPaymentData.purchaseState) {
+        case AndroidPurchaseState.PAID: {
           break;
         }
 
-        case InAppProductPurchaseState.CANCELLED:
-        case InAppProductPurchaseState.READY: {
+        case AndroidPurchaseState.CANCELLED:
+        case AndroidPurchaseState.READY: {
           throw new InvalidInAppProductPurchaseStateError();
         }
 
         default:
           throw new Error(
-            `Unexpected Error; Not supported purchase state (${purchase.purchaseState})`
+            `Unexpected Error; Not supported purchase state (${rawPaymentData.purchaseState})`
           );
       }
 
@@ -315,7 +324,9 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: purchase,
+        rawPaymentData: rawPaymentData,
+        platform: Platform.Android,
+        uid: rawPaymentData.orderId,
       });
 
       return paymentRecord;

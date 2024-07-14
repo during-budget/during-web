@@ -5,6 +5,7 @@ import { PaymentService } from "src/services/payment.service";
 
 const router = express.Router();
 
+/** migration 1 */
 router.post(
   "/set-isDestroyed",
   // isAdmin,
@@ -15,6 +16,7 @@ router.post(
   })
 );
 
+/** migration 2 */
 router.post(
   "/destroy-unpaid-payments",
   // isAdmin,
@@ -22,6 +24,17 @@ router.post(
     const { count } = await PaymentService.destroyUnpaidPayments();
 
     return res.status(200).send({ count });
+  })
+);
+
+/** migration 3 */
+router.post(
+  "/set-platform",
+  // isAdmin,
+  wrapAsync(async (req: Request, res: Response) => {
+    const result = await PaymentService.setPlatform();
+
+    return res.status(200).send(result);
   })
 );
 
