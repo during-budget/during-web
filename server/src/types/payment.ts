@@ -33,6 +33,7 @@ export function validateIOSPayload(
 export type CompletePaymentByIOSReq = {
   platform: InAppPlatform.IOS;
   payload: IOSPayload;
+  isSendbox: boolean;
 };
 
 export type CompletePaymentByMobileUserReq =

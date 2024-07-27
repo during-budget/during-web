@@ -12,6 +12,9 @@ import {
   FetchingPaymentFailedError,
   PaiedAlreadyError,
   PaymentIsNotPaidError,
+  PaymentItemNotMatchError,
+  PaymentUIDDuplicatedError,
+  PaymentValidationFailedError,
 } from "src/errors/PaymentError";
 import { HydratedDocument, Types } from "mongoose";
 import {
@@ -32,6 +35,7 @@ import {
   InAppPlatform,
 } from "src/types/payment";
 import { RawPaymentDataByPlatform } from "src/types/payment.type";
+import { AppleVerifyReceiptResultStatus, IAPHelper } from "src/lib/IAPHelper";
 
 /**
  * @function getAccessToken
@@ -333,9 +337,54 @@ export const completePaymentByMobileUser = async (
     }
 
     case InAppPlatform.IOS: {
-      throw new Error(
-        "Unexpected Error; IOS receipt validation is not available now"
+      const { payload, isSendbox } = req;
+
+      const { status, rawPaymentData } = await IAPHelper.IOS.validate(
+        payload.transactionReceipt,
+        isSendbox
       );
+
+      if (status !== AppleVerifyReceiptResultStatus.Success) {
+        throw new PaymentValidationFailedError({
+          status,
+          rawPaymentData,
+        });
+      }
+
+      const { product_id: productId, transaction_id: transactionId } =
+        rawPaymentData;
+
+      if (itemRecord.title !== productId) {
+        throw new PaymentItemNotMatchError({
+          itemTitle: itemRecord.title,
+          productId,
+        });
+      }
+
+      const isUidDuplicated = !!(await PaymentModel.findOne({
+        platform: Platform.IOS,
+        uid: transactionId,
+        isDestroyed: false,
+      }));
+
+      if (isUidDuplicated) {
+        throw new PaymentUIDDuplicatedError({ uid: transactionId });
+      }
+
+      // DB에 결제 정보 생성
+      const paymentRecord = await PaymentModel.create({
+        userId: userRecord._id,
+        itemId: itemRecord._id,
+        itemType: itemRecord.type,
+        itemTitle: itemRecord.title,
+        amount: itemRecord.price,
+        status: PaymentStatus.Paid,
+        rawPaymentData: rawPaymentData,
+        platform: Platform.IOS,
+        uid: transactionId,
+      });
+
+      return paymentRecord;
     }
 
     default: {
