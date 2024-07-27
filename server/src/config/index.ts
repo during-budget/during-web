@@ -98,6 +98,7 @@ const config: configType = {
       private_key: process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY,
     };
   })(),
+  APPLE_SHARED_SECRET: process.env.APPLE_SHARED_SECRET ?? "",
 };
 
 console.log(`✅ config is set; `, config);
