@@ -47,3 +47,33 @@ export class FakePaymentAttemptError extends PaymentError {
     this.status = 409;
   }
 }
+
+export class PaymentValidationFailedError extends PaymentError {
+  constructor(debug?: Object) {
+    super();
+    this.message = "PAYMENT_VALIDATION_FAILED";
+    this.status = 409;
+
+    this.logError(debug);
+  }
+}
+
+export class PaymentItemNotMatchError extends PaymentError {
+  constructor(debug?: Object) {
+    super();
+    this.message = "PAYMENT_ITEM_NOT_MATCH";
+    this.status = 409;
+
+    this.logError(debug);
+  }
+}
+
+export class PaymentUIDDuplicatedError extends PaymentError {
+  constructor(debug?: Object) {
+    super();
+    this.message = "PAYMENT_UID_DUPLICATED";
+    this.status = 409;
+
+    this.logError(debug);
+  }
+}

@@ -3,4 +3,10 @@ export class CustomError extends Error {
     super();
     this.name = "Error";
   }
+
+  protected logError(debug?: Object) {
+    if (debug) {
+      console.log("[ERROR]", this.message, debug);
+    }
+  }
 }
