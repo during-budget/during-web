@@ -33,6 +33,7 @@ type configType = {
 
   GOOGLE_CREDENTIALS: Pick<JWTInput, "client_email" | "private_key">;
 
+  APPLE_SHARED_SECRET: string;
   //   SERVER_URL: string;
 
   //   CLIENT: string;
