@@ -91,6 +91,6 @@ const stage = setEnv();
 console.log(`✅ ENV is set; Stage is ${stage}`);
 
 const config = getConfig(stage);
-console.log("✅ Config is set: ");
+console.log("✅ Config is set");
 
 export default config;
