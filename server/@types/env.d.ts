@@ -8,7 +8,6 @@ declare namespace NodeJS {
     SERVER_URL?: string;
     SERVER_PORT: string;
     CLIENT: string;
-    CLIENT_ADMIN: string;
     DB_URL: string;
 
     GOOGLE_CLIENT_ID: string;

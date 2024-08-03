@@ -25,7 +25,7 @@ const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
-const clientAdminURL = process.env.CLIENT_ADMIN.trim();
+// const clientAdminURL = process.env.CLIENT_ADMIN.trim();
 
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
@@ -38,28 +38,28 @@ export const find = async (req: Request, res: Response) => {
   });
 };
 
-export const callbackAdmin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  passport.authenticate(
-    "googleAdmin",
-    async (authError: Error, user: Express.User) => {
-      try {
-        if (authError) throw authError;
-        return req.login(user, (loginError) => {
-          if (loginError) throw loginError;
-          return res.redirect(clientAdminURL + "/login/redirect");
-        });
-      } catch (err: any) {
-        return res.redirect(
-          clientAdminURL + "?error=" + encodeURIComponent(err.message)
-        );
-      }
-    }
-  )(req, res, next);
-};
+// export const callbackAdmin = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   passport.authenticate(
+//     "googleAdmin",
+//     async (authError: Error, user: Express.User) => {
+//       try {
+//         if (authError) throw authError;
+//         return req.login(user, (loginError) => {
+//           if (loginError) throw loginError;
+//           return res.redirect(clientAdminURL + "/login/redirect");
+//         });
+//       } catch (err: any) {
+//         return res.redirect(
+//           clientAdminURL + "?error=" + encodeURIComponent(err.message)
+//         );
+//       }
+//     }
+//   )(req, res, next);
+// };
 
 export const callback = async (
   req: Request,
