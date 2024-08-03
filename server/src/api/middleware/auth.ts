@@ -77,14 +77,14 @@ export function validateAPIKey(
   }
 
   if (!(API_KEY_COOKIE in req.cookies)) {
-    return res.status(403).send({
+    return res.status(400).send({
       code: "API_KEY_REQUIRED",
       message: "API key is required",
     });
   }
 
   if (!API_KEYS.has(req.cookies[API_KEY_COOKIE])) {
-    return res.status(403).send({
+    return res.status(400).send({
       code: "API_KEY_INVALID",
       message: "API key is invalid or expired",
     });
