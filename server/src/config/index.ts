@@ -17,6 +17,7 @@ function setEnv(): Stage {
       break;
     }
 
+    /** @deprecated */
     case "development": {
       dotenv.config({ path: resolve(__dirname, `../../.env.development`) });
       return mode as Stage;
