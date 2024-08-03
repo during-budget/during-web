@@ -13,7 +13,7 @@ function setEnv(): Stage {
     }
 
     case "develop": {
-      dotenv.config({ path: resolve(__dirname, `../../.env.develop`) });
+      dotenv.config();
       break;
     }
 
@@ -91,6 +91,6 @@ const stage = setEnv();
 console.log(`✅ ENV is set; Stage is ${stage}`);
 
 const config = getConfig(stage);
-console.log("✅ Config is set: ", config);
+console.log("✅ Config is set: ");
 
 export default config;
