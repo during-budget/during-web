@@ -1,7 +1,10 @@
 import { JWTInput } from "google-auth-library";
 
-type configType = {
-  NODE_ENV: string;
+export type Stage = "local" | "develop" | "development" | "production";
+
+// TODO: rename as Config
+export type configType = {
+  stage: Stage;
   allowList: string[];
 
   SERVER_PORT: string;
@@ -34,6 +37,13 @@ type configType = {
   GOOGLE_CREDENTIALS: Pick<JWTInput, "client_email" | "private_key">;
 
   APPLE_SHARED_SECRET: string;
+
+  CRYPTO: {
+    KEY: string;
+    SALT: string;
+    ALGORITHM: string;
+  };
+
   //   SERVER_URL: string;
 
   //   CLIENT: string;
@@ -51,10 +61,6 @@ type configType = {
   //   NODEMAILER_USER: string;
   //   NODEMAILER_PASS: string;
 
-  //   CRYPTO_KEY: string;
-  //   CRYPTO_SALT: string;
-  //   CRYPTO_ALGORITHM: string;
-
   //   S3_ACESSKEYID: string;
   //   S3_SECRETACCESSKEY: string;
   //   S3_BUCKET_LOGS: string;
@@ -62,5 +68,3 @@ type configType = {
   //   PORTONE_IMP_KEY: string;
   //   PORTONE_IMP_SECRET: string;
 };
-
-export type { configType };

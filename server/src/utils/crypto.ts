@@ -1,12 +1,9 @@
 // 양방향 암호화 & 복호화
 import crypto from "crypto";
+import config from "src/config";
 
-const key = crypto.scryptSync(
-  process.env.CRYPTO_KEY,
-  process.env.CRYPTO_SALT,
-  32
-);
-const algorithm = process.env.CRYPTO_ALGORITHM;
+const key = crypto.scryptSync(config.CRYPTO.KEY, config.CRYPTO.SALT, 32);
+const algorithm = config.CRYPTO.ALGORITHM;
 const iv = crypto.randomBytes(16);
 
 // 암호화 메서드

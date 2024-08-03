@@ -4,6 +4,8 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
+    "local": "cross-env NODE_ENV=local npm run build:live",
+    "dev:new": "cross-env NODE_ENV=develop npm run build:live",
     "dev": "cross-env NODE_ENV=development npm run build:live",
     "prod": "cross-env NODE_ENV=production node -r ./tsconfig-paths-bootstrap.js dist/src/app.js",
     "build": "tsc -p . && npm run build:copy-files",
