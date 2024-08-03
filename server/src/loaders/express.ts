@@ -26,7 +26,7 @@ export const API_KEYS = new Set();
 export const API_KEY_COOKIE = "during-api-key";
 
 const setupCors = (app: Express, config: configType) => {
-  if (["local", "develop"].includes(config.stage)) {
+  if (config.stage === "develop") {
     app.use(
       cors((req, callback) => {
         const corsOptions = {
@@ -54,7 +54,7 @@ const setupSession = async (app: Express, config: configType) => {
     secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
   };
 
-  if (["local", "develop"].includes(config.stage)) {
+  if (config.stage === "develop") {
     cookieOptions.secure = true;
     cookieOptions.sameSite = "none";
   }

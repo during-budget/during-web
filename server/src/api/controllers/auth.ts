@@ -31,7 +31,7 @@ const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 // const clientAdminURL = process.env.CLIENT_ADMIN.trim();
 
 function logSignedSID(sid: string) {
-  if (["local", "develop"].includes(config.stage)) {
+  if (config.stage === "develop") {
     const signedSID = "s:" + cookieSignature.sign(sid, config.SESSION_KEY);
 
     console.info(`🔑 connect.sid: ${signedSID}`);
