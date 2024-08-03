@@ -26,7 +26,7 @@ export const API_KEYS = new Set();
 export const API_KEY_COOKIE = "during-api-key";
 
 const setupCors = (app: Express, config: configType) => {
-  if (config.stage === "develop") {
+  if (["local", "develop"].includes(config.stage)) {
     app.use(
       cors((req, callback) => {
         const corsOptions = {
@@ -54,7 +54,7 @@ const setupSession = async (app: Express, config: configType) => {
     secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
   };
 
-  if (config.stage === "develop") {
+  if (["local", "develop"].includes(config.stage)) {
     cookieOptions.secure = true;
     cookieOptions.sameSite = "none";
   }
@@ -63,7 +63,7 @@ const setupSession = async (app: Express, config: configType) => {
     session({
       resave: false, // req마다 session 새로 저장
       saveUninitialized: false, // uninitialized session을 저장함. false인 것이 리소스 활용 측면에서 유리하지만 rolling을 사용하려면 true가 되어야 한다.
-      secret: process.env.SESSION_KEY.trim(),
+      secret: config.SESSION_KEY,
       cookie: cookieOptions,
       rolling: true,
       store: new RedisStore({

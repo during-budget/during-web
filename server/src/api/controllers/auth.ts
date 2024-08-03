@@ -21,11 +21,22 @@ import { SnsIdNotFoundError } from "src/errors/NotFoundError";
 import { AtLeastOneSnsIdIsRequiredError } from "src/errors/ConfilicError";
 import { FieldInvalidError } from "src/errors/InvalidError";
 import { convertToUser } from "src/types/user";
+import cookieSignature from "cookie-signature";
+import config from "src/config";
+
 const AuthService = UserService.AuthService;
 
 const clientRedirectURL = process.env.CLIENT.trim() + "/redirect/auth";
 
 // const clientAdminURL = process.env.CLIENT_ADMIN.trim();
+
+function logSignedSID(sid: string) {
+  if (["local", "develop"].includes(config.stage)) {
+    const signedSID = "s:" + cookieSignature.sign(sid, config.SESSION_KEY);
+
+    console.info(`🔑 connect.sid: ${signedSID}`);
+  }
+}
 
 export const find = async (req: Request, res: Response) => {
   const user = req.user!;
@@ -93,9 +104,9 @@ export const callback = async (
         /* _____ 소셜 로그인 _____ */
         if (type === "login") {
           return req.login(user, (loginError) => {
-            if (loginError) {
-              throw loginError;
-            }
+            if (loginError) throw loginError;
+            logSignedSID(req.sessionID);
+
             // 로그인 성공
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
             return res.redirect(
@@ -106,9 +117,9 @@ export const callback = async (
         } else if (type === "register") {
           /* _____ 소셜 회원 가입 _____ */
           return req.login(user, (loginError) => {
-            if (loginError) {
-              throw loginError;
-            }
+            if (loginError) throw loginError;
+            logSignedSID(req.sessionID);
+
             // 회원 가입 후 로그인 성공
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
             return res.redirect(
@@ -171,6 +182,8 @@ export const local = async (
         if ((type === "loginVerify" || type === "registerVerify") && user) {
           return req.login(user, (loginError) => {
             if (loginError) throw loginError;
+            logSignedSID(req.sessionID);
+
             /* set maxAge as 1 year if auto login is requested */
             if (req.body.persist === true) {
               req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
@@ -214,6 +227,8 @@ export const guest = async (
 
         return req.login(user, (loginError) => {
           if (loginError) throw loginError;
+          logSignedSID(req.sessionID);
+
           /* set maxAge as 1 year if auto login is requested */
           if (req.body.persist === true) {
             req.session.cookie["maxAge"] = 365 * 24 * 60 * 60 * 1000; //1 year
