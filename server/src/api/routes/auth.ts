@@ -7,14 +7,14 @@ import { wrapAsync } from "../middleware/error";
 
 router.get("/", isLoggedIn, auth.find);
 
-router.get(
-  "/google/admin",
-  isNotLoggedIn,
-  passport.authenticate("googleAdmin", {
-    scope: ["profile"],
-  })
-);
-router.get("/google/admin/callback", auth.callbackAdmin);
+// router.get(
+//   "/google/admin",
+//   isNotLoggedIn,
+//   passport.authenticate("googleAdmin", {
+//     scope: ["profile"],
+//   })
+// );
+// router.get("/google/admin/callback", auth.callbackAdmin);
 
 router.get(
   "/google",
