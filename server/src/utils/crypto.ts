@@ -21,3 +21,7 @@ export const decipher = (text: string) => {
   result += deciper.final("utf8");
   return result;
 };
+
+export function randomKey(length: number) {
+  return crypto.randomBytes(length).toString("hex");
+}
