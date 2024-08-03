@@ -44,6 +44,8 @@ export type configType = {
     ALGORITHM: string;
   };
 
+  SESSION_KEY: string;
+
   //   SERVER_URL: string;
 
   //   CLIENT: string;
@@ -56,7 +58,6 @@ export type configType = {
   //   KAKAO_CLIENT_ID: string;
 
   //   SALT_ROUNDS: string;
-  //   SESSION_KEY: string;
 
   //   NODEMAILER_USER: string;
   //   NODEMAILER_PASS: string;

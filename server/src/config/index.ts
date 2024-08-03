@@ -77,6 +77,7 @@ function getConfig(stage: Stage): configType {
         callbackURL: "/api/auth/kakao/callback",
       },
     },
+    SESSION_KEY: process.env.SESSION_KEY.trim(),
     GOOGLE_CREDENTIALS: {
       client_email: process.env.GOOGLE_CREDENTIALS_CLIENT_EMAIL,
       private_key: process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.split(
