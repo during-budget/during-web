@@ -4,6 +4,7 @@ import {
   NOT_LOGGED_IN,
   NOT_PERMITTED,
 } from "src/api/message";
+import { API_KEY_COOKIE, API_KEYS } from "src/loaders/express";
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
@@ -65,3 +66,29 @@ export const isPortOneWebHook = (
     res.status(400).send({ message: NOT_LOGGED_IN });
   }
 };
+
+export function validateAPIKey(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (req.url === "/api/develop/generate-api-key") {
+    return next();
+  }
+
+  if (!(API_KEY_COOKIE in req.cookies)) {
+    return res.status(403).send({
+      code: "API_KEY_REQUIRED",
+      message: "API key is required",
+    });
+  }
+
+  if (!API_KEYS.has(req.cookies[API_KEY_COOKIE])) {
+    return res.status(403).send({
+      code: "API_KEY_INVALID",
+      message: "API key is invalid or expired",
+    });
+  }
+
+  return next();
+}

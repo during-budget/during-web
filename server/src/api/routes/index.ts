@@ -14,6 +14,7 @@ import agreements from "./agreements";
 import test from "./test";
 import backups from "./backup.controller";
 import migrationRouter from "./migration.router";
+import developRouter from "./develop.controller";
 
 export default [
   { label: "users", routes: users },
@@ -32,4 +33,5 @@ export default [
   { label: "test", routes: test },
   { label: "backups", routes: backups },
   { label: "migrations", routes: migrationRouter },
+  { label: "develop", routes: developRouter },
 ];
