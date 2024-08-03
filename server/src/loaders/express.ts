@@ -14,6 +14,7 @@ import { client as redisClient } from "./redis";
 import { logger } from "src/api/middleware/loggers";
 import routers from "src/api/routes";
 import { configType } from "src/config/type";
+import { validateAPIKey } from "src/api/middleware/auth";
 
 const setupDefault = (app: Express) => {
   app.use(express.json());
@@ -21,25 +22,49 @@ const setupDefault = (app: Express) => {
   app.use(cookieParser());
 };
 
-const setupCors = (app: Express, allowList: string[]) => {
-  app.use(
-    cors({
-      origin: allowList,
-      credentials: true,
-    })
-  );
+export const API_KEYS = new Set();
+export const API_KEY_COOKIE = "during-api-key";
+
+const setupCors = (app: Express, config: configType) => {
+  if (config.stage === "develop") {
+    app.use(
+      cors((req, callback) => {
+        const corsOptions = {
+          origin: req.header("Origin"), // 요청의 Origin을 허용
+          credentials: true, // 자격 증명 모드를 허용
+        };
+        callback(null, corsOptions); // CORS 설정을 동적으로 적용
+      })
+    );
+
+    app.use(validateAPIKey);
+  } else {
+    app.use(
+      cors({
+        origin: config.allowList,
+        credentials: true,
+      })
+    );
+  }
 };
 
-const setupSession = async (app: Express) => {
+const setupSession = async (app: Express, config: configType) => {
+  const cookieOptions: session.CookieOptions = {
+    httpOnly: true, // 브라우저에서 쿠키값에 대한 접근을 하지 못하게 막는다.
+    secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
+  };
+
+  if (config.stage === "develop") {
+    cookieOptions.secure = true;
+    cookieOptions.sameSite = "none";
+  }
+
   app.use(
     session({
       resave: false, // req마다 session 새로 저장
       saveUninitialized: false, // uninitialized session을 저장함. false인 것이 리소스 활용 측면에서 유리하지만 rolling을 사용하려면 true가 되어야 한다.
       secret: process.env.SESSION_KEY.trim(),
-      cookie: {
-        httpOnly: true, // 브라우저에서 쿠키값에 대한 접근을 하지 못하게 막는다.
-        secure: false, // HTTPS 통신 외에서는 쿠키를 전달하지 않는다.
-      },
+      cookie: cookieOptions,
       rolling: true,
       store: new RedisStore({
         client: redisClient as unknown as connectRedis.Client,
@@ -103,8 +128,8 @@ const setupErrorHandler = (app: Express) => {
 
 export default async (app: Express, config: configType) => {
   setupDefault(app);
-  setupCors(app, config.allowList);
-  setupSession(app);
+  setupCors(app, config);
+  setupSession(app, config);
   setupLogger(app);
   setupRoutes(app);
   setupErrorHandler(app);
