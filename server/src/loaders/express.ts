@@ -27,17 +27,15 @@ export const API_KEY_COOKIE = "during-api-key";
 
 const setupCors = (app: Express, config: configType) => {
   if (["local", "develop"].includes(config.stage)) {
-    // app.use(
-    //   cors((req, callback) => {
-    //     const corsOptions = {
-    //       origin: req.header("Origin"), // 요청의 Origin을 허용
-    //       credentials: true, // 자격 증명 모드를 허용
-    //     };
-    //     callback(null, corsOptions); // CORS 설정을 동적으로 적용
-    //   })
-    // );
-
-    app.use(cors());
+    app.use(
+      cors((req, callback) => {
+        const corsOptions = {
+          origin: req.header("Origin"), // 요청의 Origin을 허용
+          credentials: true, // 자격 증명 모드를 허용
+        };
+        callback(null, corsOptions); // CORS 설정을 동적으로 적용
+      })
+    );
 
     app.use(validateAPIKey);
   } else {
