@@ -328,7 +328,7 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: { ...rawPaymentData, token },
         platform: Platform.Android,
         uid: rawPaymentData.orderId,
       });
@@ -337,12 +337,18 @@ export const completePaymentByMobileUser = async (
     }
 
     case InAppPlatform.IOS: {
-      const { payload, isSendbox } = req;
+      const { payload } = req;
 
-      const { status, rawPaymentData } = await IAPHelper.IOS.validate(
+      let resp = await IAPHelper.IOS.validate(
         payload.transactionReceipt,
-        isSendbox
+        false
       );
+
+      if (resp.status === AppleVerifyReceiptResultStatus.Error007) {
+        resp = await IAPHelper.IOS.validate(payload.transactionReceipt, true);
+      }
+
+      const { status, rawPaymentData } = resp;
 
       if (status !== AppleVerifyReceiptResultStatus.Success) {
         throw new PaymentValidationFailedError({
@@ -379,7 +385,10 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: {
+          ...rawPaymentData,
+          transactionReceipt: payload.transactionReceipt,
+        },
         platform: Platform.IOS,
         uid: transactionId,
       });

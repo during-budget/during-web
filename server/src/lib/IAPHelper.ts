@@ -17,6 +17,7 @@ type AppleReceiptInfo = {
   original_purchase_date_ms: string; // ex) "1720578521000";
   original_purchase_date_pst: string; // ex)  "2024-07-09 19:28:41 America/Los_Angeles";
   is_trial_period: string; // ex) "false";
+  cancellation_date?: string; // ex)  "2023-01-05 12:00:00 Etc/GMT",  // 이 필드가 존재하면 환불된 것
 };
 
 // NOTE: https://developer.apple.com/documentation/appstorereceipts/responsebody/receipt
