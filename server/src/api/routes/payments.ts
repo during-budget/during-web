@@ -56,7 +56,7 @@ router.post(
           }
 
           case InAppPlatform.IOS: {
-            for (let field of ["payload", "isSendbox"]) {
+            for (let field of ["payload"]) {
               if (!(field in body)) throw new FieldRequiredError(field);
             }
 
