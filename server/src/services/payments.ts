@@ -328,7 +328,7 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: { ...rawPaymentData, token },
         platform: Platform.Android,
         uid: rawPaymentData.orderId,
       });
@@ -379,7 +379,10 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: {
+          ...rawPaymentData,
+          transactionReceipt: payload.transactionReceipt,
+        },
         platform: Platform.IOS,
         uid: transactionId,
       });
