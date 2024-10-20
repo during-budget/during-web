@@ -6,102 +6,129 @@ import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 import { AndroidPurchaseState } from "src/types/payment.type";
 import { AppleVerifyReceiptResultStatus, IAPHelper } from "src/lib/IAPHelper";
 
+const BATCH_SIZE = 100;
 export class PaymentService {
   static readonly modelService = PaymentModelService;
 
   static async syncCancelledInappPayments() {
-    const paidPaymentsByPlatform = groupBy(
-      await this.modelService.model.find({
-        status: PaymentStatus.Paid,
-        platform: { $in: [Platform.Android, Platform.IOS] },
-        isDestroyed: false,
-      }),
-      "platform"
-    );
-
     const paymentIdsToCancel: Array<Types.ObjectId> = [];
-
     const helper = new GoogleInAppHelper();
 
-    await Promise.all([
-      (paidPaymentsByPlatform[Platform.Android] ?? []).map(
-        async (androidPayment) => {
-          if (
-            !(
-              "token" in androidPayment.rawPaymentData &&
-              typeof androidPayment.rawPaymentData.token === "string" &&
-              androidPayment.rawPaymentData.token
-            )
-          ) {
-            return;
-          }
+    let skip = 0;
+    let hasMore = true;
 
-          const { purchaseState } = await helper.findInAppProductPurchase(
-            androidPayment.itemTitle,
-            androidPayment.rawPaymentData.token
-          );
+    while (hasMore) {
+      const paidPayments = await this.modelService.model
+        .find({
+          status: PaymentStatus.Paid,
+          platform: { $in: [Platform.Android, Platform.IOS] },
+          isDestroyed: false,
+        })
+        .skip(skip)
+        .limit(BATCH_SIZE)
+        .exec();
 
-          if (purchaseState === AndroidPurchaseState.CANCELLED) {
-            paymentIdsToCancel.push(androidPayment._id);
-          }
-        }
-      ),
-      (paidPaymentsByPlatform[Platform.IOS] ?? []).map(async (iosPayment) => {
-        if (
-          !(
-            "transactionReceipt" in iosPayment.rawPaymentData &&
-            typeof iosPayment.rawPaymentData.transactionReceipt === "string" &&
-            iosPayment.rawPaymentData.transactionReceipt
-          )
-        ) {
-          return;
-        }
+      await Promise.all(
+        paidPayments.map(async (payment) => {
+          switch (payment.platform) {
+            case Platform.Android: {
+              if (
+                !(
+                  "token" in payment.rawPaymentData &&
+                  typeof payment.rawPaymentData.token === "string" &&
+                  payment.rawPaymentData.token
+                )
+              ) {
+                return;
+              }
 
-        const transactionReceipt = iosPayment.rawPaymentData.transactionReceipt;
-
-        const validated = await (async () => {
-          const validated1 = await IAPHelper.IOS.validate(
-            transactionReceipt,
-            false
-          );
-
-          switch (validated1.status) {
-            case AppleVerifyReceiptResultStatus.Success: {
-              return validated1;
-            }
-
-            case AppleVerifyReceiptResultStatus.Error007: {
-              const validated2 = await IAPHelper.IOS.validate(
-                transactionReceipt,
-                true
+              const { purchaseState } = await helper.findInAppProductPurchase(
+                payment.itemTitle,
+                payment.rawPaymentData.token
               );
 
-              switch (validated2.status) {
-                case AppleVerifyReceiptResultStatus.Success: {
-                  return validated2;
-                }
-
-                default: {
-                  return null;
-                }
+              if (purchaseState === AndroidPurchaseState.CANCELLED) {
+                paymentIdsToCancel.push(payment._id);
               }
+
+              break;
+            }
+
+            case Platform.IOS: {
+              if (
+                !(
+                  "transactionReceipt" in payment.rawPaymentData &&
+                  typeof payment.rawPaymentData.transactionReceipt ===
+                    "string" &&
+                  payment.rawPaymentData.transactionReceipt
+                )
+              ) {
+                return;
+              }
+
+              const transactionReceipt =
+                payment.rawPaymentData.transactionReceipt;
+
+              const validated = await (async () => {
+                const validated1 = await IAPHelper.IOS.validate(
+                  transactionReceipt,
+                  false
+                );
+
+                switch (validated1.status) {
+                  case AppleVerifyReceiptResultStatus.Success: {
+                    return validated1;
+                  }
+
+                  case AppleVerifyReceiptResultStatus.Error007: {
+                    const validated2 = await IAPHelper.IOS.validate(
+                      transactionReceipt,
+                      true
+                    );
+
+                    switch (validated2.status) {
+                      case AppleVerifyReceiptResultStatus.Success: {
+                        return validated2;
+                      }
+
+                      default: {
+                        return null;
+                      }
+                    }
+                  }
+
+                  default: {
+                    return null;
+                  }
+                }
+              })();
+
+              if (!validated) {
+                return null;
+              }
+
+              if ("cancellation_date" in validated.rawPaymentData) {
+                paymentIdsToCancel.push(payment._id);
+              }
+
+              break;
             }
 
             default: {
-              return null;
+              break;
             }
           }
-        })();
+        })
+      );
 
-        if (!validated) {
-          return null;
-        }
+      // 더 가져올 데이터가 있는지 확인
+      if (paidPayments.length < BATCH_SIZE) {
+        hasMore = false;
+      }
 
-        if ("cancellation_date" in validated.rawPaymentData) {
-          paymentIdsToCancel.push(iosPayment._id);
-        }
-      }),
-    ]);
+      // 다음 배치를 위해 skip 값 업데이트
+      skip += BATCH_SIZE;
+    }
 
     // const result = await this.modelService.model.updateMany(
     //   { _id: { $in: paymentIdsToCancel }, status: PaymentStatus.Paid },

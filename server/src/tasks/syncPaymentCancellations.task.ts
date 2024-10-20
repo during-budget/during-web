@@ -15,7 +15,7 @@ export class SyncPaymentCancellationTask {
         new Date(),
         found === 0
           ? "; No records to update"
-          : `; ${updated} records are updated.`
+          : `; found: ${found}; updated: ${updated}.`
       );
 
       if (this.failedCnt) this.failedCnt = 0;
