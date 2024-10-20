@@ -9,8 +9,8 @@ export type CompletePaymentByAndroidReq = {
 };
 
 export type AndroidPayload = {
-  title: string; // TODO: rename productId
-  token: string; // TODO: rename purchaseToken
+  productId: string;
+  purchaseToken: string;
 };
 
 export type IOSPayload = {

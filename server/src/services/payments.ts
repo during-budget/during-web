@@ -269,12 +269,9 @@ export const completePaymentByMobileUser = async (
   req: CompletePaymentByMobileUserReq,
   userRecord: Pick<UserEntity, "_id">
 ): Promise<PaymentEntity> => {
-  const { platform } = req;
+  const { platform, payload } = req;
 
-  const inAppProductId =
-    platform === InAppPlatform.Android
-      ? req.payload.title
-      : req.payload.productId;
+  const { productId: inAppProductId } = payload;
 
   // itemRecord 조회
   const { item: itemRecord } = await ItemService.findByTitle(inAppProductId);
@@ -297,9 +294,7 @@ export const completePaymentByMobileUser = async (
 
   switch (platform) {
     case InAppPlatform.Android: {
-      const {
-        payload: { token },
-      } = req;
+      const { purchaseToken: token } = payload;
 
       // 인앱 결제 정보 조회
       const helper = new GoogleInAppHelper();
@@ -341,8 +336,6 @@ export const completePaymentByMobileUser = async (
     }
 
     case InAppPlatform.IOS: {
-      const { payload } = req;
-
       let resp = await IAPHelper.IOS.validate(
         payload.transactionReceipt,
         false
