@@ -5,8 +5,12 @@ export enum InAppPlatform {
 
 export type CompletePaymentByAndroidReq = {
   platform: InAppPlatform.Android;
-  title: string;
-  token: string;
+  payload: AndroidPayload;
+};
+
+export type AndroidPayload = {
+  title: string; // TODO: rename productId
+  token: string; // TODO: rename purchaseToken
 };
 
 export type IOSPayload = {
