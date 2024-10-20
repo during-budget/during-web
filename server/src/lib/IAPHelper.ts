@@ -86,7 +86,7 @@ class AppleReceiptVerifier {
 
       return {
         status: responseData.status,
-        rawPaymentData: responseData.latest_receipt_info[0],
+        rawPaymentData: responseData.latest_receipt_info?.[0],
       };
     } catch (error: any) {
       throw new Error(`[AppleReceiptVerifier.validate]: ${error.message}`);
