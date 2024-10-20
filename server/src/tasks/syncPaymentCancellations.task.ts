@@ -26,7 +26,7 @@ export class SyncPaymentCancellationTask {
       );
     } finally {
       if (this.failedCnt < 10) {
-        setTimeout(this.run, 60000);
+        setTimeout(this.run.bind(this), 60000);
       }
     }
   }
