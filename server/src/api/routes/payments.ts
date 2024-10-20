@@ -7,6 +7,7 @@ import {
   InAppPlatform,
   validateIOSPayload,
   CompletePaymentByMobileUserReq,
+  validateAndroidPayload,
 } from "src/types/payment";
 
 import * as paymentController from "src/api/controllers/payments";
@@ -37,8 +38,9 @@ router.post(
         /** validate platform */
 
         if (!("platform" in body)) throw new FieldRequiredError("flatform");
+        if (!("payload" in body)) throw new FieldRequiredError("payload");
 
-        const platform = body.platform;
+        const { platform, payload } = body;
 
         if (
           typeof platform !== "string" ||
@@ -48,19 +50,15 @@ router.post(
 
         switch (platform) {
           case InAppPlatform.Android: {
-            for (let field of ["title", "token"]) {
-              if (!(field in body)) throw new FieldRequiredError(field);
+            if (!validateAndroidPayload(payload)) {
+              throw new FieldInvalidError("payload");
             }
 
             return true;
           }
 
           case InAppPlatform.IOS: {
-            for (let field of ["payload"]) {
-              if (!(field in body)) throw new FieldRequiredError(field);
-            }
-
-            if (!validateIOSPayload(body.payload)) {
+            if (!validateIOSPayload(payload)) {
               throw new FieldInvalidError("payload");
             }
 

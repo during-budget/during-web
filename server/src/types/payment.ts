@@ -13,6 +13,20 @@ export type AndroidPayload = {
   purchaseToken: string;
 };
 
+export function validateAndroidPayload(
+  payload: Record<string, any>
+): payload is AndroidPayload {
+  if (!("productId" in payload) || typeof payload.productId !== "string")
+    return false;
+  if (
+    !("purchaseToken" in payload) ||
+    typeof payload.purchaseToken !== "string"
+  )
+    return false;
+
+  return true;
+}
+
 export type IOSPayload = {
   // transactionDate: Date;
   // transactionId: string;
