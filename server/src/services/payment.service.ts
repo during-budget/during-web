@@ -1,7 +1,6 @@
-import { Document, HydratedDocument, Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 import { PaymentModelService } from "./payment.model.service";
 import { PaymentEntity, PaymentStatus, Platform } from "@models/payment.model";
-import { groupBy } from "lodash";
 import { GoogleInAppHelper } from "src/lib/googleInAppHelper";
 import { AndroidPurchaseState } from "src/types/payment.type";
 import { AppleVerifyReceiptResultStatus, IAPHelper } from "src/lib/IAPHelper";
@@ -130,16 +129,14 @@ export class PaymentService {
       skip += BATCH_SIZE;
     }
 
-    // const result = await this.modelService.model.updateMany(
-    //   { _id: { $in: paymentIdsToCancel }, status: PaymentStatus.Paid },
-    //   { $set: { status: PaymentStatus.Cancelled } }
-    // );
-
-    // return result;
+    const result = await this.modelService.model.updateMany(
+      { _id: { $in: paymentIdsToCancel }, status: PaymentStatus.Paid },
+      { $set: { status: PaymentStatus.Cancelled } }
+    );
 
     return {
       found: paymentIdsToCancel.length,
-      updated: 0,
+      updated: result.modifiedCount,
     };
   }
 
