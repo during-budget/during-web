@@ -269,10 +269,9 @@ export const completePaymentByMobileUser = async (
   req: CompletePaymentByMobileUserReq,
   userRecord: Pick<UserEntity, "_id">
 ): Promise<PaymentEntity> => {
-  const { platform } = req;
+  const { platform, payload } = req;
 
-  const inAppProductId =
-    platform === InAppPlatform.Android ? req.title : req.payload.productId;
+  const { productId: inAppProductId } = payload;
 
   // itemRecord 조회
   const { item: itemRecord } = await ItemService.findByTitle(inAppProductId);
@@ -295,7 +294,7 @@ export const completePaymentByMobileUser = async (
 
   switch (platform) {
     case InAppPlatform.Android: {
-      const { token } = req;
+      const { purchaseToken: token } = payload;
 
       // 인앱 결제 정보 조회
       const helper = new GoogleInAppHelper();
@@ -328,7 +327,7 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: { ...rawPaymentData, token },
         platform: Platform.Android,
         uid: rawPaymentData.orderId,
       });
@@ -337,12 +336,16 @@ export const completePaymentByMobileUser = async (
     }
 
     case InAppPlatform.IOS: {
-      const { payload, isSendbox } = req;
-
-      const { status, rawPaymentData } = await IAPHelper.IOS.validate(
+      let resp = await IAPHelper.IOS.validate(
         payload.transactionReceipt,
-        isSendbox
+        false
       );
+
+      if (resp.status === AppleVerifyReceiptResultStatus.Error007) {
+        resp = await IAPHelper.IOS.validate(payload.transactionReceipt, true);
+      }
+
+      const { status, rawPaymentData } = resp;
 
       if (status !== AppleVerifyReceiptResultStatus.Success) {
         throw new PaymentValidationFailedError({
@@ -379,7 +382,10 @@ export const completePaymentByMobileUser = async (
         itemTitle: itemRecord.title,
         amount: itemRecord.price,
         status: PaymentStatus.Paid,
-        rawPaymentData: rawPaymentData,
+        rawPaymentData: {
+          ...rawPaymentData,
+          transactionReceipt: payload.transactionReceipt,
+        },
         platform: Platform.IOS,
         uid: transactionId,
       });

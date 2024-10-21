@@ -5,9 +5,27 @@ export enum InAppPlatform {
 
 export type CompletePaymentByAndroidReq = {
   platform: InAppPlatform.Android;
-  title: string;
-  token: string;
+  payload: AndroidPayload;
 };
+
+export type AndroidPayload = {
+  productId: string;
+  purchaseToken: string;
+};
+
+export function validateAndroidPayload(
+  payload: Record<string, any>
+): payload is AndroidPayload {
+  if (!("productId" in payload) || typeof payload.productId !== "string")
+    return false;
+  if (
+    !("purchaseToken" in payload) ||
+    typeof payload.purchaseToken !== "string"
+  )
+    return false;
+
+  return true;
+}
 
 export type IOSPayload = {
   // transactionDate: Date;
@@ -33,7 +51,6 @@ export function validateIOSPayload(
 export type CompletePaymentByIOSReq = {
   platform: InAppPlatform.IOS;
   payload: IOSPayload;
-  isSendbox: boolean;
 };
 
 export type CompletePaymentByMobileUserReq =
