@@ -6,6 +6,7 @@ import {
   basicTheme,
   themes,
   ChartSkinTitle,
+  basicChartSkin,
 } from "src/models/_basicSettings";
 
 import * as PaymentService from "src/services/payments";
@@ -28,10 +29,9 @@ export const findChartSkinOptionsPaid = async (userId: Types.ObjectId) => {
     await PaymentService.findPaymentsChartSkinPaid(userId);
 
   return {
-    defaultOptions: "basic",
+    defaultOptions: basicChartSkin,
     options: [
-      "basic",
-      "cat",
+      basicChartSkin,
       ...paymentRecords.map((paymentRecord) => paymentRecord.itemTitle),
     ],
   };
